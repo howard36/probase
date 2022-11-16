@@ -6,6 +6,6 @@ An improved version of [Probase](https://github.com/CMU-Math/probase), made with
 1. Live preview when typing in LaTeX
 1. Better search capabilities to easily find problems in a large database
 1. Automatic test creation and sharing drafts to testsolvers
-1. Custom settings per contest, so different groups can use Probase in their own way (e.g. anonymous problem writers for CMO committee)
+1. Custom settings per contest, so different groups besides CMIMC can use Probase in their own way (e.g. anonymous problem writers for CMO committee)
 1. Support for pictures (and Asymptote diagrams), hidden spoilers, edit history, and links between problems
 
