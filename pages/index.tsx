@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function Home() {
   return (
-    <div>
+    <>
       <Head>
         <title>Probase</title>
         <meta name="description" content="A math contest problem database" />
@@ -15,6 +15,6 @@ export default function Home() {
           Hello World
         </div>
       </main>
-    </div>
+    </>
   )
 }
