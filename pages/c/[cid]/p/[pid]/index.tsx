@@ -10,10 +10,12 @@ export default function ProblemDetails({ cid, problem }) {
       </Head>
 
       <main>
-        <h1>Title: {problem.title}</h1>
-        <p>Problem: {problem.statement}</p>
-        <p>Answer: {problem.answer}</p>
-        <p>Solution: {problem.solution}</p>
+        <div className="p-16">
+          <h1 className="text-3xl font-bold mb-4">Title: {problem.title}</h1>
+          <p className="mb-4">{problem.statement}</p>
+          <p>Answer: {problem.answer}</p>
+          <p>Solution: {problem.solution}</p>
+        </div>
       </main>
     </>
   )
