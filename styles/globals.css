@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-.shadow-soft-xl {
-  box-shadow: 0 20px 27px 0 rgba(0,0,0,0.05);
+.soft-shadow-xl {
+  box-shadow: 0 20px 28px 0 #94A3B820;
+}
+
+.soft-shadow-r-lg {
+  box-shadow: 0 0 14px 0 #94A3B810;
 }

@@ -1,23 +1,33 @@
-export default function Sidebar() {
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+export default function Sidebar({ children }) {
+  const { asPath } = useRouter();
+  // TODO: automate links based on permissions
+  // TODO: what if asPath has query string paramters?
+  // TODO: contest name might be too long, needs cutoff
+  const links = [
+    { href: '/', label: 'Home', active: asPath === '/' },
+    { href: '/c/cmimc', label: 'CMIMC', active: asPath.startsWith('/c/cmimc') },
+    { href: '/c/hmmt', label: 'HMMT', active: asPath.startsWith('/c/hmmt') },
+  ];
+  
   return (
-    <div class="flex flex-col w-64 h-screen px-4 py-8 bg-white">
-      <h2 class="text-3xl font-semibold text-center text-slate-800">Probase</h2>
-      
-      <div class="flex flex-col justify-between flex-1 mt-6">
-        <nav>
-          <a class="flex items-center px-4 py-2 my-4 text-slate-600 transition-colors duration-300 rounded-lg hover:bg-slate-100 hover:text-slate-700" href="#">
-            <span class="mx-4 font-medium">Home</span>
-          </a>
-
-          <a class="flex items-center px-4 py-2 my-4 text-slate-700 bg-slate-100 rounded-lg" href="#">
-            <span class="mx-4 font-medium">CMIMC</span>
-          </a>
-
-          <a class="flex items-center px-4 py-2 my-4 text-slate-600 transition-colors duration-300 rounded-lg hover:bg-slate-100 hover:text-slate-700" href="#">
-            <span class="mx-4 font-medium">HMMT</span>
-          </a>
-        </nav>
+    <>
+      <div className="fixed w-64 left-0 top-0 h-screen flex flex-col px-6 py-6 bg-white overflow-y-auto soft-shadow-r-lg" aria-label="Sidenav">
+        <h2 className="text-3xl font-bold text-center text-slate-900 mt-8 mb-4">Probase</h2>
+        
+        <div className="flex flex-col justify-between flex-1">
+          <nav>
+            {links.map(({ href, label, active }) => (
+              <Link key={href} href={href} className={`flex items-center p-2 my-4 rounded-lg ${active ? "bg-slate-100 text-slate-700" : "text-slate-600 hover:bg-slate-100 hover:text-slate-700 transition-colors duration-300"}`}>
+                <span className="mx-4 font-medium">{label}</span>
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
-    </div>
+      {children}
+    </>
   );
 }

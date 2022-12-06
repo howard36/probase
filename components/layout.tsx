@@ -2,9 +2,9 @@ import Sidebar from './sidebar';
 
 export default function Layout({ children }) {
   return (
-    <>
-      <Sidebar />
-      <main>{children}</main>
-    </>
+    <div>
+      <Sidebar/>
+      <main className="ml-64">{children}</main>
+    </div>
   );
 }

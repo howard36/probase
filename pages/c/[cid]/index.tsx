@@ -10,15 +10,11 @@ export default function Contest({ cid, problems }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1>{cid}</h1>
-        <h2>Problems</h2>
-        <ul>
-          {problems.map((problem) => (
-            <HomeCard key={problem.pid} problem={problem} cid={cid}/>
-          ))}
-        </ul>
-      </main>
+      <ul className="px-10 pt-14">
+        {problems.map((problem) => (
+          <HomeCard key={problem.pid} problem={problem} cid={cid}/>
+        ))}
+      </ul>
     </>
   )
 }
