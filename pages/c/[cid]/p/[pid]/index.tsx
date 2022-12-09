@@ -9,7 +9,7 @@ export default function ProblemDetails({ cid, problem }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="p-16">
+      <div className="p-24">
         <h1 className="text-3xl font-bold mb-4">Title: {problem.title}</h1>
         <p className="mb-4">{problem.statement}</p>
         <p>Answer: {problem.answer}</p>

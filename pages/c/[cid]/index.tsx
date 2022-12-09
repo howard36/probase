@@ -10,7 +10,7 @@ export default function Contest({ cid, problems }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ul className="px-10 pt-14">
+      <ul className="px-16 py-16">
         {problems.map((problem) => (
           <HomeCard key={problem.pid} problem={problem} cid={cid}/>
         ))}
