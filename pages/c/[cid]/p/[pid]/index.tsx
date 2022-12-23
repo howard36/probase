@@ -1,65 +1,62 @@
 import Head from 'next/head'
+import clientPromise from '@/utils/mongodb';
+import {unified} from 'unified'
+import remarkParse from 'remark-parse'
+import remarkMath from 'remark-math'
+import remarkRehype from 'remark-rehype'
+import rehypeKatex from 'rehype-katex'
+import rehypeStringify from 'rehype-stringify'
 
-export default function ProblemDetails({ cid, problem }) {
+export async function getServerSideProps({ params }) {
+  const client = await clientPromise;
+  const db = client.db();
+
+  const contest = await db
+    .collection("contests")
+    .findOne({ cid: params.cid });
+
+  const problem = await db
+    .collection('problems')
+    .findOne({ contest_id: contest._id, pid: params.pid });
+ 
+  const statement = await unified()
+    .use(remarkParse)
+    .use(remarkMath)
+    .use(remarkRehype)
+    .use(rehypeKatex)
+    .use(rehypeStringify)
+    .process(problem.statement);
+
+  console.log(statement.toString());
+
+  return {
+    props: {
+      contest: JSON.parse(JSON.stringify(contest)),
+      problem: JSON.parse(JSON.stringify(problem)),
+      statement: statement.toString(),
+    },
+  };
+}
+
+export default function ProblemDetails({ contest, problem, statement }) {
   return (
     <>
       <Head>
-        <title>{cid}</title>
+        <title>{problem.title}</title>
         <meta name="description" content="A math contest problem database" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <div className="p-24">
-        <h1 className="text-3xl font-bold mb-4">Title: {problem.title}</h1>
+        <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
+        {/* is it safe to be inserting statement like this?
+        It's user-submitted text */}
+        {statement}
         <p className="mb-4">{problem.statement}</p>
         <p>Answer: {problem.answer}</p>
         <p>Solution: {problem.solution}</p>
       </div>
     </>
   )
-}
-
-export async function getStaticPaths() {
-  return {
-    paths: [
-      { params: { cid: 'cmimc', pid: '1' } },
-      { params: { cid: 'cmimc', pid: '2' } },
-      { params: { cid: 'cmo', pid: '1' } },
-      { params: { cid: 'cmo', pid: '2' } },
-      { params: { cid: 'hmmt', pid: '1' } },
-      { params: { cid: 'hmmt', pid: '2' } },
-    ],
-    fallback: true,
-  }
-}
-
-export async function getStaticProps({ params }) {
-  if (params.pid == 1) {
-    return {
-      props: {
-        cid: params.cid,
-        problem: {
-          pid: 1,
-          title: 'Problem 1',
-          statement: 'This is a problem',
-          answer: 'This is an answer',
-          solution: 'This is a solution',
-        },
-      },
-    }
-  } else if (params.pid == 2) {
-    return {
-      props: {
-        cid: params.cid,
-        problem: {
-          pid: 2,
-          title: 'Problem 2',
-          statement: 'This is a problem',
-          answer: 'This is an answer',
-          solution: 'This is a solution',
-        },
-      },
-    }
-  }
 }
 
