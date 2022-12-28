@@ -1,7 +1,7 @@
 import Head from 'next/head'
-import clientPromise from '@/utils/mongodb';
 import Layout from '@/components/layout';
 import Latex from 'react-latex-next';
+import { findOne } from '@/utils/mongodb3';
 
 export async function getServerSideProps({ params }) {
   const client = await clientPromise;

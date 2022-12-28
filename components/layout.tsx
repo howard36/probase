@@ -16,11 +16,11 @@ const Layout: FC<LayoutProps> = ({ children, title = 'Probase' }) => {
         <meta name="description" content="A math contest problem database" />
         <link rel="icon" href="/favicon.ico" />
         <title>{title}</title>
-        <Script onLoad={() => {console.log("Script has loaded");}}></Script>
         
         {/* KaTeX */}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" />
       </Head>
+      {/* sidebar has unused children argument */}
       <Sidebar/>
       <main className="ml-64">{children}</main>
     </>

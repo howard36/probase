@@ -1,29 +1,46 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import HomeCard from '@/components/home-card';
-import clientPromise from '@/utils/mongodb';
 import Layout from '@/components/layout';
+import { find, findOne } from '@/utils/mongodb3';
 
-export async function getServerSideProps({ params }) {
-  const client = await clientPromise;
-  const db = client.db();
+export async function getStaticPaths() {
+  const contests = await find('contests', {
+    projection: { 'cid': 1, '_id': 0 }
+  });
 
-  const contest = await db
-    .collection("contests")
-    .findOne({ cid: params.cid });
+  const paths = contests.map((contest) => ({
+    params: { cid: contest.cid },
+  }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  console.log(params);
+  const contest = await findOne('contests', {
+    filter: { cid: params.cid }
+  });
 
   // TODO: check if contest is null
   // TODO: filter only needed fields of contest
 
-  const problems = await db
-    .collection("problems")
-    .find({ contest_id: contest._id })
-    .project({ pid: 1, title: 1, statement: 1, subject: 1, _id: 0 })
-    .toArray();
+  const problems = await find('problems', {
+    filter: { contest_id: { '$oid': contest._id } },
+    projection: {
+      'pid': 1,
+      'title': 1,
+      'statement': 1,
+      'subject': 1,
+      'likes': 1,
+      'difficulty': 1,
+      '_id': 0
+    }
+  });
 
   return {
     props: {
-      contest: JSON.parse(JSON.stringify(contest)),
+      contest,
       problems,
     },
   };
