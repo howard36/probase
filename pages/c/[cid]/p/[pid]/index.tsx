@@ -3,17 +3,22 @@ import Layout from '@/components/layout';
 import Latex from 'react-latex-next';
 import { findOne } from '@/utils/mongodb3';
 
-export async function getServerSideProps({ params }) {
-  const client = await clientPromise;
-  const db = client.db();
+// TODO
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
+}
 
-  const contest = await db
-    .collection("contests")
-    .findOne({ cid: params.cid });
+export async function getStaticProps({ params }) {
+  const contest = await findOne('contests', {
+    filter: { cid: params.cid },
+  });
 
-  const problem = await db
-    .collection('problems')
-    .findOne({ contest_id: contest._id, pid: params.pid });
+  const problem = await findOne('problems', {
+    filter: { contest_id: { '$oid': contest._id }, pid: params.pid }
+  });
 
   return {
     props: {

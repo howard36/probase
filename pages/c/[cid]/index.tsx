@@ -13,7 +13,10 @@ export async function getStaticPaths() {
     params: { cid: contest.cid },
   }));
 
-  return { paths, fallback: false };
+  return {
+    paths,
+    fallback: 'blocking'
+  };
 }
 
 export async function getStaticProps({ params }) {
