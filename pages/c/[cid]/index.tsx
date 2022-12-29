@@ -5,12 +5,12 @@ import Layout from '@/components/layout';
 import { find, findOne } from '@/utils/mongodb3';
 
 export async function getStaticPaths() {
-  const contests = await find('contests', {
+  const collections = await find('collections', {
     projection: { 'cid': 1, '_id': 0 }
   });
 
-  const paths = contests.map((contest) => ({
-    params: { cid: contest.cid },
+  const paths = collections.map((collection) => ({
+    params: { cid: collection.cid },
   }));
 
   return {
@@ -20,16 +20,15 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  console.log(params);
-  const contest = await findOne('contests', {
+  const collection = await findOne('collections', {
     filter: { cid: params.cid }
   });
 
-  // TODO: check if contest is null
-  // TODO: filter only needed fields of contest
+  // TODO: check if collection is null
+  // TODO: filter only needed fields of collection
 
   const problems = await find('problems', {
-    filter: { contest_id: { '$oid': contest._id } },
+    filter: { collection_id: { '$oid': collection._id } },
     projection: {
       'pid': 1,
       'title': 1,
@@ -43,18 +42,18 @@ export async function getStaticProps({ params }) {
 
   return {
     props: {
-      contest,
+      collection,
       problems,
     },
   };
 }
 
-export default function Contest({ contest, problems }) {
+export default function Collection({ collection, problems }) {
   return (
-    <Layout title={contest.name}>
+    <Layout title={collection.name}>
       <ul id="problems" className="px-16 py-16">
         {problems.map((problem) => (
-          <HomeCard key={problem.pid} contest={contest} problem={problem}/>
+          <HomeCard key={problem.pid} collection={collection} problem={problem}/>
         ))}
       </ul>
     </Layout>

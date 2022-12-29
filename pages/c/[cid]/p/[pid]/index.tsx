@@ -12,23 +12,23 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const contest = await findOne('contests', {
+  const collection = await findOne('collections', {
     filter: { cid: params.cid },
   });
 
   const problem = await findOne('problems', {
-    filter: { contest_id: { '$oid': contest._id }, pid: params.pid }
+    filter: { collection_id: { '$oid': collection._id }, pid: params.pid }
   });
 
   return {
     props: {
-      contest: JSON.parse(JSON.stringify(contest)),
-      problem: JSON.parse(JSON.stringify(problem)),
+      collection,
+      problem,
     },
   };
 }
 
-export default function ProblemDetails({ contest, problem, statement }) {
+export default function ProblemDetails({ collection, problem }) {
   return (
     <Layout>
       <Head>
@@ -39,9 +39,6 @@ export default function ProblemDetails({ contest, problem, statement }) {
 
       <div className="p-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
-        {/* is it safe to be inserting statement like this?
-        It's user-submitted text */}
-        {statement}
         <p className="mb-4"><Latex>{problem.statement}</Latex></p>
         <p><Latex>{`Answer: ${problem.answer}`}</Latex></p>
         <p><Latex>{`Solution: ${problem.solution}`}</Latex></p>

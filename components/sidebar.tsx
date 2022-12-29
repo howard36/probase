@@ -5,7 +5,7 @@ export default function Sidebar({ children }) {
   const { asPath } = useRouter();
   // TODO: automate links based on permissions
   // TODO: what if asPath has query string paramters?
-  // TODO: contest name might be too long, needs cutoff
+  // TODO: collection name might be too long, needs cutoff
   const links = [
     { href: '/', label: 'Home', active: asPath === '/' },
     { href: '/c/cmimc', label: 'CMIMC', active: asPath.startsWith('/c/cmimc') },

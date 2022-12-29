@@ -19,12 +19,12 @@ const subjectToColor = {
   'Number Theory': 3,
 };
 
-export default function HomeCard({ contest, problem }) {
+export default function HomeCard({ collection, problem }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];
 
   return (
-    <Link href={`/c/${contest.cid}/p/${problem.pid}`}>
+    <Link href={`/c/${collection.cid}/p/${problem.pid}`}>
       <div className="bg-white p-6 m-8 rounded-2xl soft-shadow-xl">
         <h1 className="text-2xl font-bold text-slate-900 mb-4">{problem.title}</h1>
         <div className={`w-16 h-2 mb-4 ${titleLineColor} rounded-full`}></div>
