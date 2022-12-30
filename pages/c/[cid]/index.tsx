@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Script from 'next/script';
 import HomeCard from '@/components/home-card';
-import Layout from '@/components/layout';
-import { find, findOne } from '@/utils/mongodb3';
+import Sidebar from '@/components/sidebar';
+import { find, findOne } from '@/utils/mongodb';
 
 export async function getStaticPaths() {
   const collections = await find('collections', {
@@ -50,13 +50,16 @@ export async function getStaticProps({ params }) {
 
 export default function Collection({ collection, problems }) {
   return (
-    <Layout title={collection.name}>
+    <Sidebar>
+      <Head>
+        <title>{collection.name}</title>
+      </Head>
       <ul id="problems" className="px-16 py-16">
         {problems.map((problem) => (
           <HomeCard key={problem.pid} collection={collection} problem={problem}/>
         ))}
       </ul>
-    </Layout>
+    </Sidebar>
   );
 }
 
