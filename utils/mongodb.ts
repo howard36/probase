@@ -51,4 +51,25 @@ async function find(collection: string, options: object = {}): Promise<any[]> {
   return data.documents;
 }
 
-export { findOne, find };
+async function aggregate(collection: string, pipeline: object[]): Promise<any[]> {
+  const endpoint = `${baseURL}/action/aggregate`;
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY,
+    },
+    body: JSON.stringify({
+      'dataSource': CLUSTER_NAME,
+      'database': DB_NAME,
+      'collection': collection,
+      'pipeline': pipeline,
+    })
+  });
+
+  const data = await response.json();
+  return data.documents;
+}
+
+
+export { findOne, find, aggregate };
