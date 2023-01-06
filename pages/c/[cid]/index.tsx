@@ -3,6 +3,7 @@ import Script from 'next/script';
 import HomeCard from '@/components/home-card';
 import Sidebar from '@/components/sidebar';
 import { find, findOne } from '@/utils/mongodb';
+import { useSession } from 'next-auth/react';
 
 export async function getStaticPaths() {
   const collections = await find('collections', {
@@ -49,6 +50,9 @@ export async function getStaticProps({ params }) {
 }
 
 export default function Collection({ collection, problems }) {
+  const session = useSession();
+  console.log("session = ", session);
+
   return (
     <Sidebar>
       <Head>
