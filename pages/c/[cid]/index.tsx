@@ -1,9 +1,19 @@
 import Head from 'next/head';
-import Script from 'next/script';
 import HomeCard from '@/components/home-card';
 import Sidebar from '@/components/sidebar';
 import { find, findOne } from '@/utils/mongodb';
 import { useSession } from 'next-auth/react';
+
+interface Context {
+  readonly params: {
+    readonly cid: string;
+  }
+}
+
+interface Props {
+  readonly collection: any;
+  readonly problems: any[];
+}
 
 export async function getStaticPaths() {
   const collections = await find('collections', {
@@ -20,7 +30,7 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params }: Context): Promise<{props: Props}> {
   const collection = await findOne('collections', {
     filter: { cid: params.cid }
   });
@@ -49,9 +59,9 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function Collection({ collection, problems }) {
+export default function Collection({ collection, problems }: Props) {
   const session = useSession();
-  console.log("session = ", session);
+  console.log("session = ", session, "type = ", typeof(session));
 
   return (
     <Sidebar>
