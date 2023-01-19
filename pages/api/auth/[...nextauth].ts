@@ -87,21 +87,19 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }: jwtCallbackParams) {
-      console.log("jwt", { token, user, account, profile, isNewUser }, "\n");
-      // Persist the OAuth access_token and or the user id to the token right after signin
-      if (account) {
+      console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
+      if (account && profile) {
         token.accessToken = account.access_token;
         token.provider = account.provider;
         token.type = account.type;
-        token.accessTokenExpires = Date.now() + account.expires_at * 1000,
-        token.refreshToken = account.refresh_token;
-        token.user = user;
         
         if (account.provider === 'google') {
           token.emailVerified = profile.email_verified;
           token.givenName = profile.given_name;
           token.familyName = profile.family_name;
           token.locale = profile.locale;
+          token.accessTokenExpires = account.expires_at;
+          token.refreshToken = account.refresh_token;
         }
       }
       return token;

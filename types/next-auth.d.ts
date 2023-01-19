@@ -16,6 +16,14 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
-    refreshToken: string;
+    accessToken?: string;
+    provider?: string;
+    type?: string;
+
+    emailVerified?: boolean;
+    givenName?: string;
+    locale?: string;
+    accessTokenExpires?: number;
+    refreshToken?: string;
   }
 }
