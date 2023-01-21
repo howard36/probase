@@ -24,7 +24,7 @@ const GOOGLE_AUTHORIZATION_URL: string =
     prompt: "consent",
     access_type: "offline",
     response_type: "code",
-  })
+  });
 
 /**
  * Takes a token, and returns a new token with updated
@@ -32,6 +32,13 @@ const GOOGLE_AUTHORIZATION_URL: string =
  * returns the old token and an error property
  */
 async function refreshAccessToken(token: JWT) {
+  if (token.refreshToken === undefined) {
+    console.error("called refreshAccessToken without a refreshToken");
+    return {
+      ...token,
+      error: "RefreshAccessTokenError1",
+    };
+  }
   try {
     const url: string =
       "https://oauth2.googleapis.com/token?" +
@@ -40,25 +47,25 @@ async function refreshAccessToken(token: JWT) {
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
         grant_type: "refresh_token",
         refresh_token: token.refreshToken,
-      })
+      });
 
     const response = await fetch(url, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       method: "POST",
-    })
+    });
 
-    const refreshedTokens = await response.json()
+    const refreshedTokens = await response.json();
 
     if (!response.ok) {
-      throw refreshedTokens
+      throw refreshedTokens;
     }
 
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
-      accessTokenExpires: Date.now() + refreshedTokens.expires_at * 1000,
+      accessTokenExpires: refreshedTokens.expires_at,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     }
   } catch (error) {
@@ -66,8 +73,8 @@ async function refreshAccessToken(token: JWT) {
 
     return {
       ...token,
-      error: "RefreshAccessTokenError",
-    }
+      error: "RefreshAccessTokenError2",
+    };
   }
 }
 
@@ -88,6 +95,7 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }: jwtCallbackParams) {
       console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
+      // Initial sign in
       if (account && profile) {
         token.accessToken = account.access_token;
         token.provider = account.provider;
@@ -101,13 +109,26 @@ export const authOptions = {
           token.accessTokenExpires = account.expires_at;
           token.refreshToken = account.refresh_token;
         }
+        return token;
       }
-      return token;
+
+      // Return previous token if the access token has not expired yet
+      if (token.provider === 'google') {
+        if (token.accessTokenExpires) {
+          // convert from milliseconds to seconds, add 10 second buffer
+          if (Date.now() / 1000 + 10 < token.accessTokenExpires) {
+            return token;
+          }
+        }
+      }
+
+      // Access token has expired, try to update it
+      return refreshAccessToken(token);
     },
     async session({ session, user, token }: sessionCallbackParams) {
       // Send properties to the client, like an access_token and user id from a provider.
       session.accessToken = token.accessToken;
-      session.emailVerified = token.emailVerified;
+      session.emailVerified = token.emailVerified ?? false;
       session.givenName = token.givenName;
       session.familyName = token.familyName;
       session.locale = token.locale;
@@ -120,6 +141,6 @@ export const authOptions = {
   theme: {
     colorScheme: "light",
   },
-}
+};
 
-export default NextAuth(authOptions)
+export default NextAuth(authOptions);
