@@ -12,6 +12,13 @@ declare module "next-auth" {
     familyName?: string;
     locale?: string;
   }
+
+  interface Profile {
+    email_verified?: bool;
+    given_name?: string;
+    family_name?: string;
+    locale?: string;
+  }
 }
 
 declare module "next-auth/jwt" {

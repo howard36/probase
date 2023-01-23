@@ -100,9 +100,9 @@ export const authOptions = {
         token.accessToken = account.access_token;
         token.provider = account.provider;
         token.type = account.type;
+        token.emailVerified = profile.email_verified ?? false;
         
         if (account.provider === 'google') {
-          token.emailVerified = profile.email_verified;
           token.givenName = profile.given_name;
           token.familyName = profile.family_name;
           token.locale = profile.locale;
@@ -128,7 +128,7 @@ export const authOptions = {
     async session({ session, user, token }: sessionCallbackParams) {
       // Send properties to the client, like an access_token and user id from a provider.
       session.accessToken = token.accessToken;
-      session.emailVerified = token.emailVerified ?? false;
+      session.emailVerified = token.emailVerified;
       session.givenName = token.givenName;
       session.familyName = token.familyName;
       session.locale = token.locale;
@@ -136,10 +136,10 @@ export const authOptions = {
     },
   },
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   theme: {
-    colorScheme: "light",
+    colorScheme: "auto" as const,
   },
 };
 
