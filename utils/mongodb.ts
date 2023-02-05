@@ -71,5 +71,7 @@ async function aggregate(collection: string, pipeline: object[]): Promise<any[]>
   return data.documents;
 }
 
+// https://www.mongodb.com/docs/atlas/api/data-api-resources/
+// TODO: add insertOne
 
 export { findOne, find, aggregate };
