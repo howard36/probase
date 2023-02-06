@@ -51,6 +51,26 @@ async function find(collection: string, options: object = {}): Promise<any[]> {
   return data.documents;
 }
 
+async function insertOne(collection: string, options: object = {}): Promise<any> {
+  const endpoint = `${baseURL}/action/insertOne`;
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY,
+    },
+    body: JSON.stringify({
+      'dataSource': CLUSTER_NAME,
+      'database': DB_NAME,
+      'collection': collection,
+      ...options,
+    })
+  });
+
+  const data = await response.json();
+  return data.document;
+}
+
 async function aggregate(collection: string, pipeline: object[]): Promise<any[]> {
   const endpoint = `${baseURL}/action/aggregate`;
   const response = await fetch(endpoint, {
@@ -71,7 +91,4 @@ async function aggregate(collection: string, pipeline: object[]): Promise<any[]>
   return data.documents;
 }
 
-// https://www.mongodb.com/docs/atlas/api/data-api-resources/
-// TODO: add insertOne
-
-export { findOne, find, aggregate };
+export { findOne, find, insertOne, aggregate };

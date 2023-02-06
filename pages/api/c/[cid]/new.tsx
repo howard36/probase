@@ -1,4 +1,7 @@
+import { insertOne } from '@/utils/mongodb';
+
 export default function handler(req, res) {
+  // console.log(req);
   const { cid } = req.query;
   if (req.method === 'POST') {
     // Process a POST request
@@ -8,7 +11,9 @@ export default function handler(req, res) {
       title,
       statement,
     };
-    insertOne("problems", problem);
+    insertOne("problems", {
+      document: problem,
+    });
   } else {
     // Handle any other HTTP method
   }
