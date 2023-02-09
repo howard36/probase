@@ -71,6 +71,26 @@ async function insertOne(collection: string, options: object = {}): Promise<any>
   return data.document;
 }
 
+async function updateOne(collection: string, options: object = {}): Promise<any> {
+  const endpoint = `${baseURL}/action/updateOne`;
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY,
+    },
+    body: JSON.stringify({
+      'dataSource': CLUSTER_NAME,
+      'database': DB_NAME,
+      'collection': collection,
+      ...options,
+    })
+  });
+
+  const data = await response.json();
+  return data.document;
+}
+
 async function aggregate(collection: string, pipeline: object[]): Promise<any[]> {
   const endpoint = `${baseURL}/action/aggregate`;
   const response = await fetch(endpoint, {
@@ -91,4 +111,4 @@ async function aggregate(collection: string, pipeline: object[]): Promise<any[]>
   return data.documents;
 }
 
-export { findOne, find, insertOne, aggregate };
+export { findOne, find, insertOne, updateOne, aggregate };
