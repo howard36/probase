@@ -73,7 +73,7 @@ export default function ProblemEdit({ collection, problem }) {
       </Head>
       <div className="container px-6 py-12 mx-auto flex">
         <div className="bg-white rounded-lg p-8 flex flex-col w-full relative z-10 shadow-md">
-          <form action={`/api/problem/${problem._id}/edit`} method="post">
+          <form action={`/api/problems/${problem._id}/edit`} method="post">
             <div className="relative mb-4">
               <label className="leading-7 text-md text-gray-600">Title</label>
               <input id="title" name="title" value={problem.title} className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"></input>
