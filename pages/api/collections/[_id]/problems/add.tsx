@@ -9,7 +9,7 @@ export default function handler(req, res) {
     // console.log(_id);
 
     // TODO: assign PID based on existing problems
-    const pid = 'C1';
+    const pid = 'G1';
     const problem = {
       pid,
       title,
