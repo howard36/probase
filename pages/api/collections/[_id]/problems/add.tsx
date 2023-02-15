@@ -1,12 +1,12 @@
 import { insertOne } from '@/utils/mongodb';
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { _id } = req.query;
 
   if (req.method === 'POST') {
     // Process a POST request
     const { title, statement, subject, answer, solution } = req.body;
-    // console.log(_id);
 
     // TODO: assign PID based on existing problems
     const pid = 'G1';
@@ -20,8 +20,11 @@ export default function handler(req, res) {
       authors: [],
       collection_id: { $oid: _id },
     };
-    // console.log(problem);
-    insertOne("problems", { document: problem });
+
+    // TODO: handle insertOne error response
+    await insertOne("problems", { document: problem });
+
+    res.status(201).json({'msg': 'created'});
   } else {
     // Handle any other HTTP method
   }
