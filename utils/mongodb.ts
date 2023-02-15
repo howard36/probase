@@ -14,7 +14,7 @@ const baseURL = `https://data.mongodb-api.com/app/${APP_ID}/endpoint/data/v1`;
 async function findOne(collection: string, options: object = {}): Promise<any> {
   const endpoint = `${baseURL}/action/findOne`;
   const response = await fetch(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'api-key': API_KEY,
@@ -34,7 +34,7 @@ async function findOne(collection: string, options: object = {}): Promise<any> {
 async function find(collection: string, options: object = {}): Promise<any[]> {
   const endpoint = `${baseURL}/action/find`;
   const response = await fetch(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'api-key': API_KEY,
@@ -54,7 +54,7 @@ async function find(collection: string, options: object = {}): Promise<any[]> {
 async function insertOne(collection: string, options: object = {}): Promise<any> {
   const endpoint = `${baseURL}/action/insertOne`;
   const response = await fetch(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'api-key': API_KEY,
@@ -66,15 +66,17 @@ async function insertOne(collection: string, options: object = {}): Promise<any>
       ...options,
     })
   });
+  console.log({response})
 
   const data = await response.json();
-  return data.document;
+  console.log({data})
+  return data.insertedId;
 }
 
 async function updateOne(collection: string, options: object = {}): Promise<any> {
   const endpoint = `${baseURL}/action/updateOne`;
   const response = await fetch(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'api-key': API_KEY,
@@ -88,13 +90,13 @@ async function updateOne(collection: string, options: object = {}): Promise<any>
   });
 
   const data = await response.json();
-  return data.document;
+  return data;
 }
 
 async function aggregate(collection: string, pipeline: object[]): Promise<any[]> {
   const endpoint = `${baseURL}/action/aggregate`;
   const response = await fetch(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'api-key': API_KEY,

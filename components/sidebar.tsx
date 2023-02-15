@@ -2,14 +2,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function Sidebar({ children }) {
-  const { asPath } = useRouter();
+  const router = useRouter();
+  const path = router.asPath;
+
   // TODO: automate links based on permissions
-  // TODO: what if asPath has query string paramters?
   // TODO: collection name might be too long, needs cutoff
+  // TODO: collection list might be too long, needs vertical scroll
   const links = [
-    { href: '/', label: 'Home', active: asPath === '/' },
-    { href: '/c/cmimc', label: 'CMIMC', active: asPath.startsWith('/c/cmimc') },
-    { href: '/c/hmmt', label: 'HMMT', active: asPath.startsWith('/c/hmmt') },
+    { href: '/', label: 'Home', active: path === '/' },
+    { href: '/c/cmimc', label: 'CMIMC', active: path.startsWith('/c/cmimc') },
+    { href: '/c/hmmt', label: 'HMMT', active: path.startsWith('/c/hmmt') },
   ];
 
   return (

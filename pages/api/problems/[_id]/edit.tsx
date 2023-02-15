@@ -4,9 +4,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { _id } = req.query;
 
+  // TODO: should this be PUT?
   if (req.method === 'POST') {
     // Process a POST request
-    const { title, statement, subject, answer, solution } = req.body;
+    const { title, subject, statement, answer, solution } = req.body;
 
     // TODO: handle updateOne error response
     updateOne('problems', {
@@ -22,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    res.status(201).json({'msg': 'updated'});
+    res.status(200).json({'msg': 'updated'});
   } else {
     // Handle any other HTTP method
   }

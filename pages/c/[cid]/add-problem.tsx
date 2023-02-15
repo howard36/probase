@@ -51,9 +51,7 @@ export default function Collection({ collection }: Props) {
       <Head>
         <title>{collection.name} - New Problem</title>
       </Head>
-      <form action={`/api/collections/${collection._id}/problems/add`} method="post">
-        <ProblemForm collection={collection}/>
-      </form>
+      <ProblemForm collection={collection}/>
     </Sidebar>
   );
 }

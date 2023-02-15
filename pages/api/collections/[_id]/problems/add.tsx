@@ -1,32 +1,40 @@
-import { insertOne } from '@/utils/mongodb';
+import { findOne, insertOne } from '@/utils/mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+// TODO: add permissions for API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    res.status(405);
+    return;
+  }
+
   const { _id } = req.query;
+  const { pid, title, subject, statement, answer, solution } = req.body;
 
-  if (req.method === 'POST') {
-    // Process a POST request
-    const { title, statement, subject, answer, solution } = req.body;
+  const { cid } = await findOne('collections', {
+    filter: { _id: { $oid: _id } }
+  })
 
-    // TODO: assign PID based on existing problems
-    const pid = 'G1';
-    const problem = {
-      pid,
-      title,
-      subject,
-      statement,
-      answer,
-      solutions: [solution],
-      authors: [],
-      collection_id: { $oid: _id },
-    };
+  // TODO: assign PID based on existing problems
+  // TODO: PID should be given as input, and calculated by calling function
+  const problem = {
+    pid,
+    title,
+    subject,
+    statement,
+    answer,
+    solutions: [solution],
+    authors: [],
+    collection_id: { $oid: _id },
+  };
 
-    // TODO: handle insertOne error response
-    await insertOne("problems", { document: problem });
+  // TODO: handle insertOne error response
+  const inserted_id = await insertOne("problems", { document: problem });
 
-    res.status(201).json({'msg': 'created'});
+  if (inserted_id) {
+    res.status(201).json({inserted_id});
   } else {
-    // Handle any other HTTP method
+    res.status(500).send({'error': 'Failed to add problem'});
   }
 }
 
