@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 // TODO: add permissions for API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
-    res.status(405);
+    res.status(405).json({'error': 'Invalid method'});
     return;
   }
 
@@ -23,8 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     subject,
     statement,
     answer,
-    solutions: [solution],
-    authors: [],
+    solutions: [solution], // TODO: multiple solutions
+    authors: [], // TODO: authors
     collection_id: { $oid: _id },
   };
 
@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (inserted_id) {
     res.status(201).json({inserted_id});
   } else {
-    res.status(500).send({'error': 'Failed to add problem'});
+    res.status(500).json({'error': 'Failed to add problem'});
   }
 }
 

@@ -63,7 +63,7 @@ export default function ProblemDetails({ collection, problem }) {
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
         <p className="mb-4"><Latex>{problem.statement}</Latex></p>
         <p><Latex>{`Answer: ${problem.answer}`}</Latex></p>
-        <p><Latex>{`Solution: ${problem.solution}`}</Latex></p>
+        <p><Latex>{`Solution: ${problem.solutions[0]}`}</Latex></p>
       </div>
     </Sidebar>
   );
