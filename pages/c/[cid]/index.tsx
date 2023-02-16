@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import HomeCard from '@/components/home-card';
 import Sidebar from '@/components/sidebar';
-import { find, findOne } from '@/utils/mongodb';
+import clientPromise from '@/utils/mongodb';
 import { useSession } from 'next-auth/react';
 
 interface Context {
@@ -16,9 +16,11 @@ interface Props {
 }
 
 export async function getStaticPaths() {
-  const collections = await find('collections', {
-    projection: { 'cid': 1, '_id': 0 }
-  });
+  const client = await clientPromise;
+  const collections = await client.db().collection('collections').find(
+    {},
+    { projection: { cid: 1, _id: 0 } }
+  ).toArray();
 
   const paths = collections.map((collection) => ({
     params: { cid: collection.cid },
@@ -31,25 +33,30 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: Context): Promise<{props: Props}> {
-  const collection = await findOne('collections', {
-    filter: { cid: params.cid }
-  });
+  const client = await clientPromise;
+  const collection = await client.db().collection('collections').findOne(
+    { cid: params.cid }
+  );
 
-  // TODO: check if collection is null
+  if (collection === null) {
+    return null; // TODO
+  }
   // TODO: filter only needed fields of collection
 
-  const problems = await find('problems', {
-    filter: { collection_id: { '$oid': collection._id } },
-    projection: {
-      'pid': 1,
-      'title': 1,
-      'statement': 1,
-      'subject': 1,
-      'likes': 1,
-      'difficulty': 1,
-      '_id': 0
+  const problems = await client.db().collection('problems').find(
+    { collection_id: { $oid: collection._id } },
+    {
+      projection: {
+        'pid': 1,
+        'title': 1,
+        'statement': 1,
+        'subject': 1,
+        'likes': 1,
+        'difficulty': 1,
+        '_id': 0
+      }
     }
-  });
+  ).toArray();
 
   return {
     props: {

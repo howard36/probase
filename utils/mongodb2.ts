@@ -1,30 +1,116 @@
-// This approach is taken from https://github.com/vercel/next.js/tree/canary/examples/with-mongodb
-import { MongoClient } from 'mongodb'
+const CLUSTER_NAME = process.env.MONGODB_CLUSTER_NAME;
+const DB_NAME = process.env.MONGODB_DB_NAME;
+const APP_ID = process.env.MONGODB_APP_ID;
+const API_KEY = process.env.MONGODB_API_KEY;
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"')
+if (!CLUSTER_NAME || !DB_NAME || !APP_ID || !API_KEY) {
+  throw new Error(
+    'Please define the MONGODB environment variables inside .env.local'
+  )
 }
 
-const uri = process.env.MONGODB_URI
-const options = {}
+const baseURL = `https://data.mongodb-api.com/app/${APP_ID}/endpoint/data/v1`;
 
-let client
-let clientPromise: Promise<MongoClient>
+async function findOne(collection: string, options: object = {}): Promise<any> {
+  const endpoint = `${baseURL}/action/findOne`;
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY,
+    },
+    body: JSON.stringify({
+      'dataSource': CLUSTER_NAME,
+      'database': DB_NAME,
+      'collection': collection,
+      ...options,
+    })
+  });
 
-if (process.env.NODE_ENV === 'development') {
-  // In development mode, use a global variable so that the value
-  // is preserved across module reloads caused by HMR (Hot Module Replacement).
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options)
-    global._mongoClientPromise = client.connect()
-  }
-  clientPromise = global._mongoClientPromise
-} else {
-  // In production mode, it's best to not use a global variable.
-  client = new MongoClient(uri, options)
-  clientPromise = client.connect()
+  const data = await response.json();
+  return data.document;
 }
 
-// Export a module-scoped MongoClient promise. By doing this in a
-// separate module, the client can be shared across functions.
-export default clientPromise
+async function find(collection: string, options: object = {}): Promise<any[]> {
+  const endpoint = `${baseURL}/action/find`;
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY,
+    },
+    body: JSON.stringify({
+      'dataSource': CLUSTER_NAME,
+      'database': DB_NAME,
+      'collection': collection,
+      ...options,
+    })
+  });
+
+  const data = await response.json();
+  return data.documents;
+}
+
+async function insertOne(collection: string, options: object = {}): Promise<any> {
+  const endpoint = `${baseURL}/action/insertOne`;
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY,
+    },
+    body: JSON.stringify({
+      'dataSource': CLUSTER_NAME,
+      'database': DB_NAME,
+      'collection': collection,
+      ...options,
+    })
+  });
+  console.log({response})
+
+  const data = await response.json();
+  console.log({data})
+  return data.insertedId;
+}
+
+async function updateOne(collection: string, options: object = {}): Promise<any> {
+  const endpoint = `${baseURL}/action/updateOne`;
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY,
+    },
+    body: JSON.stringify({
+      'dataSource': CLUSTER_NAME,
+      'database': DB_NAME,
+      'collection': collection,
+      ...options,
+    })
+  });
+
+  const data = await response.json();
+  return data;
+}
+
+async function aggregate(collection: string, pipeline: object[]): Promise<any[]> {
+  const endpoint = `${baseURL}/action/aggregate`;
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': API_KEY,
+    },
+    body: JSON.stringify({
+      'dataSource': CLUSTER_NAME,
+      'database': DB_NAME,
+      'collection': collection,
+      'pipeline': pipeline,
+    })
+  });
+
+  const data = await response.json();
+  return data.documents;
+}
+
+export { findOne, find, insertOne, updateOne, aggregate };

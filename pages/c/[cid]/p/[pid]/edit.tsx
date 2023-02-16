@@ -1,13 +1,14 @@
 import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
 import ProblemForm from '@/components/problem-form';
-import { find, findOne, aggregate } from '@/utils/mongodb';
+import clientPromise from '@/utils/mongodb';
 import { useSession } from 'next-auth/react';
 
 
 // TODO
 export async function getStaticPaths() {
-  const params = await aggregate('problems', [
+  const client = await clientPromise;
+  const params = await client.db().collection('problems').aggregate([
     {
       $lookup: {
         from: 'collections',
@@ -26,7 +27,7 @@ export async function getStaticPaths() {
         pid: '$pid',
       },
     },
-  ]);
+  ]).toArray();
 
   const paths = params.map((param) => ({
     params: param,
@@ -39,13 +40,17 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const collection = await findOne('collections', {
-    filter: { cid: params.cid },
-  });
+  const client = await clientPromise;
+  const collection = await client.db().collection('collections').findOne(
+    { cid: params.cid }
+  )
+  if (collection === null) {
+    return;
+  }
 
-  const problem = await findOne('problems', {
-    filter: { collection_id: { '$oid': collection._id }, pid: params.pid }
-  });
+  const problem = await client.db().collection('problems').findOne(
+    { collection_id: { '$oid': collection._id }, pid: params.pid }
+  )
 
   return {
     props: {

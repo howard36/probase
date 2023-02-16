@@ -4,7 +4,7 @@ import type { JWT } from "next-auth/jwt";
 import type { User, Account, Profile, Session } from "next-auth";
 import type { AdapterUser } from "next-auth/adapters";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
-import clientPromise from "../../../utils/mongodb2"
+import clientPromise from "@/utils/mongodb"
 
 interface jwtCallbackParams {
   token: JWT;

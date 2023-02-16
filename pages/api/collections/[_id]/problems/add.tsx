@@ -1,4 +1,4 @@
-import { findOne, insertOne } from '@/utils/mongodb';
+import clientPromise from '@/utils/mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 // TODO: add permissions for API
@@ -10,10 +10,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { _id } = req.query;
   const { pid, title, subject, statement, answer, solution } = req.body;
-
-  const { cid } = await findOne('collections', {
-    filter: { _id: { $oid: _id } }
-  })
 
   // TODO: assign PID based on existing problems
   // TODO: PID should be given as input, and calculated by calling function
@@ -28,8 +24,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     collection_id: { $oid: _id },
   };
 
+  const client = await clientPromise;
   // TODO: handle insertOne error response
-  const inserted_id = await insertOne("problems", { document: problem });
+  const inserted_id = await client.db().collection('problems').insertOne(problem);
 
   if (inserted_id) {
     res.status(201).json({inserted_id});

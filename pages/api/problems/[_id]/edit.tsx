@@ -1,4 +1,4 @@
-import { updateOne } from '@/utils/mongodb';
+import clientPromise from '@/utils/mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 // TODO: add permissions for API
@@ -12,10 +12,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { title, subject, statement, answer, solution } = req.body;
 
-  // TODO: handle updateOne error response
-  updateOne('problems', {
-    "filter": { _id: { $oid: _id } },
-    "update": {
+  const client = await clientPromise;
+  await client.db().collection('problems').updateOne(
+    { _id: { $oid: _id } },
+    {
       "$set": {
         title,
         subject,
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         solutions: [solution], // TODO: multiple solutions
       }
     }
-  })
+  )
 
   res.status(200).json({'msg': 'updated'});
 }
