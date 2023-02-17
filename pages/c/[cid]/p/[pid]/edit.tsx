@@ -49,20 +49,20 @@ export async function getStaticProps({ params }) {
   }
 
   const problem = await client.db().collection('problems').findOne(
-    { collection_id: { '$oid': collection._id }, pid: params.pid }
+    { collection_id: collection._id, pid: params.pid }
   )
 
   return {
     props: {
-      collection,
-      problem,
+      collection: JSON.parse(JSON.stringify(collection)),
+      problem: JSON.parse(JSON.stringify(problem)),
     },
   };
 }
 
 export default function ProblemEdit({ collection, problem }) {
   const session = useSession();
-  console.log("session = ", session, "type = ", typeof(session));
+  console.log({problem})
 
   const subjects = [
     "Algebra",
@@ -72,6 +72,7 @@ export default function ProblemEdit({ collection, problem }) {
   ];
 
   // TODO: change indigo accent color
+  // TODO: second Head causes a warning
   return (
     <Sidebar>
       <Head>

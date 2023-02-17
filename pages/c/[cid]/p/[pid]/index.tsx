@@ -47,13 +47,13 @@ export async function getStaticProps({ params }) {
   }
 
   const problem = await client.db().collection('problems').findOne(
-    { collection_id: { '$oid': collection._id }, pid: params.pid }
+    { collection_id: collection._id, pid: params.pid }
   )
 
   return {
     props: {
-      collection,
-      problem,
+      collection: JSON.parse(JSON.stringify(collection)),
+      problem: JSON.parse(JSON.stringify(problem)),
     },
   };
 }

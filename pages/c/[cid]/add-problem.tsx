@@ -43,7 +43,7 @@ export async function getStaticProps({ params }: Context): Promise<{props: Props
   // TODO: filter only needed fields of collection
 
   const problems = await client.db().collection('problems').find(
-    { collection_id: { $oid: collection._id } },
+    { collection_id: collection._id },
     {
       projection: {
         'pid': 1,
@@ -59,7 +59,7 @@ export async function getStaticProps({ params }: Context): Promise<{props: Props
 
   return {
     props: {
-      collection,
+      collection: JSON.parse(JSON.stringify(collection)),
     },
   };
 }
@@ -74,7 +74,7 @@ export default function Collection({ collection }: Props) {
       <Head>
         <title>{collection.name} - New Problem</title>
       </Head>
-      <ProblemForm collection={collection} problem={null}/>
+      <ProblemForm collection={collection}/>
     </Sidebar>
   );
 }

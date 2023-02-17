@@ -14,7 +14,8 @@ export default function ProblemForm({ collection, problem }) {
   const [subject, setSubject] = useState(problem?.subject ?? "");
   const [statement, setStatement] = useState(problem?.statement ?? "");
   const [answer, setAnswer] = useState(problem?.answer ?? "");
-  const [solution, setSolution] = useState(problem?.solution ?? "");
+  const [solution, setSolution] = useState(problem?.solutions[0] ?? "");
+  console.log({problem, title, subject, statement, answer, solution})
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +23,7 @@ export default function ProblemForm({ collection, problem }) {
     if (problem === undefined) {
       // add new problem
       const url = `/api/collections/${collection._id}/problems/add`;
-      const pid = 'N3';
+      const pid = 'N4';
 
       const response = await fetch(url, {
         method: 'POST',
@@ -41,6 +42,7 @@ export default function ProblemForm({ collection, problem }) {
       if (response.status === 201) {
         router.push(`/c/${collection.cid}/p/${pid}`)
       } else {
+        // TODO: retry with different PID
         console.error("inserting failed!");
       }
     } else {
