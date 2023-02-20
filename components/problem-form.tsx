@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import {useState} from 'react';
+import { useState } from 'react';
 
 const subjects = [
   "Algebra",
@@ -23,7 +23,7 @@ export default function ProblemForm({ collection, problem }) {
     if (problem === undefined) {
       // add new problem
       const url = `/api/collections/${collection._id}/problems/add`;
-      const pid = 'A10';
+      const pid = 'A12';
 
       const response = await fetch(url, {
         method: 'POST',
@@ -40,8 +40,7 @@ export default function ProblemForm({ collection, problem }) {
         })
       });
       if (response.status === 201) {
-        console.log("Good!")
-        // router.push(`/c/${collection.cid}/p/${pid}`)
+        router.push(`/c/${collection.cid}/p/${pid}`)
       } else {
         // TODO: retry with different PID
         console.error("inserting failed!");
@@ -66,8 +65,7 @@ export default function ProblemForm({ collection, problem }) {
         })
       });
       if (response.status === 200) {
-        console.log("Good!!!")
-        // router.push(`/c/${collection.cid}/p/${pid}`)
+        router.push(`/c/${collection.cid}/p/${pid}`)
       } else {
         console.error("updating failed!");
       }

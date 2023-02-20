@@ -39,26 +39,33 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const client = await clientPromise;
-  const collection = await client.db().collection('collections').findOne(
+  const db = client.db();
+
+  const collection = await db.collection('collections').findOne(
     { cid: params.cid }
-  )
+  );
   if (collection === null) {
     return;
   }
 
-  const problem = await client.db().collection('problems').findOne(
+  const problem = await db.collection('problems').findOne(
     { collection_id: collection._id, pid: params.pid }
-  )
+  );
+  const authors = await db.collection('authors').find(
+    { _id: { $in: problem?.authors } },
+  ).toArray();
 
   return {
     props: {
       collection: JSON.parse(JSON.stringify(collection)),
       problem: JSON.parse(JSON.stringify(problem)),
+      authors: JSON.parse(JSON.stringify(authors)),
     },
   };
 }
 
-export default function ProblemDetails({ collection, problem }) {
+export default function ProblemDetails({ collection, problem, authors }) {
+  // console.log({authors});
   return (
     <Sidebar>
       <Head>
@@ -67,6 +74,7 @@ export default function ProblemDetails({ collection, problem }) {
       <div className="p-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
         <p className="mb-4"><Latex>{problem.statement}</Latex></p>
+        <p className="italic mb-4">Proposed by {authors[0].name}</p>
         <p><Latex>{`Answer: ${problem.answer}`}</Latex></p>
         <p><Latex>{`Solution: ${problem.solutions[0]}`}</Latex></p>
       </div>

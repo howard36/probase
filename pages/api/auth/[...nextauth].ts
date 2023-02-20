@@ -1,10 +1,10 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import type { JWT } from "next-auth/jwt";
-import type { User, Account, Profile, Session } from "next-auth";
+import type { User, Account, Profile, Session, NextAuthOptions } from "next-auth";
 import type { AdapterUser } from "next-auth/adapters";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
-import clientPromise from "@/utils/mongodb"
+import clientPromise from "@/utils/mongodb";
 import { ObjectId } from 'mongodb';
 
 interface jwtCallbackParams {
@@ -82,7 +82,7 @@ async function refreshAccessToken(token: JWT) {
 }
 
 // TODO: https://next-auth.js.org/tutorials/refresh-token-rotation
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
   // Configure one or more authentication providers
   providers: [

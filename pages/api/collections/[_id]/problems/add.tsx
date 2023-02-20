@@ -1,7 +1,7 @@
 import clientPromise from '@/utils/mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ObjectId } from 'mongodb';
-import getServerSession from 'next-auth/next';
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../auth/[...nextauth]';
 
 // TODO: add permissions for API
@@ -11,17 +11,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  console.log(1)
   // TODO: fix missing API route!
   const session = await getServerSession(req, res, authOptions);
-  console.log(1.5)
-  console.log(session);
   if (!session) {
     res.status(401);
     return;
   }
 
-  console.log(2)
   // TODO: check if user is allowed to add problem
   const _id = req.query._id as string;
   const { pid, title, subject, statement, answer, solution } = req.body;
