@@ -5,6 +5,7 @@ import type { User, Account, Profile, Session } from "next-auth";
 import type { AdapterUser } from "next-auth/adapters";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
 import clientPromise from "@/utils/mongodb"
+import { ObjectId } from 'mongodb';
 
 interface jwtCallbackParams {
   token: JWT;
@@ -38,7 +39,7 @@ async function refreshAccessToken(token: JWT) {
     console.error("called refreshAccessToken without a refreshToken");
     return {
       ...token,
-      error: "RefreshAccessTokenError1",
+      error: "RefreshAccessTokenError",
     };
   }
   try {
@@ -75,7 +76,7 @@ async function refreshAccessToken(token: JWT) {
 
     return {
       ...token,
-      error: "RefreshAccessTokenError2",
+      error: "RefreshAccessTokenError",
     };
   }
 }
@@ -99,7 +100,7 @@ export const authOptions = {
     async jwt({ token, user, account, profile, isNewUser }: jwtCallbackParams) {
       console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
       // Initial sign in
-      if (account && profile) {
+      if (user && account && profile) {
         token.accessToken = account.access_token;
         token.provider = account.provider;
         token.type = account.type;
@@ -112,6 +113,32 @@ export const authOptions = {
           token.accessTokenExpires = account.expires_at;
           token.refreshToken = account.refresh_token;
         }
+
+        // get author_id, or create it if it doesn't exist
+        const client = await clientPromise;
+        const users = client.db().collection('users');
+
+        let user = await users.findOne(
+          { _id: new ObjectId(token.sub) },
+          { projection: { author_id: 1, name: 1, _id: 0 } }
+        );
+        if (user) {
+          if (user.author_id) {
+            token.author_id = user.author_id;
+          } else {
+            const result = await client.db().collection('authors').insertOne({
+              name: user.name
+            });
+            users.updateOne(
+              { _id: new ObjectId(token.sub) },
+              { $set: { author_id: result.insertedId } }
+            );
+            token.author_id = result.insertedId.toHexString();
+          }
+        } else {
+          console.error(`Could not find user with id = ${token.sub}`);
+        }
+
         return token;
       }
 
@@ -128,13 +155,15 @@ export const authOptions = {
       // Access token has expired, try to update it
       return refreshAccessToken(token);
     },
-    async session({ session, user, token }: sessionCallbackParams) {
+    async session({ session, token }: sessionCallbackParams) {
       // Send properties to the client, like an access_token and user id from a provider.
       session.accessToken = token.accessToken;
       session.emailVerified = token.emailVerified;
       session.givenName = token.givenName;
       session.familyName = token.familyName;
       session.locale = token.locale;
+      session.user_id = token.sub;
+      session.author_id = token.author_id;
       return session;
     },
   },

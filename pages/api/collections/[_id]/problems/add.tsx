@@ -1,9 +1,8 @@
 import clientPromise from '@/utils/mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next'
-// import getServerSession from 'next-auth/next';
-// import { authOptions } from '../../../auth/[...nextauth]';
 import { ObjectId } from 'mongodb';
-import { getToken } from "next-auth/jwt"
+import getServerSession from 'next-auth/next';
+import { authOptions } from '../../../auth/[...nextauth]';
 
 // TODO: add permissions for API
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -12,16 +11,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  // const session = await getServerSession(req, res, authOptions);
-  const token = await getToken({ req })
-  if (!token) {
-    res.status(401).end();
+  console.log(1)
+  // TODO: fix missing API route!
+  const session = await getServerSession(req, res, authOptions);
+  console.log(1.5)
+  console.log(session);
+  if (!session) {
+    res.status(401);
     return;
   }
-  console.log({token});
 
-  const _id = req.query._id as string;
+  console.log(2)
   // TODO: check if user is allowed to add problem
+  const _id = req.query._id as string;
   const { pid, title, subject, statement, answer, solution } = req.body;
 
   // TODO: assign PID based on existing problems
@@ -33,13 +35,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     statement,
     answer,
     solutions: [solution], // TODO: multiple solutions
-    authors: [], // TODO: authors
+    authors: [new ObjectId(session.author_id)], // TODO: multiple authors
     collection_id: new ObjectId(_id),
   };
 
-  const client = await clientPromise;
   // TODO: handle insertOne error response
-  const inserted_id = await client.db().collection('problems').insertOne(problem);
+  const client = await clientPromise;
+  const result = await client.db().collection('problems').insertOne(problem);
+  const inserted_id = result.insertedId.toHexString();
 
   if (inserted_id) {
     res.status(201).json({inserted_id});

@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await client.db().collection('problems').updateOne(
     { _id: { $oid: _id } },
     {
-      "$set": {
+      $set: {
         title,
         subject,
         statement,
