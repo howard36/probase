@@ -2,8 +2,6 @@ import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
 import ProblemForm from '@/components/problem-form';
 import clientPromise from '@/utils/mongodb';
-import { useSession } from 'next-auth/react';
-
 
 // TODO
 export async function getStaticPaths() {
@@ -61,9 +59,6 @@ export async function getStaticProps({ params }) {
 }
 
 export default function ProblemEdit({ collection, problem }) {
-  const session = useSession();
-  console.log({problem})
-
   const subjects = [
     "Algebra",
     "Combinatorics",
@@ -78,9 +73,7 @@ export default function ProblemEdit({ collection, problem }) {
       <Head>
         <title>{collection.name} - New Problem</title>
       </Head>
-      <form action={`/api/problems/${problem._id}/edit`} method="post">
-        <ProblemForm collection={collection} problem={problem}/>
-      </form>
+      <ProblemForm collection={collection} problem={problem}/>
     </Sidebar>
   );
 }

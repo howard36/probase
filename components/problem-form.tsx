@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 const subjects = [
   "Algebra",
@@ -15,7 +16,7 @@ export default function ProblemForm({ collection, problem }) {
   const [statement, setStatement] = useState(problem?.statement ?? "");
   const [answer, setAnswer] = useState(problem?.answer ?? "");
   const [solution, setSolution] = useState(problem?.solutions[0] ?? "");
-  // console.log({problem, title, subject, statement, answer, solution})
+  const { data: session } = useSession();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,6 +25,13 @@ export default function ProblemForm({ collection, problem }) {
       // add new problem
       const url = `/api/collections/${collection._id}/problems/add`;
       const pid = 'A12';
+      let solutions = [];
+      if (solution) {
+        solutions.push({
+          text: solution,
+          authors: [{id: session?.author_id}]
+        });
+      }
 
       const response = await fetch(url, {
         method: 'POST',
@@ -35,8 +43,10 @@ export default function ProblemForm({ collection, problem }) {
           title,
           subject,
           statement,
+          // TODO: add submitter
+          authors: [session?.author_id], // TODO: multiple authors
           answer,
-          solution,
+          solutions,
         })
       });
       if (response.status === 201) {
@@ -72,6 +82,7 @@ export default function ProblemForm({ collection, problem }) {
     }
   };
   
+  // TODO: add author picker to form
   return (
     <div className="container px-6 py-12 mx-auto flex">
       <div className="bg-white rounded-lg p-8 flex flex-col w-full relative z-10 shadow-md">

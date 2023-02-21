@@ -65,7 +65,18 @@ export async function getStaticProps({ params }) {
 }
 
 export default function ProblemDetails({ collection, problem, authors }) {
-  // console.log({authors});
+  let proposed_by, answer, solution;
+  if (authors.length > 0) {
+    proposed_by = <p className="italic mb-4">Proposed by {authors[0].name}</p>;
+  }
+  if (problem.answer) {
+    answer = <p><Latex>{`Answer: ${problem.answer}`}</Latex></p>;
+  }
+  if (problem.solutions.length > 0) {
+    const sol = problem.solutions[0];
+    solution = <p><Latex>{`Solution (by ${sol.authors[0].name}): ${sol.text}`}</Latex></p>;
+  }
+
   return (
     <Sidebar>
       <Head>
@@ -74,9 +85,9 @@ export default function ProblemDetails({ collection, problem, authors }) {
       <div className="p-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
         <p className="mb-4"><Latex>{problem.statement}</Latex></p>
-        <p className="italic mb-4">Proposed by {authors[0].name}</p>
-        <p><Latex>{`Answer: ${problem.answer}`}</Latex></p>
-        <p><Latex>{`Solution: ${problem.solutions[0]}`}</Latex></p>
+        {proposed_by}
+        {answer}
+        {solution}
       </div>
     </Sidebar>
   );

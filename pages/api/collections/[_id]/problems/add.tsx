@@ -20,7 +20,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // TODO: check if user is allowed to add problem
   const _id = req.query._id as string;
-  const { pid, title, subject, statement, answer, solution } = req.body;
+  const { pid, title, subject, statement, authors, answer, solutions } = req.body;
+  solutions.forEach(sol => {
+    sol.authors = sol.authors.map(id => new ObjectId(id));
+  });
 
   // TODO: assign PID based on existing problems
   // TODO: PID should be given as input, and calculated by calling function
@@ -29,9 +32,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     title,
     subject,
     statement,
+    authors: authors.map(id => new ObjectId(id)),
     answer,
-    solutions: [solution], // TODO: multiple solutions
-    authors: [new ObjectId(session.author_id)], // TODO: multiple authors
+    solutions,
     collection_id: new ObjectId(_id),
   };
 
