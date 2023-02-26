@@ -48,26 +48,41 @@ export async function getStaticProps({ params }) {
     return;
   }
 
-  const problem = await db.collection('problems').findOne(
-    { collection_id: collection._id, pid: params.pid }
-  );
-  const authors = await db.collection('authors').find(
-    { _id: { $in: problem?.authors } },
-  ).toArray();
+  const result = await db.collection('problems').aggregate([
+    {
+      $match: { collection_id: collection._id, pid: params.pid }
+    },
+    {
+      $lookup: {
+        from: 'authors',
+        localField: 'authors',
+        foreignField: '_id',
+        as: 'author_ids',
+      }
+    },
+  ]).toArray();
+  const problem = result[0];
+
+  for (const sol of problem.solutions) {
+    const authors = await db.collection('authors').find(
+      { _id: { $in: sol.authors } }
+    ).toArray();
+    sol.authors = authors;
+  }
 
   return {
     props: {
       collection: JSON.parse(JSON.stringify(collection)),
       problem: JSON.parse(JSON.stringify(problem)),
-      authors: JSON.parse(JSON.stringify(authors)),
     },
   };
 }
 
-export default function ProblemDetails({ collection, problem, authors }) {
+export default function ProblemDetails({ collection, problem }) {
   let proposed_by, answer, solution;
-  if (authors.length > 0) {
-    proposed_by = <p className="italic mb-4">Proposed by {authors[0].name}</p>;
+  const sol = problem.solutions[0];
+  if (sol.authors.length > 0) {
+    proposed_by = <p className="italic mb-4">Proposed by {sol.authors[0].name}</p>;
   }
   if (problem.answer) {
     answer = <p><Latex>{`Answer: ${problem.answer}`}</Latex></p>;
