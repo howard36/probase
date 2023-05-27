@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
 import Latex from 'react-latex-next';
 import clientPromise from '@/utils/mongodb';
+import Problem from '@/types/problem';
 
 // TODO
 export async function getStaticPaths() {
@@ -78,7 +79,12 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function ProblemDetails({ collection, problem }) {
+interface ProblemDetailsProps {
+  collection: any; // TODO
+  problem: Problem;
+}
+
+export default function ProblemDetails({ collection, problem }: ProblemDetailsProps) {
   let proposed_by, answer, solution;
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
