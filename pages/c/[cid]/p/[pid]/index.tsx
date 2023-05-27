@@ -3,9 +3,16 @@ import Sidebar from '@/components/sidebar';
 import Latex from 'react-latex-next';
 import clientPromise from '@/utils/mongodb';
 import Problem from '@/types/problem';
+import Collection from '@/types/collection';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import { ParsedUrlQuery } from 'querystring';
 
-// TODO
-export async function getStaticPaths() {
+interface Params extends ParsedUrlQuery {
+  cid: string;
+  pid: string;
+}
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const client = await clientPromise;
   const params = await client.db().collection('problems').aggregate([
     {
@@ -34,11 +41,33 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: 'blocking',
   };
+};
+
+interface PropsProblem {
+  _id: string;
+  author_ids: string[];
 }
 
-export async function getStaticProps({ params }) {
+interface PropsCollection {
+  _id: string;
+  cid: string;
+}
+
+interface Props {
+  problem: PropsProblem;
+  collection: PropsCollection;
+}
+
+// TODO: consider changing to a more type-safe database to make this easier
+export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) => {
+  if (!params) {
+    return {
+      notFound: true,
+    };
+  }
+
   const client = await clientPromise;
   const db = client.db();
 
@@ -46,7 +75,9 @@ export async function getStaticProps({ params }) {
     { cid: params.cid }
   );
   if (collection === null) {
-    return;
+    return {
+      notFound: true,
+    };
   }
 
   const result = await db.collection('problems').aggregate([
@@ -62,25 +93,19 @@ export async function getStaticProps({ params }) {
       }
     },
   ]).toArray();
-  const problem = result[0];
-
-  for (const sol of problem.solutions) {
-    const authors = await db.collection('authors').find(
-      { _id: { $in: sol.authors } }
-    ).toArray();
-    sol.authors = authors;
-  }
+  const problem = result[0] as PropsProblem;
 
   return {
     props: {
-      collection: JSON.parse(JSON.stringify(collection)),
-      problem: JSON.parse(JSON.stringify(problem)),
+      problem,
+      collection,
     },
+    revalidate: 1,
   };
-}
+};
 
 interface ProblemDetailsProps {
-  collection: any; // TODO
+  collection: Collection;
   problem: Problem;
 }
 

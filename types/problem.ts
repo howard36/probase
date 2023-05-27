@@ -16,6 +16,7 @@ interface Problem {
       // summary?: string;
       authors: {
         author_id: string;
+        name: string; // name comes from a separate query though, to reduce duplication
         // display_name?: string;
         // is_anonymous: boolean;
       }[];
