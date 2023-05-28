@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Subject {
+  Algebra
+  Combinatorics
+  Geometry
+  NumberTheory
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  authors   Author[]
+  problems  Problem[]
+}
+
+model Author {
+  id          Int         @id @default(autoincrement())
+  displayName String
+  country     String?
+  user        User?       @relation(fields: [userId], references: [id])
+  userId      Int?
+  collection  Collection  @relation(fields: [collectionId], references: [id])
+  collectionId Int
+  problems    Problem[]
+  solutions   Solution[]
+}
+
+model Problem {
+  id         Int        @id @default(autoincrement())
+  collection Collection @relation(fields: [collectionId], references: [id])
+  collectionId Int
+  pid        String     @unique
+  title      String
+  statement  String
+  submitter  User       @relation(fields: [submitterId], references: [id])
+  submitterId Int
+  authors    Author[]  
+  answer     String
+  solutions  Solution[]
+  subject    Subject
+  likes      Int
+  difficulty Int
+  source     String?
+  isAnonymous Boolean
+}
+
+model Solution {
+  id         Int       @id @default(autoincrement())
+  text       String
+  summary    String?
+  problem    Problem   @relation(fields: [problemId], references: [id])
+  problemId  Int
+  authors    Author[]  
+}
+
+model Collection {
+  id       Int       @id @default(autoincrement())
+  name     String
+  cid      String    @unique
+  problems Problem[]
+  authors  Author[]
+  showAuthors Boolean
+}
