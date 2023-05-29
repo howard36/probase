@@ -1,13 +1,12 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 enum Subject {
@@ -18,58 +17,97 @@ enum Subject {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  name      String?
-  authors   Author[]
-  problems  Problem[]
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  authors       Author[]
+  problems      Problem[]
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 model Author {
-  id          Int         @id @default(autoincrement())
-  displayName String
-  country     String?
-  user        User?       @relation(fields: [userId], references: [id])
-  userId      Int?
-  collection  Collection  @relation(fields: [collectionId], references: [id])
+  id           Int        @id @default(autoincrement())
+  displayName  String
+  country      String?
+  user         User?      @relation(fields: [userId], references: [id])
+  userId       String?
+  collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
-  problems    Problem[]
-  solutions   Solution[]
+  problems     Problem[]
+  solutions    Solution[]
 }
 
 model Problem {
-  id         Int        @id @default(autoincrement())
-  collection Collection @relation(fields: [collectionId], references: [id])
+  id           Int        @id @default(autoincrement())
+  collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
-  pid        String     @unique
-  title      String
-  statement  String
-  submitter  User       @relation(fields: [submitterId], references: [id])
-  submitterId Int
-  authors    Author[]  
-  answer     String
-  solutions  Solution[]
-  subject    Subject
-  likes      Int
-  difficulty Int
-  source     String?
-  isAnonymous Boolean
+  pid          String     @unique
+  title        String
+  statement    String
+  submitter    User       @relation(fields: [submitterId], references: [id])
+  submitterId  String
+  authors      Author[]  
+  answer       String
+  solutions    Solution[]
+  subject      Subject
+  likes        Int
+  difficulty   Int
+  source       String?
+  isAnonymous  Boolean
 }
 
 model Solution {
-  id         Int       @id @default(autoincrement())
-  text       String
-  summary    String?
-  problem    Problem   @relation(fields: [problemId], references: [id])
-  problemId  Int
-  authors    Author[]  
+  id        Int      @id @default(autoincrement())
+  text      String
+  summary   String?
+  problem   Problem  @relation(fields: [problemId], references: [id])
+  problemId Int
+  authors   Author[]
 }
 
 model Collection {
-  id       Int       @id @default(autoincrement())
-  name     String
-  cid      String    @unique
-  problems Problem[]
-  authors  Author[]
+  id          Int       @id @default(autoincrement())
+  name        String
+  cid         String    @unique
+  problems    Problem[]
+  authors     Author[]
   showAuthors Boolean
 }
