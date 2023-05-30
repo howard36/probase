@@ -3,9 +3,13 @@ import GoogleProvider from "next-auth/providers/google";
 import type { JWT } from "next-auth/jwt";
 import type { User, Account, Profile, Session, NextAuthOptions } from "next-auth";
 import type { AdapterUser } from "next-auth/adapters";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
-import clientPromise from "@/utils/mongodb";
-import { ObjectId } from 'mongodb';
+// import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
+// import clientPromise from "@/utils/mongodb";
+// import { ObjectId } from 'mongodb';
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 interface jwtCallbackParams {
   token: JWT;
@@ -83,7 +87,8 @@ async function refreshAccessToken(token: JWT) {
 
 // TODO: https://next-auth.js.org/tutorials/refresh-token-rotation
 export const authOptions: NextAuthOptions = {
-  adapter: MongoDBAdapter(clientPromise),
+  // adapter: MongoDBAdapter(clientPromise),
+  adapter: PrismaAdapter(prisma),
   // Configure one or more authentication providers
   providers: [
     GoogleProvider({
@@ -115,29 +120,29 @@ export const authOptions: NextAuthOptions = {
         }
 
         // get author_id, or create it if it doesn't exist
-        const client = await clientPromise;
-        const users = client.db().collection('users');
+        // const client = await clientPromise;
+        // const users = client.db().collection('users');
 
-        let user = await users.findOne(
-          { _id: new ObjectId(token.sub) },
-          { projection: { author_id: 1, name: 1, _id: 0 } }
-        );
-        if (user) {
-          if (user.author_id) {
-            token.author_id = user.author_id;
-          } else {
-            const result = await client.db().collection('authors').insertOne({
-              name: user.name
-            });
-            users.updateOne(
-              { _id: new ObjectId(token.sub) },
-              { $set: { author_id: result.insertedId } }
-            );
-            token.author_id = result.insertedId.toHexString();
-          }
-        } else {
-          console.error(`Could not find user with id = ${token.sub}`);
-        }
+        // let user = await users.findOne(
+        //   { _id: new ObjectId(token.sub) },
+        //   { projection: { author_id: 1, name: 1, _id: 0 } }
+        // );
+        // if (user) {
+        //   if (user.author_id) {
+        //     token.author_id = user.author_id;
+        //   } else {
+        //     const result = await client.db().collection('authors').insertOne({
+        //       name: user.name
+        //     });
+        //     users.updateOne(
+        //       { _id: new ObjectId(token.sub) },
+        //       { $set: { author_id: result.insertedId } }
+        //     );
+        //     token.author_id = result.insertedId.toHexString();
+        //   }
+        // } else {
+        //   console.error(`Could not find user with id = ${token.sub}`);
+        // }
 
         return token;
       }
