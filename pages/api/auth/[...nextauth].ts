@@ -3,13 +3,8 @@ import GoogleProvider from "next-auth/providers/google";
 import type { JWT } from "next-auth/jwt";
 import type { User, Account, Profile, Session, NextAuthOptions } from "next-auth";
 import type { AdapterUser } from "next-auth/adapters";
-// import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
-// import clientPromise from "@/utils/mongodb";
-// import { ObjectId } from 'mongodb';
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from '@/utils/prisma';
 
 interface jwtCallbackParams {
   token: JWT;
