@@ -9,13 +9,14 @@ const subjects = [
   "Number Theory",
 ];
 
+// TODO: types?
 export default function ProblemForm({ collection, problem }) {
   const router = useRouter();
   const [title, setTitle] = useState(problem?.title ?? "");
   const [subject, setSubject] = useState(problem?.subject ?? "");
   const [statement, setStatement] = useState(problem?.statement ?? "");
   const [answer, setAnswer] = useState(problem?.answer ?? "");
-  const [solution, setSolution] = useState(problem?.solutions[0] ?? "");
+  const [solution, setSolution] = useState(problem?.solutions[0].text ?? "");
   const { data: session } = useSession();
 
   const handleSubmit = async (e) => {

@@ -1,70 +1,118 @@
 import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
 import ProblemForm from '@/components/problem-form';
-import clientPromise from '@/utils/mongodb';
+import prisma from '@/utils/prisma';
+import { Problem, Collection, Solution, Author } from '@prisma/client';
 
-// TODO
+interface Params {
+  cid: string;
+  pid: string;
+}
+
+interface Path {
+  params: Params;
+}
+
 export async function getStaticPaths() {
-  const client = await clientPromise;
-  const params = await client.db().collection('problems').aggregate([
-    {
-      $lookup: {
-        from: 'collections',
-        localField: 'collection_id',
-        foreignField: '_id',
-        as: 'collection',
+  const all_problems = await prisma.problem.findMany({
+    select: {
+      collection: {
+        select: {
+          cid: true,
+        }
       },
-    },
-    {
-      $unwind: '$collection',
-    },
-    {
-      $project: {
-        _id: 0,
-        cid: '$collection.cid',
-        pid: '$pid',
-      },
-    },
-  ]).toArray();
+      pid: true,
+    }
+  });
 
-  const paths = params.map((param) => ({
-    params: param,
+  const paths: Path[] = all_problems.map((problem) => ({
+    params: {
+      cid: problem.collection.cid,
+      pid: problem.pid,
+    },
   }));
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: 'blocking',
   };
+};
+
+interface SolutionProps extends Solution {
+  authors: Pick<Author, 'displayName'>[];
 }
 
-export async function getStaticProps({ params }) {
-  const client = await clientPromise;
-  const collection = await client.db().collection('collections').findOne(
-    { cid: params.cid }
-  )
-  if (collection === null) {
-    return;
+interface ProblemProps extends Problem {
+  solutions: SolutionProps[];
+}
+
+interface Props {
+  collection: Collection;
+  problem: ProblemProps;
+}
+
+// TODO: handle null params
+export async function getStaticProps({ params }: Path) {
+  if (!params) {
+    return {
+      notFound: true,
+    };
   }
 
-  const problem = await client.db().collection('problems').findOne(
-    { collection_id: collection._id, pid: params.pid }
-  )
+  const collection = await prisma.collection.findUnique({
+    where: { cid: params.cid }
+  });
+
+  if (collection === null) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const problem = await prisma.problem.findUnique({
+    where: {
+      collectionId_pid: {
+        collectionId: collection.id,
+        pid: params.pid,
+      }
+    },
+    include: {
+      solutions: {
+        include: {
+          authors: {
+            select: {
+              displayName: true,
+            }
+          },
+        }
+      }
+    },
+  });
+
+  if (problem === null) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const props: Props = {
+    collection,
+    problem,
+  };
 
   return {
-    props: {
-      collection: JSON.parse(JSON.stringify(collection)),
-      problem: JSON.parse(JSON.stringify(problem)),
-    },
+    props
   };
 }
 
-export default function ProblemEdit({ collection, problem }) {
+export default function ProblemEdit({ collection, problem }: Props) {
   const subjects = [
     "Algebra",
     "Combinatorics",
     "Geometry",
     "Number Theory",
   ];
+  console.log(problem.solutions[0].text)
 
   // TODO: change indigo accent color
   // TODO: second Head causes a warning
