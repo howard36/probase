@@ -79,7 +79,7 @@ model Problem {
   id           Int        @id @default(autoincrement())
   collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
-  pid          String     @unique
+  pid          String
   title        String
   statement    String
   submitter    User       @relation(fields: [submitterId], references: [id])
@@ -92,6 +92,8 @@ model Problem {
   difficulty   Int
   source       String?
   isAnonymous  Boolean
+  
+  @@unique([collectionId, pid])
 }
 
 model Solution {

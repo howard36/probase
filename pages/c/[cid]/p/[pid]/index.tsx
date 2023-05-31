@@ -1,42 +1,35 @@
 import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
 import Latex from 'react-latex-next';
-import clientPromise from '@/utils/mongodb';
-import Problem from '@/types/problem';
-import Collection from '@/types/collection';
-import { GetStaticPaths, GetStaticProps } from 'next';
-import { ParsedUrlQuery } from 'querystring';
+import prisma from '@/utils/prisma';
+import { Problem, Collection, Solution, Author } from '@prisma/client';
 
-interface Params extends ParsedUrlQuery {
+interface Params {
   cid: string;
   pid: string;
 }
 
-export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  const client = await clientPromise;
-  const params = await client.db().collection('problems').aggregate([
-    {
-      $lookup: {
-        from: 'collections',
-        localField: 'collection_id',
-        foreignField: '_id',
-        as: 'collection',
-      },
-    },
-    {
-      $unwind: '$collection',
-    },
-    {
-      $project: {
-        _id: 0,
-        cid: '$collection.cid',
-        pid: '$pid',
-      },
-    },
-  ]).toArray();
+interface Path {
+  params: Params;
+}
 
-  const paths = params.map((param) => ({
-    params: param,
+export async function getStaticPaths() {
+  const all_problems = await prisma.problem.findMany({
+    select: {
+      collection: {
+        select: {
+          cid: true,
+        }
+      },
+      pid: true,
+    }
+  });
+
+  const paths: Path[] = all_problems.map((problem) => ({
+    params: {
+      cid: problem.collection.cid,
+      pid: problem.pid,
+    },
   }));
 
   return {
@@ -45,82 +38,86 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
   };
 };
 
-interface PropsProblem {
-  _id: string;
-  author_ids: string[];
+interface SolutionProps extends Solution {
+  authors: Pick<Author, 'displayName'>[];
 }
 
-interface PropsCollection {
-  _id: string;
-  cid: string;
+interface ProblemProps extends Problem {
+  solutions: SolutionProps[];
 }
 
 interface Props {
-  problem: PropsProblem;
-  collection: PropsCollection;
+  collection: Collection;
+  problem: ProblemProps;
 }
 
-// TODO: consider changing to a more type-safe database to make this easier
-export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) => {
+// TODO: params can be null, but the type does not reflect that
+export async function getStaticProps({ params }: Path) {
   if (!params) {
     return {
       notFound: true,
     };
   }
 
-  const client = await clientPromise;
-  const db = client.db();
+  const collection = await prisma.collection.findUnique({
+    where: { cid: params.cid }
+  });
 
-  const collection = await db.collection('collections').findOne(
-    { cid: params.cid }
-  );
   if (collection === null) {
     return {
       notFound: true,
     };
   }
 
-  const result = await db.collection('problems').aggregate([
-    {
-      $match: { collection_id: collection._id, pid: params.pid }
-    },
-    {
-      $lookup: {
-        from: 'authors',
-        localField: 'authors',
-        foreignField: '_id',
-        as: 'author_ids',
+  const problem = await prisma.problem.findUnique({
+    where: {
+      collectionId_pid: {
+        collectionId: collection.id,
+        pid: params.pid,
       }
     },
-  ]).toArray();
-  const problem = result[0] as PropsProblem;
+    include: {
+      solutions: {
+        include: {
+          authors: {
+            select: {
+              displayName: true,
+            }
+          },
+        }
+      }
+    },
+  });
+
+  if (problem === null) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const props: Props = {
+    problem,
+    collection,
+  }
 
   return {
-    props: {
-      problem,
-      collection,
-    },
+    props,
     revalidate: 1,
   };
 };
 
-interface ProblemDetailsProps {
-  collection: Collection;
-  problem: Problem;
-}
-
-export default function ProblemDetails({ collection, problem }: ProblemDetailsProps) {
+export default function ProblemDetails({ collection, problem }: Props) {
   let proposed_by, answer, solution;
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
-    proposed_by = <p className="italic mb-4">Proposed by {sol.authors[0].name}</p>;
+    proposed_by = <p className="italic mb-4">Proposed by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
     answer = <p><Latex>{`Answer: ${problem.answer}`}</Latex></p>;
   }
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
-    solution = <p><Latex>{`Solution (by ${sol.authors[0].name}): ${sol.text}`}</Latex></p>;
+    solution = <p><Latex>{`Solution (by ${sol.authors[0].displayName}): ${sol.text}`}</Latex></p>;
   }
 
   return (
