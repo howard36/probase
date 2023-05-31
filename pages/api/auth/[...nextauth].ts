@@ -101,6 +101,7 @@ export const authOptions: NextAuthOptions = {
       console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
       // Initial sign in
       if (user && account && profile) {
+        console.log("NEW USER!")
         token.accessToken = account.access_token;
         token.provider = account.provider;
         token.type = account.type;
@@ -137,6 +138,24 @@ export const authOptions: NextAuthOptions = {
         //   }
         // } else {
         //   console.error(`Could not find user with id = ${token.sub}`);
+        // }
+
+        // Prisma
+        // let user = await prisma.user.findUnique({
+        //   where: { id: token.sub },
+        //   select: {
+        //     authors: {
+        //       select: {
+        //         id: true,
+        //       }
+        //     },
+        //     name: true,
+        //   }
+        // });
+        // if (user) {
+        //   if (user.authors[0].id) {
+        //     token.author_id = user.authors[0].id;
+        //   }
         // }
 
         return token;

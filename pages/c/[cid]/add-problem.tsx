@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
 import ProblemForm from '@/components/problem-form';
-import clientPromise from '@/utils/mongodb';
 import { useSession } from 'next-auth/react';
+import prisma from '@/utils/prisma';
 
 interface Context {
   readonly params: {
@@ -15,11 +15,9 @@ interface Props {
 }
 
 export async function getStaticPaths() {
-  const client = await clientPromise;
-  const collections = await client.db().collection('collections').find(
-    {},
-    { projection: { cid: 1, _id: 0 } }
-  ).toArray();
+  const collections = await prisma.collection.findMany({
+    select: { cid: true }
+  });
 
   const paths = collections.map((collection) => ({
     params: { cid: collection.cid },
@@ -32,34 +30,30 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: Context): Promise<{props: Props}> {
-  const client = await clientPromise;
-  const collection = await client.db().collection('collections').findOne(
-    { cid: params.cid }
-  );
+  // TODO: select only needed fields of collection
+  const collection = await prisma.collection.findUnique({
+    where: { cid: params.cid }
+  });
 
   if (collection === null) {
     return null; // TODO
   }
-  // TODO: filter only needed fields of collection
 
-  const problems = await client.db().collection('problems').find(
-    { collection_id: collection._id },
-    {
-      projection: {
-        'pid': 1,
-        'title': 1,
-        'statement': 1,
-        'subject': 1,
-        'likes': 1,
-        'difficulty': 1,
-        '_id': 0
-      }
+  const problems = await prisma.problem.findMany({
+    where: { collection },
+    select: {
+      pid: true,
+      title: true,
+      statement: true,
+      subject: true,
+      likes: true,
+      difficulty: true,
     }
-  ).toArray();
+  });
 
   return {
     props: {
-      collection: JSON.parse(JSON.stringify(collection)),
+      collection,
     },
   };
 }
