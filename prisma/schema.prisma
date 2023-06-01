@@ -75,6 +75,7 @@ model Author {
   solutions    Solution[]
 }
 
+// TODO: add default likes = 0
 model Problem {
   id           Int        @id @default(autoincrement())
   collection   Collection @relation(fields: [collectionId], references: [id])

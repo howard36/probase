@@ -18,13 +18,14 @@ export default function ProblemForm({ collection, problem }) {
   const [answer, setAnswer] = useState(problem?.answer ?? "");
   const [solution, setSolution] = useState(problem?.solutions[0].text ?? "");
   const { data: session } = useSession();
+  console.log({session})
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (problem === undefined) {
       // add new problem
-      const url = `/api/collections/${collection._id}/problems/add`;
+      const url = `/api/collections/${collection.id}/problems/add`;
       const pid = 'A12';
       let solutions = [];
       if (solution) {

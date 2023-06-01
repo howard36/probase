@@ -10,10 +10,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // TODO: handle invalid id
-  const id = Number(req.query._id);
+  const id = Number(req.query.id);
 
   const { title, subject, statement, answer, solution } = req.body;
 
+  // TODO: multiple solutions, multiple authors per solution
   await prisma.problem.update({
     where: { id },
     data: {
@@ -24,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       solutions: {
         update: [
           {
-            where: { id: 1 }, // TODO: hardcoded
+            where: { id }, // TODO: hardcoded
             data: { text: solution },
           }
         ]
