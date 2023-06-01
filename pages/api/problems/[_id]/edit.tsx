@@ -1,5 +1,6 @@
-import clientPromise from '@/utils/mongodb';
-import type { NextApiRequest, NextApiResponse } from 'next'
+// import clientPromise from '@/utils/mongodb';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '@/utils/prisma';
 
 // TODO: add permissions for API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -8,23 +9,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  const { _id } = req.query;
+  // TODO: handle invalid id
+  const id = Number(req.query._id);
 
   const { title, subject, statement, answer, solution } = req.body;
 
-  const client = await clientPromise;
-  await client.db().collection('problems').updateOne(
-    { _id: { $oid: _id } },
-    {
-      $set: {
-        title,
-        subject,
-        statement,
-        answer,
-        solutions: [solution], // TODO: multiple solutions
+  await prisma.problem.update({
+    where: { id },
+    data: {
+      title,
+      subject,
+      statement,
+      answer,
+      solutions: {
+        update: [
+          {
+            where: { id: 1 }, // TODO: hardcoded
+            data: { text: solution },
+          }
+        ]
       }
     }
-  )
+  })
 
   res.status(200).json({'msg': 'updated'});
 }

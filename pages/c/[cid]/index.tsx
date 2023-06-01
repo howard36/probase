@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import HomeCard from '@/components/home-card';
 import Sidebar from '@/components/sidebar';
-// import clientPromise from '@/utils/mongodb';
 import { useSession } from 'next-auth/react';
 import prisma from '@/utils/prisma';
 

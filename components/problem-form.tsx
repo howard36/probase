@@ -58,12 +58,12 @@ export default function ProblemForm({ collection, problem }) {
       }
     } else {
       // edit existing problem
-      const url = `/api/problems/${problem._id}/edit`;
+      const url = `/api/problems/${problem.id}/edit`;
       // TODO: change pid if subject changes
       const pid = problem.pid;
 
       const response = await fetch(url, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -78,7 +78,7 @@ export default function ProblemForm({ collection, problem }) {
       if (response.status === 200) {
         router.push(`/c/${collection.cid}/p/${pid}`)
       } else {
-        console.error("updating failed!");
+        console.error(`updating failed! status = ${response.status}`);
       }
     }
   };
