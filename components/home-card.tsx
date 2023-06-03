@@ -16,7 +16,7 @@ const subjectToColor = {
   'Algebra': 5,
   'Combinatorics': 1,
   'Geometry': 2,
-  'Number Theory': 3,
+  'NumberTheory': 3,
 };
 
 export default function HomeCard({ collection, problem }) {
