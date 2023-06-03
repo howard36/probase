@@ -1,10 +1,7 @@
-import clientPromise from '@/utils/mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ObjectId } from 'mongodb';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../auth/[...nextauth]';
 import prisma from '@/utils/prisma';
-import { connect } from 'http2';
 
 // TODO: add permissions for API
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -21,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // TODO: check if user is allowed to add problem
-  const collectionId = Number(req.query._id);
+  const collectionId = Number(req.query.id);
   // TODO: add isAnonymous to api
   const { pid, title, subject, statement, authors, answer, solutions, submitterId } = req.body;
 

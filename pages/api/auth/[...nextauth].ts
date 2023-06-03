@@ -82,7 +82,6 @@ async function refreshAccessToken(token: JWT) {
 
 // TODO: https://next-auth.js.org/tutorials/refresh-token-rotation
 export const authOptions: NextAuthOptions = {
-  // adapter: MongoDBAdapter(clientPromise),
   adapter: PrismaAdapter(prisma),
   // Configure one or more authentication providers
   providers: [
@@ -115,49 +114,6 @@ export const authOptions: NextAuthOptions = {
           token.refreshToken = account.refresh_token;
         }
 
-        // get author_id, or create it if it doesn't exist
-        // const client = await clientPromise;
-        // const users = client.db().collection('users');
-
-        // let user = await users.findOne(
-        //   { _id: new ObjectId(token.sub) },
-        //   { projection: { author_id: 1, name: 1, _id: 0 } }
-        // );
-        // if (user) {
-        //   if (user.author_id) {
-        //     token.author_id = user.author_id;
-        //   } else {
-        //     const result = await client.db().collection('authors').insertOne({
-        //       name: user.name
-        //     });
-        //     users.updateOne(
-        //       { _id: new ObjectId(token.sub) },
-        //       { $set: { author_id: result.insertedId } }
-        //     );
-        //     token.author_id = result.insertedId.toHexString();
-        //   }
-        // } else {
-        //   console.error(`Could not find user with id = ${token.sub}`);
-        // }
-
-        // Prisma
-        let user = await prisma.user.findUnique({
-          where: { id: token.sub },
-          select: {
-            authors: {
-              select: {
-                id: true,
-              }
-            },
-            name: true,
-          }
-        });
-        if (user) {
-          if (user.authors[0].id) {
-            token.author_id = user.authors[0].id;
-          }
-        }
-
         return token;
       }
 
@@ -182,7 +138,6 @@ export const authOptions: NextAuthOptions = {
       session.familyName = token.familyName;
       session.locale = token.locale;
       session.user_id = token.sub;
-      session.author_id = token.author_id;
       return session;
     },
   },
