@@ -141,22 +141,22 @@ export const authOptions: NextAuthOptions = {
         // }
 
         // Prisma
-        // let user = await prisma.user.findUnique({
-        //   where: { id: token.sub },
-        //   select: {
-        //     authors: {
-        //       select: {
-        //         id: true,
-        //       }
-        //     },
-        //     name: true,
-        //   }
-        // });
-        // if (user) {
-        //   if (user.authors[0].id) {
-        //     token.author_id = user.authors[0].id;
-        //   }
-        // }
+        let user = await prisma.user.findUnique({
+          where: { id: token.sub },
+          select: {
+            authors: {
+              select: {
+                id: true,
+              }
+            },
+            name: true,
+          }
+        });
+        if (user) {
+          if (user.authors[0].id) {
+            token.author_id = user.authors[0].id;
+          }
+        }
 
         return token;
       }

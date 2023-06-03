@@ -12,7 +12,7 @@ declare module "next-auth" {
     familyName?: string;
     locale?: string;
     user_id?: string;
-    author_id?: string;
+    author_id?: number;
   }
 
   interface Profile {
@@ -37,6 +37,6 @@ declare module "next-auth/jwt" {
     accessTokenExpires?: number;
     refreshToken?: string;
 
-    author_id?: string;
+    author_id?: number;
   }
 }

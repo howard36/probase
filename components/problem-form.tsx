@@ -3,10 +3,30 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 const subjects = [
-  "Algebra",
-  "Combinatorics",
-  "Geometry",
-  "Number Theory",
+  {
+    enum: "Algebra",
+    display: "Algebra",
+    short: "Alg",
+    letter: "A",
+  },
+  {
+    enum: "Combinatorics",
+    display: "Combinatorics",
+    short: "Combo",
+    letter: "C",
+  },
+  {
+    enum: "Geometry",
+    display: "Geometry",
+    short: "Geo",
+    letter: "G",
+  },
+  {
+    enum: "NumberTheory",
+    display: "Number Theory",
+    short: "NT",
+    letter: "N",
+  },
 ];
 
 // TODO: types?
@@ -18,7 +38,6 @@ export default function ProblemForm({ collection, problem }) {
   const [answer, setAnswer] = useState(problem?.answer ?? "");
   const [solution, setSolution] = useState(problem?.solutions[0].text ?? "");
   const { data: session } = useSession();
-  console.log({session})
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,12 +45,12 @@ export default function ProblemForm({ collection, problem }) {
     if (problem === undefined) {
       // add new problem
       const url = `/api/collections/${collection.id}/problems/add`;
-      const pid = 'A12';
+      const pid = 'P' + Math.ceil(Math.random() * 10000);
       let solutions = [];
       if (solution) {
         solutions.push({
           text: solution,
-          authors: [{id: session?.author_id}]
+          authors: [{id: 1}]
         });
       }
 
@@ -45,10 +64,10 @@ export default function ProblemForm({ collection, problem }) {
           title,
           subject,
           statement,
-          // TODO: add submitter
-          authors: [session?.author_id], // TODO: multiple authors
+          authors: [1], // TODO: multiple authors
           answer,
           solutions,
+          submitterId: session?.user_id,
         })
       });
       if (response.status === 201) {
@@ -96,7 +115,7 @@ export default function ProblemForm({ collection, problem }) {
           <div className="relative mb-4">
             <label className="leading-7 text-md text-gray-600">Subject</label>
             <select value={subject} onChange={(e)=>{setSubject(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-              {subjects.map(s => <option value={s} key={s}>{s}</option>)}
+              {subjects.map(s => <option value={s.enum} key={s.enum}>{s.display}</option>)}
             </select>
           </div>
           <div className="relative mb-4">

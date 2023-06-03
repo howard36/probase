@@ -23,29 +23,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   // TODO: check if user is allowed to add problem
   const collectionId = Number(req.query._id);
   // TODO: add isAnonymous to api
-  const { pid, title, subject, statement, authors, answer, solutions } = req.body;
-  // solutions.forEach(sol => {
-  //   sol.authors = sol.authors.map(id => new ObjectId(id));
-  // });
+  const { pid, title, subject, statement, authors, answer, solutions, submitterId } = req.body;
 
   // TODO: assign PID based on existing problems
-  // TODO: PID should be given as input, and calculated by calling function
-  // const problem = {
-  //   pid,
-  //   title,
-  //   subject,
-  //   statement,
-  //   authors: authors.map(id => new ObjectId(id)),
-  //   answer,
-  //   solutions,
-  //   collection_id: new ObjectId(_id),
-  // };
-
-  // TODO: handle insertOne error response
-  // const client = await clientPromise;
-  // const result = await client.db().collection('problems').insertOne(problem);
-  // const inserted_id = result.insertedId.toHexString();
-  console.log({authors, solutions})
+  // PID should be given as input, and calculated by calling function
+  // should this be in the problem form component?
 
   const result = await prisma.problem.create({
     data: {
@@ -59,23 +41,24 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       difficulty: 0,
       isAnonymous: false,
       authors: {
-        connect: authors
+        connect: authors.map((id) => ({ id }))
       },
       solutions: {
         create: [
           {
-            text: solutions[0],
+            text: solutions[0].text,
             authors: {
               connect: solutions[0].authors
             }
           }
         ]
       },
-      submitterId: authors[0],
+      submitterId,
     }
   });
-  console.log({pid, result});
 
+  // TODO: properly handle creation error
+  // should be try-catch instead
   if (result) {
     res.status(201).json({inserted_id: result.id});
   } else {
