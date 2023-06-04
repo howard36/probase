@@ -112,7 +112,6 @@ export default function ProblemEdit({ collection, problem }: Props) {
     "Geometry",
     "Number Theory",
   ];
-  console.log(problem.solutions[0].text)
 
   // TODO: change indigo accent color
   // TODO: second Head causes a warning

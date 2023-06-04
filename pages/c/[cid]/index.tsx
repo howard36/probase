@@ -4,15 +4,12 @@ import Sidebar from '@/components/sidebar';
 import { useSession } from 'next-auth/react';
 import prisma from '@/utils/prisma';
 
-interface Context {
-  readonly params: {
-    readonly cid: string;
-  }
+interface Params {
+  cid: string;
 }
 
-interface Props {
-  readonly collection: any;
-  readonly problems: any[];
+interface Path {
+  params: Params;
 }
 
 export async function getStaticPaths() {
@@ -20,7 +17,7 @@ export async function getStaticPaths() {
     select: { cid: true }
   });
 
-  const paths = collections.map((collection) => ({
+  const paths: Path[] = collections.map((collection) => ({
     params: { cid: collection.cid },
   }));
 
@@ -30,9 +27,23 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: Context): Promise<{props: Props}> {
+export async function getStaticProps({ params }: Path) {
+  // TODO: filter only needed fields of collection
   const collection = await prisma.collection.findUnique({
-    where: { cid: params.cid }
+    where: { cid: params.cid },
+    include: {
+      problems: {
+        select: {
+          pid: true,
+          title: true,
+          statement: true,
+          subject: true,
+          likes: true,
+          difficulty: true,
+          id: true,
+        }
+      }
+    }
   });
 
   if (collection === null) {
@@ -41,30 +52,15 @@ export async function getStaticProps({ params }: Context): Promise<{props: Props
     // show a "404 collection not found" page
     return null;
   }
-  // TODO: filter only needed fields of collection
-
-  const problems = await prisma.problem.findMany({
-    where: { collection },
-    select: {
-      pid: true,
-      title: true,
-      statement: true,
-      subject: true,
-      likes: true,
-      difficulty: true,
-      id: true,
-    }
-  });
 
   return {
     props: {
       collection,
-      problems,
     },
   };
 }
 
-export default function Collection({ collection, problems }: Props) {
+export default function Collection({ collection }) {
   const session = useSession();
   console.log("session = ", session, "type = ", typeof(session));
 
@@ -74,7 +70,7 @@ export default function Collection({ collection, problems }: Props) {
         <title>{collection.name}</title>
       </Head>
       <ul id="problems" className="px-16 py-16">
-        {problems.map((problem) => (
+        {collection.problems.map((problem) => (
           <HomeCard key={problem.pid} collection={collection} problem={problem}/>
         ))}
       </ul>
