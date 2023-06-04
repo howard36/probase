@@ -9,13 +9,6 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-enum Subject {
-  Algebra
-  Combinatorics
-  Geometry
-  NumberTheory
-}
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -26,6 +19,7 @@ model User {
   sessions      Session[]
   authors       Author[]
   problems      Problem[]
+  permissions   Permission[]
 }
 
 model Account {
@@ -75,6 +69,13 @@ model Author {
   solutions    Solution[]
 }
 
+enum Subject {
+  Algebra
+  Combinatorics
+  Geometry
+  NumberTheory
+}
+
 // TODO: add default likes = 0
 model Problem {
   id           Int        @id @default(autoincrement())
@@ -85,7 +86,7 @@ model Problem {
   statement    String
   submitter    User       @relation(fields: [submitterId], references: [id])
   submitterId  String
-  authors      Author[]  
+  authors      Author[]
   answer       String
   solutions    Solution[]
   subject      Subject
@@ -113,4 +114,20 @@ model Collection {
   problems    Problem[]
   authors     Author[]
   showAuthors Boolean
+  permissions Permission[]
+}
+
+enum AccessLevel {
+  Normal
+  Admin
+}
+
+model Permission {
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  collectionId Int
+  accessLevel  AccessLevel
+
+  @@unique([userId, collectionId])
 }
