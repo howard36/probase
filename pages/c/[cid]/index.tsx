@@ -3,6 +3,7 @@ import HomeCard from '@/components/home-card';
 import Sidebar from '@/components/sidebar';
 import { useSession } from 'next-auth/react';
 import prisma from '@/utils/prisma';
+// import { Session } from '@/types/next-auth';
 
 interface Params {
   cid: string;
@@ -60,9 +61,34 @@ export async function getStaticProps({ params }: Path) {
   };
 }
 
+function getAccessLevel(session, collectionId: number) {
+  // console.log({ session, collectionId });
+  if (session?.collectionPerms === undefined) {
+    return null;
+  }
+  for (const perm in session.collectionPerms) {
+    if (perm.collectionId === collectionId) {
+      return perm.accessLevel;
+    }
+  }
+}
+
 export default function Collection({ collection }) {
-  const session = useSession();
-  console.log("session = ", session, "type = ", typeof(session));
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  console.log({session}); // TODO: no session.collectionPerms for some reason
+  const access = getAccessLevel(session, collection.id);
+  if (access === null) {
+    return (
+      <Sidebar>
+        <p>No permissions to view this page</p>
+      </Sidebar>
+    );
+  }
 
   return (
     <Sidebar>

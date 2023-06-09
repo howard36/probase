@@ -1,5 +1,11 @@
+import { AccessLevel } from "@prisma/client";
 import NextAuth, { DefaultSession } from "next-auth";
 import { JWT } from "next-auth/jwt";
+
+interface CollectionPerm {
+  collectionId: number;
+  accessLevel: AccessLevel;
+}
 
 declare module "next-auth" {
   /**
@@ -12,6 +18,7 @@ declare module "next-auth" {
     familyName?: string;
     locale?: string;
     user_id?: string;
+    collectionPerms?: CollectionPerm[];
   }
 
   interface Profile {
@@ -35,5 +42,7 @@ declare module "next-auth/jwt" {
     locale?: string;
     accessTokenExpires?: number;
     refreshToken?: string;
+
+    collectionPerms?: CollectionPerm[];
   }
 }

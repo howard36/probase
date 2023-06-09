@@ -117,6 +117,7 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
+      // TODO: this prevents the saved token from being udpated
       // Return previous token if the access token has not expired yet
       if (token.provider === 'google') {
         if (token.accessTokenExpires) {
@@ -126,6 +127,18 @@ export const authOptions: NextAuthOptions = {
           }
         }
       }
+
+      const permissions = await prisma.permission.findMany({
+        where: { userId: token.sub },
+        select: {
+          collectionId: true,
+          accessLevel: true,
+        },
+      });
+      token.collectionPerms = permissions.map(permission => ({
+        collectionId: permission.collectionId,
+        accessLevel: permission.accessLevel,
+      }));
 
       // Access token has expired, try to update it
       return refreshAccessToken(token);
@@ -138,9 +151,11 @@ export const authOptions: NextAuthOptions = {
       session.familyName = token.familyName;
       session.locale = token.locale;
       session.user_id = token.sub;
+      session.collectionPerms = token.collectionPerms;
       return session;
     },
   },
+
   session: {
     strategy: "jwt" as const,
   },
