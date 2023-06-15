@@ -64,6 +64,7 @@ async function refreshAccessToken(token: JWT) {
       throw refreshedTokens;
     }
 
+    // console.
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
@@ -97,7 +98,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }: jwtCallbackParams) {
-      console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
+      // console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
       // Initial sign in
       if (user && account && profile) {
         console.log("NEW USER!")
@@ -114,6 +115,18 @@ export const authOptions: NextAuthOptions = {
           token.refreshToken = account.refresh_token;
         }
 
+        const permissions = await prisma.permission.findMany({
+          where: { userId: token.sub },
+          select: {
+            collectionId: true,
+            accessLevel: true,
+          },
+        });
+        token.collectionPerms = permissions.map(permission => ({
+          collectionId: permission.collectionId,
+          accessLevel: permission.accessLevel,
+        }));
+
         return token;
       }
 
@@ -127,18 +140,6 @@ export const authOptions: NextAuthOptions = {
           }
         }
       }
-
-      const permissions = await prisma.permission.findMany({
-        where: { userId: token.sub },
-        select: {
-          collectionId: true,
-          accessLevel: true,
-        },
-      });
-      token.collectionPerms = permissions.map(permission => ({
-        collectionId: permission.collectionId,
-        accessLevel: permission.accessLevel,
-      }));
 
       // Access token has expired, try to update it
       return refreshAccessToken(token);

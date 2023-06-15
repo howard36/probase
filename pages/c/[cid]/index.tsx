@@ -66,7 +66,8 @@ function getAccessLevel(session, collectionId: number) {
   if (session?.collectionPerms === undefined) {
     return null;
   }
-  for (const perm in session.collectionPerms) {
+  for (let i = 0; i < session.collectionPerms.length; i++) {
+    let perm = session.collectionPerms[i];
     if (perm.collectionId === collectionId) {
       return perm.accessLevel;
     }
@@ -80,7 +81,6 @@ export default function Collection({ collection }) {
     return <p>Loading...</p>;
   }
 
-  console.log({session}); // TODO: no session.collectionPerms for some reason
   const access = getAccessLevel(session, collection.id);
   if (access === null) {
     return (
