@@ -143,18 +143,6 @@ export async function getStaticProps({ params }: Path) {
 };
 
 export default function ProblemDetails({ collection, problem }: Props) {
-  const [answerText, setAnswerText] = useState(problem.answer);
-  const setAnswer = async (text) => {
-    setAnswerText(text);
-    // React waits for async functions to finish before updating the page
-    // await prisma.problem.update({
-    //   where: { id: problem.id },
-    //   data: {
-    //     answer: text
-    //   }
-    // });
-  }
-
   let proposed_by, answer, solution;
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
@@ -162,13 +150,11 @@ export default function ProblemDetails({ collection, problem }: Props) {
     proposed_by = <p className="italic mb-8">Proposed by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
-    answer = (
-      <Answer label="ANSWER" originalText={answerText} setOriginal={setAnswer}/>
-    );
+    answer = <Answer initialText={problem.answer}/>;
   }
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
-    solution = <p><Latex>{`Solution (by ${sol.authors[0].displayName}): ${sol.text}`}</Latex></p>;
+    // solution = <ClickToEdit label={`SOLUTION (by ${sol.authors[0].displayName})`} originalText={solutionText} setOriginal={setSolution}/>;
   }
 
   return (
