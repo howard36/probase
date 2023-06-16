@@ -1,8 +1,10 @@
 import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
+import Answer from '@/components/answer';
 import Latex from 'react-latex-next';
 import prisma from '@/utils/prisma';
 import { Problem, Collection, Solution, Author } from '@prisma/client';
+import { useState } from 'react';
 
 interface Params {
   cid: string;
@@ -14,6 +16,17 @@ interface Path {
 }
 
 export async function getStaticPaths() {
+  return {
+    paths: [
+      {
+        params: {
+          cid: "cmimc",
+          pid: "A1",
+        }
+      }
+    ],
+    fallback: 'blocking'
+  }
   const all_problems = await prisma.problem.findMany({
     select: {
       collection: {
@@ -53,6 +66,29 @@ interface Props {
 
 // TODO: params can be null, but the type does not reflect that
 export async function getStaticProps({ params }: Path) {
+  return {
+    props: {
+      problem: {
+        statement: 'What is $1+1$?',
+        answer: '$\\frac{3}{4}$',
+        subject: 'Algebra',
+        title: 'Addition',
+        solutions: [
+          {
+            text: 'this is a solution. it has been artificially extended to take up more than one line.',
+            authors: [
+              {
+                displayName: 'Howard',
+              }
+            ]
+          }
+        ]
+      },
+      collection: {
+        
+      }
+    }
+  }
   if (!params) {
     return {
       notFound: true,
@@ -107,13 +143,28 @@ export async function getStaticProps({ params }: Path) {
 };
 
 export default function ProblemDetails({ collection, problem }: Props) {
+  const [answerText, setAnswerText] = useState(problem.answer);
+  const setAnswer = async (text) => {
+    setAnswerText(text);
+    // React waits for async functions to finish before updating the page
+    // await prisma.problem.update({
+    //   where: { id: problem.id },
+    //   data: {
+    //     answer: text
+    //   }
+    // });
+  }
+
   let proposed_by, answer, solution;
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
-    proposed_by = <p className="italic mb-4">Proposed by {sol.authors[0].displayName}</p>;
+    {/* TODO: should be right-aligned */}
+    proposed_by = <p className="italic mb-8">Proposed by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
-    answer = <p><Latex>{`Answer: ${problem.answer}`}</Latex></p>;
+    answer = (
+      <Answer label="ANSWER" originalText={answerText} setOriginal={setAnswer}/>
+    );
   }
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
@@ -125,7 +176,9 @@ export default function ProblemDetails({ collection, problem }: Props) {
       <Head>
         <title>{problem.title}</title>
       </Head>
-      <div className="p-24">
+      {/* fixed width container, matching ideal 60-character line length.
+      TODO: should be max-width */}
+      <div className="w-96 mx-auto my-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
         <p className="mb-4"><Latex>{problem.statement}</Latex></p>
         {proposed_by}
