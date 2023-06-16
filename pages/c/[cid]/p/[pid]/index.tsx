@@ -1,10 +1,10 @@
 import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
-import Answer from '@/components/answer';
+import EditableAnswer from '@/components/editable-answer';
+import EditableSolution from '@/components/editable-solution';
 import Latex from 'react-latex-next';
 import prisma from '@/utils/prisma';
 import { Problem, Collection, Solution, Author } from '@prisma/client';
-import { useState } from 'react';
 
 interface Params {
   cid: string;
@@ -150,11 +150,11 @@ export default function ProblemDetails({ collection, problem }: Props) {
     proposed_by = <p className="italic mb-8">Proposed by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
-    answer = <Answer initialText={problem.answer}/>;
+    answer = <EditableAnswer initialText={problem.answer}/>;
   }
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
-    // solution = <ClickToEdit label={`SOLUTION (by ${sol.authors[0].displayName})`} originalText={solutionText} setOriginal={setSolution}/>;
+    solution = <EditableSolution solution={sol}/>
   }
 
   return (
