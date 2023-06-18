@@ -62,7 +62,6 @@ export async function getStaticProps({ params }: Path) {
 }
 
 function getAccessLevel(session, collectionId: number) {
-  // console.log({ session, collectionId });
   if (session?.collectionPerms === undefined) {
     return null;
   }

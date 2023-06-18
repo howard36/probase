@@ -15,9 +15,9 @@ export default function ClickToEdit({ label, savedText, saveCallback, type }: Pr
 
   if (isEditing) {
     const input = (type === 'input') ? (
-      <input type="text" value={text} onChange={e => setText(e.target.value)} className="text-xl bg-slate-50"/>
+      <input type="text" value={text} onChange={e => setText(e.target.value)} className="text-xl bg-slate-50 w-full"/>
     ) : (
-      <textarea value={text} onChange={e => setText(e.target.value)} className="text-xl bg-slate-50"/>
+      <textarea value={text} onChange={e => setText(e.target.value)} className="text-xl bg-slate-50 w-full"/>
     );
     return (
       <div className="mb-8">

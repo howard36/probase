@@ -147,7 +147,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
     {/* TODO: should be right-aligned */}
-    proposed_by = <p className="italic mb-8">Proposed by {sol.authors[0].displayName}</p>;
+    proposed_by = <p className="italic mb-8 text-right">Proposed by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
     answer = <EditableAnswer initialText={problem.answer}/>;
@@ -163,10 +163,10 @@ export default function ProblemDetails({ collection, problem }: Props) {
         <title>{problem.title}</title>
       </Head>
       {/* fixed width container, matching ideal 60-character line length.
-      TODO: should be max-width */}
-      <div className="w-96 mx-auto my-24">
+      TODO: should be max-width. TODO: extend tailwind to go past w-96 */}
+      <div className="w-128 mx-auto my-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
-        <p className="mb-4"><Latex>{problem.statement}</Latex></p>
+        <p className="mb-4 text-lg"><Latex>{problem.statement}</Latex></p>
         {proposed_by}
         {answer}
         {solution}
