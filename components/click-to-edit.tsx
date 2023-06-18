@@ -26,7 +26,7 @@ export default function ClickToEdit({ label, savedText, saveCallback, type }: Pr
         {input}
         <div className="mt-4">
           <button onClick={() => {setEditing(false); saveCallback(text)}} className="px-4 py-2 rounded-full bg-green-200 text-green-800 font-semibold text-sm">Save Changes</button>
-          <button onClick={() => {setEditing(false); setText(savedText)}} className="px-4 py-2 text-slate-600 font-semibold text-sm">Cancel</button>
+          <button onClick={() => {setEditing(false); setText(savedText)}} className="px-4 py-2 text-slate-600 font-semibold text-sm">Discard</button>
         </div>
       </div>
     );
