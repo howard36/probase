@@ -25,5 +25,5 @@ export default function EditableSolution({ solution }: Props) {
     // });
   }
 
-  return <ClickToEdit label={`SOLUTION (by ${authorName})`} savedText={solutionText} saveCallback={saveSolution} type="textarea"/>;
+  return <ClickToEdit label={`SOLUTION (by ${authorName})`} savedText={solutionText} saveCallback={saveSolution}/>;
 }

@@ -15,5 +15,5 @@ export default function EditableAnswer({ initialText }) {
     // });
   }
 
-  return <ClickToEdit label="ANSWER" savedText={answerText} saveCallback={saveAnswer} type="input"/>;
+  return <ClickToEdit label="ANSWER" savedText={answerText} saveCallback={saveAnswer}/>;
 }
