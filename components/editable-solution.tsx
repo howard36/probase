@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import ClickToEdit from '@/components/click-to-edit';
 import { Solution, Author } from '@prisma/client';
-import prisma from '@/utils/prisma';
 
 interface SolutionProps extends Solution {
   authors: Pick<Author, 'displayName'>[];
@@ -17,6 +16,7 @@ export default function EditableSolution({ solution }: Props) {
   const saveSolution = async (text: string) => {
     setSolutionText(text);
     // React waits for async functions to finish before updating the page
+    // TODO: cannot use prisma on the frontend, so replace with API call
     // await prisma.solution.update({
     //   where: { id: solution.id },
     //   data: {

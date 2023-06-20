@@ -150,7 +150,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
     proposed_by = <p className="italic mb-8 text-right">Proposed by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
-    answer = <EditableAnswer initialText={problem.answer}/>;
+    answer = <EditableAnswer initialText={problem.answer} problemId={problem.id}/>;
   }
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
