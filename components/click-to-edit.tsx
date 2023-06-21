@@ -18,15 +18,28 @@ export default function ClickToEdit({ label, savedText, saveCallback }: Props) {
       const len = text.length;
       textAreaRef.current.setSelectionRange(len, len);
       textAreaRef.current.focus();
+      autoHeight(textAreaRef.current);
     }
   }, [isEditing, textAreaRef]);
+
+  const autoHeight = (textArea: HTMLTextAreaElement) => {
+    textArea.style.height = "0px";
+    const scrollHeight = textArea.scrollHeight;
+    textArea.style.height = scrollHeight + "px";
+  }
+
+  useEffect(() => {
+    if (textAreaRef.current !== null) {
+      autoHeight(textAreaRef.current);
+    }
+  }, [text, textAreaRef]);
 
   if (isEditing) {
     return (
       <div className="mb-8">
         <p className="mb-2 text-sm text-slate-500 font-semibold">{label}</p>
         {/* React works differently with inputs and textareas because of user input. Read documentation online */}
-        <textarea value={text} ref={textAreaRef} onChange={e => setText(e.target.value)} className="text-xl bg-slate-50 w-full"/>
+        <textarea value={text} ref={textAreaRef} onChange={e => setText(e.target.value)} style={{resize: "none"}} className="text-xl bg-slate-50 w-full"/>
         <div className="mt-4">
           <button onClick={() => {setEditing(false); saveCallback(text)}} className="px-4 py-2 rounded-full bg-green-200 text-green-800 font-semibold text-sm">Save Changes</button>
           <button onClick={() => {setEditing(false); setText(savedText)}} className="px-4 py-2 text-slate-600 font-semibold text-sm">Discard</button>
