@@ -9,7 +9,6 @@ interface Props {
 export default function EditableAnswer({ initialText, problemId }: Props) {
   const [answerText, setAnswerText] = useState(initialText);
   const saveAnswer = async (text: string) => {
-    console.log("Saving answer", text, problemId)
     setAnswerText(text);
     // React waits for async functions to finish before updating the page
     const url = `/api/problems/${problemId}/edit`;

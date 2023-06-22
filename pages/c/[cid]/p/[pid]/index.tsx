@@ -144,7 +144,6 @@ export async function getStaticProps({ params }: Path) {
 
 export default function ProblemDetails({ collection, problem }: Props) {
   let written_by, answer, solution;
-  console.log(problem.id)
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
     {/* TODO: should be right-aligned */}
