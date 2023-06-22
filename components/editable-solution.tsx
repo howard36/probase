@@ -16,13 +16,17 @@ export default function EditableSolution({ solution }: Props) {
   const saveSolution = async (text: string) => {
     setSolutionText(text);
     // React waits for async functions to finish before updating the page
-    // TODO: cannot use prisma on the frontend, so replace with API call
-    // await prisma.solution.update({
-    //   where: { id: solution.id },
-    //   data: {
-    //     text
-    //   }
-    // });
+    const url = `/api/solutions/${solution.id}/edit`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text
+      })
+    });
+    if (response.status !== 200) {
+      console.error(`updating failed! status = ${response.status}`);
+    }
   }
 
   return <ClickToEdit label={`SOLUTION (by ${authorName})`} savedText={solutionText} saveCallback={saveSolution}/>;
