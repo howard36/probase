@@ -1,18 +1,28 @@
 import { useState } from 'react';
 import ClickToEdit from '@/components/click-to-edit';
 
-export default function EditableAnswer({ initialText, problemId }) {
+interface Props {
+  initialText: string;
+  problemId: number;
+};
+
+export default function EditableAnswer({ initialText, problemId }: Props) {
   const [answerText, setAnswerText] = useState(initialText);
   const saveAnswer = async (text: string) => {
+    console.log("Saving answer", text, problemId)
     setAnswerText(text);
     // React waits for async functions to finish before updating the page
-    // TODO: cannot use prisma on the frontend, so replace with API call
-    // await prisma.problem.update({
-    //   where: { id: problemId },
-    //   data: {
-    //     answer: text
-    //   }
-    // });
+    const url = `/api/problems/${problemId}/edit`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        answer: text
+      })
+    });
+    if (response.status !== 200) {
+      console.error(`updating failed! status = ${response.status}`);
+    }
   }
 
   return <ClickToEdit label="ANSWER" savedText={answerText} saveCallback={saveAnswer}/>;

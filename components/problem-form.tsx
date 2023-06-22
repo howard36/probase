@@ -56,9 +56,7 @@ export default function ProblemForm({ collection, problem }) {
 
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           pid,
           title,
@@ -83,10 +81,8 @@ export default function ProblemForm({ collection, problem }) {
       const pid = problem.pid;
 
       const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title,
           subject,

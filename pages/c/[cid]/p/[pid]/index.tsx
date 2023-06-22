@@ -16,17 +16,17 @@ interface Path {
 }
 
 export async function getStaticPaths() {
-  return {
-    paths: [
-      {
-        params: {
-          cid: "cmimc",
-          pid: "A1",
-        }
-      }
-    ],
-    fallback: 'blocking'
-  }
+  // return {
+  //   paths: [
+  //     {
+  //       params: {
+  //         cid: "cmimc",
+  //         pid: "A1",
+  //       }
+  //     }
+  //   ],
+  //   fallback: 'blocking'
+  // }
   const all_problems = await prisma.problem.findMany({
     select: {
       collection: {
@@ -66,29 +66,29 @@ interface Props {
 
 // TODO: params can be null, but the type does not reflect that
 export async function getStaticProps({ params }: Path) {
-  return {
-    props: {
-      problem: {
-        statement: 'What is $1+1$?',
-        answer: '$\\frac{3}{4}$',
-        subject: 'Algebra',
-        title: 'Addition',
-        solutions: [
-          {
-            text: 'this is a solution. it has been artificially extended to take up more than one line.',
-            authors: [
-              {
-                displayName: 'Howard',
-              }
-            ]
-          }
-        ]
-      },
-      collection: {
+  // return {
+  //   props: {
+  //     problem: {
+  //       statement: 'What is $1+1$?',
+  //       answer: 'The answer is $5 + \\frac{3}{4}$',
+  //       subject: 'Algebra',
+  //       title: 'Addition',
+  //       solutions: [
+  //         {
+  //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
+  //           authors: [
+  //             {
+  //               displayName: 'Howard',
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     },
+  //     collection: {
         
-      }
-    }
-  }
+  //     }
+  //   }
+  // }
   if (!params) {
     return {
       notFound: true,
@@ -143,11 +143,12 @@ export async function getStaticProps({ params }: Path) {
 };
 
 export default function ProblemDetails({ collection, problem }: Props) {
-  let proposed_by, answer, solution;
+  let written_by, answer, solution;
+  console.log(problem.id)
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
     {/* TODO: should be right-aligned */}
-    proposed_by = <p className="italic mb-8 text-right">Proposed by {sol.authors[0].displayName}</p>;
+    written_by = <p className="italic mb-8 text-right">Written by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
     answer = <EditableAnswer initialText={problem.answer} problemId={problem.id}/>;
@@ -167,7 +168,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
       <div className="w-128 mx-auto my-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
         <p className="mb-4 text-lg"><Latex>{problem.statement}</Latex></p>
-        {proposed_by}
+        {written_by}
         {answer}
         {solution}
       </div>
