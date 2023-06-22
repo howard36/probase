@@ -5,6 +5,7 @@ import EditableSolution from '@/components/editable-solution';
 import Latex from 'react-latex-next';
 import prisma from '@/utils/prisma';
 import { Problem, Collection, Solution, Author } from '@prisma/client';
+import EditableStatement from '@/components/editable-statement';
 
 interface Params {
   cid: string;
@@ -146,7 +147,6 @@ export default function ProblemDetails({ collection, problem }: Props) {
   let written_by, answer, solution;
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
-    {/* TODO: should be right-aligned */}
     written_by = <p className="italic mb-8 text-right">Written by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
@@ -166,7 +166,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
       TODO: should be max-width. TODO: extend tailwind to go past w-96 */}
       <div className="w-128 mx-auto my-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
-        <p className="mb-4 text-lg"><Latex>{problem.statement}</Latex></p>
+        <EditableStatement initialText={problem.statement} problemId={problem.id}/>
         {written_by}
         {answer}
         {solution}

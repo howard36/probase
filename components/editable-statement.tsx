@@ -6,17 +6,17 @@ interface Props {
   problemId: number;
 };
 
-export default function EditableAnswer({ initialText, problemId }: Props) {
-  const [answerText, setAnswerText] = useState(initialText);
-  const saveAnswer = async (text: string) => {
-    setAnswerText(text);
+export default function EditableStatement({ initialText, problemId }: Props) {
+  const [text, setText] = useState(initialText);
+  const save = async (text: string) => {
+    setText(text);
     // React waits for async functions to finish before updating the page
     const url = `/api/problems/${problemId}/edit`;
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        answer: text
+        statement: text
       })
     });
     if (response.status !== 200) {
@@ -24,5 +24,5 @@ export default function EditableAnswer({ initialText, problemId }: Props) {
     }
   }
 
-  return <ClickToEdit label="ANSWER" savedText={answerText} saveCallback={saveAnswer} className="mb-8"/>;
+  return <ClickToEdit savedText={text} saveCallback={save} className="mb-4"/>;
 }
