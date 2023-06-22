@@ -97,7 +97,7 @@ export default function Collection({ collection }) {
       <ul id="problems" className="px-16 py-16">
         {collection.problems.map((problem) => (
           <HomeCard key={problem.pid} collection={collection} problem={problem}/>
-        ))}
+        )).reverse()}
       </ul>
     </Sidebar>
   );
