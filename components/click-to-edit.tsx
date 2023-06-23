@@ -1,39 +1,24 @@
 import Latex from 'react-latex-next';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, RefObject, ReactNode } from 'react';
 
 interface Props {
   label?: string;
-  savedText: string;
-  saveCallback: CallableFunction;
-  className?: string;
+  text: string;
+  childRef: RefObject<HTMLTextAreaElement>;
+  onSave: () => void;
+  onReset: () => void;
+  onEditStart?: () => void;
+  children: ReactNode;
 }
 
-// TODO: textarea height should always be large enough to fit the text without a scrollbar
-export default function ClickToEdit({ label, savedText, saveCallback, className }: Props) {
+export default function ClickToEdit({ label, text, onSave, onReset, onEditStart, children }: Props) {
   const [isEditing, setEditing] = useState(false);
-  const [text, setText] = useState(savedText);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (textAreaRef.current !== null && isEditing) {
-      const len = text.length;
-      textAreaRef.current.setSelectionRange(len, len);
-      textAreaRef.current.focus();
-      autoHeight(textAreaRef.current);
+    if (isEditing && onEditStart !== undefined) {
+      onEditStart();
     }
-  }, [isEditing, textAreaRef]);
-
-  const autoHeight = (textArea: HTMLTextAreaElement) => {
-    textArea.style.height = "0px";
-    const scrollHeight = textArea.scrollHeight;
-    textArea.style.height = scrollHeight + "px";
-  }
-
-  useEffect(() => {
-    if (textAreaRef.current !== null) {
-      autoHeight(textAreaRef.current);
-    }
-  }, [text, textAreaRef]);
+  }, [isEditing]);
 
   let labelHeading;
   if (label !== undefined) {
@@ -42,19 +27,19 @@ export default function ClickToEdit({ label, savedText, saveCallback, className 
 
   if (isEditing) {
     return (
-      <div className={className}>
+      <div>
         {/* React works differently with inputs and textareas because of user input. Read documentation online */}
         {labelHeading}
-        <textarea value={text} ref={textAreaRef} onChange={e => setText(e.target.value)} style={{resize: "none"}} className="text-xl bg-slate-50 w-full"/>
+        {children}
         <div className="mt-4">
-          <button onClick={() => {setEditing(false); saveCallback(text)}} className="px-4 py-2 rounded-full bg-green-200 text-green-800 font-semibold text-sm">Save Changes</button>
-          <button onClick={() => {setEditing(false); setText(savedText)}} className="px-4 py-2 text-slate-600 font-semibold text-sm">Discard</button>
+          <button onClick={() => {setEditing(false); onSave()}} className="px-4 py-2 rounded-full bg-green-200 text-green-800 font-semibold text-sm">Save Changes</button>
+          <button onClick={() => {setEditing(false); onReset()}} className="px-4 py-2 text-slate-600 font-semibold text-sm">Discard</button>
         </div>
       </div>
     );
   } else {
     return (
-      <div onClick={() => setEditing(true)} className={className}>
+      <div onClick={() => setEditing(true)}>
         {labelHeading}
         <p className="text-xl mb-4" style={{whiteSpace: "pre-wrap"}}><Latex>{`${text}`}</Latex></p>
       </div>

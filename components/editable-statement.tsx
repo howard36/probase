@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ClickToEdit from '@/components/click-to-edit';
+import ClickToEditTextarea from './click-to-edit-textarea';
 
 interface Props {
   initialText: string;
@@ -24,5 +25,5 @@ export default function EditableStatement({ initialText, problemId }: Props) {
     }
   }
 
-  return <ClickToEdit savedText={text} saveCallback={save} className="mb-4"/>;
+  return <ClickToEditTextarea savedText={text} saveCallback={save} className="mb-4"/>;
 }

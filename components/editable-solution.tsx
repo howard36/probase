@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ClickToEdit from '@/components/click-to-edit';
 import { Solution, Author } from '@prisma/client';
+import ClickToEditTextarea from './click-to-edit-textarea';
 
 interface SolutionProps extends Solution {
   authors: Pick<Author, 'displayName'>[];
@@ -29,5 +30,5 @@ export default function EditableSolution({ solution }: Props) {
     }
   }
 
-  return <ClickToEdit label={`SOLUTION (by ${authorName})`} savedText={solutionText} saveCallback={saveSolution} className="mb-8"/>;
+  return <ClickToEditTextarea label={`SOLUTION (by ${authorName})`} savedText={solutionText} saveCallback={saveSolution} className="mb-8"/>;
 }
