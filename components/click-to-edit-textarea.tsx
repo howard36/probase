@@ -1,15 +1,14 @@
-import Latex from 'react-latex-next';
 import { useState, useRef, useEffect } from 'react';
 import ClickToEdit from '@/components/click-to-edit';
 
 interface Props {
   label?: string;
   savedText: string;
-  saveCallback: CallableFunction;
+  onSave: (text: string) => void;
   className?: string;
 }
 
-export default function ClickToEditTextarea({ label, savedText, saveCallback, className }: Props) {
+export default function ClickToEditTextarea({ label, savedText, onSave, className }: Props) {
   const [text, setText] = useState(savedText);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -27,7 +26,7 @@ export default function ClickToEditTextarea({ label, savedText, saveCallback, cl
   }, [text, textAreaRef]);
 
   const handleSave = () => {
-    saveCallback(text);
+    onSave(text);
   }
 
   const handleReset = () => {
