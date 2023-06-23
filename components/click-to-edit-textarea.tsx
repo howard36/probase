@@ -3,13 +3,14 @@ import ClickToEdit from './click-to-edit';
 
 interface Props {
   label?: ReactNode;
-  savedText: string;
+  initialText: string;
   onSave: (text: string) => void;
   className?: string;
 }
 
-export default function ClickToEditTextarea({ label, savedText, onSave, className }: Props) {
-  const [text, setText] = useState(savedText);
+export default function ClickToEditTextarea({ label, initialText: initialText, onSave, className }: Props) {
+  const [text, setText] = useState(initialText);
+  const [savedText, setSavedText] = useState(initialText);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const updateHeight = (textArea: HTMLTextAreaElement) => {
@@ -26,6 +27,7 @@ export default function ClickToEditTextarea({ label, savedText, onSave, classNam
   }, [text, textAreaRef]);
 
   const handleSave = () => {
+    setSavedText(text);
     onSave(text);
   }
 

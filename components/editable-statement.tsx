@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import ClickToEditTextarea from './click-to-edit-textarea';
 
 interface Props {
@@ -7,9 +6,7 @@ interface Props {
 };
 
 export default function EditableStatement({ initialText, problemId }: Props) {
-  const [text, setText] = useState(initialText);
   const save = async (text: string) => {
-    setText(text);
     // React waits for async functions to finish before updating the page
     const url = `/api/problems/${problemId}/edit`;
     const response = await fetch(url, {
@@ -24,5 +21,5 @@ export default function EditableStatement({ initialText, problemId }: Props) {
     }
   }
 
-  return <ClickToEditTextarea savedText={text} onSave={save} className="mb-4"/>;
+  return <ClickToEditTextarea initialText={initialText} onSave={save} className="mb-4"/>;
 }
