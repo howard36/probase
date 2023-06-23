@@ -12,7 +12,7 @@ interface Props {
 
 export default function EditableSolution({ solution }: Props) {
   const [solutionText, setSolutionText] = useState(solution.text);
-  const authorName = solution.authors[0].displayName;
+  // const authorName = solution.authors[0].displayName;
   const saveSolution = async (text: string) => {
     setSolutionText(text);
     // React waits for async functions to finish before updating the page
@@ -29,5 +29,7 @@ export default function EditableSolution({ solution }: Props) {
     }
   }
 
-  return <ClickToEditTextarea label={`SOLUTION (by ${authorName})`} savedText={solutionText} onSave={saveSolution} className="mb-8"/>;
+  const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
+
+  return <ClickToEditTextarea label={label} savedText={solutionText} onSave={saveSolution} className="mb-8"/>;
 }

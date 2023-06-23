@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import ClickToEdit from '@/components/click-to-edit';
+import { useState, useRef, useEffect, ReactNode } from 'react';
+import ClickToEdit from './click-to-edit';
 
 interface Props {
-  label?: string;
+  label?: ReactNode;
   savedText: string;
   onSave: (text: string) => void;
   className?: string;

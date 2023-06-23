@@ -24,5 +24,7 @@ export default function EditableAnswer({ initialText, problemId }: Props) {
     }
   }
 
-  return <ClickToEditTextarea label="ANSWER" savedText={answerText} onSave={saveAnswer} className="mb-8"/>;
+  const label = <p className="mb-2 text-sm text-slate-500 font-semibold">ANSWER</p>;
+
+  return <ClickToEditTextarea label={label} savedText={answerText} onSave={saveAnswer} className="mb-8"/>;
 }
