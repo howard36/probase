@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, KeyboardEvent } from 'react';
 
 interface Props {
   savedText: string;
@@ -35,9 +35,15 @@ export default function ClickToEditTextarea2({ savedText, onSave, onReset }: Pro
     }
   }, [text]);
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Escape") {
+      onReset();
+    }
+  };
+
   return (
     <>
-      <textarea value={text} ref={textAreaRef} onChange={e => setText(e.target.value)} style={{resize: "none"}} className="text-xl bg-slate-50 w-full"/>
+      <textarea value={text} ref={textAreaRef} onChange={e => setText(e.target.value)} onKeyDown={handleKeyDown} style={{resize: "none"}} className="text-xl bg-slate-50 w-full"/>
       <div className="mt-4">
         <button onClick={() => onSave(text)} className="px-4 py-2 rounded-full bg-green-200 text-green-800 font-semibold text-sm">Save Changes</button>
         <button onClick={onReset} className="px-4 py-2 text-slate-600 font-semibold text-sm">Discard</button>

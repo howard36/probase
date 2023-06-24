@@ -24,5 +24,5 @@ export default function EditableAnswer({ initialText, problemId }: Props) {
 
   const label = <p className="mb-2 text-sm text-slate-500 font-semibold">ANSWER</p>;
 
-  return <ClickToEdit2 label={label} initialText={initialText} onSave={saveAnswer}/>;
+  return <ClickToEdit2 type="input" label={label} initialText={initialText} onSave={saveAnswer}/>;
 }

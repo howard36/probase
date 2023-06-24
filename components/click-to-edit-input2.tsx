@@ -28,5 +28,5 @@ export default function ClickToEditInput2({ savedText, onSave, onReset }: Props)
     }
   };
 
-  return <input value={text} ref={inputRef} onChange={e => setText(e.target.value)} onKeyDown={handleKeyDown} className="text-xl bg-slate-50 w-full"/>;
+  return <input value={text} ref={inputRef} onChange={e => setText(e.target.value)} onKeyDown={handleKeyDown} onBlur={() => onSave(text)} className="text-xl bg-slate-50 w-full"/>;
 }

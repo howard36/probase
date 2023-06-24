@@ -4,12 +4,13 @@ import ClickToEditTextarea2 from './click-to-edit-textarea2';
 import ClickToEditInput2 from './click-to-edit-input2';
 
 interface Props {
+  type: "input" | "textarea";
   label?: ReactNode;
   initialText: string;
   onSave: (text: string) => void;
 }
 
-export default function ClickToEdit2({ label, initialText, onSave }: Props) {
+export default function ClickToEdit2({ type, label, initialText, onSave }: Props) {
   const [isEditing, setEditing] = useState(false);
   const [savedText, setSavedText] = useState(initialText);
 
@@ -27,7 +28,10 @@ export default function ClickToEdit2({ label, initialText, onSave }: Props) {
     return (
       <>
         {label}
-        <ClickToEditInput2 savedText={savedText} onSave={handleSave} onReset={handleReset}/>
+        { type === "input" ? 
+          <ClickToEditInput2 savedText={savedText} onSave={handleSave} onReset={handleReset}/>
+        : <ClickToEditTextarea2 savedText={savedText} onSave={handleSave} onReset={handleReset}/>
+        }
       </>
     );
   } else {

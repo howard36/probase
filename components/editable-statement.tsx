@@ -22,5 +22,5 @@ export default function EditableStatement({ initialText, problemId }: Props) {
     // }
   }
 
-  return <ClickToEdit2 initialText={initialText} onSave={save}/>
+  return <ClickToEdit2 type="textarea" initialText={initialText} onSave={save}/>
 }
