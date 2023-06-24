@@ -1,4 +1,4 @@
-import ClickToEdit2 from './click-to-edit2';
+import ClickToEdit from './click-to-edit';
 
 interface Props {
   initialText: string;
@@ -22,5 +22,5 @@ export default function EditableStatement({ initialText, problemId }: Props) {
     // }
   }
 
-  return <ClickToEdit2 type="textarea" initialText={initialText} onSave={save}/>
+  return <ClickToEdit type="textarea" initialText={initialText} onSave={save}/>
 }

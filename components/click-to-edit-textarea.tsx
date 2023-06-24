@@ -6,7 +6,7 @@ interface Props {
   onReset: () => void;
 }
 
-export default function ClickToEditTextarea2({ savedText, onSave, onReset }: Props) {
+export default function ClickToEditTextarea({ savedText, onSave, onReset }: Props) {
   const [text, setText] = useState(savedText);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 

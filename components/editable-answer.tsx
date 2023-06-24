@@ -1,4 +1,4 @@
-import ClickToEdit2 from './click-to-edit2';
+import ClickToEdit from './click-to-edit';
 
 interface Props {
   initialText: string;
@@ -24,5 +24,5 @@ export default function EditableAnswer({ initialText, problemId }: Props) {
 
   const label = <p className="mb-2 text-sm text-slate-500 font-semibold">ANSWER</p>;
 
-  return <ClickToEdit2 type="input" label={label} initialText={initialText} onSave={saveAnswer}/>;
+  return <ClickToEdit type="input" label={label} initialText={initialText} onSave={saveAnswer}/>;
 }

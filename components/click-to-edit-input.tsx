@@ -6,7 +6,7 @@ interface Props {
   onReset: () => void;
 }
 
-export default function ClickToEditInput2({ savedText, onSave, onReset }: Props) {
+export default function ClickToEditInput({ savedText, onSave, onReset }: Props) {
   const [text, setText] = useState(savedText);
   const inputRef = useRef<HTMLInputElement>(null);
 

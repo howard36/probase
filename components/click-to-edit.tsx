@@ -1,7 +1,7 @@
 import Latex from 'react-latex-next';
 import { useState, ReactNode } from 'react';
-import ClickToEditTextarea2 from './click-to-edit-textarea2';
-import ClickToEditInput2 from './click-to-edit-input2';
+import ClickToEditTextarea from './click-to-edit-textarea';
+import ClickToEditInput from './click-to-edit-input';
 
 interface Props {
   type: "input" | "textarea";
@@ -10,7 +10,7 @@ interface Props {
   onSave: (text: string) => void;
 }
 
-export default function ClickToEdit2({ type, label, initialText, onSave }: Props) {
+export default function ClickToEdit({ type, label, initialText, onSave }: Props) {
   const [isEditing, setEditing] = useState(false);
   const [savedText, setSavedText] = useState(initialText);
 
@@ -29,8 +29,8 @@ export default function ClickToEdit2({ type, label, initialText, onSave }: Props
       <>
         {label}
         { type === "input" ? 
-          <ClickToEditInput2 savedText={savedText} onSave={handleSave} onReset={handleReset}/>
-        : <ClickToEditTextarea2 savedText={savedText} onSave={handleSave} onReset={handleReset}/>
+          <ClickToEditInput savedText={savedText} onSave={handleSave} onReset={handleReset}/>
+        : <ClickToEditTextarea savedText={savedText} onSave={handleSave} onReset={handleReset}/>
         }
       </>
     );

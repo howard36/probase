@@ -1,5 +1,5 @@
 import { Solution, Author } from '@prisma/client';
-import ClickToEdit2 from './click-to-edit2';
+import ClickToEdit from './click-to-edit';
 
 interface SolutionProps extends Solution {
   authors: Pick<Author, 'displayName'>[];
@@ -29,5 +29,5 @@ export default function EditableSolution({ solution }: Props) {
 
   const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
 
-  return <ClickToEdit2 type="textarea" label={label} initialText={solution.text} onSave={saveSolution}/>;
+  return <ClickToEdit type="textarea" label={label} initialText={solution.text} onSave={saveSolution}/>;
 }
