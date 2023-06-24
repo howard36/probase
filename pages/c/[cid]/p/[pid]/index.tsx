@@ -153,7 +153,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
   if (problem.answer) {
     answer = (
       <div className="mb-8">
-        <EditableAnswer initialText={problem.answer} problemId={problem.id}/>
+        <EditableAnswer problem={problem}/>
       </div>
     );
   }
@@ -176,7 +176,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
       <div className="w-128 mx-auto my-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
         <div className="mb-4">
-          <EditableStatement initialText={problem.statement} problemId={problem.id}/>
+          <EditableStatement problem={problem}/>
         </div>
         {written_by}
         {answer}

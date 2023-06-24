@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect, KeyboardEvent } from 'react';
 
-interface Props {
+export default function ClickToEditInput({
+  savedText,
+  onSave,
+  onReset,
+}: {
   savedText: string;
   onSave: (text: string) => void;
   onReset: () => void;
-}
-
-export default function ClickToEditInput({ savedText, onSave, onReset }: Props) {
+}) {
   const [text, setText] = useState(savedText);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -28,5 +30,14 @@ export default function ClickToEditInput({ savedText, onSave, onReset }: Props) 
     }
   };
 
-  return <input value={text} ref={inputRef} onChange={e => setText(e.target.value)} onKeyDown={handleKeyDown} onBlur={() => onSave(text)} className="text-xl bg-slate-50 w-full"/>;
+  return (
+    <input
+      value={text}
+      ref={inputRef}
+      onChange={e => setText(e.target.value)}
+      onKeyDown={handleKeyDown}
+      onBlur={() => onSave(text)}
+      className="text-xl bg-slate-50 w-full"
+    />
+  );
 }

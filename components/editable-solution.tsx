@@ -1,15 +1,15 @@
-import { Solution, Author } from '@prisma/client';
 import ClickToEdit from './click-to-edit';
+import { Solution, Author } from '@prisma/client';
 
-interface SolutionProps extends Solution {
+interface SolutionWithAuthor extends Solution {
   authors: Pick<Author, 'displayName'>[];
 }
 
-interface Props {
-  solution: SolutionProps;
-}
-
-export default function EditableSolution({ solution }: Props) {
+export default function EditableSolution({
+  solution
+}: {
+  solution: SolutionWithAuthor
+}) {
   // const authorName = solution.authors[0].displayName;
   const saveSolution = async (text: string) => {
     alert(text);
@@ -29,5 +29,12 @@ export default function EditableSolution({ solution }: Props) {
 
   const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
 
-  return <ClickToEdit type="textarea" label={label} initialText={solution.text} onSave={saveSolution}/>;
+  return (
+    <ClickToEdit
+      type="textarea"
+      label={label}
+      initialText={solution.text}
+      onSave={saveSolution}
+    />
+  );
 }

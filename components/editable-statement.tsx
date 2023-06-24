@@ -1,15 +1,15 @@
 import ClickToEdit from './click-to-edit';
+import { Problem } from '@prisma/client';
 
-interface Props {
-  initialText: string;
-  problemId: number;
-};
-
-export default function EditableStatement({ initialText, problemId }: Props) {
-  const save = async (text: string) => {
+export default function EditableStatement({
+  problem
+}: {
+  problem: Problem
+}) {
+  const saveStatement = async (text: string) => {
     alert(text);
     // React waits for async functions to finish before updating the page
-    // const url = `/api/problems/${problemId}/edit`;
+    // const url = `/api/problems/${problem.id}/edit`;
     // const response = await fetch(url, {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json' },
@@ -22,5 +22,11 @@ export default function EditableStatement({ initialText, problemId }: Props) {
     // }
   }
 
-  return <ClickToEdit type="textarea" initialText={initialText} onSave={save}/>
+  return (
+    <ClickToEdit
+      type="textarea"
+      initialText={problem.statement}
+      onSave={saveStatement}
+    />
+  );
 }
