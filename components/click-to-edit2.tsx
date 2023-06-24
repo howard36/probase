@@ -1,6 +1,7 @@
 import Latex from 'react-latex-next';
-import { useState, useRef, useEffect, RefObject, ReactNode } from 'react';
+import { useState, ReactNode } from 'react';
 import ClickToEditTextarea2 from './click-to-edit-textarea2';
+import ClickToEditInput2 from './click-to-edit-input2';
 
 interface Props {
   label?: ReactNode;
@@ -26,7 +27,7 @@ export default function ClickToEdit2({ label, initialText, onSave }: Props) {
     return (
       <>
         {label}
-        <ClickToEditTextarea2 savedText={savedText} onSave={handleSave} onReset={handleReset}/>
+        <ClickToEditInput2 savedText={savedText} onSave={handleSave} onReset={handleReset}/>
       </>
     );
   } else {

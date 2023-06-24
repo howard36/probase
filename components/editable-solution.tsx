@@ -1,5 +1,4 @@
 import { Solution, Author } from '@prisma/client';
-import ClickToEditTextarea from './click-to-edit-textarea';
 import ClickToEdit2 from './click-to-edit2';
 
 interface SolutionProps extends Solution {

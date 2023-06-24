@@ -1,4 +1,3 @@
-import ClickToEditTextarea from './click-to-edit-textarea';
 import ClickToEdit2 from './click-to-edit2';
 
 interface Props {
