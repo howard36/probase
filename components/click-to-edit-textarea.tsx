@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-export default function ClickToEditTextarea({ label, initialText: initialText, onSave, className }: Props) {
+export default function ClickToEditTextarea({ label, initialText, onSave, className }: Props) {
   const [text, setText] = useState(initialText);
   const [savedText, setSavedText] = useState(initialText);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
