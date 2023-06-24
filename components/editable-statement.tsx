@@ -23,5 +23,5 @@ export default function EditableStatement({ initialText, problemId }: Props) {
     // }
   }
 
-  return <ClickToEdit2 label="label" initialText={initialText} onSave={save} className="mb-4"/>;
+  return <ClickToEdit2 initialText={initialText} onSave={save}/>
 }

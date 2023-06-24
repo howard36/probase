@@ -151,11 +151,19 @@ export default function ProblemDetails({ collection, problem }: Props) {
     written_by = <p className="italic mb-8 text-right">Written by {sol.authors[0].displayName}</p>;
   }
   if (problem.answer) {
-    answer = <EditableAnswer initialText={problem.answer} problemId={problem.id}/>;
+    answer = (
+      <div className="mb-8">
+        <EditableAnswer initialText={problem.answer} problemId={problem.id}/>
+      </div>
+    );
   }
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
-    solution = <EditableSolution solution={sol}/>
+    solution = (
+      <div className="mb-8">
+        <EditableSolution solution={sol}/>
+      </div>
+    );
   }
 
   return (
@@ -167,7 +175,9 @@ export default function ProblemDetails({ collection, problem }: Props) {
       TODO: should be max-width. TODO: extend tailwind to go past w-96 */}
       <div className="w-128 mx-auto my-24">
         <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
-        <EditableStatement initialText={problem.statement} problemId={problem.id}/>
+        <div className="mb-4">
+          <EditableStatement initialText={problem.statement} problemId={problem.id}/>
+        </div>
         {written_by}
         {answer}
         {solution}

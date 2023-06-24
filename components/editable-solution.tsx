@@ -30,5 +30,5 @@ export default function EditableSolution({ solution }: Props) {
 
   const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
 
-  return <ClickToEdit2 label={label} initialText={solution.text} onSave={saveSolution} className="mb-8"/>;
+  return <ClickToEdit2 label={label} initialText={solution.text} onSave={saveSolution}/>;
 }

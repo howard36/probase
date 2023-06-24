@@ -6,10 +6,9 @@ interface Props {
   label?: ReactNode;
   initialText: string;
   onSave: (text: string) => void;
-  className?: string;
 }
 
-export default function ClickToEdit2({ label, initialText, onSave, className }: Props) {
+export default function ClickToEdit2({ label, initialText, onSave }: Props) {
   const [isEditing, setEditing] = useState(false);
   const [savedText, setSavedText] = useState(initialText);
 
@@ -25,14 +24,14 @@ export default function ClickToEdit2({ label, initialText, onSave, className }: 
 
   if (isEditing) {
     return (
-      <div className={className}>
+      <>
         {label}
         <ClickToEditTextarea2 savedText={savedText} onSave={handleSave} onReset={handleReset}/>
-      </div>
+      </>
     );
   } else {
     return (
-      <div onClick={() => setEditing(true)} className={className}>
+      <div onClick={() => setEditing(true)}>
         {label}
         <p className="text-xl mb-4" style={{whiteSpace: "pre-wrap"}}><Latex>{`${savedText}`}</Latex></p>
       </div>
