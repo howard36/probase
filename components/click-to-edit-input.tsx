@@ -37,7 +37,7 @@ export default function ClickToEditInput({
       onChange={e => setText(e.target.value)}
       onKeyDown={handleKeyDown}
       onBlur={() => onSave(text)}
-      className="text-xl bg-slate-50 w-full"
+      className="bg-slate-50 w-full"
     />
   );
 }

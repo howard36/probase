@@ -51,7 +51,7 @@ export default function ClickToEditTextarea({
         onChange={e => setText(e.target.value)}
         onKeyDown={handleKeyDown}
         style={{resize: "none"}}
-        className="text-xl bg-slate-50 w-full"
+        className="bg-slate-50 w-full"
       />
       <div className="mt-4">
         <button

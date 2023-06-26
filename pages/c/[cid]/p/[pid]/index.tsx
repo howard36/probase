@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
+import EditableTitle from '@/components/editable-title';
+import EditableStatement from '@/components/editable-statement';
 import EditableAnswer from '@/components/editable-answer';
 import EditableSolution from '@/components/editable-solution';
-import Latex from 'react-latex-next';
 import prisma from '@/utils/prisma';
 import { Problem, Collection, Solution, Author } from '@prisma/client';
-import EditableStatement from '@/components/editable-statement';
 
 interface Params {
   cid: string;
@@ -152,7 +152,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
   }
   if (problem.answer) {
     answer = (
-      <div className="mb-8">
+      <div className="text-xl mb-8">
         <EditableAnswer problem={problem}/>
       </div>
     );
@@ -160,7 +160,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
     solution = (
-      <div className="mb-8">
+      <div className="text-xl mb-8">
         <EditableSolution solution={sol}/>
       </div>
     );
@@ -172,10 +172,12 @@ export default function ProblemDetails({ collection, problem }: Props) {
         <title>{problem.title}</title>
       </Head>
       {/* fixed width container, matching ideal 60-character line length.
-      TODO: should be max-width. TODO: extend tailwind to go past w-96 */}
+      TODO: should be max-width */}
       <div className="w-128 mx-auto my-24">
-        <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
-        <div className="mb-4">
+        <div className="text-3xl font-bold mb-4">
+          <EditableTitle problem={problem}/>
+        </div>
+        <div className="text-xl mb-4">
           <EditableStatement problem={problem}/>
         </div>
         {written_by}
