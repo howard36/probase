@@ -61,33 +61,33 @@ export async function getStaticProps({ params }: Path) {
   };
 }
 
-function getAccessLevel(session, collectionId: number) {
-  if (session?.collectionPerms === undefined) {
-    return null;
-  }
-  for (let i = 0; i < session.collectionPerms.length; i++) {
-    let perm = session.collectionPerms[i];
-    if (perm.collectionId === collectionId) {
-      return perm.accessLevel;
-    }
-  }
-}
+// function getAccessLevel(session, collectionId: number) {
+//   if (session?.collectionPerms === undefined) {
+//     return null;
+//   }
+//   for (let i = 0; i < session.collectionPerms.length; i++) {
+//     let perm = session.collectionPerms[i];
+//     if (perm.collectionId === collectionId) {
+//       return perm.accessLevel;
+//     }
+//   }
+// }
 
 export default function Collection({ collection }) {
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
+  // if (status === "loading") {
+  //   return <p>Loading...</p>;
+  // }
 
-  const access = getAccessLevel(session, collection.id);
-  if (access === null) {
-    return (
-      <Sidebar>
-        <p>No permissions to view this page</p>
-      </Sidebar>
-    );
-  }
+  // const access = getAccessLevel(session, collection.id);
+  // if (access === null) {
+  //   return (
+  //     <Sidebar>
+  //       <p>No permissions to view this page</p>
+  //     </Sidebar>
+  //   );
+  // }
 
   return (
     <Sidebar>

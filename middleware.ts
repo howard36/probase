@@ -1,19 +1,19 @@
-export { default } from "next-auth/middleware";
-// import { withAuth } from "next-auth/middleware"
+import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
 
-// // More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
-// export default withAuth({
-//   callbacks: {
-//     authorized({ req, token }) {
-//       // `/admin` requires admin role
-//       console.log(`authorized callback, req = ${req}, token = ${token}`);
-//       if (req.nextUrl.pathname === "/admin") {
-//         return token?.userRole === "admin"
-//       }
-//       // `/me` only requires the user to be logged in
-//       return !!token
-//     },
-//   },
-// })
+export default withAuth(
+  // `withAuth` augments your `Request` with the user's token.
+  function middleware(req) {
+    const token = req.nextauth.token;
+    const url = new URL(req.url);
+    const cid = url.pathname.split('/')[2];
 
-// export const config = { matcher: ["/c/:path*"] }
+    if (token?.viewColPerms.includes(cid)) {
+      return NextResponse.next();
+    } else {
+      return NextResponse.redirect("/unauthorized");
+    }
+  }
+)
+
+export const config = { matcher: ["/c/:path*"] }

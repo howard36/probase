@@ -18,7 +18,8 @@ declare module "next-auth" {
     familyName?: string;
     locale?: string;
     user_id?: string;
-    collectionPerms?: CollectionPerm[];
+    // collectionPerms?: CollectionPerm[];
+    viewColPerms: string[];
   }
 
   interface Profile {
@@ -43,6 +44,7 @@ declare module "next-auth/jwt" {
     accessTokenExpires?: number;
     refreshToken?: string;
 
-    collectionPerms?: CollectionPerm[];
+    // collectionPerms?: CollectionPerm[];
+    viewColPerms: string[];
   }
 }

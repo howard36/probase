@@ -17,17 +17,17 @@ interface Path {
 }
 
 export async function getStaticPaths() {
-  return {
-    paths: [
-      {
-        params: {
-          cid: "cmimc",
-          pid: "A1",
-        }
-      }
-    ],
-    fallback: 'blocking'
-  }
+  // return {
+  //   paths: [
+  //     {
+  //       params: {
+  //         cid: "cmimc",
+  //         pid: "A1",
+  //       }
+  //     }
+  //   ],
+  //   fallback: 'blocking'
+  // }
   const all_problems = await prisma.problem.findMany({
     select: {
       collection: {
@@ -67,6 +67,7 @@ interface Props {
 
 // TODO: params can be null, but the type does not reflect that
 export async function getStaticProps({ params }: Path) {
+  console.log("running getStaticProps for", params)
   return {
     props: {
       problem: {

@@ -72,7 +72,7 @@ async function refreshAccessToken(token: JWT) {
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     }
   } catch (error) {
-    console.log(error)
+    console.log("Refresh Token Error:", error)
 
     return {
       ...token,
@@ -118,14 +118,19 @@ export const authOptions: NextAuthOptions = {
         const permissions = await prisma.permission.findMany({
           where: { userId: token.sub },
           select: {
-            collectionId: true,
+            collection: {
+              select: {
+                cid: true,
+              }
+            },
             accessLevel: true,
           },
         });
-        token.collectionPerms = permissions.map(permission => ({
-          collectionId: permission.collectionId,
-          accessLevel: permission.accessLevel,
-        }));
+        // token.collectionPerms = permissions.map(permission => ({
+        //   collectionId: permission.collectionId,
+        //   accessLevel: permission.accessLevel,
+        // }));
+        token.viewColPerms = permissions.map(perm => perm.collection.cid);
 
         return token;
       }
@@ -152,7 +157,7 @@ export const authOptions: NextAuthOptions = {
       session.familyName = token.familyName;
       session.locale = token.locale;
       session.user_id = token.sub;
-      session.collectionPerms = token.collectionPerms;
+      session.viewColPerms = token.viewColPerms;
       return session;
     },
   },
