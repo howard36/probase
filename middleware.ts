@@ -5,13 +5,14 @@ export default withAuth(
   // `withAuth` augments your `Request` with the user's token.
   function middleware(req) {
     const token = req.nextauth.token;
-    const url = new URL(req.url);
+    let url = req.nextUrl.clone()
     const cid = url.pathname.split('/')[2];
 
     if (token?.viewColPerms.includes(cid)) {
       return NextResponse.next();
     } else {
-      return NextResponse.redirect("/unauthorized");
+      url.pathname = '/unauthorized'
+      return NextResponse.redirect(url);
     }
   }
 )
