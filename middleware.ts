@@ -11,7 +11,7 @@ export default withAuth(
     if (token?.viewColPerms.includes(cid)) {
       return NextResponse.next();
     } else {
-      url.pathname = '/unauthorized'
+      url.pathname = '/collection-unauthorized'
       return NextResponse.redirect(url);
     }
   }
