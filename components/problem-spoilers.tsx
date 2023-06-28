@@ -37,12 +37,12 @@ export default function ProblemSpoilers({
 
   if (hidden) {
     return (
-      <button onClick={() => setHidden(false)} className="mb-8 w-44 py-4 rounded-md bg-purple-600 text-slate-50 font-semibold leading-none">Show Spoilers</button>
+      <button onClick={() => setHidden(false)} className="mb-8 w-40 py-3 rounded-md bg-purple-600 text-slate-50 font-semibold leading-none">Show spoilers</button>
     );
   } else {
     return (
       <>
-        <button onClick={() => setHidden(true)} className="mb-8 w-44 py-4 rounded-md bg-purple-600 text-slate-50 font-semibold leading-none">Hide Spoilers</button>
+        <button onClick={() => setHidden(true)} className="mb-8 w-40 py-3 rounded-md bg-purple-600 text-slate-50 font-semibold leading-none">Hide spoilers</button>
         {answer}
         {solution}
       </>

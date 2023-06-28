@@ -51,18 +51,18 @@ export default function ClickToEditTextarea({
         onChange={e => setText(e.target.value)}
         onKeyDown={handleKeyDown}
         style={{resize: "none"}}
-        className="bg-slate-50 w-full"
+        className="bg-slate-50 w-full rounded-md"
       />
       <div className="mt-4">
         <button
           onClick={() => onSave(text)}
-          className="px-4 py-2 rounded-full bg-green-200 text-green-800 font-semibold text-sm"
+          className="w-40 py-3 rounded-md bg-green-200 text-green-800 font-semibold text-base leading-none"
         >
-          Save Changes
+          Save changes
         </button>
         <button
           onClick={onReset}
-          className="px-4 py-2 text-slate-600 font-semibold text-sm"
+          className="ml-2 px-8 py-3 rounded-md text-slate-600 font-semibold text-base leading-none"
         >
           Discard
         </button>
