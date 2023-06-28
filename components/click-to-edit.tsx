@@ -9,10 +9,10 @@ export default function ClickToEdit({
   initialText,
   onSave,
 }: {
-  type: "input" | "textarea";
-  label?: ReactNode;
-  initialText: string;
-  onSave: (text: string) => void;
+  type: "input" | "textarea"
+  label?: ReactNode
+  initialText: string
+  onSave: (text: string) => void
 }) {
   const [isEditing, setEditing] = useState(false);
   const [savedText, setSavedText] = useState(initialText);

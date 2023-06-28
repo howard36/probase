@@ -5,9 +5,9 @@ export default function ClickToEditInput({
   onSave,
   onReset,
 }: {
-  savedText: string;
-  onSave: (text: string) => void;
-  onReset: () => void;
+  savedText: string
+  onSave: (text: string) => void
+  onReset: () => void
 }) {
   const [text, setText] = useState(savedText);
   const inputRef = useRef<HTMLInputElement>(null);

@@ -2,8 +2,7 @@ import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
 import EditableTitle from '@/components/editable-title';
 import EditableStatement from '@/components/editable-statement';
-import EditableAnswer from '@/components/editable-answer';
-import EditableSolution from '@/components/editable-solution';
+import ProblemSpoilers from '@/components/problem-spoilers';
 import prisma from '@/utils/prisma';
 import { Problem, Collection, Solution, Author } from '@prisma/client';
 
@@ -17,17 +16,17 @@ interface Path {
 }
 
 export async function getStaticPaths() {
-  // return {
-  //   paths: [
-  //     {
-  //       params: {
-  //         cid: "cmimc",
-  //         pid: "A1",
-  //       }
-  //     }
-  //   ],
-  //   fallback: 'blocking'
-  // }
+  return {
+    paths: [
+      {
+        params: {
+          cid: "cmimc",
+          pid: "A1",
+        }
+      }
+    ],
+    fallback: 'blocking'
+  }
   const all_problems = await prisma.problem.findMany({
     select: {
       collection: {
@@ -148,25 +147,10 @@ export async function getStaticProps({ params }: Path) {
 };
 
 export default function ProblemDetails({ collection, problem }: Props) {
-  let written_by, answer, solution;
+  let written_by;
   const sol = problem.solutions[0];
   if (sol.authors.length > 0) {
     written_by = <p className="italic mb-8 text-right">Written by {sol.authors[0].displayName}</p>;
-  }
-  if (problem.answer) {
-    answer = (
-      <div className="text-xl mb-8">
-        <EditableAnswer problem={problem}/>
-      </div>
-    );
-  }
-  if (problem.solutions.length > 0) {
-    const sol = problem.solutions[0];
-    solution = (
-      <div className="text-xl mb-8">
-        <EditableSolution solution={sol}/>
-      </div>
-    );
   }
 
   return (
@@ -184,8 +168,7 @@ export default function ProblemDetails({ collection, problem }: Props) {
           <EditableStatement problem={problem}/>
         </div>
         {written_by}
-        {answer}
-        {solution}
+        <ProblemSpoilers problem={problem}/>
       </div>
     </Sidebar>
   );
