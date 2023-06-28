@@ -22,12 +22,12 @@ export default function ClickToEditTextarea({
   useEffect(() => {
     const textArea = textAreaRef.current;
     if (textArea !== null) {
-      const len = text.length;
+      const len = savedText.length;
       textArea.setSelectionRange(len, len);
       textArea.focus();
       updateHeight(textArea);
     }
-  }, []);
+  }, [savedText.length]);
 
   // on each text update
   useEffect(() => {

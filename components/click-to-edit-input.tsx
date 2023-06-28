@@ -16,11 +16,11 @@ export default function ClickToEditInput({
   useEffect(() => {
     const input = inputRef.current;
     if (input !== null) {
-      const len = text.length;
+      const len = savedText.length;
       input.setSelectionRange(len, len);
       input.focus();
     }
-  }, []);
+  }, [savedText.length]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
