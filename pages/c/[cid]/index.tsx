@@ -2,6 +2,7 @@ import Head from 'next/head';
 import HomeCard from '@/components/home-card';
 import Sidebar from '@/components/sidebar';
 import prisma from '@/utils/prisma';
+import { Collection, Problem } from '@prisma/client'
 
 interface Params {
   cid: string;
@@ -9,6 +10,10 @@ interface Params {
 
 interface Path {
   params: Params;
+}
+
+interface CollectionWithProblem extends Collection {
+  problems: Problem[]
 }
 
 export async function getStaticPaths() {
@@ -59,7 +64,11 @@ export async function getStaticProps({ params }: Path) {
   };
 }
 
-export default function Collection({ collection }) {
+export default function Collection({
+  collection
+}: {
+  collection: CollectionWithProblem
+}) {
   return (
     <Sidebar>
       <Head>

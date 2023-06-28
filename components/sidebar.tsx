@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-export default function Sidebar({ children }) {
+export default function Sidebar({
+  children
+}: {
+  children: React.ReactNode
+}) {
   const router = useRouter();
   const path = router.asPath;
 

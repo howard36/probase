@@ -1,6 +1,15 @@
 import { useRouter } from "next/router";
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { Problem, Collection, Solution, Subject } from '@prisma/client';
+
+interface ProblemWithSolution extends Problem {
+  solutions: Solution[];
+}
+
+interface SubjectSelectElement extends HTMLSelectElement {
+  value: Subject;
+}
 
 const subjects = [
   {
@@ -30,7 +39,13 @@ const subjects = [
 ];
 
 // TODO: types?
-export default function ProblemForm({ collection, problem }) {
+export default function ProblemForm({
+  collection,
+  problem,
+}: {
+  collection: Collection
+  problem?: ProblemWithSolution
+}) {
   const router = useRouter();
   const [title, setTitle] = useState(problem?.title ?? "");
   const [subject, setSubject] = useState(problem?.subject ?? "");
@@ -39,7 +54,7 @@ export default function ProblemForm({ collection, problem }) {
   const [solution, setSolution] = useState(problem?.solutions[0].text ?? "");
   const { data: session } = useSession();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (problem === undefined) {
@@ -110,7 +125,7 @@ export default function ProblemForm({ collection, problem }) {
           </div>
           <div className="relative mb-4">
             <label className="leading-7 text-md text-gray-600">Subject</label>
-            <select value={subject} onChange={(e)=>{setSubject(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            <select value={subject} onChange={(e: React.ChangeEvent<SubjectSelectElement>)=>{setSubject(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
               {subjects.map(s => <option value={s.enum} key={s.enum}>{s.display}</option>)}
             </select>
           </div>

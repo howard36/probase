@@ -4,6 +4,7 @@ import { FC } from 'react';
 
 interface LayoutProps {
   title: string;
+  children: React.ReactNode;
 }
 
 const Layout: FC<LayoutProps> = ({ children }) => {

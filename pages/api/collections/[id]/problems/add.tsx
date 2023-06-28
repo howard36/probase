@@ -38,7 +38,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       difficulty: 0,
       isAnonymous: false,
       authors: {
-        connect: authors.map((id) => ({ id }))
+        connect: authors.map((id: number) => ({ id }))
       },
       solutions: {
         create: [

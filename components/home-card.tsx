@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Latex from 'react-latex-next';
+import { Problem, Collection } from '@prisma/client';
 
 const titleLineColors = [
   'bg-red-400',
@@ -19,7 +20,13 @@ const subjectToColor = {
   'NumberTheory': 3,
 };
 
-export default function HomeCard({ collection, problem }) {
+export default function HomeCard({
+  collection,
+  problem,
+}: {
+  collection: Collection
+  problem: Problem
+}) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];
 

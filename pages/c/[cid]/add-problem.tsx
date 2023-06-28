@@ -29,14 +29,16 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: Context): Promise<{props: Props}> {
+export async function getStaticProps({ params }: Context) {
   // TODO: select only needed fields of collection
   const collection = await prisma.collection.findUnique({
     where: { cid: params.cid }
   });
 
   if (collection === null) {
-    return null; // TODO
+    return {
+      notFound: true
+    };
   }
 
   const problems = await prisma.problem.findMany({

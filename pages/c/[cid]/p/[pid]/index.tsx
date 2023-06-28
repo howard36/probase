@@ -16,17 +16,17 @@ interface Path {
 }
 
 export async function getStaticPaths() {
-  return {
-    paths: [
-      {
-        params: {
-          cid: "cmimc",
-          pid: "A1",
-        }
-      }
-    ],
-    fallback: 'blocking'
-  }
+  // return {
+  //   paths: [
+  //     {
+  //       params: {
+  //         cid: "cmimc",
+  //         pid: "A1",
+  //       }
+  //     }
+  //   ],
+  //   fallback: 'blocking'
+  // }
   const all_problems = await prisma.problem.findMany({
     select: {
       collection: {
@@ -66,31 +66,31 @@ interface Props {
 
 // TODO: params can be null, but the type does not reflect that
 export async function getStaticProps({ params }: Path) {
-  console.log("running getStaticProps for", params)
-  return {
-    props: {
-      problem: {
-        id: 1,
-        statement: 'What is $1+1$?',
-        answer: 'The answer is $5 + \\frac{3}{4}$',
-        subject: 'Algebra',
-        title: 'Addition',
-        solutions: [
-          {
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
-            authors: [
-              {
-                displayName: 'Howard',
-              }
-            ]
-          }
-        ]
-      },
-      collection: {
+  // console.log("running getStaticProps for", params)
+  // return {
+  //   props: {
+  //     problem: {
+  //       id: 1,
+  //       statement: 'What is $1+1$?',
+  //       answer: 'The answer is $5 + \\frac{3}{4}$',
+  //       subject: 'Algebra',
+  //       title: 'Addition',
+  //       solutions: [
+  //         {
+  //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
+  //           authors: [
+  //             {
+  //               displayName: 'Howard',
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     },
+  //     collection: {
         
-      }
-    }
-  }
+  //     }
+  //   }
+  // }
   if (!params) {
     return {
       notFound: true,
