@@ -7,19 +7,19 @@ export default function EditableStatement({
   problem: Problem
 }) {
   const saveStatement = async (text: string) => {
-    alert(text);
+    // alert(text);
     // React waits for async functions to finish before updating the page
-    // const url = `/api/problems/${problem.id}/edit`;
-    // const response = await fetch(url, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     statement: text
-    //   })
-    // });
-    // if (response.status !== 200) {
-    //   console.error(`updating failed! status = ${response.status}`);
-    // }
+    const url = `/api/problems/${problem.id}/edit`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        statement: text
+      })
+    });
+    if (response.status !== 200) {
+      console.error(`updating failed! status = ${response.status}`);
+    }
   }
 
   return (
