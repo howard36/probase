@@ -14,21 +14,25 @@ interface CollectionWithProblem extends Collection {
 }
 
 export async function generateStaticParams() {
-  const collections: Params[] = await prisma.collection.findMany({
+  const params: Params[] = await prisma.collection.findMany({
     select: { cid: true }
   });
 
-  return collections;
+  return params;
 }
 
 async function getCollection(cid: string) {
   // TODO: filter only needed fields of collection
-  const collection: CollectionWithProblem | null = await prisma.collection.findUnique({
+  const collection = await prisma.collection.findUnique({
     where: { cid },
     include: {
       problems: true
     }
   });
+
+  if (collection === null) {
+    notFound();
+  }
 
   return collection;
 }
@@ -39,10 +43,6 @@ export default async function CollectionPage({
   params: Params
 }) {
   const collection = await getCollection(params.cid);
-
-  if (collection === null) {
-    notFound();
-  }
 
   return (
     <Sidebar>
