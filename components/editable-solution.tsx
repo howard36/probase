@@ -22,7 +22,10 @@ export default function EditableSolution({
         text
       })
     });
-    if (response.status !== 200) {
+    if (response.status === 200) {
+      await fetch('/api/revalidate?path=/c/[cid]');
+      await fetch('/api/revalidate?path=/c/[cid]/p/[pid]');
+    } else {
       console.error(`updating failed! status = ${response.status}`);
     }
   }
