@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link';
 import Latex from 'react-latex-next';
 import { Problem, Collection } from '@prisma/client';
