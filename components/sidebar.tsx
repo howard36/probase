@@ -1,21 +1,22 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export default function Sidebar({
   children
 }: {
   children: React.ReactNode
 }) {
-  const router = useRouter();
-  const path = router.asPath;
+  const pathname = usePathname();
 
   // TODO: automate links based on permissions
   // TODO: collection name might be too long, needs cutoff
   // TODO: collection list might be too long, needs vertical scroll
   const links = [
-    { href: '/', label: 'Home', active: path === '/' },
-    { href: '/c/cmimc', label: 'CMIMC', active: path.startsWith('/c/cmimc') },
-    { href: '/c/hmmt', label: 'HMMT', active: path.startsWith('/c/hmmt') },
+    { href: '/', label: 'Home', active: pathname === '/' },
+    { href: '/c/cmimc', label: 'CMIMC', active: (pathname !== null) && pathname.startsWith('/c/cmimc') },
+    { href: '/c/hmmt', label: 'HMMT', active: (pathname !== null) && pathname.startsWith('/c/hmmt') },
   ];
 
   return (
