@@ -1,5 +1,3 @@
-'use client'
-
 import Sidebar from '@/components/sidebar'
 import EditableTitle from '@/components/editable-title'
 import EditableStatement from '@/components/editable-statement'

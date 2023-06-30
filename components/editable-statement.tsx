@@ -1,3 +1,5 @@
+'use client'
+
 import ClickToEdit from './click-to-edit';
 import { Problem } from '@prisma/client';
 

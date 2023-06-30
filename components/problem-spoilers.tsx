@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react';
 import EditableAnswer from '@/components/editable-answer';
 import EditableSolution from '@/components/editable-solution';
