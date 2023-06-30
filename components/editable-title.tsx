@@ -22,8 +22,6 @@ export default function EditableTitle({
     if (response.status === 200) {
       await fetch('/api/revalidate?path=/c/[cid]/p/[pid]');
       await fetch('/api/revalidate?path=/c/[cid]');
-      // await fetch('/api/old-revalidate?path=/c/cmimc');
-      // await fetch('/api/old-revalidate?path=/c/cmimc/p/A1');
     } else {
       console.error(`updating failed! status = ${response.status}`);
     }
