@@ -24,10 +24,9 @@ export default function ProblemPage({
   }
 
   return (
-    <Sidebar>
-      {/* fixed width container, matching ideal 60-character line length.
-      TODO: should be max-width */}
-      <div className="w-128 mx-auto my-24">
+    <div className="p-12 sm:p-24">
+      {/* fixed width container, matching ideal 60-character line length */}
+      <div className="w-128 max-w-full mx-auto">
         <div className="text-3xl font-bold mb-4">
           <EditableTitle problem={problem}/>
         </div>
@@ -37,6 +36,6 @@ export default function ProblemPage({
         {written_by}
         <ProblemSpoilers problem={problem}/>
       </div>
-    </Sidebar>
+    </div>
   );
 }

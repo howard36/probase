@@ -8,22 +8,15 @@ interface Params {
   pid: string;
 }
 
-interface Path {
-  params: Params;
-}
-
 export async function generateStaticParams() {
-  // return {
-  //   paths: [
-  //     {
-  //       params: {
-  //         cid: "cmimc",
-  //         pid: "A1",
-  //       }
-  //     }
-  //   ],
-  //   fallback: 'blocking'
-  // }
+  if (process.env.NO_WIFI) {
+    return [
+      {
+        cid: "cmimc",
+        pid: "A1",
+      }
+    ];
+  }
   const all_problems = await prisma.problem.findMany({
     select: {
       collection: {
@@ -59,30 +52,28 @@ interface Props {
 // TODO: params can be null, but the type does not reflect that
 async function getProblem(params: Params) {
   // console.log("running getStaticProps for", params)
-  // return {
-  //   props: {
-  //     problem: {
-  //       id: 1,
-  //       statement: 'What is $1+1$?',
-  //       answer: 'The answer is $5 + \\frac{3}{4}$',
-  //       subject: 'Algebra',
-  //       title: 'Addition',
-  //       solutions: [
-  //         {
-  //           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
-  //           authors: [
-  //             {
-  //               displayName: 'Howard',
-  //             }
-  //           ]
-  //         }
-  //       ]
-  //     },
-  //     collection: {
-        
-  //     }
-  //   }
-  // }
+  if (process.env.NO_WIFI) {
+    return {
+      problem: {
+        id: 1,
+        title: 'Quadratic Formula',
+        subject: 'Algebra',
+        statement: 'Compute the roots of $$x^2 - 4x + 2$$',
+        answer: '$2 \\pm \\sqrt{2}$',
+        solutions: [
+          {
+            text: 'Use the quadratic formula to get\n$$x = \\frac{4 \\pm \\sqrt{4^2 - 4 \\cdot 1 \\cdot 2}}{2} = 2 \\pm \\sqrt{2}$$',
+            authors: [
+              {
+                displayName: 'Howard',
+              }
+            ]
+          }
+        ]
+      },
+      collection: {}
+    }
+  }
 
   // TODO: save list of (collection id, cid) pairs in token permissions,
   // so that we can avoid this extra DB call
