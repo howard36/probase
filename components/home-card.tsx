@@ -53,9 +53,9 @@ export default function HomeCard({
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`}>
       <div className="bg-white p-8 rounded-2xl soft-shadow-xl">
-        <h1 className="text-2xl font-bold text-slate-900 mb-4">{problem.title}</h1>
+        <h2 className="text-3xl font-bold text-slate-900 mb-4">{problem.title}</h2>
         <div className={`w-16 h-2 mb-4 ${titleLineColor} rounded-full`}></div>
-        <p className="text-slate-700"><Latex>{problem.statement}</Latex></p>
+        <p className="text-xl text-slate-800"><Latex>{problem.statement}</Latex></p>
       </div>
     </Link>
   );

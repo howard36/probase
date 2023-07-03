@@ -58,7 +58,7 @@ async function getProblem(params: Params) {
         id: 1,
         collectionId: 1,
         pid: 'A1',
-        title: 'Quadratic Formula',
+        title: 'Quadratic Equation',
         subject: 'Algebra' as Subject,
         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         answer: '$2 \\pm \\sqrt{2}$',
