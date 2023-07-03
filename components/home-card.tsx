@@ -45,7 +45,7 @@ export default function HomeCard({
   problem,
 }: {
   collection: Collection
-  problem: Problem
+  problem: Pick<Problem, 'pid' | 'title' | 'subject' | 'statement'>
 }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];

@@ -1,5 +1,5 @@
 import prisma from '@/utils/prisma'
-import { Problem, Collection, Solution, Author } from '@prisma/client'
+import { Problem, Collection, Solution, Author, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
 import ProblemPage from './problem-page'
 
@@ -56,12 +56,17 @@ async function getProblem(params: Params) {
     return {
       problem: {
         id: 1,
+        collectionId: 1,
+        pid: 'A1',
         title: 'Quadratic Formula',
-        subject: 'Algebra',
+        subject: 'Algebra' as Subject,
         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         answer: '$2 \\pm \\sqrt{2}$',
         solutions: [
           {
+            id: 1,
+            summary: '',
+            problemId: 1,
             text: 'Use the quadratic formula to get\n$$x = \\frac{4 \\pm \\sqrt{4^2 - 4 \\cdot 1 \\cdot 2}}{2} = 2 \\pm \\sqrt{2}$$',
             authors: [
               {
@@ -69,7 +74,12 @@ async function getProblem(params: Params) {
               }
             ]
           }
-        ]
+        ],
+        submitterId: 'user id goes here',
+        likes: 12,
+        difficulty: 3,
+        source: '',
+        isAnonymous: false,
       },
       collection: {}
     }

@@ -2,7 +2,7 @@
 import HomeCard from '@/components/home-card'
 import Sidebar from '@/components/sidebar'
 import prisma from '@/utils/prisma'
-import { Collection, Problem } from '@prisma/client'
+import { Collection, Problem, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
 
 interface Params {
@@ -10,7 +10,7 @@ interface Params {
 }
 
 interface CollectionWithProblem extends Collection {
-  problems: Problem[]
+  problems: Pick<Problem, 'pid' | 'title' | 'subject' | 'statement'>[];
 }
 
 export async function generateStaticParams() {
@@ -34,34 +34,37 @@ async function getCollection(cid: string) {
         {
           pid: 'A1',
           title: 'Quadratic Equation',
-          subject: 'Algebra',
+          subject: 'Algebra' as Subject,
           statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         },
         {
           pid: 'A2',
           title: 'Quadratic Equation',
-          subject: 'Combinatorics',
+          subject: 'Combinatorics' as Subject,
           statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         },
         {
           pid: 'A3',
           title: 'Quadratic Equation',
-          subject: 'Geometry',
+          subject: 'Geometry' as Subject,
           statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         },
         {
           pid: 'A4',
           title: 'Quadratic Equation',
-          subject: 'NumberTheory',
+          subject: 'NumberTheory' as Subject,
           statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         },
         {
           pid: 'A5',
           title: 'Quadratic Equation',
-          subject: 'Algebra',
+          subject: 'Algebra' as Subject,
           statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         },
-      ]
+      ],
+      id: 1,
+      name: 'CMIMC',
+      showAuthors: true,
     }
   }
   // TODO: filter only needed fields of collection
@@ -91,8 +94,8 @@ export default async function CollectionPage({
       <div className="w-144 max-w-full mx-auto">
         <ul id="problems" className="">
           {collection.problems.map((problem) => (
-            <li className="mb-8">
-              <HomeCard key={problem.pid} collection={collection} problem={problem}/>
+            <li key={problem.pid} className="mb-8">
+              <HomeCard collection={collection} problem={problem}/>
             </li>
           )).reverse()}
         </ul>
