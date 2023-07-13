@@ -4,6 +4,7 @@ import HomeCard from '@/components/home-card'
 import prisma from '@/utils/prisma'
 import { Collection, Problem, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 
 interface Params {
   cid: string;
@@ -88,18 +89,23 @@ export default async function CollectionPage({
 }: {
   params: Params
 }) {
-  const collection = await getCollection(params.cid);
+  const { cid } = params;
+  const collection = await getCollection(cid);
 
   return (
     <div className="p-12 sm:p-24">
       <div className="w-144 max-w-full mx-auto">
-        <ul id="problems" className="">
+        {/* TODO: indigo shadow */}
+        <Link href={`/c/${cid}/add-problem`} className="mb-8 inline-block rounded-xl py-4 px-8 bg-indigo-500 hover:bg-indigo-600 text-slate-100 font-semibold text-lg soft-shadow-xl">Add Problem</Link>
+        <div>
+        <ul id="problems">
           {collection.problems.map((problem) => (
             <li key={problem.pid} className="mb-8">
               <HomeCard collection={collection} problem={problem}/>
             </li>
           )).reverse()}
         </ul>
+        </div>
       </div>
     </div>
   );

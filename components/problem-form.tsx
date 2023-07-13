@@ -48,7 +48,7 @@ export default function ProblemForm({
   const [statement, setStatement] = useState("");
   const [answer, setAnswer] = useState("");
   const [solution, setSolution] = useState("");
-  const session = useSession();
+  // const session = useSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,7 +75,7 @@ export default function ProblemForm({
         authors: [1], // TODO: multiple authors
         answer,
         solutions,
-        submitterId: session.data?.user_id,
+        // submitterId: session.data?.user_id,
       })
     });
     if (response.status === 201) {
