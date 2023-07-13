@@ -1,11 +1,9 @@
-import { useRouter } from "next/router";
+'use client'
+
+// import { useRouter } from "next/router";
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { Problem, Collection, Solution, Subject } from '@prisma/client';
-
-interface ProblemWithSolution extends Problem {
-  solutions: Solution[];
-}
+import { Collection, Subject } from '@prisma/client';
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -41,76 +39,51 @@ const subjects = [
 // TODO: types?
 export default function ProblemForm({
   collection,
-  problem,
 }: {
   collection: Collection
-  problem?: ProblemWithSolution
 }) {
-  const router = useRouter();
-  const [title, setTitle] = useState(problem?.title ?? "");
-  const [subject, setSubject] = useState(problem?.subject ?? "");
-  const [statement, setStatement] = useState(problem?.statement ?? "");
-  const [answer, setAnswer] = useState(problem?.answer ?? "");
-  const [solution, setSolution] = useState(problem?.solutions[0].text ?? "");
-  const { data: session } = useSession();
+  // const router = useRouter();
+  const [title, setTitle] = useState("");
+  const [subject, setSubject] = useState("");
+  const [statement, setStatement] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [solution, setSolution] = useState("");
+  const session = useSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (problem === undefined) {
-      // add new problem
-      const url = `/api/collections/${collection.id}/problems/add`;
-      const pid = 'P' + Math.ceil(Math.random() * 10000);
-      let solutions = [];
-      if (solution) {
-        solutions.push({
-          text: solution,
-          authors: [{id: 1}]
-        });
-      }
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          pid,
-          title,
-          subject,
-          statement,
-          authors: [1], // TODO: multiple authors
-          answer,
-          solutions,
-          submitterId: session?.user_id,
-        })
+    // add new problem
+    const url = `/api/collections/${collection.id}/problems/add`;
+    const pid = 'P' + Math.ceil(Math.random() * 10000); // TODO
+    let solutions = [];
+    if (solution) {
+      solutions.push({
+        text: solution,
+        authors: [{id: 1}] // TODO
       });
-      if (response.status === 201) {
-        router.push(`/c/${collection.cid}/p/${pid}`)
-      } else {
-        // TODO: retry with different PID
-        console.error("inserting failed!");
-      }
+    }
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pid,  // TODO: api should not require specifying a pid. Instead, it should accept a subject and return the pid
+        title,
+        subject,
+        statement,
+        authors: [1], // TODO: multiple authors
+        answer,
+        solutions,
+        submitterId: session.data?.user_id,
+      })
+    });
+    if (response.status === 201) {
+      // TODO: add back
+      // router.push(`/c/${collection.cid}/p/${pid}`)
     } else {
-      // edit existing problem
-      const url = `/api/problems/${problem.id}/edit`;
-      // TODO: change pid if subject changes
-      const pid = problem.pid;
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          subject,
-          statement,
-          answer,
-          solution,
-        })
-      });
-      if (response.status === 200) {
-        router.push(`/c/${collection.cid}/p/${pid}`)
-      } else {
-        console.error(`updating failed! status = ${response.status}`);
-      }
+      // TODO: retry with different PID
+      console.error("inserting failed!");
     }
   };
   

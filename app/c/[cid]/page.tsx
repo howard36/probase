@@ -1,6 +1,6 @@
 // import Head from 'next/head';
 import HomeCard from '@/components/home-card'
-import Sidebar from '@/components/sidebar'
+// import Sidebar from '@/components/sidebar'
 import prisma from '@/utils/prisma'
 import { Collection, Problem, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
@@ -14,7 +14,7 @@ interface CollectionWithProblem extends Collection {
 }
 
 export async function generateStaticParams() {
-  if (process.env.NO_WIFI) {
+  if (process.env.NO_WIFI === "true") {
     return [
       { cid: 'cmimc' }
     ];
@@ -27,7 +27,7 @@ export async function generateStaticParams() {
 }
 
 async function getCollection(cid: string) {
-  if (process.env.NO_WIFI) {
+  if (process.env.NO_WIFI === "true") {
     return {
       cid: 'cmimc',
       problems: [
@@ -67,6 +67,7 @@ async function getCollection(cid: string) {
       showAuthors: true,
     }
   }
+
   // TODO: filter only needed fields of collection
   const collection = await prisma.collection.findUnique({
     where: { cid },

@@ -9,7 +9,7 @@ interface Params {
 }
 
 export async function generateStaticParams() {
-  if (process.env.NO_WIFI) {
+  if (process.env.NO_WIFI === "true") {
     return [
       {
         cid: "cmimc",
@@ -52,7 +52,7 @@ interface Props {
 // TODO: params can be null, but the type does not reflect that
 async function getProblem(params: Params) {
   // console.log("running getStaticProps for", params)
-  if (process.env.NO_WIFI) {
+  if (process.env.NO_WIFI === "true") {
     return {
       problem: {
         id: 1,
