@@ -96,7 +96,7 @@ export default async function CollectionPage({
     <div className="p-12 sm:p-24">
       <div className="w-144 max-w-full mx-auto">
         {/* TODO: indigo shadow */}
-        <Link href={`/c/${cid}/add-problem`} className="mb-8 inline-block rounded-xl py-4 px-8 bg-indigo-500 hover:bg-indigo-600 text-slate-100 font-semibold text-lg soft-shadow-xl">Add Problem</Link>
+        <Link href={`/c/${cid}/add-problem`} className="mb-8 inline-block rounded-xl py-4 px-8 bg-indigo-500 hover:bg-indigo-600 text-slate-50 font-semibold text-lg soft-shadow-xl">Add Problem</Link>
         <div>
         <ul id="problems">
           {collection.problems.map((problem) => (
