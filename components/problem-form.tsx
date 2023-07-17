@@ -1,9 +1,9 @@
 'use client'
 
-// import { useRouter } from "next/router";
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { Collection, Subject } from '@prisma/client';
+import { useRouter } from "next/navigation"
+import { useState } from 'react'
+// import { useSession } from 'next-auth/react'
+import { Collection, Subject } from '@prisma/client'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -42,7 +42,7 @@ export default function ProblemForm({
 }: {
   collection: Collection
 }) {
-  // const router = useRouter();
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
   const [statement, setStatement] = useState("");
@@ -79,8 +79,7 @@ export default function ProblemForm({
       })
     });
     if (response.status === 201) {
-      // TODO: add back
-      // router.push(`/c/${collection.cid}/p/${pid}`)
+      router.push(`/c/${collection.cid}/p/${pid}`)
     } else {
       // TODO: retry with different PID
       console.error("inserting failed!");

@@ -6,9 +6,9 @@ import { Problem, Collection } from '@prisma/client';
 
 const titleLineColors = [
   'bg-red-400', // 0
-  'bg-orange-300',
-  'bg-amber-300',
-  'bg-yellow-300',
+  'bg-orange-400',
+  'bg-amber-400',
+  'bg-yellow-400',
   'bg-lime-400',
   'bg-green-400', // 5
   'bg-emerald-400',
@@ -25,19 +25,20 @@ const titleLineColors = [
 ];
 
 // Gradients:
-// alg: sky-blue (9-10)
+// alg: cyan-sky (8-9)
 // combo: yellow-amber (2-3)
 // geo: green-emerald (5-6)
 // nt: purple-violet (13-12)
-// cs?: pink-rose (15-16)
+// cs?: rose-red (16-0)
 
 // TODO: allow each collection to define new subjects and 
 // customize its own mapping
 const subjectToColor = {
-  'Algebra': 9,
+  'Algebra': 8,
   'Combinatorics': 2,
   'Geometry': 5,
-  'NumberTheory': 12,
+  'NumberTheory': 13,
+  'ComputerScience': 16,
 };
 
 export default function HomeCard({
