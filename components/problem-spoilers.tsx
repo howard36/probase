@@ -39,15 +39,15 @@ export default function ProblemSpoilers({
 
   if (hidden) {
     return (
-      <button onClick={() => setHidden(false)} className="mb-8 w-40 py-3 rounded-md bg-indigo-500 hover:bg-indigo-600 text-slate-50 font-semibold leading-none">Show spoilers</button>
+      <button onClick={() => setHidden(false)} className="mb-8 w-40 py-3 rounded-md bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold leading-none">Show spoilers</button>
     );
   } else {
     return (
       <>
-        <button onClick={() => setHidden(true)} className="mb-8 w-40 py-3 rounded-md bg-indigo-500 hover:bg-indigo-600 text-slate-50 font-semibold leading-none">Hide spoilers</button>
+        <button onClick={() => setHidden(true)} className="mb-8 w-40 py-3 rounded-md bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold leading-none">Hide spoilers</button>
         {answer}
         {solution}
-        <button className="text-indigo-600 font-semibold rounded-md border-4 border-indigo-500 hover:bg-indigo-500 hover:text-slate-50 py-3 w-40 leading-none">Add Solution</button>
+        <button className="text-blue-600 font-semibold rounded-md border-4 border-blue-500 hover:bg-blue-500 hover:text-slate-50 py-3 w-40 leading-none">Add Solution</button>
       </>
     );
   };
