@@ -10,25 +10,57 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  // TODO: fix missing API route!
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
-    res.status(401);
+    res.status(401).json({'error': 'Not signed in'});
     return;
   }
 
-  // TODO: check if user is allowed to add problem
   const collectionId = Number(req.query.id);
+  const collection = await prisma.collection.findUnique({
+    where: { id: collectionId },
+    select: {
+      cid: true
+    }
+  });
+
+  if (collection === null) {
+    res.status(404).json({
+      'error': `Collection with id ${collectionId} not found`
+    });
+    return;
+  }
+
+  const cid = collection.cid;
+  if (!session.viewColPerms.includes(cid)) {
+    res.status(403).json({
+      'error': 'You do not have permission to edit this collection'
+    });
+    return;
+  }
+
   // TODO: add isAnonymous to api
-  const { pid, title, subject, statement, authors, answer, solutions, submitterId } = req.body;
+  const { title, subject, statement, authors, answer, solutions } = req.body;
+
+  let pid = req.body.pid;
+  if (pid === undefined) {
+    pid = 'P' + Math.ceil(Math.random() * 10000); // TODO
+  }
+
+  // const submitterId = session.user_id;
 
   // TODO: assign PID based on existing problems
-  // PID should be given as input, and calculated by calling function
+  // PID should be optional in input
+  // blank PID = calculate by calling function
   // should this be in the problem form component?
 
   const result = await prisma.problem.create({
     data: {
-      collectionId,
+      collection: {
+        connect: {
+          id: collectionId
+        }
+      },
       pid,
       title,
       subject,
@@ -37,6 +69,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       likes: 0,
       difficulty: 0,
       isAnonymous: false,
+      submitter: {
+        connect: {
+          id: session.user_id,
+        }
+      },
       authors: {
         connect: authors.map((id: number) => ({ id }))
       },
@@ -50,7 +87,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         ]
       },
-      submitterId,
     }
   });
 
