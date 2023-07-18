@@ -102,6 +102,7 @@ export const authOptions: NextAuthOptions = {
       // Initial sign in
       if (user && account && profile) {
         console.log("NEW USER!")
+        // console.log({user})
         token.accessToken = account.access_token;
         token.provider = account.provider;
         token.type = account.type;
@@ -121,16 +122,21 @@ export const authOptions: NextAuthOptions = {
             collection: {
               select: {
                 cid: true,
+                id: true,
               }
             },
             accessLevel: true,
           },
         });
         // token.collectionPerms = permissions.map(permission => ({
-        //   collectionId: permission.collectionId,
+        //   colId: permission.collection.id,
+        //   cid: permission.collection.cid,
         //   accessLevel: permission.accessLevel,
         // }));
         token.viewColPerms = permissions.map(perm => perm.collection.cid);
+        token.authors = await prisma.author.findMany({
+          where: { userId: token.sub }
+        });
 
         return token;
       }
@@ -158,6 +164,8 @@ export const authOptions: NextAuthOptions = {
       session.locale = token.locale;
       session.user_id = token.sub;
       session.viewColPerms = token.viewColPerms;
+      session.authors = token.authors;
+      session.fullName = token.name;
       return session;
     },
   },

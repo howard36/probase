@@ -55,31 +55,21 @@ export default function ProblemForm({
 
     // add new problem
     const url = `/api/collections/${collection.id}/problems/add`;
-    const pid = 'P' + Math.ceil(Math.random() * 10000); // TODO
-    let solutions = [];
-    if (solution) {
-      solutions.push({
-        text: solution,
-        authors: [{id: 1}] // TODO
-      });
-    }
 
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        pid,  // TODO: api should not require specifying a pid. Instead, it should accept a subject and return the pid
         title,
         subject,
         statement,
-        authors: [1], // TODO: multiple authors
         answer,
-        solutions,
-        // submitterId: session.data?.user_id,
+        solutionText: solution,
       })
     });
     if (response.status === 201) {
-      router.push(`/c/${collection.cid}/p/${pid}`)
+      const data = await response.json();
+      router.push(`/c/${collection.cid}/p/${data.insertedPid}`)
     } else {
       // TODO: retry with different PID
       console.error("inserting failed!");

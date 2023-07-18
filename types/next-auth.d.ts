@@ -1,6 +1,7 @@
 import { AccessLevel } from "@prisma/client";
 import NextAuth, { DefaultSession } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { Author } from "@prisma/client"
 
 interface CollectionPerm {
   collectionId: number;
@@ -14,12 +15,14 @@ declare module "next-auth" {
   interface Session {
     accessToken?: string;
     emailVerified: bool;
+    fullName?: string | null;
     givenName?: string;
     familyName?: string;
     locale?: string;
     user_id?: string;
     // collectionPerms?: CollectionPerm[];
     viewColPerms: string[];
+    authors: Author[];
   }
 
   interface Profile {
@@ -46,5 +49,6 @@ declare module "next-auth/jwt" {
 
     // collectionPerms?: CollectionPerm[];
     viewColPerms: string[];
+    authors: Author[];
   }
 }
