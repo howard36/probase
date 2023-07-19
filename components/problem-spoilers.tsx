@@ -14,9 +14,11 @@ interface ProblemWithSolution extends Problem {
 }
 
 export default function ProblemSpoilers({
-  problem
+  problem,
+  canEdit,
 }: {
   problem: ProblemWithSolution
+  canEdit: boolean
 }) {
   const [hidden, setHidden] = useState(true);
 
@@ -24,7 +26,7 @@ export default function ProblemSpoilers({
   if (problem.answer) {
     answer = (
       <div className="text-xl text-slate-800 mb-8">
-        <EditableAnswer problem={problem}/>
+        <EditableAnswer problem={problem} />
       </div>
     );
   }
@@ -32,7 +34,7 @@ export default function ProblemSpoilers({
     const sol = problem.solutions[0];
     solution = (
       <div className="text-xl text-slate-800 mb-8">
-        <EditableSolution solution={sol}/>
+        <EditableSolution solution={sol} />
       </div>
     );
   }

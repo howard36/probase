@@ -1,7 +1,7 @@
-import { useState, ReactNode } from 'react';
-import Latex from 'react-latex-next';
-import ClickToEditTextarea from './click-to-edit-textarea';
-import ClickToEditInput from './click-to-edit-input';
+import { useState, ReactNode } from 'react'
+import Latex from 'react-latex-next'
+import ClickToEditTextarea from './click-to-edit-textarea'
+import ClickToEditInput from './click-to-edit-input'
 
 export default function ClickToEdit({
   type,

@@ -29,13 +29,14 @@ export default function ProblemPage({
       {/* fixed width container, matching ideal 60-character line length */}
       <div className="w-128 max-w-full mx-auto">
         <div className="text-3xl text-slate-900 font-bold mb-4">
+          <Title problem={problem} canEdit={canEdit} />
           <EditableTitle problem={problem} />
         </div>
         <div className="text-xl text-slate-800 mb-4">
-          <EditableStatement problem={problem} />
+          <EditableStatement problem={problem} canEdit={canEdit} />
         </div>
         {written_by}
-        <ProblemSpoilers problem={problem} />
+        <ProblemSpoilers problem={problem} canEdit={canEdit} />
       </div>
     </div>
   );
