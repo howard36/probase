@@ -50,9 +50,7 @@ export default function ClickToEdit({
     return (
       <div onClick={() => setEditing(true)}>
         {label}
-        <p style={{whiteSpace: "pre-wrap"}}>
-          <Latex>{`${savedText}`}</Latex>
-        </p>
+        <p><Latex>{`${savedText}`}</Latex></p>
       </div>
     );
   };

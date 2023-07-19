@@ -1,6 +1,6 @@
 'use client'
 
-import ClickToEdit from './click-to-edit';
+import ClickToEdit from '@/components/click-to-edit';
 import { Problem } from '@prisma/client';
 
 export default function EditableStatement({

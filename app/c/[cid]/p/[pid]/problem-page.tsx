@@ -1,5 +1,5 @@
 import Title from './title'
-import EditableStatement from '@/components/editable-statement'
+import Statement from './statement'
 import ProblemSpoilers from '@/components/problem-spoilers'
 import type { Problem, Solution, Author } from '@prisma/client'
 
@@ -25,14 +25,14 @@ export default function ProblemPage({
   }
 
   return (
-    <div className="p-12 sm:p-24">
+    <div className="p-12 sm:p-24 whitespace-pre-wrap">
       {/* fixed width container, matching ideal 60-character line length */}
       <div className="w-128 max-w-full mx-auto">
         <div className="text-3xl text-slate-900 font-bold mb-4">
           <Title problem={problem} canEdit={canEdit} />
         </div>
         <div className="text-xl text-slate-800 mb-4">
-          <EditableStatement problem={problem} />
+          <Statement problem={problem} canEdit={canEdit} />
         </div>
         {written_by}
         <ProblemSpoilers problem={problem} canEdit={canEdit} />
