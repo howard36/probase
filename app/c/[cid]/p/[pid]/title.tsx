@@ -1,5 +1,7 @@
+'use client'
+
 import { Problem } from '@prisma/client'
-import EditableTitle from '@/components/editable-title'
+import EditableTitle from './editable-title'
 import Latex from 'react-latex-next'
 
 export default function Title({
