@@ -2,6 +2,9 @@ import prisma from '@/utils/prisma'
 import { Problem, Collection, Solution, Author, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
 import ProblemPage from './problem-page'
+import type { Session } from 'next-auth'
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "pages/api/auth/[...nextauth]"
 
 interface Params {
   cid: string;
@@ -41,6 +44,7 @@ interface SolutionWithAuthor extends Solution {
 }
 
 interface ProblemWithSolution extends Problem {
+  authors: Pick<Author, 'id' | 'displayName'>[];
   solutions: SolutionWithAuthor[];
 }
 
@@ -62,6 +66,10 @@ async function getProblem(params: Params) {
         subject: 'Algebra' as Subject,
         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         answer: '$2 \\pm \\sqrt{2}$',
+        authors: [{
+          id: 1,
+          displayName: 'Howard',
+        }],
         solutions: [
           {
             id: 1,
@@ -103,6 +111,12 @@ async function getProblem(params: Params) {
       }
     },
     include: {
+      authors: {
+        select: {
+          id: true,
+          displayName: true,
+        }
+      },
       solutions: {
         include: {
           authors: {
@@ -127,12 +141,23 @@ async function getProblem(params: Params) {
   return props;
 };
 
+function hasProblemEditPerms(session: Session | null, problem: ProblemWithSolution): boolean {
+  if (session === null) {
+    return false;
+  }
+  const authorIds1 = session.authors.map(author => author.id);
+  const authorIds2 = problem.authors.map(author => author.id);
+  return authorIds1?.some(id => authorIds2?.includes(id));
+}
+
 export default async function ProblemDetails({
   params
 }: {
   params: Params
 }) {
   let { problem, collection } = await getProblem(params);
+  const session = await getServerSession(authOptions);
+  const canEdit = hasProblemEditPerms(session, problem);
 
-  return <ProblemPage problem={problem} />;
+  return <ProblemPage problem={problem} canEdit={canEdit} />;
 }

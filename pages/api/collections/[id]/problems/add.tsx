@@ -13,16 +13,14 @@ function getFullName(session: Session): string {
 }
 
 async function getOrCreateAuthor(session: Session, collectionId: number): Promise<number> {
-  for (let i = 0; i < session.authors.length; i++) {
-    const author = session.authors[i];
-    if (author.collectionId === collectionId) {
-      return author.id;
-    }
+  // Find if the user has an author for this collection
+  let author = session.authors.find(author => author.collectionId === collectionId);
+  if (author) {
+    return author.id;
   }
 
-  const fullName = getFullName(session);
-
   // No existing author found, so create new author and update token and session
+  const fullName = getFullName(session);
   const newAuthor = await prisma.author.create({
     data: {
       displayName: fullName, // TODO: currently uses real name by default
