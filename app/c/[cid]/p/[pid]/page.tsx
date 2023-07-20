@@ -1,8 +1,7 @@
 import prisma from '@/utils/prisma'
-import { Problem, Collection, Solution, Author, Subject } from '@prisma/client'
+import { Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
 import ProblemPage from './problem-page'
-import type { Session } from 'next-auth'
 import type { Params, Props } from './types'
 
 export async function generateStaticParams() {

@@ -1,6 +1,6 @@
 import Title from './title'
 import Statement from './statement'
-import ProblemSpoilers from '@/components/problem-spoilers'
+import ProblemSpoilers from './problem-spoilers'
 import type { ProblemProps } from './types'
 
 export default function ProblemPage({
