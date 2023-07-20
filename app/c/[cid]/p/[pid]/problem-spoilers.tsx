@@ -1,22 +1,14 @@
 'use client'
 
 import { useState } from 'react';
-import EditableAnswer from '@/components/editable-answer';
+import Answer from './answer';
 import EditableSolution from '@/components/editable-solution';
-import { Problem, Solution, Author } from '@prisma/client';
-
-interface SolutionWithAuthor extends Solution {
-  authors: Pick<Author, 'displayName'>[];
-}
-
-interface ProblemWithSolution extends Problem {
-  solutions: SolutionWithAuthor[];
-}
+import type { ProblemProps } from './types'
 
 export default function ProblemSpoilers({
   problem,
 }: {
-  problem: ProblemWithSolution
+  problem: ProblemProps
 }) {
   const [hidden, setHidden] = useState(true);
 
@@ -24,7 +16,7 @@ export default function ProblemSpoilers({
   if (problem.answer) {
     answer = (
       <div className="text-xl text-slate-800 mb-8">
-        <EditableAnswer problem={problem} />
+        <Answer problem={problem} />
       </div>
     );
   }
