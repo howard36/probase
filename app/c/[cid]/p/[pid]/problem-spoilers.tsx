@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Answer from './answer';
-import EditableSolution from '@/components/editable-solution';
+import Solution from './solution'
 import type { ProblemProps } from './types'
 
 export default function ProblemSpoilers({
@@ -24,7 +24,7 @@ export default function ProblemSpoilers({
     const sol = problem.solutions[0];
     solution = (
       <div className="text-xl text-slate-800 mb-8">
-        <EditableSolution solution={sol} />
+        <Solution solution={sol} />
       </div>
     );
   }

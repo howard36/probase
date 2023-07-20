@@ -55,11 +55,10 @@ async function getProblem(params: Params) {
             summary: '',
             problemId: 1,
             text: 'Use the quadratic formula to get\n$$x = \\frac{4 \\pm \\sqrt{4^2 - 4 \\cdot 1 \\cdot 2}}{2} = 2 \\pm \\sqrt{2}$$',
-            authors: [
-              {
-                displayName: 'Howard',
-              }
-            ]
+            authors: [{
+              id: 1,
+              displayName: 'Howard',
+            }]
           }
         ],
         submitterId: 'user id goes here',
@@ -100,6 +99,7 @@ async function getProblem(params: Params) {
         include: {
           authors: {
             select: {
+              id: true,
               displayName: true,
             }
           },

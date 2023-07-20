@@ -1,6 +1,6 @@
 'use client'
 
-import EditableAnswer from '@/components/editable-answer'
+import EditableAnswer from './editable-answer'
 import Latex from 'react-latex-next'
 import type { ProblemProps } from './types'
 import { useSession } from 'next-auth/react'

@@ -5,8 +5,8 @@ export interface Params {
   pid: string;
 }
 
-interface SolutionProps extends Solution {
-  authors: Pick<Author, 'displayName'>[];
+export interface SolutionProps extends Solution {
+  authors: Pick<Author, 'id' | 'displayName'>[];
 }
 
 export interface ProblemProps extends Problem {

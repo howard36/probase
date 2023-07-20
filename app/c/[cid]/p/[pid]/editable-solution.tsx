@@ -1,4 +1,4 @@
-import ClickToEdit from './click-to-edit';
+import ClickToEdit from '@/components/click-to-edit';
 import { Solution, Author } from '@prisma/client';
 
 interface SolutionWithAuthor extends Solution {
