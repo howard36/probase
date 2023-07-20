@@ -15,10 +15,8 @@ interface ProblemWithSolution extends Problem {
 
 export default function ProblemSpoilers({
   problem,
-  canEdit,
 }: {
   problem: ProblemWithSolution
-  canEdit: boolean
 }) {
   const [hidden, setHidden] = useState(true);
 
