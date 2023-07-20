@@ -5,17 +5,8 @@ import Title from './title'
 import Statement from './statement'
 import ProblemSpoilers from '@/components/problem-spoilers'
 import type { ProblemProps } from './types'
-import type { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
-
-function hasProblemEditPerms(session: Session | null, problem: ProblemProps): boolean {
-  if (session === null) {
-    return false;
-  }
-  const authorIds1 = session.authors.map(author => author.id);
-  const authorIds2 = problem.authors.map(author => author.id);
-  return authorIds1?.some(id => authorIds2?.includes(id));
-}
+import { canEditProblem } from './permissions'
 
 export default function ProblemPage({
   problem,
@@ -23,7 +14,7 @@ export default function ProblemPage({
   problem: ProblemProps
 }) {
   const { data: session, status } = useSession();
-  const canEdit = (status === 'loading') ? false : hasProblemEditPerms(session, problem);
+  const canEdit = (status === 'loading') ? false : canEditProblem(session, problem);
 
   let written_by;
   if (problem.authors.length > 0) {
