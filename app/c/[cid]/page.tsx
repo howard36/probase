@@ -1,6 +1,4 @@
-// import Head from 'next/head';
-import HomeCard from '@/components/home-card'
-// import Sidebar from '@/components/sidebar'
+import ProblemCard from './problem-card'
 import prisma from '@/utils/prisma'
 import { Collection, Problem, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
@@ -101,7 +99,7 @@ export default async function CollectionPage({
         <ul id="problems">
           {collection.problems.map((problem) => (
             <li key={problem.pid} className="mb-8">
-              <HomeCard collection={collection} problem={problem}/>
+              <ProblemCard collection={collection} problem={problem} />
             </li>
           )).reverse()}
         </ul>

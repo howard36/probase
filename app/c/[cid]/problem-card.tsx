@@ -41,7 +41,7 @@ const subjectToColor = {
   'ComputerScience': 16,
 };
 
-export default function HomeCard({
+export default function ProblemCard({
   collection,
   problem,
 }: {
