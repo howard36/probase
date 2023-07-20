@@ -4,7 +4,7 @@ import { JWT } from "next-auth/jwt";
 import { Author } from "@prisma/client"
 
 interface CollectionPerm {
-  collectionId: number;
+  colId: number;
   cid: string;
   isAdmin: boolean;
 }

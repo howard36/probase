@@ -24,7 +24,7 @@ export default function ProblemSpoilers({
     const sol = problem.solutions[0];
     solution = (
       <div className="text-xl text-slate-800 mb-8">
-        <Solution solution={sol} />
+        <Solution solution={sol} collectionId={problem.collectionId}/>
       </div>
     );
   }

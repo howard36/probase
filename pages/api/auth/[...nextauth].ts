@@ -130,7 +130,7 @@ export const authOptions: NextAuthOptions = {
           },
         });
         token.collectionPerms = permissions.map(permission => ({
-          collectionId: permission.collection.id,
+          colId: permission.collection.id,
           cid: permission.collection.cid,
           isAdmin: permission.accessLevel === "Admin",
         }));

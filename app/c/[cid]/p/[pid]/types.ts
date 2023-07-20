@@ -5,6 +5,8 @@ export interface Params {
   pid: string;
 }
 
+export type CollectionProps = Pick<Collection, 'id' | 'cid'>;
+
 export interface SolutionProps extends Solution {
   authors: Pick<Author, 'id' | 'displayName'>[];
 }

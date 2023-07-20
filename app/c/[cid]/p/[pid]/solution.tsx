@@ -8,11 +8,13 @@ import { canEditSolution } from './permissions'
 
 export default function Solution({
   solution,
+  collectionId,
 }: {
   solution: SolutionProps
+  collectionId: number
 }) {
   const { data: session, status } = useSession();
-  const canEdit = (status === 'loading') ? false : canEditSolution(session, solution);
+  const canEdit = (status === 'loading') ? false : canEditSolution(session, solution, collectionId);
 
   if (canEdit) {
     return <EditableSolution solution={solution} />;
