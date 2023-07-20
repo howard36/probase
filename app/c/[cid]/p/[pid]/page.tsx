@@ -156,9 +156,9 @@ export default async function ProblemDetails({
   params: Params
 }) {
   let { problem, collection } = await getProblem(params);
-  const session = await getServerSession(authOptions);
-  const canEdit = hasProblemEditPerms(session, problem);
+  // const session = await getServerSession(authOptions);
+  // const canEdit = hasProblemEditPerms(session, problem);
   // const canEdit = false;
 
-  return <ProblemPage problem={problem} canEdit={canEdit} />;
+  return <ProblemPage problem={problem} />;
 }
