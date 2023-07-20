@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // TODO: handle invalid id
-  const id = Number(req.query.id);
+  const id = parseInt(req.query.id as string);
 
   let { solution, ...data } = req.body;
 

@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  const collectionId = Number(req.query.id);
+  const collectionId = parseInt(req.query.id as string);
   const collection = await prisma.collection.findUnique({
     where: { id: collectionId },
     select: {
