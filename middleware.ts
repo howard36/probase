@@ -8,7 +8,7 @@ export default withAuth(
     let url = req.nextUrl.clone()
     const cid = url.pathname.split('/')[2];
 
-    if (token?.viewColPerms.includes(cid)) {
+    if (token?.collectionPerms.some(perm => perm.cid === cid)) {
       return NextResponse.next();
     } else {
       url.pathname = '/collection-unauthorized'

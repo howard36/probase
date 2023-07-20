@@ -5,7 +5,8 @@ import { Author } from "@prisma/client"
 
 interface CollectionPerm {
   collectionId: number;
-  accessLevel: AccessLevel;
+  cid: string;
+  isAdmin: boolean;
 }
 
 declare module "next-auth" {
@@ -20,8 +21,7 @@ declare module "next-auth" {
     familyName?: string;
     locale?: string;
     user_id?: string;
-    // collectionPerms?: CollectionPerm[];
-    viewColPerms: string[];
+    collectionPerms: CollectionPerm[];
     authors: Author[];
   }
 
@@ -47,8 +47,7 @@ declare module "next-auth/jwt" {
     accessTokenExpires?: number;
     refreshToken?: string;
 
-    // collectionPerms?: CollectionPerm[];
-    viewColPerms: string[];
+    collectionPerms: CollectionPerm[];
     authors: Author[];
   }
 }

@@ -116,6 +116,7 @@ export const authOptions: NextAuthOptions = {
           token.refreshToken = account.refresh_token;
         }
 
+        // Save permission info in JWT
         const permissions = await prisma.permission.findMany({
           where: { userId: token.sub },
           select: {
@@ -128,12 +129,12 @@ export const authOptions: NextAuthOptions = {
             accessLevel: true,
           },
         });
-        // token.collectionPerms = permissions.map(permission => ({
-        //   colId: permission.collection.id,
-        //   cid: permission.collection.cid,
-        //   accessLevel: permission.accessLevel,
-        // }));
-        token.viewColPerms = permissions.map(perm => perm.collection.cid);
+        token.collectionPerms = permissions.map(permission => ({
+          collectionId: permission.collection.id,
+          cid: permission.collection.cid,
+          isAdmin: permission.accessLevel === "Admin",
+        }));
+
         token.authors = await prisma.author.findMany({
           where: { userId: token.sub }
         });
@@ -163,7 +164,7 @@ export const authOptions: NextAuthOptions = {
       session.familyName = token.familyName;
       session.locale = token.locale;
       session.user_id = token.sub;
-      session.viewColPerms = token.viewColPerms;
+      session.collectionPerms = token.collectionPerms;
       session.authors = token.authors;
       session.fullName = token.name;
       return session;

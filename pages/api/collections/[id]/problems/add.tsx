@@ -65,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const cid = collection.cid;
-  if (!session.viewColPerms.includes(cid)) {
+  if (!session.collectionPerms.some(perm => perm.cid === cid)) {
     res.status(403).json({
       'error': 'You do not have permission to edit this collection'
     });
