@@ -4,20 +4,11 @@
 import Title from './title'
 import Statement from './statement'
 import ProblemSpoilers from '@/components/problem-spoilers'
-import type { Problem, Solution, Author } from '@prisma/client'
+import type { ProblemProps } from './types'
 import type { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 
-interface SolutionWithAuthor extends Solution {
-  authors: Pick<Author, 'displayName'>[];
-}
-
-interface ProblemWithSolution extends Problem {
-  authors: Pick<Author, 'id' | 'displayName'>[];
-  solutions: SolutionWithAuthor[];
-}
-
-function hasProblemEditPerms(session: Session | null, problem: ProblemWithSolution): boolean {
+function hasProblemEditPerms(session: Session | null, problem: ProblemProps): boolean {
   if (session === null) {
     return false;
   }
@@ -29,7 +20,7 @@ function hasProblemEditPerms(session: Session | null, problem: ProblemWithSoluti
 export default function ProblemPage({
   problem,
 }: {
-  problem: ProblemWithSolution
+  problem: ProblemProps
 }) {
   const { data: session, status } = useSession();
   const canEdit = (status === 'loading') ? false : hasProblemEditPerms(session, problem);

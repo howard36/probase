@@ -3,13 +3,7 @@ import { Problem, Collection, Solution, Author, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
 import ProblemPage from './problem-page'
 import type { Session } from 'next-auth'
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "pages/api/auth/[...nextauth]"
-
-interface Params {
-  cid: string;
-  pid: string;
-}
+import type { Params, Props } from './types'
 
 export async function generateStaticParams() {
   if (process.env.NO_WIFI === "true") {
@@ -38,20 +32,6 @@ export async function generateStaticParams() {
 
   return params;
 };
-
-interface SolutionWithAuthor extends Solution {
-  authors: Pick<Author, 'displayName'>[];
-}
-
-interface ProblemWithSolution extends Problem {
-  authors: Pick<Author, 'id' | 'displayName'>[];
-  solutions: SolutionWithAuthor[];
-}
-
-interface Props {
-  collection: Collection;
-  problem: ProblemWithSolution;
-}
 
 // TODO: params can be null, but the type does not reflect that
 async function getProblem(params: Params) {
@@ -141,24 +121,12 @@ async function getProblem(params: Params) {
   return props;
 };
 
-function hasProblemEditPerms(session: Session | null, problem: ProblemWithSolution): boolean {
-  if (session === null) {
-    return false;
-  }
-  const authorIds1 = session.authors.map(author => author.id);
-  const authorIds2 = problem.authors.map(author => author.id);
-  return authorIds1?.some(id => authorIds2?.includes(id));
-}
-
 export default async function ProblemDetails({
   params
 }: {
   params: Params
 }) {
   let { problem, collection } = await getProblem(params);
-  // const session = await getServerSession(authOptions);
-  // const canEdit = hasProblemEditPerms(session, problem);
-  // const canEdit = false;
 
   return <ProblemPage problem={problem} />;
 }
