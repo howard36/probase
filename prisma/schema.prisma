@@ -3,10 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  directUrl         = env("DIRECT_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -76,7 +75,6 @@ enum Subject {
   NumberTheory
 }
 
-// TODO: add default likes = 0
 model Problem {
   id           Int        @id @default(autoincrement())
   collection   Collection @relation(fields: [collectionId], references: [id])
@@ -90,7 +88,7 @@ model Problem {
   answer       String
   solutions    Solution[]
   subject      Subject
-  likes        Int
+  likes        Int        @default(0)
   difficulty   Int
   source       String?
   isAnonymous  Boolean
