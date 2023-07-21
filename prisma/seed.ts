@@ -59,7 +59,7 @@ async function main() {
       collectionId: cmimc.id,
       pid: 'A1',
       title: 'Quadratic Equation',
-      statement: 'Find all roots of $$x^2 - 4x + 2$$',
+      statement: 'Compute the roots of the quadratic $$x^2 - 4x + 2$$',
       submitterId: howardUser.id,
       authors: {
         connect: [{ id: howardAuthor.id }]
