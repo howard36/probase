@@ -11,7 +11,7 @@ export default withAuth(
     if (token?.collectionPerms.some(perm => perm.cid === cid)) {
       return NextResponse.next();
     } else {
-      url.pathname = '/collection-unauthorized'
+      url.pathname = '/need-permission'
       return NextResponse.redirect(url);
     }
   }
