@@ -93,7 +93,7 @@ export const authOptions: NextAuthOptions = {
       httpOptions: {
         timeout: 60000,
       },
-      allowDangerousEmailAccountLinking: true,
+      allowDangerousEmailAccountLinking: true, // Note: don't do this for Discord
     }),
     // ...add more providers here
   ],

@@ -12,6 +12,8 @@ function getFullName(session: Session): string {
   }
 }
 
+// TODO: move this to a separate API.
+// Problem Page submit should call both APIs if no author
 async function getOrCreateAuthor(session: Session, collectionId: number): Promise<number> {
   // Find if the user has an author for this collection
   let author = session.authors.find(author => author.collectionId === collectionId);
@@ -59,11 +61,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (collection === null) {
     res.status(404).json({
-      'error': `Collection with id ${collectionId} not found`
+      'error': `No ollection with id`
     });
     return;
   }
 
+  // TODO: use util function
   const cid = collection.cid;
   if (!session.collectionPerms.some(perm => perm.cid === cid)) {
     res.status(403).json({
