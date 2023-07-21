@@ -1,5 +1,11 @@
-import HomePage from './home-page'
+import Sidebar from '@/components/sidebar'
 
 export default function Page() {
-  return <HomePage />
+  return (
+    <Sidebar>
+      <div className="text-6xl">
+        Hello World!
+      </div>
+    </Sidebar>
+  );
 }

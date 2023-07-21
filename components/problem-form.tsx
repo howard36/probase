@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import { useState } from 'react'
 // import { useSession } from 'next-auth/react'
-import { Collection, Subject } from '@prisma/client'
+import type { Collection, Subject } from '@prisma/client'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
