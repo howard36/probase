@@ -1,7 +1,7 @@
 import prisma from '@/utils/prisma'
-import { Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
 import ProblemPage from './problem-page'
+import type { Subject } from '@prisma/client'
 import type { Params, Props } from './types'
 
 export async function generateStaticParams() {

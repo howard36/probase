@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Latex from 'react-latex-next';
-import { Problem, Collection } from '@prisma/client';
+import type { Problem, Collection } from '@prisma/client';
 
 const titleLineColors = [
   'bg-red-400', // 0

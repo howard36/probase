@@ -1,6 +1,6 @@
 import ProblemCard from './problem-card'
 import prisma from '@/utils/prisma'
-import { Collection, Problem, Subject } from '@prisma/client'
+import type { Collection, Problem, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 

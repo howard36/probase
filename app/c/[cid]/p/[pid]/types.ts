@@ -1,4 +1,4 @@
-import { Problem, Collection, Solution, Author } from '@prisma/client'
+import type { Problem, Collection, Solution, Author } from '@prisma/client'
 
 export interface Params {
   cid: string;

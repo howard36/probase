@@ -1,14 +1,10 @@
 import ClickToEdit from '@/components/click-to-edit';
-import { Solution, Author } from '@prisma/client';
-
-interface SolutionWithAuthor extends Solution {
-  authors: Pick<Author, 'displayName'>[];
-}
+import type { SolutionProps } from './types'
 
 export default function EditableSolution({
   solution
 }: {
-  solution: SolutionWithAuthor
+  solution: SolutionProps
 }) {
   // const authorName = solution.authors[0].displayName;
   const saveSolution = async (text: string) => {
