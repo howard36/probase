@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  if (!canEditSolution(session, solution)) {
+  if (!canEditSolution(session, solution, solution.problem.collection)) {
     res.status(403).json({
       'error': 'You do not have permission to edit this solution'
     });

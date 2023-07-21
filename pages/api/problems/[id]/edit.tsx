@@ -21,10 +21,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const problem = await prisma.problem.findUnique({
     where: { id: problemId },
     select: {
-      collectionId: true,
+      collection: {
+        select: { id: true }
+      },
       authors: {
         select: { id: true }
-      }
+      },
     }
   });
 
@@ -35,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  if (!canEditProblem(session, problem)) {
+  if (!canEditProblem(session, problem, problem.collection)) {
     res.status(403).json({
       'error': 'You do not have permission to edit this problem'
     });
