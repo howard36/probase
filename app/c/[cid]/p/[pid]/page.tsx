@@ -74,7 +74,8 @@ async function getProblem(params: Params) {
   // TODO: save list of (collection id, cid) pairs in token permissions,
   // so that we can avoid this extra DB call
   const collection = await prisma.collection.findUnique({
-    where: { cid: params.cid }
+    where: { cid: params.cid },
+    select: { id: true }
   });
 
   if (collection === null) {

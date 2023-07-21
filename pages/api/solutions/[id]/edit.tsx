@@ -26,7 +26,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         select: { id: true }
       },
       problem: {
-        select: { collectionId: true }
+        select: {
+          collection: {
+            select: { id: true }
+          }
+        }
       }
     }
   });
@@ -38,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  if (!canEditSolution(session, solution, solution.problem.collectionId)) {
+  if (!canEditSolution(session, solution)) {
     res.status(403).json({
       'error': 'You do not have permission to edit this solution'
     });

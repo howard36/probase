@@ -10,10 +10,12 @@ type CollectionPerm = Prisma.CollectionGetPayload<typeof collectionPerm>;
 
 const problemPerm = Prisma.validator<Prisma.ProblemArgs>()({
   select: {
-    collectionId: true,
     authors: {
       select: { id: true }
-    }
+    },
+    collection: {
+      select: { id: true }
+    },
   }
 });
 type ProblemPerm = Prisma.ProblemGetPayload<typeof problemPerm>;
@@ -22,16 +24,23 @@ const solutionPerm = Prisma.validator<Prisma.SolutionArgs>()({
   select: {
     authors: {
       select: { id: true }
-    }
+    },
+    problem: {
+      select: {
+        collection: {
+          select: { id: true }
+        }
+      }
+    },
   }
 });
 type SolutionPerm = Prisma.SolutionGetPayload<typeof solutionPerm>;
 
 
 
-// TODO: change to collection
-function isAdmin(session: Session, colId: number) {
-  return session.collectionPerms.some(perm => (perm.colId === colId && perm.isAdmin));
+function isCollectionAdmin(session: Session, collection: CollectionPerm) {
+  const id = collection.id;
+  return session.collectionPerms.some(perm => (perm.colId === id && perm.isAdmin));
 }
 
 export function canEditCollection(
@@ -54,11 +63,11 @@ export function canEditProblem(
     return false;
   }
 
-  if (isAdmin(session, problem.collectionId)) {
+  const collection = problem.collection;
+  if (isCollectionAdmin(session, collection)) {
     return true;
   }
 
-  const collection = { id: problem.collectionId };
   if (!canEditCollection(session, collection)) {
     return false;
   }
@@ -71,17 +80,16 @@ export function canEditProblem(
 export function canEditSolution(
   session: Session | null,
   solution: SolutionPerm,
-  collectionId: number,
 ): boolean {
   if (session === null) {
     return false;
   }
 
-  if (isAdmin(session, collectionId)) {
+  const collection = solution.problem.collection;
+  if (isCollectionAdmin(session, collection)) {
     return true;
   }
 
-  const collection = { id: collectionId };
   if (!canEditCollection(session, collection)) {
     return false;
   }
