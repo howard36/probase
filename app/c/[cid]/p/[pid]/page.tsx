@@ -105,7 +105,7 @@ async function getProblem(params: Params) {
             }
           },
         }
-      }
+      },
     },
   });
 

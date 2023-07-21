@@ -1,20 +1,45 @@
-import type { Problem, Collection, Solution, Author } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
 export interface Params {
   cid: string;
   pid: string;
 }
 
-export interface SolutionProps extends Solution {
-  authors: Pick<Author, 'id' | 'displayName'>[];
-}
+const collectionProps = Prisma.validator<Prisma.CollectionArgs>()({
+  select: {
+    id: true,
+  }
+});
+export type CollectionProps = Prisma.CollectionGetPayload<typeof collectionProps>;
 
-export interface ProblemProps extends Problem {
-  authors: Pick<Author, 'id' | 'displayName'>[];
-  solutions: SolutionProps[];
+const solutionSelect = {
+  include: {
+    authors: {
+      select: {
+        id: true,
+        displayName: true,
+      }
+    }
+  }
+};
+const solutionProps = Prisma.validator<Prisma.SolutionArgs>()(solutionSelect);
+export type SolutionProps = Prisma.SolutionGetPayload<typeof solutionProps>;
+
+export const problemSelect = {
+  include: {
+    authors: {
+      select: {
+        id: true,
+        displayName: true,
+      }
+    },
+    solutions: solutionSelect,
+  }
 }
+const problemProps = Prisma.validator<Prisma.ProblemArgs>()(problemSelect);
+export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
 
 export interface Props {
-  collection: Collection;
+  collection: CollectionProps;
   problem: ProblemProps;
 }
