@@ -52,7 +52,6 @@ export default async function AddProblemPage({
   // TODO: select only needed fields of collection
   const collection = await getCollection(params.cid);
 
-  // TODO: change blue accent color
   return (
     <ProblemForm collection={collection}/>
   );

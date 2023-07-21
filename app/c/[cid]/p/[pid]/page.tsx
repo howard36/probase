@@ -34,7 +34,7 @@ export async function generateStaticParams() {
 };
 
 // TODO: params can be null, but the type does not reflect that
-async function getProblem(params: Params) {
+async function getProps(params: Params) {
   // console.log("running getStaticProps for", params)
   if (process.env.NO_WIFI === "true") {
     return {
@@ -105,12 +105,12 @@ async function getProblem(params: Params) {
   return props;
 };
 
-export default async function ProblemDetails({
+export default async function Page({
   params
 }: {
   params: Params
 }) {
-  let { problem, collection } = await getProblem(params);
+  let { problem, collection } = await getProps(params);
 
   return <ProblemPage problem={problem} collection={collection} />;
 }

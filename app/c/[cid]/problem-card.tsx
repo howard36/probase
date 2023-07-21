@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Latex from 'react-latex-next';
-import type { Problem, Collection } from '@prisma/client';
+import type { ProblemProps, CollectionProps } from './types';
 
 const titleLineColors = [
   'bg-red-400', // 0
@@ -45,8 +45,8 @@ export default function ProblemCard({
   collection,
   problem,
 }: {
-  collection: Collection
-  problem: Pick<Problem, 'pid' | 'title' | 'subject' | 'statement'>
+  collection: CollectionProps
+  problem: ProblemProps
 }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];

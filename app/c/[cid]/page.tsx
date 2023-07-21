@@ -1,16 +1,10 @@
 import ProblemCard from './problem-card'
 import prisma from '@/utils/prisma'
-import type { Collection, Problem, Subject } from '@prisma/client'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-
-interface Params {
-  cid: string;
-}
-
-interface CollectionWithProblem extends Collection {
-  problems: Pick<Problem, 'pid' | 'title' | 'subject' | 'statement'>[];
-}
+import { Subject } from '@prisma/client'
+import type { Params, CollectionProps } from './types'
+import { collectionSelect } from './types'
 
 export async function generateStaticParams() {
   if (process.env.NO_WIFI === "true") {
@@ -25,10 +19,11 @@ export async function generateStaticParams() {
   return params;
 }
 
-async function getCollection(cid: string) {
+async function getCollection(cid: string): Promise<CollectionProps> {
   if (process.env.NO_WIFI === "true") {
     return {
       cid: 'cmimc',
+      name: 'CMIMC',
       problems: [
         {
           pid: 'A1',
@@ -61,18 +56,12 @@ async function getCollection(cid: string) {
           statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         },
       ],
-      id: 1,
-      name: 'CMIMC',
-      showAuthors: true,
     }
   }
 
-  // TODO: filter only needed fields of collection
   const collection = await prisma.collection.findUnique({
     where: { cid },
-    include: {
-      problems: true
-    }
+    select: collectionSelect,
   });
 
   if (collection === null) {
