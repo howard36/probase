@@ -4,7 +4,7 @@ import EditableStatement from './editable-statement'
 import Latex from 'react-latex-next'
 import type { ProblemProps } from './types'
 import { useSession } from 'next-auth/react'
-import { canEditProblem } from './permissions'
+import { canEditProblem } from '@/utils/permissions'
 
 export default function Statement({
   problem,

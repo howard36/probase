@@ -4,7 +4,7 @@ import EditableSolution from './editable-solution'
 import Latex from 'react-latex-next'
 import type { SolutionProps } from './types'
 import { useSession } from 'next-auth/react'
-import { canEditSolution } from './permissions'
+import { canEditSolution } from '@/utils/permissions'
 
 export default function Solution({
   solution,
