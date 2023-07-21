@@ -1,10 +1,10 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import type { JWT } from "next-auth/jwt";
-import type { User, Account, Profile, Session, NextAuthOptions } from "next-auth";
-import type { AdapterUser } from "next-auth/adapters";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from '@/utils/prisma';
+import NextAuth from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import type { JWT } from "next-auth/jwt"
+import type { User, Account, Profile, Session, NextAuthOptions } from "next-auth"
+import type { AdapterUser } from "next-auth/adapters"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import prisma from '@/utils/prisma'
 
 interface jwtCallbackParams {
   token: JWT;
@@ -93,6 +93,7 @@ export const authOptions: NextAuthOptions = {
       httpOptions: {
         timeout: 60000,
       },
+      allowDangerousEmailAccountLinking: true,
     }),
     // ...add more providers here
   ],

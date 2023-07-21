@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
 const prisma = new PrismaClient();
+const adapter = PrismaAdapter(prisma);
 
 async function main() {
   const cmimc = await prisma.collection.upsert({
@@ -13,13 +15,14 @@ async function main() {
     }
   });
 
-  const howardUser = await prisma.user.upsert({
+  await adapter.createUser({
+    name: 'Howard Halim',
+    email: 'howardhalim@gmail.com',
+    emailVerified: null,
+  });
+
+  const howardUser = await prisma.user.findUniqueOrThrow({
     where: { email: 'howardhalim@gmail.com' },
-    update: {},
-    create: {
-      name: 'Howard Halim blah',
-      email: 'howardhalim@gmail.com',
-    }
   });
 
   await prisma.permission.upsert({
