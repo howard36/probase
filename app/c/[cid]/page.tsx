@@ -2,20 +2,20 @@ import ProblemCard from './problem-card'
 import prisma from '@/utils/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Subject } from '@prisma/client'
+import type { Subject } from '@prisma/client'
 import type { Params, CollectionProps } from './types'
 import { collectionSelect } from './types'
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<Params[]> {
   if (process.env.NO_WIFI === "true") {
     return [
       { cid: 'cmimc' }
     ];
   }
-  const params: Params[] = await prisma.collection.findMany({
+
+  const params = await prisma.collection.findMany({
     select: { cid: true }
   });
-
   return params;
 }
 

@@ -5,7 +5,7 @@ import type { Subject } from '@prisma/client'
 import type { Params, Props } from './types'
 import { problemInclude } from './types'
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<Params[]> {
   if (process.env.NO_WIFI === "true") {
     return [
       {
@@ -14,6 +14,7 @@ export async function generateStaticParams() {
       }
     ];
   }
+
   const all_problems = await prisma.problem.findMany({
     select: {
       collection: {
@@ -25,16 +26,15 @@ export async function generateStaticParams() {
     }
   });
 
-  const params: Params[] = all_problems.map((problem) => ({
+  const params = all_problems.map((problem) => ({
     cid: problem.collection.cid,
     pid: problem.pid,
   }));
-
   return params;
 };
 
 // TODO: params can be null, but the type does not reflect that
-async function getProps(params: Params) {
+async function getProps(params: Params): Promise<Props> {
   // console.log("running getStaticProps for", params)
   if (process.env.NO_WIFI === "true") {
     return {
