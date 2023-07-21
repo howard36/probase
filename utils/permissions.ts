@@ -12,10 +12,7 @@ const problemPerm = Prisma.validator<Prisma.ProblemArgs>()({
   select: {
     authors: {
       select: { id: true }
-    },
-    collection: {
-      select: { id: true }
-    },
+    }
   }
 });
 type ProblemPerm = Prisma.ProblemGetPayload<typeof problemPerm>;
@@ -24,14 +21,7 @@ const solutionPerm = Prisma.validator<Prisma.SolutionArgs>()({
   select: {
     authors: {
       select: { id: true }
-    },
-    problem: {
-      select: {
-        collection: {
-          select: { id: true }
-        }
-      }
-    },
+    }
   }
 });
 type SolutionPerm = Prisma.SolutionGetPayload<typeof solutionPerm>;
@@ -58,16 +48,14 @@ export function canEditCollection(
 export function canEditProblem(
   session: Session | null,
   problem: ProblemPerm,
+  collection: CollectionPerm,
 ): boolean {
   if (session === null) {
     return false;
   }
-
-  const collection = problem.collection;
   if (isCollectionAdmin(session, collection)) {
     return true;
   }
-
   if (!canEditCollection(session, collection)) {
     return false;
   }
@@ -80,16 +68,14 @@ export function canEditProblem(
 export function canEditSolution(
   session: Session | null,
   solution: SolutionPerm,
+  collection: CollectionPerm,
 ): boolean {
   if (session === null) {
     return false;
   }
-
-  const collection = solution.problem.collection;
   if (isCollectionAdmin(session, collection)) {
     return true;
   }
-
   if (!canEditCollection(session, collection)) {
     return false;
   }

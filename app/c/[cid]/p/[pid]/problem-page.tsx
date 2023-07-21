@@ -1,12 +1,14 @@
 import Title from './title'
 import Statement from './statement'
 import ProblemSpoilers from './problem-spoilers'
-import type { ProblemProps } from './types'
+import type { CollectionProps, ProblemProps } from './types'
 
 export default function ProblemPage({
   problem,
+  collection,
 }: {
   problem: ProblemProps
+  collection: CollectionProps
 }) {
   let written_by;
   if (problem.authors.length > 0) {
@@ -18,13 +20,13 @@ export default function ProblemPage({
       {/* fixed width container, matching ideal 60-character line length */}
       <div className="w-128 max-w-full mx-auto">
         <div className="text-3xl text-slate-900 font-bold mb-4">
-          <Title problem={problem} />
+          <Title problem={problem} collection={collection} />
         </div>
         <div className="text-xl text-slate-800 mb-4">
-          <Statement problem={problem} />
+          <Statement problem={problem} collection={collection} />
         </div>
         {written_by}
-        <ProblemSpoilers problem={problem} />
+        <ProblemSpoilers problem={problem} collection={collection} />
       </div>
     </div>
   );

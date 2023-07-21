@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import Answer from './answer';
 import Solution from './solution'
-import type { ProblemProps } from './types'
+import type { CollectionProps, ProblemProps } from './types'
 
 export default function ProblemSpoilers({
   problem,
+  collection,
 }: {
   problem: ProblemProps
+  collection: CollectionProps
 }) {
   const [hidden, setHidden] = useState(true);
 
@@ -16,7 +18,7 @@ export default function ProblemSpoilers({
   if (problem.answer) {
     answer = (
       <div className="text-xl text-slate-800 mb-8">
-        <Answer problem={problem} />
+        <Answer problem={problem} collection={collection} />
       </div>
     );
   }
@@ -24,7 +26,7 @@ export default function ProblemSpoilers({
     const sol = problem.solutions[0];
     solution = (
       <div className="text-xl text-slate-800 mb-8">
-        <Solution solution={sol} collectionId={problem.collectionId}/>
+        <Solution solution={sol} collection={collection} />
       </div>
     );
   }

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import ProblemPage from './problem-page'
 import type { Subject } from '@prisma/client'
 import type { Params, Props } from './types'
+import { problemInclude } from './types'
 
 export async function generateStaticParams() {
   if (process.env.NO_WIFI === "true") {
@@ -67,12 +68,12 @@ async function getProblem(params: Params) {
         source: '',
         isAnonymous: false,
       },
-      collection: {}
+      collection: {
+        id: 1
+      }
     }
   }
 
-  // TODO: save list of (collection id, cid) pairs in token permissions,
-  // so that we can avoid this extra DB call
   const collection = await prisma.collection.findUnique({
     where: { cid: params.cid },
     select: { id: true }
@@ -89,24 +90,7 @@ async function getProblem(params: Params) {
         pid: params.pid,
       }
     },
-    include: {
-      authors: {
-        select: {
-          id: true,
-          displayName: true,
-        }
-      },
-      solutions: {
-        include: {
-          authors: {
-            select: {
-              id: true,
-              displayName: true,
-            }
-          },
-        }
-      },
-    },
+    include: problemInclude,
   });
 
   if (problem === null) {
@@ -128,5 +112,5 @@ export default async function ProblemDetails({
 }) {
   let { problem, collection } = await getProblem(params);
 
-  return <ProblemPage problem={problem} />;
+  return <ProblemPage problem={problem} collection={collection} />;
 }

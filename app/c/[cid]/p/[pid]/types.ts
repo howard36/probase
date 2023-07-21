@@ -12,31 +12,33 @@ const collectionProps = Prisma.validator<Prisma.CollectionArgs>()({
 });
 export type CollectionProps = Prisma.CollectionGetPayload<typeof collectionProps>;
 
-const solutionSelect = {
-  include: {
-    authors: {
-      select: {
-        id: true,
-        displayName: true,
-      }
+const solutionInclude = {
+  authors: {
+    select: {
+      id: true,
+      displayName: true,
     }
   }
 };
-const solutionProps = Prisma.validator<Prisma.SolutionArgs>()(solutionSelect);
+const solutionProps = Prisma.validator<Prisma.SolutionArgs>()({
+  include: solutionInclude
+});
 export type SolutionProps = Prisma.SolutionGetPayload<typeof solutionProps>;
 
-export const problemSelect = {
-  include: {
-    authors: {
-      select: {
-        id: true,
-        displayName: true,
-      }
-    },
-    solutions: solutionSelect,
+export const problemInclude = {
+  authors: {
+    select: {
+      id: true,
+      displayName: true,
+    }
+  },
+  solutions: {
+    include: solutionInclude
   }
-}
-const problemProps = Prisma.validator<Prisma.ProblemArgs>()(problemSelect);
+};
+const problemProps = Prisma.validator<Prisma.ProblemArgs>()({
+  include: problemInclude
+});
 export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
 
 export interface Props {
