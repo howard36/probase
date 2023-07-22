@@ -17,7 +17,7 @@ export default function ProblemSpoilers({
   let answer, solution;
   if (problem.answer) {
     answer = (
-      <div className="text-xl text-slate-800 mb-8">
+      <div className="mb-8">
         <Answer problem={problem} collection={collection} />
       </div>
     );
@@ -25,7 +25,7 @@ export default function ProblemSpoilers({
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
     solution = (
-      <div className="text-xl text-slate-800 mb-8">
+      <div className="mb-8">
         <Solution solution={sol} collection={collection} />
       </div>
     );
