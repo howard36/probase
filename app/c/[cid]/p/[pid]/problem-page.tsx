@@ -1,6 +1,6 @@
 import Title from './title'
 import Statement from './statement'
-import ProblemSpoilers from './problem-spoilers'
+import Spoilers from './spoilers'
 import type { CollectionProps, ProblemProps } from './types'
 
 export default function ProblemPage({
@@ -26,7 +26,7 @@ export default function ProblemPage({
           <Statement problem={problem} collection={collection} />
         </div>
         {written_by}
-        <ProblemSpoilers problem={problem} collection={collection} />
+        <Spoilers problem={problem} collection={collection} />
       </div>
     </div>
   );
