@@ -34,16 +34,16 @@ export default function Spoilers({
   if (hidden) {
     return (
       <div className="my-12">
-        <button onClick={() => setHidden(false)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold leading-none">Show spoilers</button>
+        <button onClick={() => setHidden(false)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-base text-slate-50 font-semibold leading-none">Show spoilers</button>
       </div>
     );
   } else {
     return (
       <div className="my-12">
-        <button onClick={() => setHidden(true)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold leading-none">Hide spoilers</button>
+        <button onClick={() => setHidden(true)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-base text-slate-50 font-semibold leading-none">Hide spoilers</button>
         {answer}
         {solution}
-        <button className="w-44 py-3 text-blue-600 font-semibold rounded-md border-4 border-blue-500 hover:bg-blue-500 hover:text-slate-50 leading-none">Add Solution</button>
+        <button className="w-44 py-3 text-base text-blue-600 font-semibold rounded-md border-4 border-blue-200 hover:bg-blue-200 hover:text-blue-800 leading-none">Add Solution</button>
       </div>
     );
   };
