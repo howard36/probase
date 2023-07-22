@@ -27,9 +27,6 @@ async function getOrCreateAuthor(session: Session, collectionId: number): Promis
     data: {
       displayName: fullName, // TODO: currently uses real name by default
       userId: session.user_id,
-      // user: {
-      //   connect: { id: session.user_id }
-      // },
       collectionId,
     }
   });

@@ -47,6 +47,7 @@ async function main() {
       id: 1,
       displayName: 'Howard Halim',
       collectionId: cmimc.id,
+      userId: howardUser.id,
     }
   });
 
