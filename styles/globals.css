@@ -9,3 +9,9 @@
 .soft-shadow-r-lg {
   box-shadow: 0 0 14px 0 #94A3B810;
 }
+
+/* From https://katex.org/docs/issues.html#css-customization */
+/* Add horizontal scrollbar for long display equations */
+.katex-display {
+  overflow: auto hidden;
+}
