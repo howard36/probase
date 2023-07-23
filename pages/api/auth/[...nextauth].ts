@@ -137,7 +137,11 @@ export const authOptions: NextAuthOptions = {
         }));
 
         token.authors = await prisma.author.findMany({
-          where: { userId: token.sub }
+          where: { userId: token.sub },
+          select: {
+            id: true,
+            collectionId: true,
+          }
         });
 
         return token;

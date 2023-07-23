@@ -1,13 +1,21 @@
 import { AccessLevel } from "@prisma/client";
 import NextAuth, { DefaultSession } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import { Author } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 
 interface CollectionPerm {
   colId: number;
   cid: string;
   isAdmin: boolean;
 }
+
+const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
+  select: {
+    id: true,
+    collectionId: true,
+  }
+});
+type AuthorPerm = Prisma.AuthorGetPayload<typeof authorPerm>;
 
 declare module "next-auth" {
   /**
@@ -22,7 +30,7 @@ declare module "next-auth" {
     locale?: string;
     user_id?: string;
     collectionPerms: CollectionPerm[];
-    authors: Author[];
+    authors: AuthorPerm[];
   }
 
   interface Profile {
@@ -48,6 +56,6 @@ declare module "next-auth/jwt" {
     refreshToken?: string;
 
     collectionPerms: CollectionPerm[];
-    authors: Author[];
+    authors: AuthorPerm[];
   }
 }
