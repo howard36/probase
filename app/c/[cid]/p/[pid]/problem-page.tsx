@@ -16,11 +16,14 @@ export default function ProblemPage({
   }
 
   return (
-    <div className="p-12 sm:py-24 text-slate-800 whitespace-pre-wrap">
+    <div className="p-12 sm:py-24 text-slate-800 whitespace-pre-wrap break-words">
       {/* fixed width container, matching ideal 60-character line length */}
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
         <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
           <Title problem={problem} collection={collection} />
+        </div>
+        <div className={`py-2 px-5 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r from-amber-500 to-yellow-500`}>
+          Combinatorics
         </div>
         <div className="mb-4">
           <Statement problem={problem} collection={collection} />
