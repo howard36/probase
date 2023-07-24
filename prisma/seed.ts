@@ -63,7 +63,7 @@ async function main() {
       collectionId: cmimc.id,
       pid: 'A1',
       title: 'Quadratic Equation',
-      statement: 'Compute the roots of the quadratic $$x^2 - 4x + 2$$',
+      statement: 'Find all roots of the quadratic $$x^2 - 4x + 2.$$',
       submitterId: howardUser.id,
       authors: {
         connect: [{ id: howardAuthor.id }]
@@ -96,7 +96,7 @@ $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
       collectionId: cmimc.id,
       pid: 'N1',
       title: 'Diophantine',
-      statement: 'Find all positive integer solutions to $$a^n + b^n = c^n.$$',
+      statement: 'Let $n \\ge 3$ be a integer. Find all positive integer solutions to $$a^n + b^n = c^n.$$',
       submitterId: howardUser.id,
       authors: {
         connect: [{ id: howardAuthor.id }]

@@ -38,7 +38,7 @@ export default function ProblemPage({
   let { subject, gradient } = subjectToGradient[problem.subject];
 
   return (
-    <div className="p-12 sm:py-24 text-slate-800 whitespace-pre-wrap break-words hyphens-auto">
+    <div className="p-8 sm:py-24 text-slate-800 whitespace-pre-wrap break-words">
       {/* fixed width container, matching ideal 60-character line length */}
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
         <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
