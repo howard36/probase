@@ -7,23 +7,34 @@ import { canEditCollection, isAdmin } from '@/utils/permissions'
 // TODO: add permissions for API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
-    res.status(405).json({'error': 'Invalid method'});
+    res.status(405).json({
+      error: {
+        message: 'Invalid method'
+      }
+    });
     return;
   }
 
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
-    res.status(401).json({'error': 'Not signed in'});
+    res.status(401).json({
+      error: {
+        message: 'Not signed in'
+      }
+    });
     return;
   }
 
   // TODO: validation
+  // 400 response code
   const { collectionId, userId, displayName, country } = req.body;
 
   const collection = { id: collectionId };
   if (!canEditCollection(session, collection)) {
     res.status(403).json({
-      'error': 'You do not have permission to edit this collection'
+      error: {
+        message: 'You do not have permission to edit this collection'
+      }
     });
     return;
   }
@@ -35,8 +46,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // but if submitter is not one of the authors,
   // include "(Submitted by X)" underneath "Written by Y"
   if (!isAdmin(session, collection) && userId !== session.user_id) {
-    res.status(403).json({
-      'error': 'You can only create authors associated with your own account'
+    res.status(403).json({ 
+      error: {
+        message: 'You can only create authors associated with your own account'
+      }
     });
     return;
   }
@@ -55,7 +68,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (newAuthor) {
     res.status(201).json(newAuthor);
   } else {
-    res.status(500).json({'error': 'Failed to add author'});
+    res.status(500).json({
+      error: {
+        message: 'Failed to add author'
+      }
+    });
   }
 }
-

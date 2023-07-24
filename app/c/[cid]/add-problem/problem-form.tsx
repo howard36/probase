@@ -98,7 +98,7 @@ export default function ProblemForm({
     const authorId = getOrCreateAuthor(session, collection.id);
 
     // add new problem
-    const url = `/api/collections/${collection.id}/problems/add`;
+    const url = `/api/problems/add`;
 
     const response = await fetch(url, {
       method: 'POST',

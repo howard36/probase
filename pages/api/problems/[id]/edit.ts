@@ -6,13 +6,21 @@ import { canEditProblem } from '@/utils/permissions'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
-    res.status(405).json({'error': 'Invalid method'});
+    res.status(405).json({
+      error: {
+        message: 'Invalid method'
+      }
+    });
     return;
   }
 
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
-    res.status(401).json({'error': 'Not signed in'});
+    res.status(401).json({
+      error: {
+        message: 'Not signed in'
+      }
+    });
     return;
   }
 
@@ -32,14 +40,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (problem === null) {
     res.status(404).json({
-      'error': `No problem with id ${problemId}`
+      error: {
+        message: `No problem with id ${problemId}`
+      }
     });
     return;
   }
 
   if (!canEditProblem(session, problem, problem.collection)) {
     res.status(403).json({
-      'error': 'You do not have permission to edit this problem'
+      error: {
+        message: 'You do not have permission to edit this problem'
+      }
     });
     return;
   }
