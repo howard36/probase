@@ -28,7 +28,7 @@ type SolutionPerm = Prisma.SolutionGetPayload<typeof solutionPerm>;
 
 
 
-function isCollectionAdmin(session: Session, collection: CollectionPerm) {
+export function isAdmin(session: Session, collection: CollectionPerm) {
   const id = collection.id;
   return session.collectionPerms.some(perm => (perm.colId === id && perm.isAdmin));
 }
@@ -53,7 +53,7 @@ export function canEditProblem(
   if (session === null) {
     return false;
   }
-  if (isCollectionAdmin(session, collection)) {
+  if (isAdmin(session, collection)) {
     return true;
   }
   if (!canEditCollection(session, collection)) {
@@ -73,7 +73,7 @@ export function canEditSolution(
   if (session === null) {
     return false;
   }
-  if (isCollectionAdmin(session, collection)) {
+  if (isAdmin(session, collection)) {
     return true;
   }
   if (!canEditCollection(session, collection)) {

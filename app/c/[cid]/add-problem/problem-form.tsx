@@ -62,7 +62,7 @@ async function getOrCreateAuthor(session: Session, collectionId: number): Promis
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       displayName: fullName,
-      user: session.user_id,
+      userId: session.user_id,
       collectionId,
     })
   });
