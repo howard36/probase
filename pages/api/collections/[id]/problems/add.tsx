@@ -58,12 +58,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (collection === null) {
     res.status(404).json({
-      'error': `No ollection with id`
+      'error': `No collection with id ${collectionId}`
     });
     return;
   }
 
   // TODO: use util function
+  // TODO: cid not needed, can use collectionId instead
   const cid = collection.cid;
   if (!session.collectionPerms.some(perm => perm.cid === cid)) {
     res.status(403).json({
