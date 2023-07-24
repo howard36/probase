@@ -4,30 +4,6 @@ import { authOptions } from '../auth/[...nextauth]'
 import prisma from '@/utils/prisma'
 import { canEditCollection } from '@/utils/permissions'
 
-// function getFullName(session: Session): string {
-//   if (session.fullName) {
-//     return session.fullName;
-//   } else {
-//     return `${session.givenName} ${session.familyName}`;
-//   }
-// }
-
-// // TODO: move this to a separate API.
-// // Problem Page submit should call both APIs if no author
-// async function getOrCreateAuthor(session: Session, collectionId: number): Promise<number> {
-//   // Find if the user has an author for this collection
-//   let author = session.authors.find(author => author.collectionId === collectionId);
-//   if (author) {
-//     return author.id;
-//   }
-
-//   // No existing author found, so create new author and update token and session
-//   const fullName = getFullName(session);
-
-//   // TODO: update token and session with new author info
-//   return newAuthor.id;
-// }
-
 // TODO: add permissions for API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -51,8 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const newAuthor = await prisma.author.create({
     data: {
-      userId: session.user_id,
-      ...req.body,
+      ...req.body, // Don't do this, can overwrite other fields without permission
+      userId: session.user_id, // TODO: admin should be able to create authors for anyone, not just self
     }
   });
 

@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation"
 import { useState } from 'react'
-// import { useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import type { Collection, Subject } from '@prisma/client'
+import type { Session } from "next-auth"
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -36,6 +37,42 @@ const subjects = [
   },
 ];
 
+function getFullName(session: Session): string {
+  if (session.fullName) {
+    return session.fullName;
+  } else {
+    return `${session.givenName} ${session.familyName}`;
+  }
+}
+
+async function getOrCreateAuthor(session: Session, collectionId: number): Promise<number> {
+  // Find if the user has an author for this collection
+  let author = session.authors.find(author => author.collectionId === collectionId);
+  if (author) {
+    return author.id;
+  }
+
+  // No existing author found, so create new author and update token and session
+  const fullName = getFullName(session);
+
+  const url = `/api/authors/add`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      displayName: fullName,
+      user: session.user_id,
+      collectionId,
+    })
+  });
+
+  const newAuthor = await response.json();
+
+  // TODO: update token and session with new author info
+  return newAuthor.id;
+}
+
 // TODO: types?
 export default function ProblemForm({
   collection,
@@ -48,10 +85,17 @@ export default function ProblemForm({
   const [statement, setStatement] = useState("");
   const [answer, setAnswer] = useState("");
   const [solution, setSolution] = useState("");
-  // const session = useSession();
+  const { data: session } = useSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (session === null) {
+      // TODO: show message to user: "You need to be logged in to submit a problem"
+      console.log("Error: not logged in");
+      return;
+    }
+    const authorId = getOrCreateAuthor(session, collection.id);
 
     // add new problem
     const url = `/api/collections/${collection.id}/problems/add`;
@@ -65,11 +109,12 @@ export default function ProblemForm({
         statement,
         answer,
         solutionText: solution,
+        authorId,
       })
     });
     if (response.status === 201) {
-      const data = await response.json();
-      router.push(`/c/${collection.cid}/p/${data.insertedPid}`)
+      const newProblem = await response.json();
+      router.push(`/c/${collection.cid}/p/${newProblem.pid}`)
     } else {
       // TODO: retry with different PID
       console.error("inserting failed!");

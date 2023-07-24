@@ -1,4 +1,4 @@
-import ProblemForm from '@/components/problem-form'
+import ProblemForm from './problem-form'
 import prisma from '@/utils/prisma'
 import { notFound } from 'next/navigation'
 
