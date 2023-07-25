@@ -104,6 +104,7 @@ export default function ProblemForm({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        collectionId,
         title,
         subject,
         statement,
