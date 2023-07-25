@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../auth/[...nextauth]'
 import { canEditSolution } from '@/utils/permissions'
 import { handleApiError } from '@/utils/error';
+import { isNonNegativeInt } from '@/utils/utils';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // TODO: why can't this be PUT? Something about CORS
@@ -25,10 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const idString = req.query.id as string;
-  if (!Number.isInteger(idString)) {
+  if (!isNonNegativeInt(idString)) {
     return res.status(400).json({
       error: {
-        message: 'ID must be an integer'
+        message: 'ID must be a non-negative integer'
       }
     });
   }
@@ -70,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { text, summary } = req.body;
 
-    await prisma.solution.update({
+    const updatedSolution = await prisma.solution.update({
       where: { id: solutionId },
       data: {
         text,
@@ -78,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-    res.status(200).json({'message': 'Successfully updated'});
+    res.status(200).json(updatedSolution);
   } catch (error) {
     handleApiError(error, res);
   }
