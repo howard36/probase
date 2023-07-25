@@ -1,4 +1,4 @@
-import type { NextResponse } from 'next/server'
+import type { NextApiResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 
 export function handleApiError(error, res: NextResponse) {
