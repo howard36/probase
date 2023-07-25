@@ -5,6 +5,14 @@ import prisma from '@/utils/prisma'
 import { canEditCollection } from '@/utils/permissions';
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
+import { Subject } from '@prisma/client';
+
+const subjectPrefix = {
+  'Algebra': 'A',
+  'Combinatorics': 'C',
+  'Geometry': 'G',
+  'NumberTheory': 'N',
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -43,12 +51,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  // TODO: assign PID based on existing problems
-  // PID should be optional in input
+
+  // assign PID based on existing problems
   // blank PID = calculate by calling function
-  // should this be in the problem form component?
   if (pid === undefined) {
-    pid = 'P' + Math.ceil(Math.random() * 10000); // TODO
+    const prefix = subjectPrefix[subject as Subject];
+
+    // The most recent problem in this subject
+    const lastProblem = await prisma.problem.findFirst({
+      where: {
+        collectionId,
+        pid: {
+          startsWith: prefix
+        },
+      },
+      orderBy: {
+        id: 'desc'
+      },
+      select: {
+        pid: true,
+      },
+    });
+
+    if (lastProblem === null) {
+      // first problem in this subject
+      pid = prefix + '1';
+    } else {
+      const oldPid = lastProblem.pid;
+      const num = oldPid.substring(prefix.length);
+      const incrementedNum = parseInt(num, 10) + 1;
+      pid = prefix + incrementedNum;
+    }
   }
 
   try {
