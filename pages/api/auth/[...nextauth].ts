@@ -9,9 +9,10 @@ import prisma from '@/utils/prisma'
 interface jwtCallbackParams {
   token: JWT;
   user?: User | AdapterUser;
-  account?: Account | null;
+  account: Account | null;
   profile?: Profile;
-  isNewUser?: boolean;
+  trigger?: "signIn" | "signUp" | "update";
+  session?: any;
 }
 
 interface sessionCallbackParams {
@@ -98,12 +99,13 @@ export const authOptions: NextAuthOptions = {
     // ...add more providers here
   ],
   callbacks: {
-    async jwt({ token, user, account, profile, isNewUser }: jwtCallbackParams) {
+    async jwt({ token, user, account, profile, trigger, session }: jwtCallbackParams) {
+      console.log("In jwt", { trigger, session });
       // console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
-      // Initial sign in
       if (user && account && profile) {
-        console.log("NEW USER!")
-        // console.log({user})
+        // Initial sign in
+        // when trigger is "signIn" or "signUp", token contains a subset of JWT.
+        // `name`, `email` and `picture` will be included.
         token.accessToken = account.access_token;
         token.provider = account.provider;
         token.type = account.type;
@@ -145,7 +147,21 @@ export const authOptions: NextAuthOptions = {
         });
 
         return token;
+      } else if (trigger === "update") {
+        // In this case, token contains the full JWT
+        // session contains the data passed to update()
+        // session should be validated. it could contain arbitrary data
+        if (session?.updateAuthors) {
+          token.authors = await prisma.author.findMany({
+            where: { userId: token.sub },
+            select: {
+              id: true,
+              collectionId: true,
+            }
+          });
+        }
       }
+
 
       // TODO: this prevents the saved token from being udpated
       // Return previous token if the access token has not expired yet

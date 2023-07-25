@@ -1,7 +1,9 @@
-import type { NextApiResponse } from 'next/server'
+import type { NextApiResponse } from 'next'
 import { Prisma } from '@prisma/client'
 
-export function handleApiError(error, res: NextResponse) {
+export function handleApiError(error: unknown, res: NextApiResponse) {
+  console.error({ error });
+
   let message: string;
   if (error instanceof Prisma.PrismaClientKnownRequestError ||
       error instanceof Prisma.PrismaClientUnknownRequestError ||
@@ -12,6 +14,7 @@ export function handleApiError(error, res: NextResponse) {
   } else {
     message = String(error);
   }
+
   res.status(500).json({
     error: {
       message

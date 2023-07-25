@@ -10,6 +10,8 @@ interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
 }
 
+type UpdateSession = (data?: any) => Promise<Session | null>;
+
 const subjects = [
   {
     enum: "Algebra",
@@ -45,7 +47,11 @@ function getFullName(session: Session): string {
   }
 }
 
-async function getOrCreateAuthor(session: Session, collectionId: number): Promise<number> {
+async function getOrCreateAuthor(
+  session: Session,
+  collectionId: number,
+  update: UpdateSession
+): Promise<number> {
   // Find if the user has an author for this collection
   let author = session.authors.find(author => author.collectionId === collectionId);
   if (author) {
@@ -69,7 +75,8 @@ async function getOrCreateAuthor(session: Session, collectionId: number): Promis
 
   const newAuthor = await response.json();
 
-  // TODO: update token and session with new author info
+  update({ updateAuthors: true });
+
   return newAuthor.id;
 }
 
@@ -85,7 +92,7 @@ export default function ProblemForm({
   const [statement, setStatement] = useState("");
   const [answer, setAnswer] = useState("");
   const [solution, setSolution] = useState("");
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +102,9 @@ export default function ProblemForm({
       console.log("Error: not logged in");
       return;
     }
-    const authorId = getOrCreateAuthor(session, collection.id);
+
+    const authorId = await getOrCreateAuthor(session, collection.id, update);
+    console.log({authorId})
 
     // add new problem
     const url = `/api/problems/add`;
@@ -104,13 +113,15 @@ export default function ProblemForm({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        collectionId,
+        collectionId: collection.id,
         title,
         subject,
         statement,
         answer,
         solutionText: solution,
         authorId,
+        difficulty: 0,
+        isAnonymous: false,
       })
     });
     if (response.status === 201) {

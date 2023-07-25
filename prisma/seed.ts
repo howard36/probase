@@ -40,14 +40,12 @@ async function main() {
     }
   });
 
-  const howardAuthor = await prisma.author.upsert({
+  const defaultAuthor = await prisma.author.upsert({
     where: { id: 1 },
     update: {},
     create: {
-      id: 1,
-      displayName: 'Howard Halim',
+      displayName: 'Default Author',
       collectionId: cmimc.id,
-      userId: howardUser.id,
     }
   });
 
@@ -66,7 +64,7 @@ async function main() {
       statement: 'Find all roots of the quadratic $$x^2 - 4x + 2.$$',
       submitterId: howardUser.id,
       authors: {
-        connect: [{ id: howardAuthor.id }]
+        connect: [{ id: defaultAuthor.id }]
       },
       answer: String.raw`$2 \pm \sqrt{2}$`,
       solutions: {
@@ -74,7 +72,7 @@ async function main() {
           text: String.raw`Use the quadratic formula to get
 $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
           authors: {
-            connect: [{ id: howardAuthor.id }]
+            connect: [{ id: defaultAuthor.id }]
           },
         }]
       },
@@ -99,14 +97,14 @@ $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
       statement: 'Let $n \\ge 3$ be a integer. Find all positive integer solutions to $$a^n + b^n = c^n.$$',
       submitterId: howardUser.id,
       authors: {
-        connect: [{ id: howardAuthor.id }]
+        connect: [{ id: defaultAuthor.id }]
       },
       answer: String.raw`No positive integer solutions for $n \ge 3$.`,
       solutions: {
         create: [{
           text: 'Try using LTE.',
           authors: {
-            connect: [{ id: howardAuthor.id }]
+            connect: [{ id: defaultAuthor.id }]
           },
         }]
       },
@@ -131,14 +129,14 @@ $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
       statement: 'The best combo problems involve reading walls of text, so...\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       submitterId: howardUser.id,
       authors: {
-        connect: [{ id: howardAuthor.id }]
+        connect: [{ id: defaultAuthor.id }]
       },
       answer: 'Answer',
       solutions: {
         create: [{
           text: 'Solution',
           authors: {
-            connect: [{ id: howardAuthor.id }]
+            connect: [{ id: defaultAuthor.id }]
           },
         }]
       },
