@@ -129,7 +129,7 @@ export default function ProblemForm({
     });
     if (response.status === 201) {
       const newProblem = await response.json();
-      // router.push(`/c/${collection.cid}/p/${newProblem.pid}`)
+      router.push(`/c/${collection.cid}/p/${newProblem.pid}`)
     } else {
       // TODO: retry with different PID
       console.error("inserting failed!");
@@ -143,17 +143,18 @@ export default function ProblemForm({
         <form onSubmit={handleSubmit}>
           <div className="relative mb-4">
             <label className="leading-7 text-md text-gray-600">Title</label>
-            <input value={title} onChange={(e)=>{setTitle(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"></input>
+            <input value={title} required onChange={(e)=>{setTitle(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"></input>
           </div>
           <div className="relative mb-4">
             <label className="leading-7 text-md text-gray-600">Subject</label>
-            <select value={subject} onChange={(e: React.ChangeEvent<SubjectSelectElement>)=>{setSubject(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            <select value={subject} required onChange={(e: React.ChangeEvent<SubjectSelectElement>)=>{setSubject(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+              <option value="" key="Choose a subject" disabled>Choose a subject</option>
               {subjects.map(s => <option value={s.enum} key={s.enum}>{s.display}</option>)}
             </select>
           </div>
           <div className="relative mb-4">
             <label className="leading-7 text-md text-gray-600">Problem Statement</label>
-            <textarea value={statement} onChange={(e)=>{setStatement(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+            <textarea value={statement} required onChange={(e)=>{setStatement(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
           </div>
           <div className="relative mb-4">
             <label className="leading-7 text-md text-gray-600">Answer</label>
