@@ -15,6 +15,7 @@ export default function Title({
 }) {
   const { data: session, status } = useSession();
   const canEdit = (status === 'loading') ? false : canEditProblem(session, problem, collection);
+  console.log(session?.authors); // For logging on problem page after adding a new problem
 
   if (canEdit) {
     return <EditableTitle problem={problem} />;

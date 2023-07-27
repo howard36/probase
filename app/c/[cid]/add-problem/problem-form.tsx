@@ -1,10 +1,10 @@
 'use client'
 
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import type { Collection, Subject } from '@prisma/client'
-import type { Session } from "next-auth"
+import type { Session } from 'next-auth'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -52,6 +52,7 @@ async function getOrCreateAuthor(
   collectionId: number,
   update: UpdateSession
 ): Promise<number> {
+  console.log("In getOrCreateAuthor, session.authors = ", session.authors);
   // Find if the user has an author for this collection
   let author = session.authors.find(author => author.collectionId === collectionId);
   if (author) {
@@ -93,6 +94,7 @@ export default function ProblemForm({
   const [answer, setAnswer] = useState("");
   const [solution, setSolution] = useState("");
   const { data: session, update } = useSession();
+  console.log("session.authors on form load:", session?.authors);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,6 +106,7 @@ export default function ProblemForm({
     }
 
     const authorId = await getOrCreateAuthor(session, collection.id, update);
+    console.log("session.authors after getOrCreateAuthor", session?.authors);
     console.log({authorId})
 
     // add new problem
@@ -126,13 +129,13 @@ export default function ProblemForm({
     });
     if (response.status === 201) {
       const newProblem = await response.json();
-      router.push(`/c/${collection.cid}/p/${newProblem.pid}`)
+      // router.push(`/c/${collection.cid}/p/${newProblem.pid}`)
     } else {
       // TODO: retry with different PID
       console.error("inserting failed!");
     }
   };
-  
+
   // TODO: add author picker to form
   return (
     <div className="container px-6 py-12 mx-auto flex">

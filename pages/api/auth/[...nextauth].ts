@@ -100,7 +100,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, profile, trigger, session }: jwtCallbackParams) {
-      console.log("In jwt", { trigger, session });
+      console.log("In jwt", trigger, token.authors );
       // console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
       if (user && account && profile) {
         // Initial sign in
@@ -147,7 +147,9 @@ export const authOptions: NextAuthOptions = {
         });
 
         return token;
-      } else if (trigger === "update") {
+      }
+
+      if (trigger === "update") {
         // In this case, token contains the full JWT
         // session contains the data passed to update()
         // session should be validated. it could contain arbitrary data
@@ -159,11 +161,11 @@ export const authOptions: NextAuthOptions = {
               collectionId: true,
             }
           });
+          console.log("updated token.authors =", token.authors);
         }
       }
 
-
-      // TODO: this prevents the saved token from being udpated
+      // TODO: this prevents the saved token from being updated
       // Return previous token if the access token has not expired yet
       if (token.provider === 'google') {
         if (token.accessTokenExpires) {
@@ -188,6 +190,7 @@ export const authOptions: NextAuthOptions = {
       session.collectionPerms = token.collectionPerms;
       session.authors = token.authors;
       session.fullName = token.name;
+      console.log("updating session from token", session.authors)
       return session;
     },
   },
