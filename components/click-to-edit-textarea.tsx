@@ -41,6 +41,9 @@ export default function ClickToEditTextarea({
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Escape") {
       onReset();
+    } else if (event.key === 'Enter' && event.shiftKey) { 
+      // Equivalent to clicking the "Save Changes" button
+      onSave(text);
     }
   };
 
