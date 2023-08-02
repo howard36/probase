@@ -1,6 +1,7 @@
-# Probase 2.0
-An improved version of [Probase](https://github.com/CMU-Math/probase), made with the following goals in mind:
+# Probase: A Math Problem Database
+[Probase](https://www.probase.app) is an online database where you can store math problems, and share them with others.
 
+I made Probase with the following goals in mind:
 1. An interface that's really nice to use
 1. Written in React (because I want to learn React)
 1. Live preview when typing in LaTeX
