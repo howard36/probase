@@ -5,10 +5,13 @@ export interface Params {
   pid: string;
 }
 
+export const collectionSelect = {
+  id: true,
+  cid: true,
+  name: true,
+};
 const collectionProps = Prisma.validator<Prisma.CollectionArgs>()({
-  select: {
-    id: true,
-  }
+  select: collectionSelect
 });
 export type CollectionProps = Prisma.CollectionGetPayload<typeof collectionProps>;
 

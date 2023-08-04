@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import ProblemPage from './problem-page'
 import type { Subject } from '@prisma/client'
 import type { Params, Props } from './types'
-import { problemInclude } from './types'
+import { problemInclude, collectionSelect } from './types'
 
 export async function generateStaticParams(): Promise<Params[]> {
   if (process.env.NO_WIFI === "true") {
@@ -69,14 +69,15 @@ async function getProps(params: Params): Promise<Props> {
         isAnonymous: false,
       },
       collection: {
-        id: 1
+        id: 1,
+        name: 'CMIMC',
       }
     }
   }
 
   const collection = await prisma.collection.findUnique({
     where: { cid: params.cid },
-    select: { id: true }
+    select: collectionSelect,
   });
 
   if (collection === null) {

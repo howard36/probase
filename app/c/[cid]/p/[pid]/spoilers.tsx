@@ -43,7 +43,9 @@ export default function Spoilers({
         <button onClick={() => setHidden(true)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-base text-slate-50 font-semibold leading-none">Hide spoilers</button>
         {answer}
         {solution}
+        {/* Add Solution not implemented yet
         <button className="w-44 py-3 text-base text-blue-600 font-semibold rounded-md border-4 border-blue-200 hover:bg-blue-200 hover:text-blue-800 leading-none">Add Solution</button>
+        */}
       </div>
     );
   };
