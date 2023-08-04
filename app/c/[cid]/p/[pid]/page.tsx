@@ -70,6 +70,7 @@ async function getProps(params: Params): Promise<Props> {
       },
       collection: {
         id: 1,
+        cid: 'cmimc',
         name: 'CMIMC',
       }
     }
