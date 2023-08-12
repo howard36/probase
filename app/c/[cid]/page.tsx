@@ -8,18 +8,18 @@ import { collectionSelect } from './types'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateStaticParams(): Promise<Params[]> {
-  if (process.env.NO_WIFI === "true") {
-    return [
-      { cid: 'cmimc' }
-    ];
-  }
+// export async function generateStaticParams(): Promise<Params[]> {
+//   if (process.env.NO_WIFI === "true") {
+//     return [
+//       { cid: 'cmimc' }
+//     ];
+//   }
 
-  const params = await prisma.collection.findMany({
-    select: { cid: true }
-  });
-  return params;
-}
+//   const params = await prisma.collection.findMany({
+//     select: { cid: true }
+//   });
+//   return params;
+// }
 
 async function getCollection(cid: string): Promise<CollectionProps> {
   if (process.env.NO_WIFI === "true") {
