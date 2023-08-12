@@ -110,6 +110,7 @@ export const authOptions: NextAuthOptions = {
         token.provider = account.provider;
         token.type = account.type;
         token.emailVerified = profile.email_verified ?? false;
+        token.version = 0; // TODO: hardcoded
         
         if (account.provider === 'google') {
           token.givenName = profile.given_name;
