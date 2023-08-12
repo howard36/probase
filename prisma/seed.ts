@@ -93,8 +93,8 @@ $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
     create: {
       collectionId: cmimc.id,
       pid: 'N1',
-      title: 'Diophantine',
-      statement: 'Let $n \\ge 3$ be a integer. Find all positive integer solutions to $$a^n + b^n = c^n.$$',
+      title: "Fermat's Last Theorem",
+      statement: 'Find all positive integer solutions to $$a^n + b^n = c^n$$ which satisfy $n \\ge 3$.',
       submitterId: howardUser.id,
       authors: {
         connect: [{ id: defaultAuthor.id }]
@@ -102,7 +102,7 @@ $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
       answer: String.raw`No positive integer solutions for $n \ge 3$.`,
       solutions: {
         create: [{
-          text: 'Try using LTE.',
+          text: 'The proof is trivial and is left as an exercise to the reader.',
           authors: {
             connect: [{ id: defaultAuthor.id }]
           },
