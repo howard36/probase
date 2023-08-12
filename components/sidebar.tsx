@@ -14,9 +14,9 @@ export default function Sidebar({
   // TODO: collection name might be too long, needs cutoff
   // TODO: collection list might be too long, needs vertical scroll
   const links = [
-    { href: '/', label: 'Home', active: pathname === '/' },
+    { href: '/demo', label: 'Demo', active: pathname === '/c/demo' },
     { href: '/c/cmimc', label: 'CMIMC', active: (pathname !== null) && pathname.startsWith('/c/cmimc') },
-    { href: '/c/hmmt', label: 'HMMT', active: (pathname !== null) && pathname.startsWith('/c/hmmt') },
+    { href: '/c/cmo', label: 'CMO', active: (pathname !== null) && pathname.startsWith('/c/cmo') },
   ];
 
   return (
