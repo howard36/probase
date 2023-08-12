@@ -6,6 +6,8 @@ import type { Subject } from '@prisma/client'
 import type { Params, CollectionProps } from './types'
 import { collectionSelect } from './types'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateStaticParams(): Promise<Params[]> {
   if (process.env.NO_WIFI === "true") {
     return [
