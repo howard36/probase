@@ -1,11 +1,14 @@
 import ClickToEdit from '@/components/click-to-edit';
 import type { SolutionProps } from './types'
+import { useRouter } from 'next/navigation'
 
 export default function EditableSolution({
   solution
 }: {
   solution: SolutionProps
 }) {
+  const router = useRouter();
+
   // const authorName = solution.authors[0].displayName;
   const saveSolution = async (text: string) => {
     // alert(text);
@@ -19,8 +22,9 @@ export default function EditableSolution({
       })
     });
     if (response.status === 200) {
-      await fetch('/api/revalidate?path=/c/[cid]');
-      await fetch('/api/revalidate?path=/c/[cid]/p/[pid]');
+      // await fetch('/api/revalidate?path=/c/[cid]');
+      // await fetch('/api/revalidate?path=/c/[cid]/p/[pid]');
+      router.refresh();
     } else {
       console.error(`updating failed! status = ${response.status}`);
     }
