@@ -183,14 +183,15 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }: sessionCallbackParams) {
       // Send properties to the client, like an access_token and user id from a provider.
       session.accessToken = token.accessToken;
+      session.email = token.email;
       session.emailVerified = token.emailVerified;
+      session.fullName = token.name;
       session.givenName = token.givenName;
       session.familyName = token.familyName;
       session.locale = token.locale;
-      session.user_id = token.sub;
+      session.userId = token.sub;
       session.collectionPerms = token.collectionPerms;
       session.authors = token.authors;
-      session.fullName = token.name;
       console.log("updating session from token", session.authors)
       return session;
     },

@@ -69,7 +69,7 @@ async function getOrCreateAuthor(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       displayName: fullName,
-      userId: session.user_id,
+      userId: session.userId,
       collectionId,
     })
   });

@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Solution: allow submitting on behalf of someone else,
   // but if submitter is not one of the authors,
   // include "(Submitted by X)" underneath "Written by Y"
-  if (!isAdmin(session, collection) && userId !== session.user_id) {
+  if (!isAdmin(session, collection) && userId !== session.userId) {
     return res.status(403).json({ 
       error: {
         message: 'You can only create authors associated with your own account'

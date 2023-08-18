@@ -99,7 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         difficulty,
         isAnonymous,
         submitter: {
-          connect: { id: session.user_id }
+          connect: { id: session.userId }
         },
         authors: {
           connect: { id: authorId }

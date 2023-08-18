@@ -23,12 +23,13 @@ declare module "next-auth" {
    */
   interface Session {
     accessToken?: string;
+    email?: string | null;
     emailVerified: bool;
     fullName?: string | null;
     givenName?: string;
     familyName?: string;
     locale?: string;
-    user_id?: string;
+    userId?: string;
     collectionPerms: CollectionPerm[];
     authors: AuthorPerm[];
   }
