@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { Prisma } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
+import GoogleLoginButton from '@/components/google-login-button'
 
 interface Params {
   code: string;
@@ -11,6 +12,9 @@ interface Params {
 const inviteInclude = {
   collection: {
     select: { cid: true }
+  },
+  inviter: {
+    select: { name: true }
   }
 };
 const inviteProps = Prisma.validator<Prisma.InviteArgs>()({
@@ -33,7 +37,7 @@ async function getInvite(code: string): Promise<InviteProps> {
 }
 
 function validEmail(invite: InviteProps, email: string): boolean {
-  return invite.emailDomain === null && email.endsWith("@" + invite.emailDomain);
+  return invite.emailDomain === null || email.endsWith("@" + invite.emailDomain);
 }
 
 export default async function InvitePage({
@@ -41,23 +45,32 @@ export default async function InvitePage({
 }: {
   params: Params
 }) {
-  // const { data: session, status } = useSession();
   const session = await getServerSession(authOptions);
 
   const { code } = params;
   const invite = await getInvite(code);
 
   if (session === null) {
-    return <p>You must be logged in to accept the invite</p>; // TODO: show "Log in with Google"
+    return <>
+      <h1>{invite.inviter.name} invited you!</h1>
+      <p>Log in to Probase to accept the invite</p>
+      <GoogleLoginButton />
+    </>
   }
 
-  const email = session.email;
+  // TODO: if you already have permission, skip (unless this gives you higher permission)
+
+  const email = session.currentEmail;
   if (email === null || email === undefined) {
     throw new Error('session.email is null or undefined');
   }
 
   if (!validEmail(invite, email)) {
-    return <p>Your email must end in @{invite.emailDomain}</p>; // TODO: option to link a second account
+    return <>
+      <h1>{invite.inviter.name} invited you!</h1>
+      <p>You must log in with an @{invite.emailDomain} email. You are currently logged in as {email}.</p>
+      <GoogleLoginButton />
+    </>
   }
 
   const userId = session.userId;
