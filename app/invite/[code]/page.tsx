@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import GoogleLoginButton from '@/components/google-login-button'
+import NotLoggedIn from './not-logged-in'
 
 interface Params {
   code: string;
@@ -51,11 +52,7 @@ export default async function InvitePage({
   const invite = await getInvite(code);
 
   if (session === null) {
-    return <>
-      <h1>{invite.inviter.name} invited you!</h1>
-      <p>Log in to Probase to accept the invite</p>
-      <GoogleLoginButton />
-    </>
+    return <NotLoggedIn inviterName={invite.inviter.name} />;
   }
 
   // TODO: if you already have permission, skip (unless this gives you higher permission)
