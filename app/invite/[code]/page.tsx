@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import GoogleLoginButton from '@/components/google-login-button'
 import NotLoggedIn from './not-logged-in'
+import InvalidEmail from './invalid-email'
 
 interface Params {
   code: string;
@@ -40,10 +41,6 @@ async function getInvite(code: string): Promise<InviteProps> {
   return invite;
 }
 
-function validEmail(invite: InviteProps, email: string): boolean {
-  return invite.emailDomain === null || email.endsWith("@" + invite.emailDomain);
-}
-
 export default async function InvitePage({
   params
 }: {
@@ -65,12 +62,13 @@ export default async function InvitePage({
     throw new Error('session.email is null or undefined');
   }
 
-  if (!validEmail(invite, email)) {
-    return <>
-      <h1>{invite.inviter.name} invited you!</h1>
-      <p>You must log in with an @{invite.emailDomain} email. You are currently logged in as {email}.</p>
-      <GoogleLoginButton />
-    </>
+  if (invite.emailDomain !== null && !email.endsWith("@" + invite.emailDomain)) {
+    return <InvalidEmail
+      inviterName={invite.inviter.name}
+      collectionName={invite.collection.name}
+      email={email}
+      emailDomain={invite.emailDomain}
+    />;
   }
 
   const userId = session.userId;
