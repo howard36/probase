@@ -12,7 +12,10 @@ interface Params {
 
 const inviteInclude = {
   collection: {
-    select: { cid: true }
+    select: {
+      cid: true,
+      name: true,
+    }
   },
   inviter: {
     select: { name: true }
@@ -52,7 +55,7 @@ export default async function InvitePage({
   const invite = await getInvite(code);
 
   if (session === null) {
-    return <NotLoggedIn inviterName={invite.inviter.name} />;
+    return <NotLoggedIn inviterName={invite.inviter.name} collectionName={invite.collection.name}/>;
   }
 
   // TODO: if you already have permission, skip (unless this gives you higher permission)
