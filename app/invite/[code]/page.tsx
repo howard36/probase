@@ -1,32 +1,15 @@
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
-import { Prisma } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
-import GoogleLoginButton from '@/components/google-login-button'
 import NotLoggedIn from './not-logged-in'
 import InvalidEmail from './invalid-email'
+import type { InviteProps } from './types'
+import { inviteInclude } from './types'
 
 interface Params {
   code: string;
 }
-
-const inviteInclude = {
-  collection: {
-    select: {
-      cid: true,
-      name: true,
-    }
-  },
-  inviter: {
-    select: { name: true }
-  }
-};
-const inviteProps = Prisma.validator<Prisma.InviteArgs>()({
-  include: inviteInclude
-});
-export type InviteProps = Prisma.InviteGetPayload<typeof inviteProps>;
-
 
 async function getInvite(code: string): Promise<InviteProps> {
   const invite = await prisma.invite.findUnique({
