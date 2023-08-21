@@ -23,12 +23,14 @@ declare module "next-auth" {
    */
   interface Session {
     accessToken?: string;
+    email?: string | null;
     emailVerified: bool;
+    currentEmail?: string;
     fullName?: string | null;
     givenName?: string;
     familyName?: string;
     locale?: string;
-    user_id?: string;
+    userId?: string;
     collectionPerms: CollectionPerm[];
     authors: AuthorPerm[];
   }
@@ -52,6 +54,7 @@ declare module "next-auth/jwt" {
     givenName?: string;
     familyName?: string;
     locale?: string;
+    currentEmail?: string;
     accessTokenExpires?: number;
     refreshToken?: string;
 

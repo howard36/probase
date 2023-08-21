@@ -19,6 +19,7 @@ model User {
   authors       Author[]
   problems      Problem[]
   permissions   Permission[]
+  invites       Invite[]
 }
 
 model Account {
@@ -34,8 +35,7 @@ model Account {
   scope              String?
   id_token           String? @db.Text
   session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -113,6 +113,7 @@ model Collection {
   authors     Author[]
   showAuthors Boolean
   permissions Permission[]
+  invites     Invite[]
 }
 
 enum AccessLevel {
@@ -128,4 +129,14 @@ model Permission {
   accessLevel  AccessLevel
 
   @@unique([userId, collectionId])
+}
+
+model Invite {
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId Int
+  accessLevel  AccessLevel
+  code         String     @unique
+  inviter      User       @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  inviterId    String
+  emailDomain  String?    @db.Text
 }

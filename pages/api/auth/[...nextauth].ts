@@ -94,14 +94,15 @@ export const authOptions: NextAuthOptions = {
       httpOptions: {
         timeout: 60000,
       },
+      idToken: true,
       allowDangerousEmailAccountLinking: true, // Note: don't do this for Discord
     }),
     // ...add more providers here
   ],
   callbacks: {
     async jwt({ token, user, account, profile, trigger, session }: jwtCallbackParams) {
-      console.log("In jwt", trigger, token.authors );
-      // console.log("In jwt callback", { token, user, account, profile, isNewUser }, "\n");
+      // console.log("In jwt", trigger, token.authors, token.sub, { account });
+      console.log("In jwt callback", { token, user, account, profile, trigger }, "\n");
       if (user && account && profile) {
         // Initial sign in
         // when trigger is "signIn" or "signUp", token contains a subset of JWT.
@@ -113,12 +114,15 @@ export const authOptions: NextAuthOptions = {
         token.version = 0; // TODO: hardcoded
         
         if (account.provider === 'google') {
+          // profile changes depending on which account you use to log in
           token.givenName = profile.given_name;
           token.familyName = profile.family_name;
           token.locale = profile.locale;
+          token.currentEmail = profile.email;
           token.accessTokenExpires = account.expires_at;
           token.refreshToken = account.refresh_token;
         }
+
 
         // Save permission info in JWT
         const permissions = await prisma.permission.findMany({
@@ -183,14 +187,15 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }: sessionCallbackParams) {
       // Send properties to the client, like an access_token and user id from a provider.
       session.accessToken = token.accessToken;
+      session.currentEmail = token.currentEmail;
       session.emailVerified = token.emailVerified;
+      session.fullName = token.name;
       session.givenName = token.givenName;
       session.familyName = token.familyName;
       session.locale = token.locale;
-      session.user_id = token.sub;
+      session.userId = token.sub;
       session.collectionPerms = token.collectionPerms;
       session.authors = token.authors;
-      session.fullName = token.name;
       console.log("updating session from token", session.authors)
       return session;
     },
