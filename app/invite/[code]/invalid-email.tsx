@@ -14,10 +14,13 @@ export default function InvalidEmail({
   const emailDomain = invite.emailDomain;
 
   return (
-    <div className="">
-      {inviterName && <h1>{inviterName} invited you to {collectionName}!</h1>}
-      <p>You must log in with an @{emailDomain} email. You are currently logged in as {email}.</p>
-      <GoogleLoginButton />
+    <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
+      <div className="sm:w-144 mx-auto my-12 sm:my-24">
+        {inviterName && <h1 className="text-3xl mb-6 font-bold text-slate-900">{inviterName} invited you!</h1>}
+        <p className="text-xl mb-6">Log in with an <span className="font-bold text-slate-900">@{emailDomain}</span> email to join <span className="font-bold text-slate-900">{collectionName}</span></p>
+        <p className="text-xl mb-16">Currently logged in as <span className="font-bold text-slate-900">{email}</span></p>
+        <GoogleLoginButton />
+      </div>
     </div>
   );
 }
