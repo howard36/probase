@@ -1,12 +1,14 @@
 import GoogleLoginButton from "@/components/google-login-button"
+import type { InviteProps } from "./types"
 
 export default function NotLoggedIn({
-  inviterName,
-  collectionName,
+  invite
 }: {
-  inviterName: string | null
-  collectionName: string
+  invite: InviteProps
 }) {
+  const inviterName = invite.inviter.name;
+  const collectionName = invite.collection.name;
+
   return (
     <div className="">
       {inviterName && <h1>{inviterName} invited you to {collectionName}!</h1>}

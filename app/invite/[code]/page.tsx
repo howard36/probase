@@ -35,7 +35,7 @@ export default async function InvitePage({
   const invite = await getInvite(code);
 
   if (session === null) {
-    return <NotLoggedIn inviterName={invite.inviter.name} collectionName={invite.collection.name}/>;
+    return <NotLoggedIn invite={invite} />;
   }
 
   // TODO: if you already have permission, skip (unless this gives you higher permission)
@@ -46,12 +46,7 @@ export default async function InvitePage({
   }
 
   if (invite.emailDomain !== null && !email.endsWith("@" + invite.emailDomain)) {
-    return <InvalidEmail
-      inviterName={invite.inviter.name}
-      collectionName={invite.collection.name}
-      email={email}
-      emailDomain={invite.emailDomain}
-    />;
+    return <InvalidEmail invite={invite} email={email} />;
   }
 
   const userId = session.userId;
