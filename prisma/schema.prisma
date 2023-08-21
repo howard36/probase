@@ -117,8 +117,10 @@ model Collection {
 }
 
 enum AccessLevel {
-  Normal
   Admin
+  TeamMember
+  ViewOnly
+  SubmitOnly
 }
 
 model Permission {
