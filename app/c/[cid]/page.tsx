@@ -1,10 +1,13 @@
 import ProblemCard from './problem-card'
 import prisma from '@/utils/prisma'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import type { Subject } from '@prisma/client'
 import type { Params, CollectionProps } from './types'
 import { collectionSelect } from './types'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/api/auth/[...nextauth]'
+import { canViewCollection } from '@/utils/permissions'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,6 +27,7 @@ export const dynamic = 'force-dynamic'
 async function getCollection(cid: string): Promise<CollectionProps> {
   if (process.env.NO_WIFI === "true") {
     return {
+      id: 1,
       cid: 'cmimc',
       name: 'CMIMC',
       problems: [
@@ -79,7 +83,30 @@ export default async function CollectionPage({
   params: Params
 }) {
   const { cid } = params;
+  const session = await getServerSession(authOptions);
+
+  if (session === null) {
+    // Not logged in
+    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
+  }
+  const userId = session.userId;
+  if (userId === undefined) {
+    throw new Error("userId is undefined despite being logged in");
+  }
+
   const collection = await getCollection(cid);
+  const permission = await prisma.permission.findUnique({
+    where: {
+      userId_collectionId: {
+        userId,
+        collectionId: collection.id,
+      }
+    }
+  });
+  if (permission === null || !canViewCollection(permission.accessLevel)) {
+    // No permission
+    redirect("/need-permission");
+  }
 
   return (
     <div className="p-8 md:py-24 whitespace-pre-wrap break-words">

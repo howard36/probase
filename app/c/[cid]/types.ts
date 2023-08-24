@@ -16,6 +16,7 @@ const problemProps = Prisma.validator<Prisma.ProblemArgs>()({
 export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
 
 export const collectionSelect = {
+  id: true,
   cid: true,
   name: true,
   problems: {

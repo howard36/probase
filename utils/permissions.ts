@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { AccessLevel, Prisma } from '@prisma/client'
 import type { Session } from 'next-auth'
 
 const collectionPerm = Prisma.validator<Prisma.CollectionArgs>()({
@@ -41,6 +41,12 @@ export function canEditCollection(
     return false;
   }
   return session.collectionPerms.some(perm => (perm.colId === collection.id));
+}
+
+export function canViewCollection(
+  accessLevel: AccessLevel,
+): boolean {
+  return accessLevel === "Admin" || accessLevel === "TeamMember" || accessLevel === "ViewOnly";
 }
 
 // TODO: when is session null?
