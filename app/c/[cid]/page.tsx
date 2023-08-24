@@ -84,11 +84,11 @@ export default async function CollectionPage({
 }) {
   const { cid } = params;
   const session = await getServerSession(authOptions);
-
   if (session === null) {
     // Not logged in
     redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
   }
+
   const userId = session.userId;
   if (userId === undefined) {
     throw new Error("userId is undefined despite being logged in");

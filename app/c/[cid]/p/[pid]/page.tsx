@@ -1,9 +1,12 @@
 import prisma from '@/utils/prisma'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import ProblemPage from './problem-page'
 import type { Subject } from '@prisma/client'
 import type { Params, Props } from './types'
 import { problemInclude, collectionSelect } from './types'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/api/auth/[...nextauth]'
+import { canViewCollection } from '@/utils/permissions'
 
 export const dynamic = 'force-dynamic'
 
@@ -114,7 +117,31 @@ export default async function Page({
 }: {
   params: Params
 }) {
+  let { cid, pid } = params;
+  let session = await getServerSession(authOptions);
+  if (session === null) {
+    // Not logged in
+    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fp%2F${pid}`);
+  }
+
+  const userId = session.userId;
+  if (userId === undefined) {
+    throw new Error("userId is undefined despite being logged in");
+  }
+
   let { problem, collection } = await getProps(params);
+  const permission = await prisma.permission.findUnique({
+    where: {
+      userId_collectionId: {
+        userId,
+        collectionId: collection.id,
+      }
+    }
+  });
+  if (permission === null || !canViewCollection(permission.accessLevel)) {
+    // No permission
+    redirect("/need-permission");
+  }
 
   return <ProblemPage problem={problem} collection={collection} />;
 }
