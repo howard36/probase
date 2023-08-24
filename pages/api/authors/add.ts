@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const callerUserId = session.userId;
   if (callerUserId === undefined) {
-    return res.status(403).json({
+    return res.status(500).json({
       error: {
         message: "callerUserId is undefined despite being logged in"
       }
