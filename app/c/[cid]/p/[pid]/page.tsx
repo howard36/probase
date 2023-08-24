@@ -8,8 +8,6 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
 
-export const dynamic = 'force-dynamic'
-
 // export async function generateStaticParams(): Promise<Params[]> {
 //   if (process.env.NO_WIFI === "true") {
 //     return [
