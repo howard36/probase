@@ -32,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
+  // TODO: validation
   let { collectionId, pid, title, subject, statement, answer, solutionText, authorId, difficulty, isAnonymous } = req.body;
 
   if (!isNonNegativeInt(collectionId)) {
