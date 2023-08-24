@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
 import prisma from '@/utils/prisma'
-import { canEditCollection } from '@/utils/permissions';
+import { canAddProblem } from '@/utils/permissions';
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
 import { Subject } from '@prisma/client';
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const session = await getServerSession(req, res, authOptions);
-  if (!session) {
+  if (session === null) {
     return res.status(401).json({
       error: {
         message: 'Not signed in'
@@ -42,15 +42,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  const collection = { id: parseInt(collectionId) };
-  if (!canEditCollection(session, collection)) {
+  const userId = session.userId;
+  if (userId === undefined) {
+    throw new Error("userId is undefined despite being logged in");
+  }
+
+  const permission = await prisma.permission.findUnique({
+    where: {
+      userId_collectionId: {
+        userId,
+        collectionId,
+      }
+    }
+  });
+  if (permission === null || !canAddProblem(permission.accessLevel)) {
+    // No permission
     return res.status(403).json({
       error: {
         message: 'You do not have permission to edit this collection'
       }
     });
   }
-
 
   // assign PID based on existing problems
   // blank PID = calculate by calling function

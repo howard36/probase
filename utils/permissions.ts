@@ -33,6 +33,18 @@ export function isAdmin(session: Session, collection: CollectionPerm) {
   return session.collectionPerms.some(perm => (perm.colId === id && perm.isAdmin));
 }
 
+export function canAddProblem(
+  accessLevel: AccessLevel
+): boolean {
+  return accessLevel === "Admin" || accessLevel === "TeamMember" || accessLevel === "SubmitOnly";
+}
+
+export function canViewCollection(
+  accessLevel: AccessLevel,
+): boolean {
+  return accessLevel === "Admin" || accessLevel === "TeamMember" || accessLevel === "ViewOnly";
+}
+
 export function canEditCollection(
   session: Session | null,
   collection: CollectionPerm,
@@ -41,12 +53,6 @@ export function canEditCollection(
     return false;
   }
   return session.collectionPerms.some(perm => (perm.colId === collection.id));
-}
-
-export function canViewCollection(
-  accessLevel: AccessLevel,
-): boolean {
-  return accessLevel === "Admin" || accessLevel === "TeamMember" || accessLevel === "ViewOnly";
 }
 
 // TODO: when is session null?
