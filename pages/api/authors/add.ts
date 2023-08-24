@@ -38,8 +38,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const callerUserId = session.userId;
   if (callerUserId === undefined) {
-    throw new Error("userId is undefined despite being logged in");
+    return res.status(403).json({
+      error: {
+        message: "callerUserId is undefined despite being logged in"
+      }
+    });
   }
+
 
   const permission = await prisma.permission.findUnique({
     where: {

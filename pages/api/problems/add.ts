@@ -33,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // TODO: validation
+  // TODO: check if author.collection matches collection
   let { collectionId, pid, title, subject, statement, answer, solutionText, authorId, difficulty, isAnonymous } = req.body;
 
   if (!isNonNegativeInt(collectionId)) {
@@ -45,7 +46,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const userId = session.userId;
   if (userId === undefined) {
-    throw new Error("userId is undefined despite being logged in");
+    return res.status(403).json({
+      error: {
+        message: "userId is undefined despite being logged in"
+      }
+    });
   }
 
   const permission = await prisma.permission.findUnique({
