@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/utils/prisma';
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../auth/[...nextauth]'
-import { canEditSolution } from '@/utils/permissions'
+import { canEditSolution, canEditSolution2 } from '@/utils/permissions'
 import { handleApiError } from '@/utils/error';
 import { isNonNegativeInt } from '@/utils/utils';
 
@@ -34,6 +34,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
+  const userId = session.userId;
+  if (userId === undefined) {
+    return res.status(500).json({
+      error: {
+        message: "userId is undefined despite being logged in"
+      }
+    });
+  }
+
   try {
     // Get solution
     const solutionId = parseInt(idString);
@@ -61,7 +70,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    if (!canEditSolution(session, solution, solution.problem.collection)) {
+    const collectionId = solution.problem.collection.id;
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId,
+        }
+      }
+    });
+    const authors = await prisma.author.findMany({
+      where: {
+        userId,
+        collectionId,
+      },
+      select: { id: true },
+    });
+    if (!canEditSolution2(solution, permission, authors)) {
+      // No permission
       return res.status(403).json({
         error: {
           message: 'You do not have permission to edit this solution'

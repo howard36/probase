@@ -112,6 +112,27 @@ export function canEditProblem2(
   return false;
 }
 
+export function canEditSolution2(
+  solution: SolutionPerm,
+  permission: PermissionPerm | null,
+  authors: AuthorPerm[],
+): boolean {
+  if (permission === null) {
+    return false;
+  }
+  const role = permission.accessLevel;
+  if (role === "Admin") {
+    return true;
+  }
+  if (role === "TeamMember" || role === "SubmitOnly") {
+    // check if author matches
+    const authorIds1 = authors.map(author => author.id);
+    const authorIds2 = solution.authors.map(author => author.id);
+    return authorIds1?.some(id => authorIds2?.includes(id));
+  }
+  return false;
+}
+
 export function canEditSolution(
   session: Session | null,
   solution: SolutionPerm,
