@@ -1,9 +1,9 @@
 import EditableSolution from './editable-solution'
-import Latex from 'react-latex-next'
+import Latex from '@/components/latex'
 import type { CollectionProps, SolutionProps } from './types'
 import { promiseCanEditSolution } from './promise-can-edit'
 
-export default function Solution({
+export default async function Solution({
   solution,
   collection,
 }: {

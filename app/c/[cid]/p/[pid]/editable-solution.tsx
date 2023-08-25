@@ -1,3 +1,5 @@
+'use client'
+
 import ClickToEdit from '@/components/click-to-edit';
 import type { SolutionProps } from './types'
 import { useRouter } from 'next/navigation'

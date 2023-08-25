@@ -1,5 +1,5 @@
 import EditableStatement from './editable-statement'
-import Latex from 'react-latex-next'
+import Latex from '@/components/latex'
 import type { CollectionProps, ProblemProps } from './types'
 import { promiseCanEditProblem } from './promise-can-edit'
 

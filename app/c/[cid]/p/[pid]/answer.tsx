@@ -1,5 +1,5 @@
 import EditableAnswer from './editable-answer'
-import Latex from 'react-latex-next'
+import Latex from '@/components/latex'
 import type { CollectionProps, ProblemProps } from './types'
 import { promiseCanEditProblem } from './promise-can-edit'
 
