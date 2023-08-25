@@ -53,56 +53,56 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId,
-        collectionId,
-      }
-    }
-  });
-  if (permission === null || !canAddProblem(permission.accessLevel)) {
-    // No permission
-    return res.status(403).json({
-      error: {
-        message: 'You do not have permission to edit this collection'
-      }
-    });
-  }
-
-  // assign PID based on existing problems
-  // blank PID = calculate by calling function
-  if (pid === undefined) {
-    const prefix = subjectPrefix[subject as Subject];
-
-    // The most recent problem in this subject
-    const lastProblem = await prisma.problem.findFirst({
-      where: {
-        collectionId,
-        pid: {
-          startsWith: prefix
-        },
-      },
-      orderBy: {
-        id: 'desc'
-      },
-      select: {
-        pid: true,
-      },
-    });
-
-    if (lastProblem === null) {
-      // first problem in this subject
-      pid = prefix + '1';
-    } else {
-      const oldPid = lastProblem.pid;
-      const num = oldPid.substring(prefix.length);
-      const incrementedNum = parseInt(num, 10) + 1;
-      pid = prefix + incrementedNum;
-    }
-  }
-
   try {
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId,
+        }
+      }
+    });
+    if (permission === null || !canAddProblem(permission.accessLevel)) {
+      // No permission
+      return res.status(403).json({
+        error: {
+          message: 'You do not have permission to edit this collection'
+        }
+      });
+    }
+
+    // assign PID based on existing problems
+    // blank PID = calculate by calling function
+    if (pid === undefined) {
+      const prefix = subjectPrefix[subject as Subject];
+
+      // The most recent problem in this subject
+      const lastProblem = await prisma.problem.findFirst({
+        where: {
+          collectionId,
+          pid: {
+            startsWith: prefix
+          },
+        },
+        orderBy: {
+          id: 'desc'
+        },
+        select: {
+          pid: true,
+        },
+      });
+
+      if (lastProblem === null) {
+        // first problem in this subject
+        pid = prefix + '1';
+      } else {
+        const oldPid = lastProblem.pid;
+        const num = oldPid.substring(prefix.length);
+        const incrementedNum = parseInt(num, 10) + 1;
+        pid = prefix + incrementedNum;
+      }
+    }
+
     // TODO: solution should probably be in separate API
     const newProblem = await prisma.problem.create({
       data: {

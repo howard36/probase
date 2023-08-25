@@ -45,40 +45,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId: callerUserId,
-        collectionId,
-      }
-    }
-  });
-  if (permission === null || !canAddProblem(permission.accessLevel)) {
-    // No permission
-    return res.status(403).json({
-      error: {
-        message: 'You do not have permission to add a new problem'
-      }
-    });
-  }
-
-  // TODO: what if someone wants to submit a joint-author problem?
-  // The second author might not have an account,
-  // or might not have submitted a problem (meaning no author was created)
-  // Solution: allow submitting on behalf of someone else,
-  // but if submitter is not one of the authors,
-  // include "(Submitted by X)" underneath "Written by Y"
-  const collection = { id: collectionId };
-  if (!isAdmin(session, collection) && userId !== session.userId) {
-    return res.status(403).json({ 
-      error: {
-        message: 'You can only create authors associated with your own account'
-      }
-    });
-  }
-
   try {
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId: callerUserId,
+          collectionId,
+        }
+      }
+    });
+    if (permission === null || !canAddProblem(permission.accessLevel)) {
+      // No permission
+      return res.status(403).json({
+        error: {
+          message: 'You do not have permission to add a new problem'
+        }
+      });
+    }
+
+    // TODO: what if someone wants to submit a joint-author problem?
+    // The second author might not have an account,
+    // or might not have submitted a problem (meaning no author was created)
+    // Solution: allow submitting on behalf of someone else,
+    // but if submitter is not one of the authors,
+    // include "(Submitted by X)" underneath "Written by Y"
+    const collection = { id: collectionId };
+    if (!isAdmin(session, collection) && userId !== session.userId) {
+      return res.status(403).json({ 
+        error: {
+          message: 'You can only create authors associated with your own account'
+        }
+      });
+    }
+
     const newAuthor = await prisma.author.create({
       data: {
         collectionId,
