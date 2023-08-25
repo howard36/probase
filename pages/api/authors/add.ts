@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // No permission
     return res.status(403).json({
       error: {
-        message: 'You do not have permission to edit this collection'
+        message: 'You do not have permission to add a new problem'
       }
     });
   }

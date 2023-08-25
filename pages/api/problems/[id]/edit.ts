@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/utils/prisma';
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../auth/[...nextauth]'
-import { canEditProblem } from '@/utils/permissions'
+import { canEditProblem2 } from '@/utils/permissions'
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
 
@@ -34,6 +34,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
+  const userId = session.userId;
+  if (userId === undefined) {
+    return res.status(500).json({
+      error: {
+        message: "userId is undefined despite being logged in"
+      }
+    });
+  }
+
   try {
     // Get problem
     const problemId = parseInt(idString);
@@ -57,7 +66,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    if (!canEditProblem(session, problem, problem.collection)) {
+    const collectionId = problem.collection.id;
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId,
+        }
+      }
+    });
+    const authors = await prisma.author.findMany({
+      where: {
+        userId,
+        collectionId,
+      },
+      select: { id: true },
+    });
+    if (!canEditProblem2(problem, permission, authors)) {
+      // No permission
       return res.status(403).json({
         error: {
           message: 'You do not have permission to edit this problem'

@@ -8,6 +8,20 @@ const collectionPerm = Prisma.validator<Prisma.CollectionArgs>()({
 });
 type CollectionPerm = Prisma.CollectionGetPayload<typeof collectionPerm>;
 
+const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
+  select: {
+    id: true,
+  }
+});
+type AuthorPerm = Prisma.AuthorGetPayload<typeof authorPerm>;
+
+const permissionPerm = Prisma.validator<Prisma.PermissionArgs>()({
+  select: {
+    accessLevel: true,
+  }
+});
+type PermissionPerm = Prisma.PermissionGetPayload<typeof permissionPerm>;
+
 const problemPerm = Prisma.validator<Prisma.ProblemArgs>()({
   select: {
     authors: {
@@ -75,6 +89,27 @@ export function canEditProblem(
   const authorIds1 = session.authors.map(author => author.id);
   const authorIds2 = problem.authors.map(author => author.id);
   return authorIds1?.some(id => authorIds2?.includes(id));
+}
+
+export function canEditProblem2(
+  problem: ProblemPerm,
+  permission: PermissionPerm | null,
+  authors: AuthorPerm[],
+): boolean {
+  if (permission === null) {
+    return false;
+  }
+  const role = permission.accessLevel;
+  if (role === "Admin") {
+    return true;
+  }
+  if (role === "TeamMember" || role === "SubmitOnly") {
+    // check if author matches
+    const authorIds1 = authors.map(author => author.id);
+    const authorIds2 = problem.authors.map(author => author.id);
+    return authorIds1?.some(id => authorIds2?.includes(id));
+  }
+  return false;
 }
 
 export function canEditSolution(
