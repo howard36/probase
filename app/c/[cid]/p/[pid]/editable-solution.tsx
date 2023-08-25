@@ -3,9 +3,11 @@ import type { SolutionProps } from './types'
 import { useRouter } from 'next/navigation'
 
 export default function EditableSolution({
-  solution
+  solution,
+  label,
 }: {
   solution: SolutionProps
+  label: React.ReactNode
 }) {
   const router = useRouter();
 
@@ -29,8 +31,6 @@ export default function EditableSolution({
       console.error(`updating failed! status = ${response.status}`);
     }
   }
-
-  const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
 
   return (
     <ClickToEdit

@@ -16,9 +16,14 @@ export default function Solution({
   const { data: session, status } = useSession();
   const canEdit = (status === 'loading') ? false : canEditSolution(session, solution, collection);
 
+  const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
+
   if (canEdit) {
-    return <EditableSolution solution={solution} />;
+    return <EditableSolution solution={solution} label={label} />;
   } else {
-    return <p><Latex>{`${solution.text}`}</Latex></p>;
+    return <>
+      {label}
+      <Latex>{`${solution.text}`}</Latex>
+    </>;
   }
 }
