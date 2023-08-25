@@ -1,10 +1,7 @@
-'use client'
-
 import EditableSolution from './editable-solution'
 import Latex from 'react-latex-next'
 import type { CollectionProps, SolutionProps } from './types'
-import { useSession } from 'next-auth/react'
-import { canEditSolution } from '@/utils/permissions'
+import { promiseCanEditSolution } from './promise-can-edit'
 
 export default function Solution({
   solution,
@@ -13,9 +10,7 @@ export default function Solution({
   solution: SolutionProps
   collection: CollectionProps
 }) {
-  const { data: session, status } = useSession();
-  const canEdit = (status === 'loading') ? false : canEditSolution(session, solution, collection);
-
+  const canEdit = await promiseCanEditSolution(solution, collection);
   const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
 
   if (canEdit) {
