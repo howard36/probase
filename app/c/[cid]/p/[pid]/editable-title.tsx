@@ -1,3 +1,5 @@
+'use client'
+
 import ClickToEdit from '@/components/click-to-edit'
 import type { Problem } from '@prisma/client'
 import { useRouter } from 'next/navigation'

@@ -37,7 +37,7 @@ export const problemInclude = {
   },
   solutions: {
     include: solutionInclude
-  }
+  },
 };
 const problemProps = Prisma.validator<Prisma.ProblemArgs>()({
   include: problemInclude
