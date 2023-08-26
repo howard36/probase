@@ -1,7 +1,7 @@
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
 import ProblemPage from './problem-page'
-import type { Params, PermissionProps, Props } from './types'
+import type { Params, Props } from './types'
 import { problemInclude, collectionSelect, permissionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'

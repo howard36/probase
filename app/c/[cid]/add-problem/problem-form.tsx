@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { useSession } from 'next-auth/react'
 import type { Collection, Subject } from '@prisma/client'
 import type { Session } from 'next-auth'
 
@@ -39,53 +38,13 @@ const subjects = [
   },
 ];
 
-function getFullName(session: Session): string {
-  if (session.fullName) {
-    return session.fullName;
-  } else {
-    return `${session.givenName} ${session.familyName}`;
-  }
-}
-
-async function getOrCreateAuthor(
-  session: Session,
-  collectionId: number,
-  update: UpdateSession
-): Promise<number> {
-  console.log("In getOrCreateAuthor, session.authors = ", session.authors);
-  // Find if the user has an author for this collection
-  let author = session.authors.find(author => author.collectionId === collectionId);
-  if (author) {
-    return author.id;
-  }
-
-  // No existing author found, so create new author and update token and session
-  const fullName = getFullName(session);
-
-  const url = `/api/authors/add`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      displayName: fullName,
-      userId: session.userId,
-      collectionId,
-    })
-  });
-
-  const newAuthor = await response.json();
-
-  update({ updateAuthors: true });
-
-  return newAuthor.id;
-}
-
 // TODO: types?
 export default function ProblemForm({
   collection,
+  authorId,
 }: {
   collection: Collection
+  authorId: number
 }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -93,25 +52,12 @@ export default function ProblemForm({
   const [statement, setStatement] = useState("");
   const [answer, setAnswer] = useState("");
   const [solution, setSolution] = useState("");
-  const { data: session, update } = useSession();
-  console.log("session.authors on form load:", session?.authors);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (session === null) {
-      // TODO: show message to user: "You need to be logged in to submit a problem"
-      console.log("Error: not logged in");
-      return;
-    }
-
-    const authorId = await getOrCreateAuthor(session, collection.id, update);
-    console.log("session.authors after getOrCreateAuthor", session?.authors);
-    console.log({authorId})
-
     // add new problem
     const url = `/api/problems/add`;
-
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
