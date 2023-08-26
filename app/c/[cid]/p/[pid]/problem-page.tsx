@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Title from './title'
 import Statement from './statement'
 import Spoilers from './spoilers'
-import type { CollectionProps, ProblemProps } from './types'
+import type { Props } from './types'
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -24,13 +24,8 @@ const subjectToGradient = {
   },
 }
 
-export default function ProblemPage({
-  problem,
-  collection,
-}: {
-  problem: ProblemProps
-  collection: CollectionProps
-}) {
+export default function ProblemPage(props: Props) {
+  const { problem, collection, permission, authors } = props;
   let written_by;
   if (problem.authors.length > 0) {
     written_by = <p className="italic text-slate-700 text-base mb-8 text-right">Written by {problem.authors[0].displayName}</p>;

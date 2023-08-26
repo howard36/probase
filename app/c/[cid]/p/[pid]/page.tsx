@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import ProblemPage from './problem-page'
 import type { Subject } from '@prisma/client'
 import type { Params, Props } from './types'
-import { problemInclude, collectionSelect } from './types'
+import { problemInclude, collectionSelect, permissionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
@@ -37,7 +37,7 @@ import { canViewCollection } from '@/utils/permissions'
 // };
 
 // TODO: params can be null, but the type does not reflect that
-async function getProps(params: Params): Promise<Props> {
+async function getProps(params: Params, userId: string): Promise<Props> {
   // console.log("running getStaticProps for", params)
   if (process.env.NO_WIFI === "true") {
     return {
@@ -88,10 +88,26 @@ async function getProps(params: Params): Promise<Props> {
     notFound();
   }
 
+  // TODO: parallelize db queries
+  const collectionId = collection.id;
+  const permission = await prisma.permission.findUnique({
+    where: {
+      userId_collectionId: {
+        userId,
+        collectionId: collection.id,
+      }
+    },
+    select: permissionSelect,
+  });
+  if (permission === null || !canViewCollection(permission.accessLevel)) {
+    // No permission to view this page
+    redirect("/need-permission");
+  }
+
   const problem = await prisma.problem.findUnique({
     where: {
       collectionId_pid: {
-        collectionId: collection.id,
+        collectionId,
         pid: params.pid,
       }
     },
@@ -102,10 +118,20 @@ async function getProps(params: Params): Promise<Props> {
     notFound();
   }
 
+  const authors = await prisma.author.findMany({
+    where: {
+      userId,
+      collectionId,
+    },
+    select: { id: true },
+  });
+
   const props: Props = {
     problem,
     collection,
-  }
+    permission,
+    authors,
+  };
 
   return props;
 };
@@ -127,19 +153,7 @@ export default async function Page({
     throw new Error("userId is undefined despite being logged in");
   }
 
-  let { problem, collection } = await getProps(params);
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId,
-        collectionId: collection.id,
-      }
-    }
-  });
-  if (permission === null || !canViewCollection(permission.accessLevel)) {
-    // No permission
-    redirect("/need-permission");
-  }
+  let props: Props = await getProps(params, userId);
 
-  return <ProblemPage problem={problem} collection={collection} />;
+  return <ProblemPage {...props} />;
 }
