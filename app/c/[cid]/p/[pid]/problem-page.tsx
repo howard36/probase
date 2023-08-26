@@ -25,7 +25,7 @@ const subjectToGradient = {
 }
 
 export default function ProblemPage(props: Props) {
-  const { problem, collection, permission, authors } = props;
+  const { problem, collection } = props;
   let written_by;
   if (problem.authors.length > 0) {
     written_by = <p className="italic text-slate-700 text-base mb-8 text-right">Written by {problem.authors[0].displayName}</p>;
@@ -46,16 +46,16 @@ export default function ProblemPage(props: Props) {
       {/* fixed width container, matching ideal 60-character line length */}
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
         <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
-          <Title problem={problem} collection={collection} />
+          <Title {...props} />
         </div>
         <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
           {subject}
         </div>
         <div className="mb-4">
-          <Statement problem={problem} collection={collection} />
+          <Statement {...props} />
         </div>
         {written_by}
-        <Spoilers problem={problem} collection={collection} />
+        <Spoilers {...props} />
       </div>
     </div>
   );

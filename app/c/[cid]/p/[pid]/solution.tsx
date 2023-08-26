@@ -1,16 +1,18 @@
 import EditableSolution from './editable-solution'
 import Latex from '@/components/latex'
-import type { CollectionProps, SolutionProps } from './types'
-import { promiseCanEditSolution } from './promise-can-edit'
+import type { AuthorProps, PermissionProps, SolutionProps } from './types'
+import { canEditSolution2 } from '@/utils/permissions'
 
-export default async function Solution({
+export default function Solution({
   solution,
-  collection,
+  permission,
+  authors,
 }: {
   solution: SolutionProps
-  collection: CollectionProps
+  permission: PermissionProps
+  authors: AuthorProps[]
 }) {
-  const canEdit = await promiseCanEditSolution(solution, collection);
+  const canEdit = canEditSolution2(solution, permission, authors);
   const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
 
   if (canEdit) {

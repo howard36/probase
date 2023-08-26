@@ -3,22 +3,17 @@
 import { useState } from 'react';
 import Answer from './answer';
 import Solution from './solution'
-import type { CollectionProps, ProblemProps } from './types'
+import type { Props } from './types'
 
-export default function Spoilers({
-  problem,
-  collection,
-}: {
-  problem: ProblemProps
-  collection: CollectionProps
-}) {
+export default function Spoilers(props: Props) {
+  const { problem, permission, authors } = props;
   const [hidden, setHidden] = useState(true);
 
   let answer, solution;
   if (problem.answer) {
     answer = (
       <div className="my-8">
-        <Answer problem={problem} collection={collection} />
+        <Answer {...props} />
       </div>
     );
   }
@@ -26,7 +21,7 @@ export default function Spoilers({
     const sol = problem.solutions[0];
     solution = (
       <div className="my-8">
-        <Solution solution={sol} collection={collection} />
+        <Solution solution={sol} permission={permission} authors={authors} />
       </div>
     );
   }

@@ -1,16 +1,11 @@
 import EditableStatement from './editable-statement'
 import Latex from '@/components/latex'
-import type { CollectionProps, ProblemProps } from './types'
-import { promiseCanEditProblem } from './promise-can-edit'
+import type { Props } from './types'
+import { canEditProblem2 } from '@/utils/permissions';
 
-export default async function Statement({
-  problem,
-  collection,
-}: {
-  problem: ProblemProps
-  collection: CollectionProps
-}) {
-  const canEdit = await promiseCanEditProblem(problem, collection);
+export default function Statement(props: Props) {
+  const { problem, permission, authors } = props;
+  const canEdit = canEditProblem2(problem, permission, authors);
 
   if (canEdit) {
     return <EditableStatement problem={problem} />;
