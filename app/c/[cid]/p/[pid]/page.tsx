@@ -1,7 +1,7 @@
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
 import ProblemPage from './problem-page'
-import type { Params, Props } from './types'
+import type { Params, PermissionProps, Props } from './types'
 import { problemInclude, collectionSelect, permissionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
@@ -98,7 +98,8 @@ async function getProps(params: Params, userId: string): Promise<Props> {
     },
     select: permissionSelect,
   });
-  if (!canViewCollection(permission)) {
+  // canViewCollection already checks for null, but we include it here so TypeScript knows that permission is non-null later in the program
+  if (permission === null || !canViewCollection(permission)) {
     // No permission to view this page
     redirect("/need-permission");
   }
