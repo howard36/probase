@@ -74,7 +74,7 @@ export default function ProblemForm({
     });
     if (response.status === 201) {
       const newProblem = await response.json();
-      router.push(`/c/${collection.cid}/p/${newProblem.pid}`)
+      router.push(`/c/${collection.cid}/p/${newProblem.pid}`);
       router.refresh();
     } else {
       // TODO: retry with different PID
