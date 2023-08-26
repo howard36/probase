@@ -3,13 +3,10 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import type { Collection, Subject } from '@prisma/client'
-import type { Session } from 'next-auth'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
 }
-
-type UpdateSession = (data?: any) => Promise<Session | null>;
 
 const subjects = [
   {
@@ -112,7 +109,10 @@ export default function ProblemForm({
             <label className="leading-7 text-md text-gray-600">Solution</label>
             <textarea value={solution} required onChange={(e)=>{setSolution(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
           </div>
-          <button disabled={isSubmitting} className="text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg">Submit</button>
+          <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-blue-500 hover:bg-blue-600 focus:outline-none flex flex-auto items-center justify-center">
+            { isSubmitting && <div className="animate-spin rounded-full border-solid border-blue-400 border-l-blue-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
+            { isSubmitting ? "Saving..." : "Submit" }
+          </button>
         </form>
       </div>
     </div>
