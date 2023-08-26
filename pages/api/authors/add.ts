@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
 import prisma from '@/utils/prisma'
-import { canAddProblem, canEditCollection, isAdmin } from '@/utils/permissions'
+import { canAddProblem, isAdmin } from '@/utils/permissions'
 import { handleApiError } from '@/utils/error'
 import { isNonNegativeInt } from '@/utils/utils'
 

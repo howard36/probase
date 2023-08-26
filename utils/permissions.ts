@@ -59,39 +59,7 @@ export function canViewCollection(
   return accessLevel === "Admin" || accessLevel === "TeamMember" || accessLevel === "ViewOnly";
 }
 
-export function canEditCollection(
-  session: Session | null,
-  collection: CollectionPerm,
-): boolean {
-  if (session === null) {
-    return false;
-  }
-  return session.collectionPerms.some(perm => (perm.colId === collection.id));
-}
-
-// TODO: when is session null?
-// read next-auth docs to figure out
 export function canEditProblem(
-  session: Session | null,
-  problem: ProblemPerm,
-  collection: CollectionPerm,
-): boolean {
-  if (session === null) {
-    return false;
-  }
-  if (isAdmin(session, collection)) {
-    return true;
-  }
-  if (!canEditCollection(session, collection)) {
-    return false;
-  }
-
-  const authorIds1 = session.authors.map(author => author.id);
-  const authorIds2 = problem.authors.map(author => author.id);
-  return authorIds1?.some(id => authorIds2?.includes(id));
-}
-
-export function canEditProblem2(
   problem: ProblemPerm,
   permission: PermissionPerm | null,
   authors: AuthorPerm[],
@@ -112,7 +80,7 @@ export function canEditProblem2(
   return false;
 }
 
-export function canEditSolution2(
+export function canEditSolution(
   solution: SolutionPerm,
   permission: PermissionPerm | null,
   authors: AuthorPerm[],
@@ -132,24 +100,3 @@ export function canEditSolution2(
   }
   return false;
 }
-
-export function canEditSolution(
-  session: Session | null,
-  solution: SolutionPerm,
-  collection: CollectionPerm,
-): boolean {
-  if (session === null) {
-    return false;
-  }
-  if (isAdmin(session, collection)) {
-    return true;
-  }
-  if (!canEditCollection(session, collection)) {
-    return false;
-  }
-
-  const authorIds1 = session.authors.map(author => author.id);
-  const authorIds2 = solution.authors.map(author => author.id);
-  return authorIds1?.some(id => authorIds2?.includes(id));
-}
-

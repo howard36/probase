@@ -1,11 +1,11 @@
 import EditableStatement from './editable-statement'
 import Latex from '@/components/latex'
 import type { Props } from './types'
-import { canEditProblem2 } from '@/utils/permissions';
+import { canEditProblem } from '@/utils/permissions';
 
 export default function Statement(props: Props) {
   const { problem, permission, authors } = props;
-  const canEdit = canEditProblem2(problem, permission, authors);
+  const canEdit = canEditProblem(problem, permission, authors);
 
   if (canEdit) {
     return <EditableStatement problem={problem} />;

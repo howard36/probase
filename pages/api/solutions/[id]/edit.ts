@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/utils/prisma';
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../auth/[...nextauth]'
-import { canEditSolution, canEditSolution2 } from '@/utils/permissions'
+import { canEditSolution } from '@/utils/permissions'
 import { handleApiError } from '@/utils/error';
 import { isNonNegativeInt } from '@/utils/utils';
 
@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       select: { id: true },
     });
-    if (!canEditSolution2(solution, permission, authors)) {
+    if (!canEditSolution(solution, permission, authors)) {
       // No permission
       return res.status(403).json({
         error: {
