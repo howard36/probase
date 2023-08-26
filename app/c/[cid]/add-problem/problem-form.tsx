@@ -52,8 +52,10 @@ export default function ProblemForm({
   const [statement, setStatement] = useState("");
   const [answer, setAnswer] = useState("");
   const [solution, setSolution] = useState("");
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setSubmitting(true);
     e.preventDefault();
 
     // add new problem
@@ -110,7 +112,7 @@ export default function ProblemForm({
             <label className="leading-7 text-md text-gray-600">Solution</label>
             <textarea value={solution} required onChange={(e)=>{setSolution(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
           </div>
-          <button className="text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg">Submit</button>
+          <button disabled={isSubmitting} className="text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-blue-600 rounded text-lg">Submit</button>
         </form>
       </div>
     </div>
