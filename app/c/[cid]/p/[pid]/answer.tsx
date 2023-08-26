@@ -1,24 +1,19 @@
-'use client'
-
 import EditableAnswer from './editable-answer'
-import Latex from 'react-latex-next'
-import type { CollectionProps, ProblemProps } from './types'
-import { useSession } from 'next-auth/react'
-import { canEditProblem } from '@/utils/permissions'
+import Latex from '@/components/latex'
+import type { Props } from './types'
+import { canEditProblem } from '@/utils/permissions';
 
-export default function Answer({
-  problem,
-  collection,
-}: {
-  problem: ProblemProps
-  collection: CollectionProps
-}) {
-  const { data: session, status } = useSession();
-  const canEdit = (status === 'loading') ? false : canEditProblem(session, problem, collection);
+export default function Answer(props: Props) {
+  const { problem, permission, authors } = props;
+  const canEdit = canEditProblem(problem, permission, authors);
+  const label = <p className="mb-2 text-sm text-slate-500 font-semibold">ANSWER</p>;
 
   if (canEdit) {
-    return <EditableAnswer problem={problem} />;
+    return <EditableAnswer problem={problem} label={label} />;
   } else {
-    return <p><Latex>{`${problem.answer}`}</Latex></p>;
+    return <>
+      {label}
+      <Latex>{`${problem.answer}`}</Latex>
+    </>;
   }
 }

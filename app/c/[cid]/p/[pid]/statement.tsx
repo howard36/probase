@@ -1,24 +1,15 @@
-'use client'
-
 import EditableStatement from './editable-statement'
-import Latex from 'react-latex-next'
-import type { CollectionProps, ProblemProps } from './types'
-import { useSession } from 'next-auth/react'
-import { canEditProblem } from '@/utils/permissions'
+import Latex from '@/components/latex'
+import type { Props } from './types'
+import { canEditProblem } from '@/utils/permissions';
 
-export default function Statement({
-  problem,
-  collection,
-}: {
-  problem: ProblemProps
-  collection: CollectionProps
-}) {
-  const { data: session, status } = useSession();
-  const canEdit = (status === 'loading') ? false : canEditProblem(session, problem, collection);
+export default function Statement(props: Props) {
+  const { problem, permission, authors } = props;
+  const canEdit = canEditProblem(problem, permission, authors);
 
   if (canEdit) {
     return <EditableStatement problem={problem} />;
   } else {
-    return <p><Latex>{`${problem.statement}`}</Latex></p>;
+    return <Latex>{`${problem.statement}`}</Latex>;
   }
 }

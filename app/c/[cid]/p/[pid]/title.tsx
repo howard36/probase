@@ -1,25 +1,15 @@
-'use client'
-
 import EditableTitle from './editable-title'
-import Latex from 'react-latex-next'
-import type { CollectionProps, ProblemProps } from './types'
-import { useSession } from 'next-auth/react'
-import { canEditProblem } from '@/utils/permissions'
+import Latex from '@/components/latex'
+import type { Props } from './types'
+import { canEditProblem } from '@/utils/permissions';
 
-export default function Title({
-  problem,
-  collection,
-}: {
-  problem: ProblemProps
-  collection: CollectionProps
-}) {
-  const { data: session, status } = useSession();
-  const canEdit = (status === 'loading') ? false : canEditProblem(session, problem, collection);
-  console.log(session?.authors); // For logging on problem page after adding a new problem
+export default function Title(props: Props) {
+  const { problem, permission, authors } = props;
+  const canEdit = canEditProblem(problem, permission, authors);
 
   if (canEdit) {
     return <EditableTitle problem={problem} />;
   } else {
-    return <p><Latex>{`${problem.title}`}</Latex></p>;
+    return <Latex>{`${problem.title}`}</Latex>;
   }
 }

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { AccessLevel, Prisma } from '@prisma/client'
 import type { Session } from 'next-auth'
 
 const collectionPerm = Prisma.validator<Prisma.CollectionArgs>()({
@@ -7,6 +7,20 @@ const collectionPerm = Prisma.validator<Prisma.CollectionArgs>()({
   }
 });
 type CollectionPerm = Prisma.CollectionGetPayload<typeof collectionPerm>;
+
+const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
+  select: {
+    id: true,
+  }
+});
+type AuthorPerm = Prisma.AuthorGetPayload<typeof authorPerm>;
+
+const permissionPerm = Prisma.validator<Prisma.PermissionArgs>()({
+  select: {
+    accessLevel: true,
+  }
+});
+type PermissionPerm = Prisma.PermissionGetPayload<typeof permissionPerm>;
 
 const problemPerm = Prisma.validator<Prisma.ProblemArgs>()({
   select: {
@@ -33,55 +47,64 @@ export function isAdmin(session: Session, collection: CollectionPerm) {
   return session.collectionPerms.some(perm => (perm.colId === id && perm.isAdmin));
 }
 
-export function canEditCollection(
-  session: Session | null,
-  collection: CollectionPerm,
+export function canAddProblem(
+  permission: PermissionPerm | null
 ): boolean {
-  if (session === null) {
+  if (permission === null) {
     return false;
   }
-  return session.collectionPerms.some(perm => (perm.colId === collection.id));
+  const role = permission.accessLevel;
+  return role === "Admin" || role === "TeamMember" || role === "SubmitOnly";
 }
 
-// TODO: when is session null?
-// read next-auth docs to figure out
-export function canEditProblem(
-  session: Session | null,
-  problem: ProblemPerm,
-  collection: CollectionPerm,
+export function canViewCollection(
+  permission: PermissionPerm | null
 ): boolean {
-  if (session === null) {
+  if (permission === null) {
     return false;
   }
-  if (isAdmin(session, collection)) {
+  const role = permission.accessLevel;
+  return role === "Admin" || role === "TeamMember" || role === "ViewOnly";
+}
+
+export function canEditProblem(
+  problem: ProblemPerm,
+  permission: PermissionPerm | null,
+  authors: AuthorPerm[],
+): boolean {
+  if (permission === null) {
+    return false;
+  }
+  const role = permission.accessLevel;
+  if (role === "Admin") {
     return true;
   }
-  if (!canEditCollection(session, collection)) {
-    return false;
+  if (role === "TeamMember" || role === "SubmitOnly") {
+    // check if author matches
+    const authorIds1 = authors.map(author => author.id);
+    const authorIds2 = problem.authors.map(author => author.id);
+    return authorIds1?.some(id => authorIds2?.includes(id));
   }
-
-  const authorIds1 = session.authors.map(author => author.id);
-  const authorIds2 = problem.authors.map(author => author.id);
-  return authorIds1?.some(id => authorIds2?.includes(id));
+  return false;
 }
 
 export function canEditSolution(
-  session: Session | null,
   solution: SolutionPerm,
-  collection: CollectionPerm,
+  permission: PermissionPerm | null,
+  authors: AuthorPerm[],
 ): boolean {
-  if (session === null) {
+  if (permission === null) {
     return false;
   }
-  if (isAdmin(session, collection)) {
+  const role = permission.accessLevel;
+  if (role === "Admin") {
     return true;
   }
-  if (!canEditCollection(session, collection)) {
-    return false;
+  if (role === "TeamMember" || role === "SubmitOnly") {
+    // check if author matches
+    const authorIds1 = authors.map(author => author.id);
+    const authorIds2 = solution.authors.map(author => author.id);
+    return authorIds1?.some(id => authorIds2?.includes(id));
   }
-
-  const authorIds1 = session.authors.map(author => author.id);
-  const authorIds2 = solution.authors.map(author => author.id);
-  return authorIds1?.some(id => authorIds2?.includes(id));
+  return false;
 }
-

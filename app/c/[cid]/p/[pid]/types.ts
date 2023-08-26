@@ -37,14 +37,33 @@ export const problemInclude = {
   },
   solutions: {
     include: solutionInclude
-  }
+  },
 };
 const problemProps = Prisma.validator<Prisma.ProblemArgs>()({
   include: problemInclude
 });
 export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
 
+export const permissionSelect = {
+  accessLevel: true
+};
+const permissionProps = Prisma.validator<Prisma.PermissionArgs>()({
+  select: permissionSelect
+});
+export type PermissionProps = Prisma.PermissionGetPayload<typeof permissionProps>;
+
+export const authorSelect = {
+  id: true
+};
+const authorProps = Prisma.validator<Prisma.AuthorArgs>()({
+  select: authorSelect
+});
+export type AuthorProps = Prisma.AuthorGetPayload<typeof authorProps>;
+
+
 export interface Props {
-  collection: CollectionProps;
   problem: ProblemProps;
+  collection: CollectionProps;
+  permission: PermissionProps;
+  authors: AuthorProps[];
 }

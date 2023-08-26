@@ -1,11 +1,15 @@
+'use client'
+
 import ClickToEdit from '@/components/click-to-edit';
 import type { Problem } from '@prisma/client';
 import { useRouter } from 'next/navigation'
 
 export default function EditableAnswer({
-  problem
+  problem,
+  label,
 }: {
   problem: Problem
+  label: React.ReactNode
 }) {
   const router = useRouter();
 
@@ -28,8 +32,6 @@ export default function EditableAnswer({
       console.error(`updating failed! status = ${response.status}`);
     }
   }
-
-  const label = <p className="mb-2 text-sm text-slate-500 font-semibold">ANSWER</p>;
 
   return (
     <ClickToEdit

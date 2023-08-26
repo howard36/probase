@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
 import prisma from '@/utils/prisma'
-import { canEditCollection } from '@/utils/permissions';
+import { canAddProblem } from '@/utils/permissions';
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
 import { Subject } from '@prisma/client';
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const session = await getServerSession(req, res, authOptions);
-  if (!session) {
+  if (session === null) {
     return res.status(401).json({
       error: {
         message: 'Not signed in'
@@ -32,6 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
+  // TODO: validation
+  // TODO: check if author.collection matches collection
   let { collectionId, pid, title, subject, statement, answer, solutionText, authorId, difficulty, isAnonymous } = req.body;
 
   if (!isNonNegativeInt(collectionId)) {
@@ -42,49 +44,65 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  const collection = { id: parseInt(collectionId) };
-  if (!canEditCollection(session, collection)) {
-    return res.status(403).json({
+  const userId = session.userId;
+  if (userId === undefined) {
+    return res.status(500).json({
       error: {
-        message: 'You do not have permission to edit this collection'
+        message: "userId is undefined despite being logged in"
       }
     });
   }
 
-
-  // assign PID based on existing problems
-  // blank PID = calculate by calling function
-  if (pid === undefined) {
-    const prefix = subjectPrefix[subject as Subject];
-
-    // The most recent problem in this subject
-    const lastProblem = await prisma.problem.findFirst({
-      where: {
-        collectionId,
-        pid: {
-          startsWith: prefix
-        },
-      },
-      orderBy: {
-        id: 'desc'
-      },
-      select: {
-        pid: true,
-      },
-    });
-
-    if (lastProblem === null) {
-      // first problem in this subject
-      pid = prefix + '1';
-    } else {
-      const oldPid = lastProblem.pid;
-      const num = oldPid.substring(prefix.length);
-      const incrementedNum = parseInt(num, 10) + 1;
-      pid = prefix + incrementedNum;
-    }
-  }
-
   try {
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId,
+        }
+      }
+    });
+    if (!canAddProblem(permission)) {
+      // No permission
+      return res.status(403).json({
+        error: {
+          message: 'You do not have permission to edit this collection'
+        }
+      });
+    }
+
+    // assign PID based on existing problems
+    // blank PID = calculate by calling function
+    if (pid === undefined) {
+      const prefix = subjectPrefix[subject as Subject];
+
+      // The most recent problem in this subject
+      const lastProblem = await prisma.problem.findFirst({
+        where: {
+          collectionId,
+          pid: {
+            startsWith: prefix
+          },
+        },
+        orderBy: {
+          id: 'desc'
+        },
+        select: {
+          pid: true,
+        },
+      });
+
+      if (lastProblem === null) {
+        // first problem in this subject
+        pid = prefix + '1';
+      } else {
+        const oldPid = lastProblem.pid;
+        const num = oldPid.substring(prefix.length);
+        const incrementedNum = parseInt(num, 10) + 1;
+        pid = prefix + incrementedNum;
+      }
+    }
+
     // TODO: solution should probably be in separate API
     const newProblem = await prisma.problem.create({
       data: {

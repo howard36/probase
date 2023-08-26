@@ -1,22 +1,66 @@
+import { authOptions } from '@/api/auth/[...nextauth]';
 import ProblemForm from './problem-form'
 import prisma from '@/utils/prisma'
-import { notFound } from 'next/navigation'
+import { Session, getServerSession } from 'next-auth';
+import { notFound, redirect } from 'next/navigation'
 
 interface Params {
   cid: string;
 }
 
-export async function generateStaticParams() {
-  if (process.env.NO_WIFI === "true") {
-    return [
-      { cid: 'cmimc' }
-    ];
+// export async function generateStaticParams() {
+//   if (process.env.NO_WIFI === "true") {
+//     return [
+//       { cid: 'cmimc' }
+//     ];
+//   }
+//   const params: Params[] = await prisma.collection.findMany({
+//     select: { cid: true }
+//   });
+
+//   return params;
+// }
+
+function getFullName(session: Session): string {
+  if (session.fullName) {
+    return session.fullName;
+  } else {
+    return `${session.givenName} ${session.familyName}`;
   }
-  const params: Params[] = await prisma.collection.findMany({
-    select: { cid: true }
+}
+
+async function getOrCreateAuthor(
+  session: Session,
+  collectionId: number,
+): Promise<number> {
+  const userId = session.userId;
+  if (userId === undefined) {
+    throw new Error("userId is undefined despite being logged in");
+  }
+
+  // Check if user already has author
+  const authors = await prisma.author.findMany({
+    where: {
+      userId,
+      collectionId,
+    },
+    select: { id: true },
+  });
+  if (authors.length > 0) {
+    return authors[0].id;
+  }
+
+  // No existing author found, so create new author and update token and session
+  const fullName = getFullName(session);
+  const newAuthor = await prisma.author.create({
+    data: {
+      displayName: fullName,
+      userId,
+      collectionId,
+    }
   });
 
-  return params;
+  return newAuthor.id;
 }
 
 async function getCollection(cid: string) {
@@ -49,10 +93,18 @@ export default async function AddProblemPage({
 }: {
   params: Params
 }) {
+  const { cid } = params;
+  let session = await getServerSession(authOptions);
+  if (session === null) {
+    // Not logged in
+    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
+  }
+
   // TODO: select only needed fields of collection
-  const collection = await getCollection(params.cid);
+  const collection = await getCollection(cid);
+  const authorId = await getOrCreateAuthor(session, collection.id);
 
   return (
-    <ProblemForm collection={collection}/>
+    <ProblemForm collection={collection} authorId={authorId} />
   );
 }

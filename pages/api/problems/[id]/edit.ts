@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const session = await getServerSession(req, res, authOptions);
-  if (!session) {
+  if (session === null) {
     return res.status(401).json({
       error: {
         message: 'Not signed in'
@@ -30,6 +30,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({
       error: {
         message: 'ID must be a non-negative integer'
+      }
+    });
+  }
+
+  const userId = session.userId;
+  if (userId === undefined) {
+    return res.status(500).json({
+      error: {
+        message: "userId is undefined despite being logged in"
       }
     });
   }
@@ -57,7 +66,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    if (!canEditProblem(session, problem, problem.collection)) {
+    const collectionId = problem.collection.id;
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId,
+        }
+      }
+    });
+    const authors = await prisma.author.findMany({
+      where: {
+        userId,
+        collectionId,
+      },
+      select: { id: true },
+    });
+    if (!canEditProblem(problem, permission, authors)) {
+      // No permission
       return res.status(403).json({
         error: {
           message: 'You do not have permission to edit this problem'
