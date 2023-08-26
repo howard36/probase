@@ -23,45 +23,45 @@ import { canViewCollection } from '@/utils/permissions'
 // }
 
 async function getCollection(cid: string): Promise<CollectionProps> {
-  if (process.env.NO_WIFI === "true") {
-    return {
-      id: 1,
-      cid: 'cmimc',
-      name: 'CMIMC',
-      problems: [
-        {
-          pid: 'A1',
-          title: 'Quadratic Equation',
-          subject: 'Algebra' as Subject,
-          statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-        },
-        {
-          pid: 'A2',
-          title: 'Quadratic Equation',
-          subject: 'Combinatorics' as Subject,
-          statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-        },
-        {
-          pid: 'A3',
-          title: 'Quadratic Equation',
-          subject: 'Geometry' as Subject,
-          statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-        },
-        {
-          pid: 'A4',
-          title: 'Quadratic Equation',
-          subject: 'NumberTheory' as Subject,
-          statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-        },
-        {
-          pid: 'A5',
-          title: 'Quadratic Equation',
-          subject: 'Algebra' as Subject,
-          statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-        },
-      ],
-    }
-  }
+  // if (process.env.NO_WIFI === "true") {
+  //   return {
+  //     id: 1,
+  //     cid: 'cmimc',
+  //     name: 'CMIMC',
+  //     problems: [
+  //       {
+  //         pid: 'A1',
+  //         title: 'Quadratic Equation',
+  //         subject: 'Algebra' as Subject,
+  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
+  //       },
+  //       {
+  //         pid: 'A2',
+  //         title: 'Quadratic Equation',
+  //         subject: 'Combinatorics' as Subject,
+  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
+  //       },
+  //       {
+  //         pid: 'A3',
+  //         title: 'Quadratic Equation',
+  //         subject: 'Geometry' as Subject,
+  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
+  //       },
+  //       {
+  //         pid: 'A4',
+  //         title: 'Quadratic Equation',
+  //         subject: 'NumberTheory' as Subject,
+  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
+  //       },
+  //       {
+  //         pid: 'A5',
+  //         title: 'Quadratic Equation',
+  //         subject: 'Algebra' as Subject,
+  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
+  //       },
+  //     ],
+  //   }
+  // }
 
   const collection = await prisma.collection.findUnique({
     where: { cid },
