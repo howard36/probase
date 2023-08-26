@@ -2,7 +2,6 @@ import ProblemCard from './problem-card'
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import type { Subject } from '@prisma/client'
 import type { Params, CollectionProps } from './types'
 import { collectionSelect } from './types'
 import { getServerSession } from 'next-auth'
@@ -101,7 +100,7 @@ export default async function CollectionPage({
       }
     }
   });
-  if (permission === null || !canViewCollection(permission.accessLevel)) {
+  if (!canViewCollection(permission)) {
     // No permission
     redirect("/need-permission");
   }

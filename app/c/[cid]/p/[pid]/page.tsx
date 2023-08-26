@@ -1,7 +1,6 @@
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
 import ProblemPage from './problem-page'
-import type { Subject } from '@prisma/client'
 import type { Params, Props } from './types'
 import { problemInclude, collectionSelect, permissionSelect } from './types'
 import { getServerSession } from 'next-auth'
@@ -99,7 +98,7 @@ async function getProps(params: Params, userId: string): Promise<Props> {
     },
     select: permissionSelect,
   });
-  if (permission === null || !canViewCollection(permission.accessLevel)) {
+  if (!canViewCollection(permission)) {
     // No permission to view this page
     redirect("/need-permission");
   }

@@ -48,15 +48,23 @@ export function isAdmin(session: Session, collection: CollectionPerm) {
 }
 
 export function canAddProblem(
-  accessLevel: AccessLevel
+  permission: PermissionPerm | null
 ): boolean {
-  return accessLevel === "Admin" || accessLevel === "TeamMember" || accessLevel === "SubmitOnly";
+  if (permission === null) {
+    return false;
+  }
+  const role = permission.accessLevel;
+  return role === "Admin" || role === "TeamMember" || role === "SubmitOnly";
 }
 
 export function canViewCollection(
-  accessLevel: AccessLevel,
+  permission: PermissionPerm | null
 ): boolean {
-  return accessLevel === "Admin" || accessLevel === "TeamMember" || accessLevel === "ViewOnly";
+  if (permission === null) {
+    return false;
+  }
+  const role = permission.accessLevel;
+  return role === "Admin" || role === "TeamMember" || role === "ViewOnly";
 }
 
 export function canEditProblem(

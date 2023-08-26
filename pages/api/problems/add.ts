@@ -62,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
     });
-    if (permission === null || !canAddProblem(permission.accessLevel)) {
+    if (!canAddProblem(permission)) {
       // No permission
       return res.status(403).json({
         error: {
