@@ -101,8 +101,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account, profile, trigger, session }: jwtCallbackParams) {
-      // console.log("In jwt", trigger, token.authors, token.sub, { account });
-      console.log("In jwt callback", { token, user, account, profile, trigger }, "\n");
       if (user && account && profile) {
         // Initial sign in
         // when trigger is "signIn" or "signUp", token contains a subset of JWT.
@@ -166,7 +164,6 @@ export const authOptions: NextAuthOptions = {
               collectionId: true,
             }
           });
-          console.log("updated token.authors =", token.authors);
         }
       }
 
@@ -196,7 +193,6 @@ export const authOptions: NextAuthOptions = {
       session.userId = token.sub;
       session.collectionPerms = token.collectionPerms;
       session.authors = token.authors;
-      console.log("updating session from token", session.authors)
       return session;
     },
   },
