@@ -7,6 +7,7 @@ import { collectionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
+import ProblemList from './problem-list'
 
 // export async function generateStaticParams(): Promise<Params[]> {
 //   if (process.env.NO_WIFI === "true") {
@@ -80,13 +81,16 @@ export default async function CollectionPage({
   params: Params
 }) {
   const { cid } = params;
+  const collection = await getCollection(cid);
+
   const session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
-      redirect('/invite/demo');
+      return <ProblemList collection={collection} />;
+    } else {
+      redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
     }
-    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
   }
 
   const userId = session.userId;
@@ -94,7 +98,6 @@ export default async function CollectionPage({
     throw new Error("userId is undefined despite being logged in");
   }
 
-  const collection = await getCollection(cid);
   const permission = await prisma.permission.findUnique({
     where: {
       userId_collectionId: {
@@ -106,27 +109,28 @@ export default async function CollectionPage({
   if (!canViewCollection(permission)) {
     // No permission
     if (cid === "demo") {
-      redirect('/invite/demo');
+      // create permission if it doesn't already exist
+      await prisma.permission.upsert({
+        where: {
+          userId_collectionId: {
+            userId,
+            collectionId: collection.id,
+          }
+        },
+        update: {
+          accessLevel: 'TeamMember',
+        },
+        create: {
+          userId,
+          collectionId: collection.id,
+          accessLevel: 'TeamMember',
+        },
+      });
+    } else {
+      redirect("/need-permission");
     }
-    redirect("/need-permission");
   }
 
-  return (
-    <div className="p-8 md:py-24 whitespace-pre-wrap break-words">
-      <div className="w-128 sm:w-144 md:w-160 max-w-full mx-auto">
-        {/* TODO: blue shadow */}
-        <Link href={`/c/${cid}/add-problem`} className="my-8 py-4 px-8 rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold text-lg soft-shadow-xl">Add Problem</Link>
-        <div>
-          <ul id="problems">
-            {collection.problems.map((problem) => (
-              <li key={problem.pid}>
-                <ProblemCard collection={collection} problem={problem} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
+  return <ProblemList collection={collection} />;
 }
 
