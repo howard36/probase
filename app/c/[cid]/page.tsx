@@ -116,7 +116,7 @@ export default async function CollectionPage({
               <li key={problem.pid}>
                 <ProblemCard collection={collection} problem={problem} />
               </li>
-            )).reverse()}
+            ))}
           </ul>
         </div>
       </div>
