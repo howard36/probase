@@ -52,8 +52,8 @@ export default function ProblemForm({
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setSubmitting(true);
     e.preventDefault();
+    setSubmitting(true);
 
     // add new problem
     const url = `/api/problems/add`;
@@ -65,8 +65,8 @@ export default function ProblemForm({
         title,
         subject,
         statement,
-        answer,
-        solutionText: solution,
+        answer: (answer === "") ? null : answer,
+        solutionText: (solution === "") ? undefined : solution,
         authorId,
         difficulty: 0,
         isAnonymous: false,
@@ -104,11 +104,11 @@ export default function ProblemForm({
           </div>
           <div className="relative mb-4">
             <label className="leading-7 text-md text-gray-600">Answer</label>
-            <input value={answer} required onChange={(e)=>{setAnswer(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"></input>
+            <input value={answer} onChange={(e)=>{setAnswer(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"></input>
           </div>
           <div className="relative mb-4">
             <label className="leading-7 text-md text-gray-600">Solution</label>
-            <textarea value={solution} required onChange={(e)=>{setSolution(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+            <textarea value={solution} onChange={(e)=>{setSolution(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
           </div>
           <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-blue-500 hover:bg-blue-600 focus:outline-none flex flex-auto items-center justify-center">
             { isSubmitting && <div className="animate-spin rounded-full border-solid border-blue-400 border-l-blue-50 border-4 h-6 w-6 mr-3 inline-block"></div> }

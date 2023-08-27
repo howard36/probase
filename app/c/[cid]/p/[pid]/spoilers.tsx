@@ -10,7 +10,7 @@ export default function Spoilers(props: Props) {
   const [hidden, setHidden] = useState(true);
 
   let answer, solution;
-  if (problem.answer) {
+  if (problem.answer !== null) {
     answer = (
       <div className="my-8">
         <Answer {...props} />
