@@ -62,7 +62,7 @@ model Author {
   country      String?
   user         User?      @relation(fields: [userId], references: [id])
   userId       String?
-  collection   Collection @relation(fields: [collectionId], references: [id])
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId Int
   problems     Problem[]
   solutions    Solution[]
@@ -77,13 +77,13 @@ enum Subject {
 
 model Problem {
   id           Int        @id @default(autoincrement())
-  collection   Collection @relation(fields: [collectionId], references: [id])
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId Int
   pid          String
   title        String
-  statement    String
-  submitter    User       @relation(fields: [submitterId], references: [id])
-  submitterId  String
+  statement    String     @db.Text
+  submitter    User?      @relation(fields: [submitterId], references: [id])
+  submitterId  String?
   authors      Author[]
   answer       String
   solutions    Solution[]
@@ -98,9 +98,9 @@ model Problem {
 
 model Solution {
   id        Int      @id @default(autoincrement())
-  text      String
+  text      String   @db.Text
   summary   String?
-  problem   Problem  @relation(fields: [problemId], references: [id])
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
   problemId Int
   authors   Author[]
 }
@@ -124,9 +124,9 @@ enum AccessLevel {
 }
 
 model Permission {
-  user         User       @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
-  collection   Collection @relation(fields: [collectionId], references: [id])
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId Int
   accessLevel  AccessLevel
 
