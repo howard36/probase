@@ -20,7 +20,10 @@ export const collectionSelect = {
   cid: true,
   name: true,
   problems: {
-    select: problemSelect
+    select: problemSelect,
+    orderBy: {
+      id: 'desc' as Prisma.SortOrder,
+    },
   }
 };
 const collectionProps = Prisma.validator<Prisma.CollectionArgs>()({
