@@ -33,6 +33,10 @@ export default function EditableAnswer({
     }
   }
 
+  if (problem.answer === null) {
+    throw new Error("problem.answer is null, EditableAnswer shouldn't even render");
+  }
+
   return (
     <ClickToEdit
       type="input"

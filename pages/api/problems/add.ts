@@ -122,14 +122,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         authors: {
           connect: { id: authorId }
         },
-        solutions: {
+        solutions: (solutionText === undefined) ? undefined : {
           create: [{
             text: solutionText,
             authors: {
               connect: { id: authorId } // TODO: solution might have different list of authors
             }
           }]
-        },
+        }
       }
     });
 

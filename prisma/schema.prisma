@@ -85,7 +85,7 @@ model Problem {
   submitter    User?      @relation(fields: [submitterId], references: [id])
   submitterId  String?
   authors      Author[]
-  answer       String
+  answer       String?
   solutions    Solution[]
   subject      Subject
   likes        Int        @default(0)
