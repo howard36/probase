@@ -5,12 +5,12 @@ const prisma = new PrismaClient();
 const adapter = PrismaAdapter(prisma);
 
 async function main() {
-  const cmimc = await prisma.collection.upsert({
-    where: { cid: 'cmimc' },
+  const demo = await prisma.collection.upsert({
+    where: { cid: 'demo' },
     update: {},
     create: {
-      name: 'CMIMC',
-      cid: 'cmimc',
+      name: 'Probase Demo',
+      cid: 'demo',
       showAuthors: false,
     }
   });
@@ -25,17 +25,26 @@ async function main() {
     where: { email: 'howardhalim@gmail.com' },
   });
 
+  await prisma.invite.create({
+    data: {
+      collectionId: demo.id,
+      accessLevel: 'Admin',
+      code: 'demo',
+      inviterId: howardUser.id,
+    }
+  })
+
   await prisma.permission.upsert({
     where: {
       userId_collectionId: {
         userId: howardUser.id,
-        collectionId: cmimc.id,
+        collectionId: demo.id,
       }
     },
     update: {},
     create: {
       userId: howardUser.id,
-      collectionId: cmimc.id,
+      collectionId: demo.id,
       accessLevel: 'Admin',
     }
   });
@@ -45,20 +54,20 @@ async function main() {
     update: {},
     create: {
       displayName: 'Default Author',
-      collectionId: cmimc.id,
+      collectionId: demo.id,
     }
   });
 
   await prisma.problem.upsert({
     where: {
       collectionId_pid: {
-        collectionId: cmimc.id,
+        collectionId: demo.id,
         pid: 'A1',
       }
     },
     update: {},
     create: {
-      collectionId: cmimc.id,
+      collectionId: demo.id,
       pid: 'A1',
       title: 'Quadratic Equation',
       statement: 'Find all roots of the quadratic $$x^2 - 4x + 2.$$',
@@ -85,13 +94,13 @@ $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
   await prisma.problem.upsert({
     where: {
       collectionId_pid: {
-        collectionId: cmimc.id,
+        collectionId: demo.id,
         pid: 'N1',
       }
     },
     update: {},
     create: {
-      collectionId: cmimc.id,
+      collectionId: demo.id,
       pid: 'N1',
       title: "Fermat's Last Theorem",
       statement: 'Find all positive integer solutions to $$a^n + b^n = c^n$$ which satisfy $n \\ge 3$.',
@@ -117,13 +126,13 @@ $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
   await prisma.problem.upsert({
     where: {
       collectionId_pid: {
-        collectionId: cmimc.id,
+        collectionId: demo.id,
         pid: 'C1',
       }
     },
     update: {},
     create: {
-      collectionId: cmimc.id,
+      collectionId: demo.id,
       pid: 'C1',
       title: 'Combinatorics',
       statement: 'The best combo problems involve reading walls of text, so...\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
