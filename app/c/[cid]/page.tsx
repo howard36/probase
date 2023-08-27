@@ -105,6 +105,9 @@ export default async function CollectionPage({
   });
   if (!canViewCollection(permission)) {
     // No permission
+    if (cid === "demo") {
+      redirect('/invite/demo');
+    }
     redirect("/need-permission");
   }
 
