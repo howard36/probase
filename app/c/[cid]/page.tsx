@@ -1,26 +1,11 @@
-import ProblemCard from './problem-card'
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
-import Link from 'next/link'
 import type { Params, CollectionProps } from './types'
 import { collectionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
 import ProblemList from './problem-list'
-
-// export async function generateStaticParams(): Promise<Params[]> {
-//   if (process.env.NO_WIFI === "true") {
-//     return [
-//       { cid: 'cmimc' }
-//     ];
-//   }
-
-//   const params = await prisma.collection.findMany({
-//     select: { cid: true }
-//   });
-//   return params;
-// }
 
 async function getCollection(cid: string): Promise<CollectionProps> {
   // if (process.env.NO_WIFI === "true") {

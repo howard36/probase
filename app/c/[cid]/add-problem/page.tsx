@@ -8,19 +8,6 @@ interface Params {
   cid: string;
 }
 
-// export async function generateStaticParams() {
-//   if (process.env.NO_WIFI === "true") {
-//     return [
-//       { cid: 'cmimc' }
-//     ];
-//   }
-//   const params: Params[] = await prisma.collection.findMany({
-//     select: { cid: true }
-//   });
-
-//   return params;
-// }
-
 function getFullName(session: Session): string {
   if (session.fullName) {
     return session.fullName;

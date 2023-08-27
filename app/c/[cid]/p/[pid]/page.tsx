@@ -7,34 +7,6 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
 
-// export async function generateStaticParams(): Promise<Params[]> {
-//   if (process.env.NO_WIFI === "true") {
-//     return [
-//       {
-//         cid: "cmimc",
-//         pid: "A1",
-//       }
-//     ];
-//   }
-
-//   const all_problems = await prisma.problem.findMany({
-//     select: {
-//       collection: {
-//         select: {
-//           cid: true,
-//         }
-//       },
-//       pid: true,
-//     }
-//   });
-
-//   const params = all_problems.map((problem) => ({
-//     cid: problem.collection.cid,
-//     pid: problem.pid,
-//   }));
-//   return params;
-// };
-
 // TODO: params can be null, but the type does not reflect that
 async function getProps(params: Params, userId: string): Promise<Props> {
   // console.log("running getStaticProps for", params)
