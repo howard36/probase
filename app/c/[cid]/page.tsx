@@ -83,6 +83,9 @@ export default async function CollectionPage({
   const session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
+    if (cid === "demo") {
+      redirect('/invite/demo');
+    }
     redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
   }
 
