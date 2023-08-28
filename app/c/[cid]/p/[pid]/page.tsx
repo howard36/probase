@@ -1,14 +1,15 @@
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
 import ProblemPage from './problem-page'
-import type { Params, Props } from './types'
+import type { AuthorProps, Params, Props } from './types'
 import { problemInclude, collectionSelect, permissionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
+import { AccessLevel } from '@prisma/client'
 
 // TODO: params can be null, but the type does not reflect that
-async function getProps(params: Params, userId: string): Promise<Props> {
+async function getProps(params: Params, userId: string | null): Promise<Props> {
   // console.log("running getStaticProps for", params)
   // if (process.env.NO_WIFI === "true") {
   //   return {
@@ -61,6 +62,37 @@ async function getProps(params: Params, userId: string): Promise<Props> {
 
   // TODO: parallelize db queries
   const collectionId = collection.id;
+  const problem = await prisma.problem.findUnique({
+    where: {
+      collectionId_pid: {
+        collectionId,
+        pid: params.pid,
+      }
+    },
+    include: problemInclude,
+  });
+
+  if (problem === null) {
+    notFound();
+  }
+
+  if (userId === null) {
+    if (collection.cid !== "demo") {
+      throw new Error("null userId on non-demo problem page");
+    }
+    const permission = {
+      accessLevel: 'TeamMember' as AccessLevel
+    };
+    const authors: AuthorProps[] = [];
+    const props: Props = {
+      problem,
+      collection,
+      permission,
+      authors,
+    };
+    return props;
+  }
+
   const permission = await prisma.permission.findUnique({
     where: {
       userId_collectionId: {
@@ -74,20 +106,6 @@ async function getProps(params: Params, userId: string): Promise<Props> {
   if (permission === null || !canViewCollection(permission)) {
     // No permission to view this page
     redirect("/need-permission");
-  }
-
-  const problem = await prisma.problem.findUnique({
-    where: {
-      collectionId_pid: {
-        collectionId,
-        pid: params.pid,
-      }
-    },
-    include: problemInclude,
-  });
-
-  if (problem === null) {
-    notFound();
   }
 
   const authors = await prisma.author.findMany({
@@ -117,7 +135,12 @@ export default async function Page({
   let session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
-    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fp%2F${pid}`);
+    if (cid === "demo") {
+      let props: Props = await getProps(params, null);
+      return <ProblemPage {...props} />;
+    } else {
+      redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fp%2F${pid}`);
+    }
   }
 
   const userId = session.userId;
