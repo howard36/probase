@@ -3,6 +3,7 @@ import ProblemForm from './problem-form'
 import prisma from '@/utils/prisma'
 import { Session, getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation'
+import LoginRequired from '@/components/login-required';
 
 interface Params {
   cid: string;
@@ -84,14 +85,17 @@ export default async function AddProblemPage({
   let session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
-    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
+    if (cid === "demo") {
+      return <LoginRequired message="Log in to Probase to add a problem" callbackUrl="/c/demo/add-problem" />;
+    } else {
+      redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
+    }
   }
 
   // TODO: select only needed fields of collection
   const collection = await getCollection(cid);
+  // TODO: ViewOnly should see a different page explaining why they can't submit
   const authorId = await getOrCreateAuthor(session, collection.id);
 
-  return (
-    <ProblemForm collection={collection} authorId={authorId} />
-  );
+  return <ProblemForm collection={collection} authorId={authorId} />;
 }
