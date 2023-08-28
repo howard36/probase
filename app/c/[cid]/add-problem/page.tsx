@@ -97,5 +97,30 @@ export default async function AddProblemPage({
   // TODO: ViewOnly should see a different page explaining why they can't submit
   const authorId = await getOrCreateAuthor(session, collection.id);
 
+  const userId = session.userId;
+  if (userId === undefined) {
+    throw new Error("userId is undefined despite being logged in");
+  }
+
+  if (cid === "demo") {
+    // create permission if it doesn't already exist
+    await prisma.permission.upsert({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId: collection.id,
+        }
+      },
+      update: {
+        accessLevel: 'TeamMember',
+      },
+      create: {
+        userId,
+        collectionId: collection.id,
+        accessLevel: 'TeamMember',
+      },
+    });
+  }
+
   return <ProblemForm collection={collection} authorId={authorId} />;
 }
