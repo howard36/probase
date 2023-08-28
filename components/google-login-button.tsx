@@ -2,8 +2,17 @@
 
 import { signIn } from "next-auth/react"
 
-export default function GoogleLoginButton() {
-  return <button onClick={() => signIn("google")} className="border-2 rounded-md border-slate-300 py-3 w-full block flex flex-auto items-center justify-center hover:bg-slate-200">
+export default function GoogleLoginButton({
+  callbackUrl,
+}: {
+  callbackUrl?: string
+}) {
+  let handleClick = () => signIn("google");
+  if (callbackUrl !== undefined) {
+    handleClick = () => signIn("google", { callbackUrl });
+  }
+
+  return <button onClick={handleClick} className="border-2 rounded-md border-slate-300 py-3 w-full block flex flex-auto items-center justify-center hover:bg-slate-200">
     <svg width="22" height="22" viewBox="0 0 18 18">
       <path d="M17.64,9.20454545 C17.64,8.56636364 17.5827273,7.95272727 17.4763636,7.36363636 L9,7.36363636 L9,10.845 L13.8436364,10.845 C13.635,11.97 13.0009091,12.9231818 12.0477273,13.5613636 L12.0477273,15.8195455 L14.9563636,15.8195455 C16.6581818,14.2527273 17.64,11.9454545 17.64,9.20454545 L17.64,9.20454545 Z" fill="#4285F4"></path>
       <path d="M9,18 C11.43,18 13.4672727,17.1940909 14.9563636,15.8195455 L12.0477273,13.5613636 C11.2418182,14.1013636 10.2109091,14.4204545 9,14.4204545 C6.65590909,14.4204545 4.67181818,12.8372727 3.96409091,10.71 L0.957272727,10.71 L0.957272727,13.0418182 C2.43818182,15.9831818 5.48181818,18 9,18 L9,18 Z" fill="#34A853"></path>

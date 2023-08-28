@@ -3,23 +3,11 @@ import ProblemForm from './problem-form'
 import prisma from '@/utils/prisma'
 import { Session, getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation'
+import LoginRequired from '@/components/login-required';
 
 interface Params {
   cid: string;
 }
-
-// export async function generateStaticParams() {
-//   if (process.env.NO_WIFI === "true") {
-//     return [
-//       { cid: 'cmimc' }
-//     ];
-//   }
-//   const params: Params[] = await prisma.collection.findMany({
-//     select: { cid: true }
-//   });
-
-//   return params;
-// }
 
 function getFullName(session: Session): string {
   if (session.fullName) {
@@ -97,14 +85,42 @@ export default async function AddProblemPage({
   let session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
-    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
+    if (cid === "demo") {
+      return <LoginRequired message="Log in to Probase to add a problem" callbackUrl="/c/demo/add-problem" />;
+    } else {
+      redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
+    }
   }
 
   // TODO: select only needed fields of collection
   const collection = await getCollection(cid);
+  // TODO: ViewOnly should see a different page explaining why they can't submit
   const authorId = await getOrCreateAuthor(session, collection.id);
 
-  return (
-    <ProblemForm collection={collection} authorId={authorId} />
-  );
+  const userId = session.userId;
+  if (userId === undefined) {
+    throw new Error("userId is undefined despite being logged in");
+  }
+
+  if (cid === "demo") {
+    // create permission if it doesn't already exist
+    await prisma.permission.upsert({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId: collection.id,
+        }
+      },
+      update: {
+        accessLevel: 'TeamMember',
+      },
+      create: {
+        userId,
+        collectionId: collection.id,
+        accessLevel: 'TeamMember',
+      },
+    });
+  }
+
+  return <ProblemForm collection={collection} authorId={authorId} />;
 }
