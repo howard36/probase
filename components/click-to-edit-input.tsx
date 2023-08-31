@@ -5,10 +5,12 @@ import type { KeyboardEvent } from 'react'
 
 export default function ClickToEditInput({
   savedText,
+  placeholder,
   onSave,
   onReset,
 }: {
   savedText: string
+  placeholder?: string
   onSave: (text: string) => void
   onReset: () => void
 }) {
@@ -38,6 +40,7 @@ export default function ClickToEditInput({
   return (
     <input
       value={text}
+      placeholder={placeholder}
       ref={inputRef}
       onChange={e => setText(e.target.value)}
       onKeyDown={handleKeyDown}

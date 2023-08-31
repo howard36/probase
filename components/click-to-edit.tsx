@@ -9,11 +9,13 @@ export default function ClickToEdit({
   type,
   label,
   initialText,
+  placeholder,
   onSave,
 }: {
   type: "input" | "textarea"
   label?: React.ReactNode
   initialText: string
+  placeholder?: string
   onSave: (text: string) => void
 }) {
   const [isEditing, setEditing] = useState(initialText === "");
@@ -36,12 +38,14 @@ export default function ClickToEdit({
         { (type === "input") ? (
           <ClickToEditInput
             savedText={savedText}
+            placeholder={placeholder}
             onSave={handleSave}
             onReset={handleReset}
           />
         ) : (
           <ClickToEditTextarea
             savedText={savedText}
+            placeholder={placeholder}
             onSave={handleSave}
             onReset={handleReset}
           />

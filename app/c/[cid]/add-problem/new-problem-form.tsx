@@ -100,6 +100,7 @@ export default function NewProblemForm({
           <ClickToEdit
             type="input"
             initialText={title}
+            placeholder='Enter title here'
             onSave={(text: string) => setTitle(text)}
           />
         </div>

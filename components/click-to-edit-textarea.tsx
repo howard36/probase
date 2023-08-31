@@ -5,10 +5,12 @@ import type { KeyboardEvent } from 'react'
 
 export default function ClickToEditTextarea({
   savedText,
+  placeholder,
   onSave,
   onReset,
 }: {
   savedText: string
+  placeholder?: string
   onSave: (text: string) => void
   onReset: () => void
 }) {
@@ -55,6 +57,7 @@ export default function ClickToEditTextarea({
     <>
       <textarea
         value={text}
+        placeholder={placeholder}
         ref={textAreaRef}
         onChange={e => setText(e.target.value)}
         onKeyDown={handleKeyDown}
