@@ -5,6 +5,7 @@ import { useState } from 'react'
 import type { Collection, Subject } from '@prisma/client'
 import Link from 'next/link'
 import ClickToEdit from '@/components/click-to-edit'
+import Label from '@/components/label'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -84,6 +85,11 @@ export default function NewProblemForm({
     }
   };
 
+  const titleLabel = <Label text="TITLE" />;
+  const statementLabel = <Label text="PROBLEM STATEMENT" />;
+  const answerLabel = <Label text="ANSWER" />;
+  const solutionLabel = <Label text="SOLUTION" />;
+
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
@@ -99,8 +105,9 @@ export default function NewProblemForm({
         <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
           <ClickToEdit
             type="input"
+            label={titleLabel}
             initialText={title}
-            placeholder='Enter title here'
+            placeholder="Enter title here"
             onSave={(text: string) => setTitle(text)}
           />
         </div>
@@ -108,9 +115,35 @@ export default function NewProblemForm({
         <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
           {subject}
         </div>
-        <div className="mb-4">
-          <Statement {...props} />
+        */}
+        <div className="my-8">
+          <ClickToEdit
+            type="textarea"
+            label={statementLabel}
+            initialText={statement}
+            placeholder="Enter problem statement here"
+            onSave={(text: string) => setStatement(text)}
+          />
         </div>
+        <div className="my-8">
+          <ClickToEdit
+            type="input"
+            label={answerLabel}
+            initialText={answer}
+            placeholder="Enter answer here"
+            onSave={(text: string) => setAnswer(text)}
+          />
+        </div>
+        <div className="my-8">
+          <ClickToEdit
+            type="textarea"
+            label={solutionLabel}
+            initialText={solution}
+            placeholder="Enter solution here"
+            onSave={(text: string) => setSolution(text)}
+          />
+        </div>
+        {/*
         { (problem.answer !== null || problem.solutions.length > 0) &&
           <Spoilers {...props} />
         }
