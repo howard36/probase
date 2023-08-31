@@ -27,7 +27,9 @@ export default function ClickToEditInput({
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      onSave(text);
+      if (text !== "") {
+        onSave(text);
+      }
     } else if (event.key === "Escape") {
       onReset();
     }
@@ -39,7 +41,7 @@ export default function ClickToEditInput({
       ref={inputRef}
       onChange={e => setText(e.target.value)}
       onKeyDown={handleKeyDown}
-      onBlur={() => onSave(text)}
+      onBlur={() => (text !== "") && onSave(text)}
       className="bg-slate-50 w-full rounded-md"
     />
   );

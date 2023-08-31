@@ -45,7 +45,9 @@ export default function ClickToEditTextarea({
       onReset();
     } else if (event.key === 'Enter' && event.shiftKey) { 
       // Equivalent to clicking the "Save Changes" button
-      onSave(text);
+      if (text !== "") {
+        onSave(text);
+      }
     }
   };
 
@@ -61,7 +63,7 @@ export default function ClickToEditTextarea({
       />
       <div className="mt-4">
         <button
-          onClick={() => onSave(text)}
+          onClick={() => (text !== "") && onSave(text)}
           className="w-40 py-3 rounded-md bg-green-200 text-green-800 font-semibold text-base leading-none"
         >
           Save changes

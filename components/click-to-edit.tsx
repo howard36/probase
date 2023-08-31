@@ -16,7 +16,7 @@ export default function ClickToEdit({
   initialText: string
   onSave: (text: string) => void
 }) {
-  const [isEditing, setEditing] = useState(false);
+  const [isEditing, setEditing] = useState(initialText === "");
   const [savedText, setSavedText] = useState(initialText);
 
   const handleSave = (text: string) => {
