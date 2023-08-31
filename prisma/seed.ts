@@ -15,7 +15,11 @@ async function main() {
     }
   });
 
-  await adapter.createUser({
+  const createUser = adapter.createUser;
+  if (createUser === undefined) {
+    throw new Error("adapter.createUser is undefined")
+  }
+  await createUser({
     name: 'Howard Halim',
     email: 'howardhalim@gmail.com',
     emailVerified: null,
