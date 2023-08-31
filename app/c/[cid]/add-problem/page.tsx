@@ -1,5 +1,5 @@
 import { authOptions } from '@/api/auth/[...nextauth]';
-import ProblemForm from './problem-form'
+import NewProblemForm from './new-problem-form'
 import prisma from '@/utils/prisma'
 import { Session, getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation'
@@ -26,6 +26,9 @@ async function getOrCreateAuthor(
     throw new Error("userId is undefined despite being logged in");
   }
 
+  if (process.env.NO_WIFI === "true") {
+    return 1;
+  }
   // Check if user already has author
   const authors = await prisma.author.findMany({
     where: {
@@ -122,5 +125,5 @@ export default async function AddProblemPage({
     });
   }
 
-  return <ProblemForm collection={collection} authorId={authorId} />;
+  return <NewProblemForm collection={collection} authorId={authorId} />;
 }
