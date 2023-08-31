@@ -28,12 +28,14 @@ export default function ClickToEdit({
   }
 
   const handleReset = () => {
-    setEditing(false);
+    if (savedText !== "") {
+      setEditing(false);
+    }
   }
 
   if (isEditing) {
     return (
-      <>
+      <div>
         {label}
         { (type === "input") ? (
           <ClickToEditInput
@@ -50,13 +52,13 @@ export default function ClickToEdit({
             onReset={handleReset}
           />
         )}
-      </>
+      </div>
     );
   } else {
     return (
       <div onClick={() => setEditing(true)}>
         {label}
-        <p><Latex>{`${savedText}`}</Latex></p>
+        <Latex>{`${savedText}`}</Latex>
       </div>
     );
   };
