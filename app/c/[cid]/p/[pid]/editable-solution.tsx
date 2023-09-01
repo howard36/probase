@@ -39,6 +39,7 @@ export default function EditableSolution({
       type="textarea"
       label={label}
       initialText={solution.text}
+      autosave={false}
       onSave={saveSolution}
     />
   );

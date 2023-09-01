@@ -35,6 +35,7 @@ export default function EditableTitle({
     <ClickToEdit
       type="input"
       initialText={problem.title}
+      autosave={true}
       onSave={saveTitle}
     />
   );
