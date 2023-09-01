@@ -42,7 +42,9 @@ export default function EditableAnswer({
       type="input"
       label={label}
       initialText={problem.answer}
+      autosave={true}
       onSave={saveAnswer}
+      required={false}
     />
   );
 }

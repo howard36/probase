@@ -35,7 +35,9 @@ export default function EditableStatement({
     <ClickToEdit
       type="textarea"
       initialText={problem.statement}
+      autosave={false}
       onSave={saveStatement}
+      required={false}
     />
   );
 }

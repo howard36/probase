@@ -26,6 +26,9 @@ async function getOrCreateAuthor(
     throw new Error("userId is undefined despite being logged in");
   }
 
+  if (process.env.NO_WIFI === "true") {
+    return 1;
+  }
   // Check if user already has author
   const authors = await prisma.author.findMany({
     where: {

@@ -2,6 +2,7 @@ import EditableSolution from './editable-solution'
 import Latex from '@/components/latex'
 import type { AuthorProps, PermissionProps, SolutionProps } from './types'
 import { canEditSolution } from '@/utils/permissions'
+import Label from '@/components/label'
 
 export default function Solution({
   solution,
@@ -13,7 +14,7 @@ export default function Solution({
   authors: AuthorProps[]
 }) {
   const canEdit = canEditSolution(solution, permission, authors);
-  const label = <p className="mb-2 text-sm text-slate-500 font-semibold">SOLUTION</p>;
+  const label = <Label text="SOLUTION" />
 
   if (canEdit) {
     return <EditableSolution solution={solution} label={label} />;

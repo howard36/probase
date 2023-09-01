@@ -5,12 +5,18 @@ import type { KeyboardEvent } from 'react'
 
 export default function ClickToEditInput({
   savedText,
+  placeholder,
+  autosave,
   onSave,
   onReset,
+  required,
 }: {
   savedText: string
+  placeholder?: string
+  autosave: boolean
   onSave: (text: string) => void
   onReset: () => void
+  required: boolean
 }) {
   const [text, setText] = useState(savedText);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,7 +33,9 @@ export default function ClickToEditInput({
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      onSave(text);
+      if (text !== "") {
+        onSave(text);
+      }
     } else if (event.key === "Escape") {
       onReset();
     }
@@ -36,11 +44,13 @@ export default function ClickToEditInput({
   return (
     <input
       value={text}
+      placeholder={placeholder}
       ref={inputRef}
       onChange={e => setText(e.target.value)}
       onKeyDown={handleKeyDown}
-      onBlur={() => onSave(text)}
+      onBlur={() => (text !== "") && onSave(text)}
       className="bg-slate-50 w-full rounded-md"
+      required={required}
     />
   );
 }
