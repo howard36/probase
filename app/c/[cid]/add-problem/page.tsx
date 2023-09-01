@@ -1,5 +1,5 @@
 import { authOptions } from '@/api/auth/[...nextauth]';
-import NewProblemForm from './new-problem-form'
+import ProblemForm from './problem-form'
 import prisma from '@/utils/prisma'
 import { Session, getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation'
@@ -125,5 +125,5 @@ export default async function AddProblemPage({
     });
   }
 
-  return <NewProblemForm collection={collection} authorId={authorId} />;
+  return <ProblemForm collection={collection} authorId={authorId} />;
 }
