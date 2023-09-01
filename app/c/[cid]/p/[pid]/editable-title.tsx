@@ -37,6 +37,7 @@ export default function EditableTitle({
       initialText={problem.title}
       autosave={true}
       onSave={saveTitle}
+      required={false}
     />
   );
 }

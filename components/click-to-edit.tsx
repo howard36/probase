@@ -12,6 +12,7 @@ export default function ClickToEdit({
   placeholder,
   autosave,
   onSave,
+  required,
 }: {
   type: "input" | "textarea"
   label?: React.ReactNode
@@ -19,6 +20,7 @@ export default function ClickToEdit({
   placeholder?: string
   autosave: boolean
   onSave: (text: string) => void
+  required: boolean
 }) {
   const [isEditing, setEditing] = useState(initialText === "");
   const [savedText, setSavedText] = useState(initialText);
@@ -46,6 +48,7 @@ export default function ClickToEdit({
             autosave={true}
             onSave={handleSave}
             onReset={handleReset}
+            required={required}
           />
         ) : (
           <ClickToEditTextarea
@@ -54,6 +57,7 @@ export default function ClickToEdit({
             autosave={autosave}
             onSave={handleSave}
             onReset={handleReset}
+            required={required}
           />
         )}
       </div>

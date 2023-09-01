@@ -41,6 +41,7 @@ export default function EditableSolution({
       initialText={solution.text}
       autosave={false}
       onSave={saveSolution}
+      required={false}
     />
   );
 }

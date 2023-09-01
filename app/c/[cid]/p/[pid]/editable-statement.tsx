@@ -37,6 +37,7 @@ export default function EditableStatement({
       initialText={problem.statement}
       autosave={false}
       onSave={saveStatement}
+      required={false}
     />
   );
 }

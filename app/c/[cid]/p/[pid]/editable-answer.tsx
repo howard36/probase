@@ -44,6 +44,7 @@ export default function EditableAnswer({
       initialText={problem.answer}
       autosave={true}
       onSave={saveAnswer}
+      required={false}
     />
   );
 }

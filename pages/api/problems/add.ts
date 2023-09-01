@@ -82,7 +82,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
       const prefix = subjectPrefix[subject as Subject];
-      console.log({prefix})
 
       // The most recent problem in this subject
       const lastProblem = await prisma.problem.findFirst({

@@ -9,12 +9,14 @@ export default function ClickToEditTextarea({
   autosave,
   onSave,
   onReset,
+  required,
 }: {
   savedText: string
   placeholder?: string
   autosave: boolean
   onSave: (text: string) => void
   onReset: () => void
+  required: boolean
 }) {
   const [text, setText] = useState(savedText);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -64,6 +66,7 @@ export default function ClickToEditTextarea({
         onChange={e => setText(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={() => (autosave && text !== "") && onSave(text)}
+        required={required}
         style={{resize: "none"}}
         className="bg-slate-50 w-full rounded-md"
       />

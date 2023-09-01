@@ -112,6 +112,7 @@ export default function NewProblemForm({
               placeholder="Enter title here"
               autosave={true}
               onSave={(text: string) => setTitle(text)}
+              required={true}
             />
           </div>
           <div className="my-8">
@@ -134,6 +135,7 @@ export default function NewProblemForm({
               placeholder="Enter problem statement here"
               autosave={true}
               onSave={(text: string) => setStatement(text)}
+              required={true}
             />
           </div>
           <div className="my-8">
@@ -144,6 +146,7 @@ export default function NewProblemForm({
               placeholder="Enter answer here"
               autosave={true}
               onSave={(text: string) => setAnswer(text)}
+              required={false}
             />
           </div>
           <div className="my-8">
@@ -154,6 +157,7 @@ export default function NewProblemForm({
               placeholder="Enter solution here"
               autosave={true}
               onSave={(text: string) => setSolution(text)}
+              required={false}
             />
           </div>
           <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-blue-500 hover:bg-blue-600 focus:outline-none flex flex-auto items-center justify-center">

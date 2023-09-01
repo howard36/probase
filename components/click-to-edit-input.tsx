@@ -9,12 +9,14 @@ export default function ClickToEditInput({
   autosave,
   onSave,
   onReset,
+  required,
 }: {
   savedText: string
   placeholder?: string
   autosave: boolean
   onSave: (text: string) => void
   onReset: () => void
+  required: boolean
 }) {
   const [text, setText] = useState(savedText);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -48,6 +50,7 @@ export default function ClickToEditInput({
       onKeyDown={handleKeyDown}
       onBlur={() => (text !== "") && onSave(text)}
       className="bg-slate-50 w-full rounded-md"
+      required={required}
     />
   );
 }
