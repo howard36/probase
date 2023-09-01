@@ -108,6 +108,7 @@ export default function NewProblemForm({
             label={titleLabel}
             initialText={title}
             placeholder="Enter title here"
+            autosave={true}
             onSave={(text: string) => setTitle(text)}
           />
         </div>
@@ -122,6 +123,7 @@ export default function NewProblemForm({
             label={statementLabel}
             initialText={statement}
             placeholder="Enter problem statement here"
+            autosave={true}
             onSave={(text: string) => setStatement(text)}
           />
         </div>
@@ -131,6 +133,7 @@ export default function NewProblemForm({
             label={answerLabel}
             initialText={answer}
             placeholder="Enter answer here"
+            autosave={true}
             onSave={(text: string) => setAnswer(text)}
           />
         </div>
@@ -140,6 +143,7 @@ export default function NewProblemForm({
             label={solutionLabel}
             initialText={solution}
             placeholder="Enter solution here"
+            autosave={true}
             onSave={(text: string) => setSolution(text)}
           />
         </div>

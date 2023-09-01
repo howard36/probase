@@ -6,11 +6,13 @@ import type { KeyboardEvent } from 'react'
 export default function ClickToEditTextarea({
   savedText,
   placeholder,
+  autosave,
   onSave,
   onReset,
 }: {
   savedText: string
   placeholder?: string
+  autosave: boolean
   onSave: (text: string) => void
   onReset: () => void
 }) {
@@ -45,7 +47,7 @@ export default function ClickToEditTextarea({
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Escape") {
       onReset();
-    } else if (event.key === 'Enter' && event.shiftKey) { 
+    } else if (event.key === 'Enter' && (event.shiftKey || event.ctrlKey)) { 
       // Equivalent to clicking the "Save Changes" button
       if (text !== "") {
         onSave(text);
@@ -61,10 +63,11 @@ export default function ClickToEditTextarea({
         ref={textAreaRef}
         onChange={e => setText(e.target.value)}
         onKeyDown={handleKeyDown}
+        onBlur={() => (autosave && text !== "") && onSave(text)}
         style={{resize: "none"}}
         className="bg-slate-50 w-full rounded-md"
       />
-      <div className="mt-4">
+      { !autosave && <div className="mt-4">
         <button
           onClick={() => (text !== "") && onSave(text)}
           className="w-40 py-3 rounded-md bg-green-200 text-green-800 font-semibold text-base leading-none"
@@ -77,7 +80,7 @@ export default function ClickToEditTextarea({
         >
           Discard
         </button>
-      </div>
+      </div>}
     </>
   );
 }
