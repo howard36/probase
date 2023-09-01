@@ -114,6 +114,13 @@ export default function NewProblemForm({
               onSave={(text: string) => setTitle(text)}
             />
           </div>
+          <div className="my-8">
+            <Label text="SUBJECT" />
+            <select value={subject} required onChange={(e: React.ChangeEvent<SubjectSelectElement>)=>{setSubject(e.target.value)}} className="w-full bg-white rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+              <option value="" key="Empty" disabled></option>
+              {subjects.map(s => <option value={s.enum} key={s.enum}>{s.display}</option>)}
+            </select>
+          </div>
           {/*
           <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
             {subject}
@@ -149,11 +156,6 @@ export default function NewProblemForm({
               onSave={(text: string) => setSolution(text)}
             />
           </div>
-          {/*
-          { (problem.answer !== null || problem.solutions.length > 0) &&
-            <Spoilers {...props} />
-          }
-          */}
           <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-blue-500 hover:bg-blue-600 focus:outline-none flex flex-auto items-center justify-center">
             { isSubmitting && <div className="animate-spin rounded-full border-solid border-blue-400 border-l-blue-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
             { isSubmitting ? "Saving..." : "Submit" }
