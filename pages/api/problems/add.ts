@@ -74,7 +74,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // assign PID based on existing problems
     // blank PID = calculate by calling function
     if (pid === undefined) {
+      if (!(subject in subjectPrefix)) {
+        return res.status(500).json({
+          error: {
+            message: 'subject must be one of Algebra, Combinatorics, Geometry, or Number Theory'
+          }
+        });
+      }
       const prefix = subjectPrefix[subject as Subject];
+      console.log({prefix})
 
       // The most recent problem in this subject
       const lastProblem = await prisma.problem.findFirst({
