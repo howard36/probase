@@ -55,6 +55,7 @@ export default function NewProblemForm({
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    // alert(`Title: ${title}, Statement: ${statement}, Answer: ${answer}, Solution: ${solution},`);
     e.preventDefault();
     setSubmitting(true);
 
@@ -102,56 +103,62 @@ export default function NewProblemForm({
       </div>
       {/* fixed width container, matching ideal 60-character line length */}
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
-        <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
-          <ClickToEdit
-            type="input"
-            label={titleLabel}
-            initialText={title}
-            placeholder="Enter title here"
-            autosave={true}
-            onSave={(text: string) => setTitle(text)}
-          />
-        </div>
-        {/*
-        <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
-          {subject}
-        </div>
-        */}
-        <div className="my-8">
-          <ClickToEdit
-            type="textarea"
-            label={statementLabel}
-            initialText={statement}
-            placeholder="Enter problem statement here"
-            autosave={true}
-            onSave={(text: string) => setStatement(text)}
-          />
-        </div>
-        <div className="my-8">
-          <ClickToEdit
-            type="input"
-            label={answerLabel}
-            initialText={answer}
-            placeholder="Enter answer here"
-            autosave={true}
-            onSave={(text: string) => setAnswer(text)}
-          />
-        </div>
-        <div className="my-8">
-          <ClickToEdit
-            type="textarea"
-            label={solutionLabel}
-            initialText={solution}
-            placeholder="Enter solution here"
-            autosave={true}
-            onSave={(text: string) => setSolution(text)}
-          />
-        </div>
-        {/*
-        { (problem.answer !== null || problem.solutions.length > 0) &&
-          <Spoilers {...props} />
-        }
-        */}
+        <form onSubmit={handleSubmit}>
+          <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
+            <ClickToEdit
+              type="input"
+              label={titleLabel}
+              initialText={title}
+              placeholder="Enter title here"
+              autosave={true}
+              onSave={(text: string) => setTitle(text)}
+            />
+          </div>
+          {/*
+          <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
+            {subject}
+          </div>
+          */}
+          <div className="my-8">
+            <ClickToEdit
+              type="textarea"
+              label={statementLabel}
+              initialText={statement}
+              placeholder="Enter problem statement here"
+              autosave={true}
+              onSave={(text: string) => setStatement(text)}
+            />
+          </div>
+          <div className="my-8">
+            <ClickToEdit
+              type="input"
+              label={answerLabel}
+              initialText={answer}
+              placeholder="Enter answer here"
+              autosave={true}
+              onSave={(text: string) => setAnswer(text)}
+            />
+          </div>
+          <div className="my-8">
+            <ClickToEdit
+              type="textarea"
+              label={solutionLabel}
+              initialText={solution}
+              placeholder="Enter solution here"
+              autosave={true}
+              onSave={(text: string) => setSolution(text)}
+            />
+          </div>
+          {/*
+          { (problem.answer !== null || problem.solutions.length > 0) &&
+            <Spoilers {...props} />
+          }
+          */}
+          <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-blue-500 hover:bg-blue-600 focus:outline-none flex flex-auto items-center justify-center">
+            { isSubmitting && <div className="animate-spin rounded-full border-solid border-blue-400 border-l-blue-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
+            { isSubmitting ? "Saving..." : "Submit" }
+          </button>
+        </form>
       </div>
     </div>
   );
