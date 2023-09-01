@@ -8,45 +8,62 @@ import { canViewCollection } from '@/utils/permissions'
 import ProblemList from './problem-list'
 
 async function getCollection(cid: string): Promise<CollectionProps> {
-  // if (process.env.NO_WIFI === "true") {
-  //   return {
-  //     id: 1,
-  //     cid: 'cmimc',
-  //     name: 'CMIMC',
-  //     problems: [
-  //       {
-  //         pid: 'A1',
-  //         title: 'Quadratic Equation',
-  //         subject: 'Algebra' as Subject,
-  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-  //       },
-  //       {
-  //         pid: 'A2',
-  //         title: 'Quadratic Equation',
-  //         subject: 'Combinatorics' as Subject,
-  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-  //       },
-  //       {
-  //         pid: 'A3',
-  //         title: 'Quadratic Equation',
-  //         subject: 'Geometry' as Subject,
-  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-  //       },
-  //       {
-  //         pid: 'A4',
-  //         title: 'Quadratic Equation',
-  //         subject: 'NumberTheory' as Subject,
-  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-  //       },
-  //       {
-  //         pid: 'A5',
-  //         title: 'Quadratic Equation',
-  //         subject: 'Algebra' as Subject,
-  //         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
-  //       },
-  //     ],
-  //   }
-  // }
+  if (process.env.NO_WIFI === "true") {
+    return {
+      id: 1,
+      cid: 'demo',
+      name: 'Probase Demo',
+      problems: [
+        {
+          pid: 'C2',
+          title: 'Here is a title',
+          subject: 'Combinatorics',
+          statement: 'And this is some example text. Totally not random'
+        },
+        {
+          pid: 'A4',
+          title: 'Does Latex work here? $$x$$ Wow that sure looks weird',
+          subject: 'Algebra',
+          statement: 'And what about here? $$1+1$$ Oh cool it renders properly in the problem card'
+        },
+        { pid: 'A3', title: 'a2', subject: 'Algebra', statement: 'a34' },
+        {
+          pid: 'N3',
+          title: 'my problem',
+          subject: 'NumberTheory',
+          statement: 'hi'
+        },
+        { pid: 'G1', title: 'title', subject: 'Geometry', statement: 'e' },
+        { pid: 'A2', title: 'second', subject: 'Algebra', statement: 's' },
+        {
+          pid: 'N2',
+          title: 'n hi',
+          subject: 'NumberTheory',
+          statement: 'n'
+        },
+        {
+          pid: 'C1',
+          title: 'Combinatorics',
+          subject: 'Combinatorics',
+          statement: 'The best combo problems involve reading walls of text, so...\n' +
+            '\n' +
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+        },
+        {
+          pid: 'N1',
+          title: "Fermat's Last Theorem",
+          subject: 'NumberTheory',
+          statement: 'Find all positive integer solutions to $$a^n + b^n = c^n$$ which satisfy $n \\ge 3$.'
+        },
+        {
+          pid: 'A1',
+          title: 'Quadratic Equation',
+          subject: 'Algebra',
+          statement: 'Find all roots of the quadratic $$x^2 - 4x + 2.$$'
+        }
+      ]
+    };
+  }
 
   const collection = await prisma.collection.findUnique({
     where: { cid },
