@@ -24,7 +24,8 @@ export const collectionSelect = {
     orderBy: {
       id: 'desc' as Prisma.SortOrder,
     },
-  }
+  },
+  showAuthors: true,
 };
 const collectionProps = Prisma.validator<Prisma.CollectionArgs>()({
   select: collectionSelect
