@@ -12,6 +12,7 @@ async function main() {
       name: 'Probase Demo',
       cid: 'demo',
       showAuthors: false,
+      shortAnswer: true,
     }
   });
 

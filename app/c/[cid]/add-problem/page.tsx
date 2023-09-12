@@ -61,6 +61,7 @@ async function getCollection(cid: string) {
       id: 1,
       name: 'CMIMC',
       showAuthors: true,
+      shortAnswer: true,
     }
   }
 

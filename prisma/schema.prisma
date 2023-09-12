@@ -114,6 +114,7 @@ model Collection {
   showAuthors Boolean
   permissions Permission[]
   invites     Invite[]
+  shortAnswer Boolean   @default(true)
 }
 
 enum AccessLevel {
