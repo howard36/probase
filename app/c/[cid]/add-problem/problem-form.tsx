@@ -137,17 +137,19 @@ export default function ProblemForm({
               required={true}
             />
           </div>
-          <div className="my-8">
-            <ClickToEdit
-              type="input"
-              label={answerLabel}
-              initialText={answer}
-              placeholder="Enter answer here"
-              autosave={true}
-              onSave={(text: string) => setAnswer(text)}
-              required={false}
-            />
-          </div>
+          { collection.shortAnswer && 
+            <div className="my-8">
+              <ClickToEdit
+                type="input"
+                label={answerLabel}
+                initialText={answer}
+                placeholder="Enter answer here"
+                autosave={true}
+                onSave={(text: string) => setAnswer(text)}
+                required={false}
+              />
+            </div>
+          }
           <div className="my-8">
             <ClickToEdit
               type="textarea"
