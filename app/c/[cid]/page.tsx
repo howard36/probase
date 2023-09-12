@@ -61,7 +61,8 @@ async function getCollection(cid: string): Promise<CollectionProps> {
           subject: 'Algebra',
           statement: 'Find all roots of the quadratic $$x^2 - 4x + 2.$$'
         }
-      ]
+      ],
+      showAuthors: true,
     };
   }
 

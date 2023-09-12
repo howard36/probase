@@ -27,7 +27,7 @@ const subjectToGradient = {
 export default function ProblemPage(props: Props) {
   const { problem, collection } = props;
   let written_by;
-  if (problem.authors.length > 0) {
+  if (collection.showAuthors && problem.authors.length > 0) {
     written_by = <p className="italic text-slate-700 text-base mb-8 text-right">Written by {problem.authors[0].displayName}</p>;
   }
 
