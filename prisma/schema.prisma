@@ -20,6 +20,7 @@ model User {
   problems      Problem[]
   permissions   Permission[]
   invites       Invite[]
+  comments      Comment[]
 }
 
 model Account {
@@ -92,6 +93,7 @@ model Problem {
   difficulty   Int
   source       String?
   isAnonymous  Boolean
+  comments     Comment[]
   
   @@unique([collectionId, pid])
 }
@@ -142,4 +144,15 @@ model Invite {
   inviter      User       @relation(fields: [inviterId], references: [id], onDelete: Cascade)
   inviterId    String
   emailDomain  String?    @db.Text
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId Int
+  text      String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
