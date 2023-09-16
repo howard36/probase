@@ -3,6 +3,7 @@ import Title from './title'
 import Statement from './statement'
 import Spoilers from './spoilers'
 import type { Props } from './types'
+import Comments from './comments'
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -58,6 +59,9 @@ export default function ProblemPage(props: Props) {
         { (problem.answer !== null || problem.solutions.length > 0) &&
           <Spoilers {...props} />
         }
+        <div>
+          <Comments {...props} />
+        </div>
       </div>
     </div>
   );

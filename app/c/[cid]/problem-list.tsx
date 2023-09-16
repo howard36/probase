@@ -46,7 +46,7 @@ export default function ProblemList({
           </div>
         </div>
         <div>
-          <ul id="problems">
+          <ul>
             {filteredProblems.map((problem) => (
               <li key={problem.pid}>
                 <ProblemCard collection={collection} problem={problem} />
