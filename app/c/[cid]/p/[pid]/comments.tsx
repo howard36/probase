@@ -19,9 +19,10 @@ export default function Comments(props: Props) {
     </div>
   )
 
-  if (canComment) {
-    return comments;
-  } else {
-    return comments;
-  }
+  return (
+    <div>
+      
+      {comments}
+    </div>
+  )
 }
