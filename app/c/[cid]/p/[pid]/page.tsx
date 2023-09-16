@@ -39,10 +39,10 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
         comments: [
           {
             id: 1,
-            text: "First comment",
+            text: "First comment $x=y+\\frac 12$",
             user: {
               id: '',
-              name: "",
+              name: "Howard Halim",
               image: "",
             },
             createdAt: new Date('2023-01-01'),
@@ -52,7 +52,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
             text: "Second comment",
             user: {
               id: '',
-              name: "",
+              name: "Howard Halim",
               image: "",
             },
             createdAt: new Date('2023-01-02'),
@@ -62,7 +62,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
             text: "Third comment",
             user: {
               id: '',
-              name: "",
+              name: "Howard Halim",
               image: "",
             },
             createdAt: new Date('2023-01-03'),

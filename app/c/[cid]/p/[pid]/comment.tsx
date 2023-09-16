@@ -10,6 +10,8 @@ export default function Comment({
 }) {
   // const canEdit = canEditComment(problem, permission, authors);
   const canEdit = false;
+  
+  const options = { year: "numeric", month: "short", day: "numeric" };
 
   return (
     <div className="py-8 px-6 text-base border-t border-slate-200">
@@ -18,9 +20,9 @@ export default function Comment({
           <p className="inline-flex items-center mr-3 text-sm text-slate-900 font-semibold">{/*<img
             className="mr-2 w-6 h-6 rounded-full"
             src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
-            alt="Bonnie Green" />*/}Bonnie Green</p>
+            alt="Bonnie Green" />*/}{comment.user.name}</p>
           <p className="text-sm text-slate-600"><time dateTime="2022-03-12"
-            title="March 12th, 2022">Mar. 12, 2022</time></p>
+            title="March 12th, 2022">{comment.createdAt.toLocaleDateString(undefined, options)}</time></p>
         </div>
         {/*
         <button id="dropdownComment3Button" data-dropdown-toggle="dropdownComment3"
@@ -47,7 +49,7 @@ export default function Comment({
         </div>
         */}
       </div>
-      <p className="text-gray-700">The div covers the essentials, challenges, myths and stages the UX designer should consider while creating the design strategy.</p>
+      <p className="text-gray-700"><Latex>{`${comment.text}`}</Latex></p>
     </div>
   );
 
