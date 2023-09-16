@@ -29,6 +29,23 @@ const solutionProps = Prisma.validator<Prisma.SolutionArgs>()({
 });
 export type SolutionProps = Prisma.SolutionGetPayload<typeof solutionProps>;
 
+const commentSelect = {
+  id: true,
+  text: true,
+  user: {
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    }
+  },
+  createdAt: true,
+};
+const commentProps = Prisma.validator<Prisma.CommentArgs>()({
+  select: commentSelect
+});
+export type CommentProps = Prisma.CommentGetPayload<typeof commentProps>;
+
 export const problemInclude = {
   authors: {
     select: {
@@ -38,6 +55,9 @@ export const problemInclude = {
   },
   solutions: {
     include: solutionInclude
+  },
+  comments: {
+    select: commentSelect,
   },
 };
 const problemProps = Prisma.validator<Prisma.ProblemArgs>()({
