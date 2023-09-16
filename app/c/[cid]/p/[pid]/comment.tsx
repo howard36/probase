@@ -22,7 +22,7 @@ export default function Comment({
             src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
             alt="Bonnie Green" />*/}{comment.user.name}</p>
           <p className="text-sm text-slate-600"><time dateTime="2022-03-12"
-            title="March 12th, 2022">{comment.createdAt.toLocaleDateString(undefined, options)}</time></p>
+            title="March 12th, 2022">{comment.createdAt.toLocaleDateString()}</time></p>
         </div>
         {/*
         <button id="dropdownComment3Button" data-dropdown-toggle="dropdownComment3"
