@@ -66,15 +66,23 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     };
   }
 
-  const collection = await prisma.collection.findUnique({
-    where: { cid },
-    select: collectionSelect,
-  });
-
-  if (collection === null) {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/collections/${cid}?cid=`);
+  if (res.status === 404) {
     notFound();
+  } else if (!res.ok) {
+    console.error(res);
+    throw new Error();
   }
+  const { collection } = await res.json();
 
+  const res2 = await fetch(`${process.env.NEXTAUTH_URL}/api/collections/${collection.id}/problems`);
+  if (!res2.ok) {
+    console.error(res2);
+    throw new Error();
+  }
+  const { problems } = await res2.json();
+
+  collection.problems = problems;
   return collection;
 }
 
