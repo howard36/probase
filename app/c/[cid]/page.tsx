@@ -66,7 +66,12 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     };
   }
 
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/collections/${cid}?cid=`);
+  const res = await fetch(
+    `${process.env.NEXTAUTH_URL}/api/collections/${cid}?cid=`,
+    { next: { tags: [
+      `collections/cid=${cid}`
+    ]}}
+  );
   if (res.status === 404) {
     notFound();
   } else if (!res.ok) {
@@ -75,7 +80,12 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   }
   const { collection } = await res.json();
 
-  const res2 = await fetch(`${process.env.NEXTAUTH_URL}/api/collections/${collection.id}/problems`);
+  const res2 = await fetch(
+    `${process.env.NEXTAUTH_URL}/api/collections/${collection.id}/problems`,
+    { next: { tags: [
+      `collections/id=${collection.id}/problems`
+    ]}}
+  );
   if (!res2.ok) {
     console.error(res2);
     throw new Error();
