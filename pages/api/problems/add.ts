@@ -6,6 +6,7 @@ import { canAddProblem } from '@/utils/permissions';
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
 import { Subject } from '@prisma/client';
+import { revalidateTags } from '@/utils/revalidate';
 
 const subjectPrefix = {
   'Algebra': 'A',
@@ -54,6 +55,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    const collection = await prisma.collection.findUnique({
+      where: { id: collectionId },
+    });
+    if (collection === null) {
+      return res.status(404).json({
+        error: {
+          message: `No collection with id ${collectionId}`
+        }
+      });
+    }
+
     const permission = await prisma.permission.findUnique({
       where: {
         userId_collectionId: {
@@ -140,6 +152,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
 
+    await revalidateTags([
+      `GET /collections/${collection.id}/problems`,
+      `GET /collections/${collection.cid}/problems`,
+    ]);
     res.status(201).json(newProblem);
   } catch (error) {
     handleApiError(error, res);
