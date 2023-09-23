@@ -23,7 +23,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  // TODO: https://github.com/nextauthjs/next-auth/issues/7423
   const session = await getServerSession(req, res, authOptions);
   if (session === null) {
     return res.status(401).json({
