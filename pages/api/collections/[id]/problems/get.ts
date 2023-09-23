@@ -27,7 +27,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const collection = await prisma.collection.findUnique({
       where,
       include: {
-        problems: true,
+        problems: {
+          orderBy: {
+            id: 'desc'
+          }
+        },
       }
     });
 
