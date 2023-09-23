@@ -17,14 +17,13 @@ export default function EditableStatement({
     const url = `/api/problems/${problem.id}/edit`;
     const response = await fetch(url, {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         statement: text
-      })
+      }),
     });
     if (response.status === 200) {
-      // await fetch('/api/revalidate?path=/c/[cid]');
-      // await fetch('/api/revalidate?path=/c/[cid]/p/[pid]');
       router.refresh();
     } else {
       console.error(`updating failed! status = ${response.status}`);

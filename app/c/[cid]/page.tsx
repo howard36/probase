@@ -1,7 +1,6 @@
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
 import type { Params, CollectionProps } from './types'
-import { collectionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
@@ -66,15 +65,8 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     };
   }
 
-  // const reval = await fetch(
-  //   `${process.env.NEXTAUTH_URL}/api/appRevalidateTag?tag=GET%20collections%2F${cid}%2Fproblems`,
-  //   { cache: 'no-store' }
-  // )
-  // console.log("reval", await reval.json())
-
   const res = await fetch(
     `${process.env.NEXTAUTH_URL}/api/collections/${cid}/get`,
-    // { cache: 'no-store' }
     { next: { tags: [
       `GET collections/${cid}`
     ]}}
@@ -89,7 +81,6 @@ async function getCollection(cid: string): Promise<CollectionProps> {
 
   const res2 = await fetch(
     `${process.env.NEXTAUTH_URL}/api/collections/${cid}/problems/get`,
-    // { cache: 'no-store' }
     { next: { tags: [
       `GET collections/${cid}/problems`
     ]}}
@@ -111,7 +102,6 @@ export default async function CollectionPage({
 }) {
   const { cid } = params;
   const collection = await getCollection(cid);
-  console.log("From c/cid", {collection})
 
   const session = await getServerSession(authOptions);
   if (session === null) {
