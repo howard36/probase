@@ -43,43 +43,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    if (collection.cid !== "demo") {
-      const session = await getServerSession(req, res, authOptions);
-      if (session === null) {
-        return res.status(401).json({
-          error: {
-            message: 'Not signed in'
-          }
-        });
-      }
+    // if (collection.cid !== "demo") {
+    //   const session = await getServerSession(req, res, authOptions);
+    //   if (session === null) {
+    //     return res.status(401).json({
+    //       error: {
+    //         message: 'Not signed in'
+    //       }
+    //     });
+    //   }
 
-      const userId = session.userId;
-      if (userId === undefined) {
-        return res.status(500).json({
-          error: {
-            message: "userId is undefined despite being logged in"
-          }
-        });
-      }
+    //   const userId = session.userId;
+    //   if (userId === undefined) {
+    //     return res.status(500).json({
+    //       error: {
+    //         message: "userId is undefined despite being logged in"
+    //       }
+    //     });
+    //   }
 
-      const collectionId = collection.id;
-      const permission = await prisma.permission.findUnique({
-        where: {
-          userId_collectionId: {
-            userId,
-            collectionId,
-          }
-        }
-      });
-      if (!canViewCollection(permission)) {
-        // No permission
-        return res.status(403).json({
-          error: {
-            message: 'You do not have permission to view this collection'
-          }
-        });
-      }
-    }
+    //   const collectionId = collection.id;
+    //   const permission = await prisma.permission.findUnique({
+    //     where: {
+    //       userId_collectionId: {
+    //         userId,
+    //         collectionId,
+    //       }
+    //     }
+    //   });
+    //   if (!canViewCollection(permission)) {
+    //     // No permission
+    //     return res.status(403).json({
+    //       error: {
+    //         message: 'You do not have permission to view this collection'
+    //       }
+    //     });
+    //   }
+    // }
 
     res.status(200).json({ problems: collection.problems });
   } catch (error) {
