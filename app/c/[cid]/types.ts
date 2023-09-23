@@ -10,7 +10,7 @@ const problemSelect = {
   subject: true,
   statement: true,
 };
-const problemProps = Prisma.validator<Prisma.ProblemArgs>()({
+const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   select: problemSelect
 });
 export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
@@ -27,7 +27,7 @@ export const collectionSelect = {
   },
   showAuthors: true,
 };
-const collectionProps = Prisma.validator<Prisma.CollectionArgs>()({
+const collectionProps = Prisma.validator<Prisma.CollectionDefaultArgs>()({
   select: collectionSelect
 });
 export type CollectionProps = Prisma.CollectionGetPayload<typeof collectionProps>;

@@ -11,7 +11,7 @@ export const collectionSelect = {
   name: true,
   showAuthors: true,
 };
-const collectionProps = Prisma.validator<Prisma.CollectionArgs>()({
+const collectionProps = Prisma.validator<Prisma.CollectionDefaultArgs>()({
   select: collectionSelect
 });
 export type CollectionProps = Prisma.CollectionGetPayload<typeof collectionProps>;
@@ -24,7 +24,7 @@ const solutionInclude = {
     }
   }
 };
-const solutionProps = Prisma.validator<Prisma.SolutionArgs>()({
+const solutionProps = Prisma.validator<Prisma.SolutionDefaultArgs>()({
   include: solutionInclude
 });
 export type SolutionProps = Prisma.SolutionGetPayload<typeof solutionProps>;
@@ -41,7 +41,7 @@ const commentSelect = {
   },
   createdAt: true,
 };
-const commentProps = Prisma.validator<Prisma.CommentArgs>()({
+const commentProps = Prisma.validator<Prisma.CommentDefaultArgs>()({
   select: commentSelect
 });
 export type CommentProps = Prisma.CommentGetPayload<typeof commentProps>;
@@ -60,7 +60,7 @@ export const problemInclude = {
     select: commentSelect,
   },
 };
-const problemProps = Prisma.validator<Prisma.ProblemArgs>()({
+const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   include: problemInclude
 });
 export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
@@ -68,7 +68,7 @@ export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
 export const permissionSelect = {
   accessLevel: true
 };
-const permissionProps = Prisma.validator<Prisma.PermissionArgs>()({
+const permissionProps = Prisma.validator<Prisma.PermissionDefaultArgs>()({
   select: permissionSelect
 });
 export type PermissionProps = Prisma.PermissionGetPayload<typeof permissionProps>;
@@ -76,7 +76,7 @@ export type PermissionProps = Prisma.PermissionGetPayload<typeof permissionProps
 export const authorSelect = {
   id: true
 };
-const authorProps = Prisma.validator<Prisma.AuthorArgs>()({
+const authorProps = Prisma.validator<Prisma.AuthorDefaultArgs>()({
   select: authorSelect
 });
 export type AuthorProps = Prisma.AuthorGetPayload<typeof authorProps>;

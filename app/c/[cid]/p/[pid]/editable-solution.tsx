@@ -20,14 +20,13 @@ export default function EditableSolution({
     const url = `/api/solutions/${solution.id}/edit`;
     const response = await fetch(url, {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text
-      })
+      }),
     });
     if (response.status === 200) {
-      // await fetch('/api/revalidate?path=/c/[cid]');
-      // await fetch('/api/revalidate?path=/c/[cid]/p/[pid]');
       router.refresh();
     } else {
       console.error(`updating failed! status = ${response.status}`);

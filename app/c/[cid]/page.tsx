@@ -1,7 +1,6 @@
 import prisma from '@/utils/prisma'
 import { notFound, redirect } from 'next/navigation'
 import type { Params, CollectionProps } from './types'
-import { collectionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
@@ -66,15 +65,33 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     };
   }
 
-  const collection = await prisma.collection.findUnique({
-    where: { cid },
-    select: collectionSelect,
-  });
-
-  if (collection === null) {
+  const res = await fetch(
+    `${process.env.NEXTAUTH_URL}/api/collections/${cid}/get`,
+    { next: { tags: [
+      `GET /collections/${cid}`
+    ]}}
+  );
+  if (res.status === 404) {
     notFound();
+  } else if (!res.ok) {
+    console.error(res);
+    throw new Error();
   }
+  const { collection } = await res.json();
 
+  const res2 = await fetch(
+    `${process.env.NEXTAUTH_URL}/api/collections/${cid}/problems/get`,
+    { next: { tags: [
+      `GET /collections/${cid}/problems`
+    ]}}
+  );
+  if (!res2.ok) {
+    console.error(res2);
+    throw new Error();
+  }
+  const { problems } = await res2.json();
+
+  collection.problems = problems;
   return collection;
 }
 

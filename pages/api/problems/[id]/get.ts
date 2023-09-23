@@ -5,11 +5,9 @@ import { authOptions } from '../../auth/[...nextauth]'
 import { canEditProblem } from '@/utils/permissions'
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
-import { revalidateTags } from '@/utils/revalidate';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // TODO: why can't this be PUT? Something to do with CORS
-  if (req.method !== 'POST') {
+  if (req.method !== 'GET') {
     return res.status(405).json({
       error: {
         message: 'Invalid method'
@@ -110,10 +108,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
 
-    await revalidateTags([
-      `GET /collections/${problem.collection.id}/problems`,
-      `GET /collections/${problem.collection.cid}/problems`,
-    ]);
     res.status(200).json(updatedProblem);
   } catch (error) {
     handleApiError(error, res);
