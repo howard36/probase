@@ -67,7 +67,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   }
 
   // const reval = await fetch(
-  //   `${process.env.NEXTAUTH_URL}/api/appRevalidateTag?tag=collections%2F${cid}%2Fproblems`,
+  //   `${process.env.NEXTAUTH_URL}/api/appRevalidateTag?tag=GET%20collections%2F${cid}%2Fproblems`,
   //   { cache: 'no-store' }
   // )
   // console.log("reval", await reval.json())
@@ -76,7 +76,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     `${process.env.NEXTAUTH_URL}/api/collections/${cid}/get`,
     // { cache: 'no-store' }
     { next: { tags: [
-      `collections/${cid}`
+      `GET collections/${cid}`
     ]}}
   );
   if (res.status === 404) {
@@ -91,7 +91,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     `${process.env.NEXTAUTH_URL}/api/collections/${cid}/problems/get`,
     // { cache: 'no-store' }
     { next: { tags: [
-      `collections/${cid}/problems`
+      `GET collections/${cid}/problems`
     ]}}
   );
   if (!res2.ok) {

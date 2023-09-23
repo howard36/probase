@@ -5,6 +5,7 @@ import { authOptions } from '../../auth/[...nextauth]'
 import { canEditProblem } from '@/utils/permissions'
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
+import { revalidateTag } from 'next/cache'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // TODO: why can't this be PUT? Something to do with CORS
@@ -24,6 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
   }
+  console.log("EDITING PROBLEM", idString);
 
   try {
     // Get problem
@@ -109,6 +111,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
 
+    const reval = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/appRevalidateTag?tag=GET%20collections%2F${problem.collection.cid}%2Fproblems`,
+      { cache: 'no-store' }
+    )
+    console.log("reval", await reval.json())
+    // TODO: revalidate ID as well as cid
     res.status(200).json(updatedProblem);
   } catch (error) {
     handleApiError(error, res);

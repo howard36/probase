@@ -20,7 +20,8 @@ export default function EditableTitle({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         title: text
-      })
+      }),
+      cache: 'no-store',
     });
     if (response.status === 200) {
       // await fetch('/api/revalidate?path=/c/[cid]');
