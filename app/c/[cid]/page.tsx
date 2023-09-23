@@ -68,7 +68,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   const res = await fetch(
     `${process.env.NEXTAUTH_URL}/api/collections/${cid}/get`,
     { next: { tags: [
-      `GET collections/${cid}`
+      `GET /collections/${cid}`
     ]}}
   );
   if (res.status === 404) {
@@ -82,7 +82,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   const res2 = await fetch(
     `${process.env.NEXTAUTH_URL}/api/collections/${cid}/problems/get`,
     { next: { tags: [
-      `GET collections/${cid}/problems`
+      `GET /collections/${cid}/problems`
     ]}}
   );
   if (!res2.ok) {
