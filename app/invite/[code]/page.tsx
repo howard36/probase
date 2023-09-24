@@ -6,6 +6,7 @@ import NotLoggedIn from './not-logged-in'
 import InvalidEmail from './invalid-email'
 import type { InviteProps } from './types'
 import { inviteInclude } from './types'
+import { revalidateTags } from '@/utils/revalidate'
 
 interface Params {
   code: string;
@@ -71,6 +72,7 @@ export default async function InvitePage({
       accessLevel: invite.accessLevel,
     },
   });
+  revalidateTags([`GET /permissions/${userId}_${invite.collectionId}`]);
 
   redirect(`/c/${invite.collection.cid}`);
 }

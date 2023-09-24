@@ -3,7 +3,7 @@ import prisma from '@/utils/prisma';
 import { handleApiError } from '@/utils/error';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log("Slow DB in collections/problems")
+  console.log("Slow DB in permission")
 
   if (req.query.secret !== process.env.INTERNAL_API_KEY) {
     return res.status(403).json({
@@ -13,16 +13,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  const collectionId = parseInt(req.query.id as string);
+  const [userId, collectionId] = (req.query.uid_colid as string).split('_');
 
   try {
-    const problems = await prisma.problem.findMany({
-      where: { collectionId },
-      orderBy: {
-        id: 'desc'
-      },
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId: parseInt(collectionId),
+        }
+      }
     });
-    res.status(200).json({ problems });
+    res.status(200).json({ permission });
   } catch (error) {
     handleApiError(error, res);
   }
