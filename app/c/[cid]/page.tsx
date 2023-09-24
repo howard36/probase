@@ -7,6 +7,9 @@ import { canViewCollection } from '@/utils/permissions'
 import ProblemList from './problem-list'
 
 async function getCollection(cid: string): Promise<CollectionProps> {
+  if (cid === "throw-error") {
+    throw new Error("ERROR ERROR ERROR");
+  }
   if (process.env.NO_WIFI === "true") {
     return {
       id: 1,
@@ -66,7 +69,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   }
 
   const res = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/collections/${cid}/get`,
+    `${process.env.NEXTAUTH_URL}/api/internal/collections/${cid}/get?secret=${process.env.INTERNAL_API_KEY}`,
     { next: { tags: [
       `GET /collections/${cid}`
     ]}}
@@ -80,9 +83,9 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   const { collection } = await res.json();
 
   const res2 = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/collections/${cid}/problems/get`,
+    `${process.env.NEXTAUTH_URL}/api/internal/collections/${collection.id}/problems/get?secret=${process.env.INTERNAL_API_KEY}`,
     { next: { tags: [
-      `GET /collections/${cid}/problems`
+      `GET /collections/${collection.id}/problems`
     ]}}
   );
   if (!res2.ok) {
