@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
 import ProblemList from './problem-list'
+import { revalidateTags } from '@/utils/revalidate'
 
 async function getCollection(cid: string): Promise<CollectionProps> {
   if (cid === "throw-error") {
@@ -121,14 +122,21 @@ export default async function CollectionPage({
     throw new Error("userId is undefined despite being logged in");
   }
 
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId,
-        collectionId: collection.id,
+  const res = await fetch(
+    `${process.env.NEXTAUTH_URL}/api/internal/permissions/${userId}_${collection.id}/get?secret=${process.env.INTERNAL_API_KEY}`,
+    {
+      cache: 'force-cache',
+      next: {
+        tags: [`GET /permissions/${userId}_${collection.id}`]
       }
     }
-  });
+  );
+  if (!res.ok) {
+    console.error(res);
+    throw new Error();
+  }
+  const { permission } = await res.json();
+  
   if (!canViewCollection(permission)) {
     // No permission
     if (cid === "demo") {
@@ -149,6 +157,7 @@ export default async function CollectionPage({
           accessLevel: 'TeamMember',
         },
       });
+      revalidateTags([`GET /permissions/${userId}_${collection.id}`]);
     } else {
       redirect("/need-permission");
     }

@@ -4,6 +4,8 @@ import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log("Slow DB in collections")
+
   if (req.query.secret !== process.env.INTERNAL_API_KEY) {
     return res.status(403).json({
       error: {
