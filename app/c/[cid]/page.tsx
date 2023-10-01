@@ -6,6 +6,7 @@ import { authOptions } from '@/api/auth/[...nextauth]'
 import { canViewCollection } from '@/utils/permissions'
 import ProblemList from './problem-list'
 import { revalidateTags } from '@/utils/revalidate'
+import { internal_api_url } from '@/utils/urls'
 
 async function getCollection(cid: string): Promise<CollectionProps> {
   if (cid === "throw-error") {
@@ -70,7 +71,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   }
 
   const res = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/internal/collections/${cid}/get?secret=${process.env.INTERNAL_API_KEY}`,
+    internal_api_url(`/collections/${cid}/get`),
     { next: { tags: [
       `GET /collections/${cid}`
     ]}}
@@ -84,7 +85,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   const { collection } = await res.json();
 
   const res2 = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/internal/collections/${collection.id}/problems/get?secret=${process.env.INTERNAL_API_KEY}`,
+    internal_api_url(`/collections/${collection.id}/problems/get`),
     { next: { tags: [
       `GET /collections/${collection.id}/problems`
     ]}}
@@ -107,7 +108,11 @@ export default async function CollectionPage({
   const { cid } = params;
   const collection = await getCollection(cid);
 
+  // This call is still slow.
+  // Private pages must wait for security check
+  // Public pages can show the problems immediately, and stream personalized data as the page loads
   const session = await getServerSession(authOptions);
+
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
@@ -123,9 +128,9 @@ export default async function CollectionPage({
   }
 
   const res = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/internal/permissions/${userId}_${collection.id}/get?secret=${process.env.INTERNAL_API_KEY}`,
+    internal_api_url(`/permissions/${userId}_${collection.id}/get`),
     {
-      cache: 'force-cache',
+      cache: 'force-cache', // force-cache needed because it comes after await getServerSession?
       next: {
         tags: [`GET /permissions/${userId}_${collection.id}`]
       }
