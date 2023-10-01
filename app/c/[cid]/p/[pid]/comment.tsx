@@ -13,6 +13,8 @@ export default function Comment({
   
   const options = { year: "numeric", month: "short", day: "numeric" };
 
+  const date = new Date(comment.createdAt);
+
   return (
     <div className="py-8 px-6 text-base border-t border-slate-200">
       <div className="flex justify-between items-center mb-2">
@@ -22,7 +24,7 @@ export default function Comment({
             src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
             alt="Bonnie Green" />*/}{comment.user.name}</p>
           <p className="text-sm text-slate-600"><time dateTime="2022-03-12"
-            title="March 12th, 2022">{comment.createdAt.toLocaleDateString()}</time></p>
+            title="March 12th, 2022">{date.toLocaleDateString()}</time></p>
         </div>
         {/*
         <button id="dropdownComment3Button" data-dropdown-toggle="dropdownComment3"
