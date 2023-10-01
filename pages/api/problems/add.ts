@@ -155,6 +155,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await revalidateTags([
       `GET /collections/${collection.id}/problems`,
       `GET /collections/${collection.cid}/problems`,
+      `GET /problems/${newProblem.id}`,
+      `GET /problems/${collectionId}_${pid}`,
     ]);
     res.status(201).json(newProblem);
   } catch (error) {

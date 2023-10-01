@@ -5,6 +5,7 @@ import { authOptions } from '../auth/[...nextauth]'
 import { handleApiError } from '@/utils/error';
 import { isNonNegativeInt } from '@/utils/utils';
 import { canAddComment } from '@/utils/permissions';
+import { revalidateTags } from '@/utils/revalidate';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // TODO: why can't this be PUT? Something about CORS
@@ -51,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
       select: {
+        pid: true,
         collection: {
           select: {
             id: true,
@@ -95,6 +97,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
 
+    await revalidateTags([
+      `GET /problems/${problemId}`,
+      `GET /problems/${problem.collection.id}_${problem.pid}`,
+    ]);
     res.status(201).json(newComment);
   } catch (error) {
     handleApiError(error, res);

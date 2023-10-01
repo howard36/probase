@@ -110,9 +110,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
 
+    const { id: collectionId, cid } = problem.collection;
+    const { pid } = updatedProblem;
+
     await revalidateTags([
-      `GET /collections/${problem.collection.id}/problems`,
-      `GET /collections/${problem.collection.cid}/problems`,
+      `GET /collections/${collectionId}/problems`,
+      `GET /collections/${cid}/problems`,
+      `GET /problems/${problemId}`,
+      `GET /problems/${collectionId}_${pid}`,
     ]);
     res.status(200).json(updatedProblem);
   } catch (error) {
