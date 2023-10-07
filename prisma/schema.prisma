@@ -94,6 +94,7 @@ model Problem {
   source       String?
   isAnonymous  Boolean
   comments     Comment[]
+  createdAt    DateTime   @default(now())
   
   @@unique([collectionId, pid])
 }
