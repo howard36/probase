@@ -6,9 +6,11 @@ export interface Params {
 
 const problemSelect = {
   pid: true,
+  id: true,
   title: true,
   subject: true,
   statement: true,
+  createdAt: true,
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   select: problemSelect
@@ -21,9 +23,6 @@ export const collectionSelect = {
   name: true,
   problems: {
     select: problemSelect,
-    orderBy: {
-      id: 'desc' as Prisma.SortOrder,
-    },
   },
   showAuthors: true,
 };

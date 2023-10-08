@@ -74,6 +74,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
         difficulty: 3,
         source: '',
         isAnonymous: false,
+        createdAt: new Date(),
       },
       collection: {
         id: 1,
