@@ -120,7 +120,26 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   }
   let { problems } = await res2.json();
 
+  if (cid === "demo") {
+    problems.forEach((problem: ProblemProps) => {
+      const date = new Date();
+      if (problem.pid === "A1") {  // Quadratic Equation
+        date.setHours(date.getHours() - 24);
+        problem.createdAt = date;
+      } else if (problem.pid === "N1") {  // Fermat's Last Theorem
+        date.setHours(date.getHours() - 25);
+        problem.createdAt = date;
+      } else if (problem.pid === "G1") {  // Edit me!
+        date.setHours(date.getHours() - 26);
+        problem.createdAt = date;
+      } else {
+        // String to Date (because JSON doesn't have Date)
+        problem.createdAt = new Date(problem.createdAt);
+      }
+    })
+  }
   problems.sort(sortByNew);
+  console.log(problems);
 
   collection.problems = problems;
   return collection;
