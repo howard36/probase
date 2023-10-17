@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link';
-import Latex from 'react-latex-next';
+import Latex from '@/components/latex';
 import type { ProblemProps, CollectionProps } from './types';
 
 const titleLineColors = [

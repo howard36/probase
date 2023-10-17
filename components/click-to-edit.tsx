@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Latex from 'react-latex-next'
+import Latex from '@/components/latex'
 import ClickToEditTextarea from './click-to-edit-textarea'
 import ClickToEditInput from './click-to-edit-input'
 

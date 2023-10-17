@@ -423,6 +423,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/katex@npm:^0.16.3":
+  version: 0.16.3
+  resolution: "@types/katex@npm:0.16.3"
+  checksum: 46921044ad1e1fcb171fb779a958fd2ce25b1763742626963d54f97e9ac4c99ed6c6cb1ffa3d86facaa24ef56db7f2e1a221178025c87f92c15c22b434883e0f
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^20.5.7":
   version: 20.5.7
   resolution: "@types/node@npm:20.5.7"
@@ -1051,7 +1058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^8.0.0":
+"commander@npm:^8.3.0":
   version: 8.3.0
   resolution: "commander@npm:8.3.0"
   checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
@@ -2637,14 +2644,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"katex@npm:^0.13.0":
-  version: 0.13.24
-  resolution: "katex@npm:0.13.24"
+"katex@npm:^0.16.9":
+  version: 0.16.9
+  resolution: "katex@npm:0.16.9"
   dependencies:
-    commander: ^8.0.0
+    commander: ^8.3.0
   bin:
     katex: cli.js
-  checksum: 1b7c8295867073d0db4f6fb41ef1c0e3418b8e23924ff61b446b36134cb74cdadc7242dfbfb922d9c32f0b15eda6160a08cd30948c4e78141966ca2991a1726b
+  checksum: 861194dfd4d86505e657f688fb73048d46ac498edafce71199502a35b03c0ecc35ba930c631be79c4a09d90a0d23476673cd52f6bc367c7a161854d64005fa95
   languageName: node
   linkType: hard
 
@@ -3573,6 +3580,7 @@ __metadata:
   dependencies:
     "@next-auth/prisma-adapter": ^1.0.7
     "@prisma/client": ^5.2.0
+    "@types/katex": ^0.16.3
     "@types/node": ^20.5.7
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
@@ -3580,13 +3588,13 @@ __metadata:
     dotenv-cli: ^7.3.0
     eslint: ^8.48.0
     eslint-config-next: ^13.4.19
+    katex: ^0.16.9
     next: ^13.4.19
     next-auth: ^4.23.1
     postcss: ^8.4.29
     prisma: ^5.2.0
     react: ^18.2.0
     react-dom: ^18.2.0
-    react-latex-next: ^2.2.0
     tailwindcss: ^3.3.3
     ts-node: ^10.9.1
     typescript: ^5.2.2
@@ -3644,19 +3652,6 @@ __metadata:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
-  languageName: node
-  linkType: hard
-
-"react-latex-next@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "react-latex-next@npm:2.2.0"
-  dependencies:
-    katex: ^0.13.0
-  peerDependencies:
-    prop-types: ^15.5.4
-    react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-  checksum: 2e4af63ae1b7a166f9b4a2e6b4aaa108acd6ca5994464c78ae1e14c8e45e035cb307f043172a839f91667c6b6cb503ec2e3f8f3b109b86e04f5162370e5a8e9f
   languageName: node
   linkType: hard
 
