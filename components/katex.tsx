@@ -1,78 +1,119 @@
 import React from 'react';
 import katex from 'katex';
 
-function escapeHtml(unsafe: string) {
-  return unsafe.replace(/&/g, "&amp;")
-               .replace(/</g, "&lt;")
-               .replace(/>/g, "&gt;")
-               .replace(/"/g, "&quot;")
-               .replace(/'/g, "&#039;");
-}
+interface Delimiter {
+  left: string;
+  right: string;
+  display: boolean;
+};
 
-function unescapeHtml(safe: string) {
-  return safe.replace(/&amp;/g, "&")
-             .replace(/&lt;/g, "<")
-             .replace(/&gt;/g, ">")
-             .replace(/&quot;/g, "\"")
-             .replace(/&#039;/g, "'");
-}
+/* eslint no-constant-condition:0 */
+const findEndOfMath = function(delimiter: string, text: string, startIndex: number) {
+    // Adapted from
+    // https://github.com/Khan/perseus/blob/master/src/perseus-markdown.jsx
+    let index = startIndex;
+    let braceLevel = 0;
 
-function parseAndRenderLatex(inputString: string) {
-  const escapedString = escapeHtml(inputString);
-  const tokens = escapedString.split(/(\$+)|([^$]+)/g).filter(Boolean);
-  let isLatex = true;
-  const renderedTokens = tokens.map(token => {
-    isLatex = !isLatex;
-    if (isLatex) {
-      const latexString = unescapeHtml(token);
-      try {
-        console.log("rendering", latexString)
-        const htmlString = katex.renderToString(latexString, {
-          throwOnError: false,
-        });
-        return htmlString;
-      } catch (e) {
-        console.error('Failed to render LaTeX: ', e);
-        return escapeHtml(token);
-      }
-    }
-    return token;
-  });
-  return renderedTokens.join('');
-}
+    const delimLength = delimiter.length;
 
-const renderLatex = (input: string) => {
-    let cursor = 0;
-    let html = '';
-    const regex = /\$(.*?)\$/g;  // Regex to match LaTeX expressions
-    let result;
+    while (index < text.length) {
+        const character = text[index];
 
-    // Loop through all matches
-    while ((result = regex.exec(input)) !== null) {
-        const [match, latex] = result;
-        const index = result.index;
-
-        // Append text before match
-        html += escapeHtml(input.slice(cursor, index));
-
-        // Render LaTeX and append
-        try {
-            html += katex.renderToString(latex, { throwOnError: false });
-        } catch (e) {
-            console.error('Failed to render LaTeX:', e);
-            html += escapeHtml(match);  // Append original match if rendering fails
+        if (braceLevel <= 0 &&
+            text.slice(index, index + delimLength) === delimiter) {
+            return index;
+        } else if (character === "\\") {
+            index++;
+        } else if (character === "{") {
+            braceLevel++;
+        } else if (character === "}") {
+            braceLevel--;
         }
 
-        cursor = index + match.length;
+        index++;
     }
 
-    // Append remaining text
-    html += escapeHtml(input.slice(cursor));
+    return -1;
+};
 
-    return html;
+const escapeRegex = function(string: string) {
+    return string.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+};
+
+const amsRegex = /^\\begin{/;
+
+const splitAtDelimiters = function(text: string, delimiters: Delimiter[]) {
+    let index;
+    const data = [];
+
+    const regexLeft = new RegExp(
+        "(" + delimiters.map((x) => escapeRegex(x.left)).join("|") + ")"
+    );
+
+    while (true) {
+        index = text.search(regexLeft);
+        if (index === -1) {
+            break;
+        }
+        if (index > 0) {
+            data.push({
+                type: "text",
+                data: text.slice(0, index),
+            });
+            text = text.slice(index); // now text starts with delimiter
+        }
+        // ... so this always succeeds:
+        const i = delimiters.findIndex((delim) => text.startsWith(delim.left));
+        index = findEndOfMath(delimiters[i].right, text, delimiters[i].left.length);
+        if (index === -1) {
+            break;
+        }
+        const rawData = text.slice(0, index + delimiters[i].right.length);
+        const math = amsRegex.test(rawData)
+            ? rawData
+            : text.slice(delimiters[i].left.length, index);
+        data.push({
+            type: "math",
+            data: math,
+            rawData,
+            display: delimiters[i].display,
+        });
+        text = text.slice(index + delimiters[i].right.length);
+    }
+
+    if (text !== "") {
+        data.push({
+            type: "text",
+            data: text,
+        });
+    }
+
+    return data;
 };
 
 export default function Katex({ children }: { children: string }) {
-  const renderedHtml = renderLatex(children);
-  return <div dangerouslySetInnerHTML={{ __html: renderedHtml }} />;
+  const delimiters = [
+    {left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false},
+    {left: "\\[", right: "\\]", display: true},
+  ];
+  const data = splitAtDelimiters(children, delimiters);
+
+  return (
+    <div>
+      {data.map((item) => {
+        if (item.type === "text") {
+          return <span>{item.data}</span>;
+        } else {
+          const renderedHtmlStr = katex.renderToString(item.data, {
+            displayMode: item.display,
+            throwOnError: false,
+          });
+          console.log(renderedHtmlStr);
+          return <span dangerouslySetInnerHTML={{ __html: renderedHtmlStr }} />;
+        }
+      })}
+    </div>
+  )
 }
