@@ -1,4 +1,3 @@
-import React from 'react';
 import katex from 'katex';
 
 interface Delimiter {
@@ -104,14 +103,14 @@ export default function Katex({ children }: { children: string }) {
     <div>
       {data.map((item) => {
         if (item.type === "text") {
-          return <span>{item.data}</span>;
+          return <span key={`${item.type} ${item.data}`}>{item.data}</span>;
         } else {
           const renderedHtmlStr = katex.renderToString(item.data, {
             displayMode: item.display,
             throwOnError: false,
+            trust: false,
           });
-          console.log(renderedHtmlStr);
-          return <span dangerouslySetInnerHTML={{ __html: renderedHtmlStr }} />;
+          return <span key={`${item.type} ${item.data}`} dangerouslySetInnerHTML={{ __html: renderedHtmlStr }} />;
         }
       })}
     </div>
