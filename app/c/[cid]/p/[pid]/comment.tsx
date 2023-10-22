@@ -51,7 +51,7 @@ export default function Comment({
         </div>
         */}
       </div>
-      <p className="text-gray-700"><Latex>{`${comment.text}`}</Latex></p>
+      <div className="text-gray-700"><Latex>{`${comment.text}`}</Latex></div>
     </div>
   );
 

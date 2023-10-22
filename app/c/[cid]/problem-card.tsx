@@ -56,7 +56,7 @@ export default function ProblemCard({
       <div className="bg-white p-8 my-8 rounded-2xl soft-shadow-xl">
         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">{problem.title}</h2>
         <div className={`w-16 h-2 mb-4 ${titleLineColor} rounded-full`}></div>
-        <p className="text-base sm:text-lg md:text-xl text-slate-800"><Latex>{problem.statement}</Latex></p>
+        <div className="text-base sm:text-lg md:text-xl text-slate-800"><Latex>{problem.statement}</Latex></div>
       </div>
     </Link>
   );
