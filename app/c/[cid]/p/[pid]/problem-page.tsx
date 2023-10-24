@@ -56,9 +56,7 @@ export default function ProblemPage(props: Props) {
           <Statement {...props} />
         </div>
         {written_by}
-        { (problem.answer !== null || problem.solutions.length > 0) &&
-          <Spoilers {...props} />
-        }
+        <Spoilers {...props} />
         <div>
           <Comments {...props} />
         </div>
