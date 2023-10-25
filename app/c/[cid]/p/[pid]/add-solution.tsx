@@ -1,9 +1,18 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import type { KeyboardEvent } from 'react'
+import { ProblemProps } from './types';
 
-export default function AddSolution() {
+export default function AddSolution({
+  problem,
+  authorId,
+}: {
+  problem: ProblemProps
+  authorId: number
+}) {
+  const router = useRouter();
   const [isEditing, setEditing] = useState(false);
   const [text, setText] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -32,8 +41,25 @@ export default function AddSolution() {
     }
   }, [text]);
 
-  const handleSubmit = (text: string) => {
-    alert(text);
+  const handleSubmit = async () => {
+    // setSubmitting(true);
+
+    // submit new solution
+    const url = `/api/solutions/add`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        problemId: problem.id,
+        text,
+        authorId,
+      })
+    });
+    if (response.status === 201) {
+      router.refresh();
+    } else {
+      console.error("failed to add solution");
+    }
   }
 
   const handleDiscard = () => {
@@ -47,7 +73,7 @@ export default function AddSolution() {
     } else if (event.key === 'Enter' && (event.shiftKey || event.ctrlKey || event.metaKey)) { 
       // Equivalent to clicking the "Submit" button
       if (text !== "") {
-        handleSubmit(text);
+        handleSubmit();
       }
     }
   };
@@ -67,7 +93,7 @@ export default function AddSolution() {
         />
         <div className="mt-4">
           <button
-            onClick={() => (text !== "") && handleSubmit(text)}
+            onClick={() => (text !== "") && handleSubmit()}
             className="w-40 py-3 rounded-md bg-green-200 text-green-800 font-semibold text-base leading-none"
           >
             Submit

@@ -28,7 +28,11 @@ export default function Spoilers(props: Props) {
   }
 
   if (problem.answer === null && problem.solutions.length === 0) {
-    return <AddSolution />;
+    if (authors.length > 0) {
+      return <AddSolution problem={problem} authorId={authors[0].id} />;
+    } else {
+      return <div className="py-8"></div>;
+    }
   } else {
     if (hidden) {
       return (
