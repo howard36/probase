@@ -49,16 +49,14 @@ export default function ProblemPage(props: Props) {
         <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
           <Title {...props} />
         </div>
-        <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
+        <div className={`py-2 px-6 inline-block mb-6 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
           {subject}
         </div>
         <div className="mb-4">
           <Statement {...props} />
         </div>
         {written_by}
-        { (problem.answer !== null || problem.solutions.length > 0) &&
-          <Spoilers {...props} />
-        }
+        <Spoilers {...props} />
         <div>
           <Comments {...props} />
         </div>

@@ -57,6 +57,16 @@ export function canAddProblem(
   return role === "Admin" || role === "TeamMember" || role === "SubmitOnly";
 }
 
+export function canAddSolution(
+  permission: PermissionPerm | null
+): boolean {
+  if (permission === null) {
+    return false;
+  }
+  const role = permission.accessLevel;
+  return role === "Admin" || role === "TeamMember";
+}
+
 // TODO: for SubmitOnly, check if they are the author
 // TODO: canViewProblem should be identical
 export function canAddComment(
@@ -68,7 +78,6 @@ export function canAddComment(
   const role = permission.accessLevel;
   return role === "Admin" || role === "TeamMember" || role === "SubmitOnly" || role === "ViewOnly";
 }
-
 export function canViewCollection(
   permission: PermissionPerm | null
 ): boolean {

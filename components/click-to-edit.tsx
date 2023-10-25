@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import Latex from '@/components/latex'
 import ClickToEditTextarea from './click-to-edit-textarea'

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Answer from './answer';
 import Solution from './solution'
+import AddSolution from './add-solution'
 import type { Props } from './types'
 
 export default function Spoilers(props: Props) {
@@ -26,22 +27,27 @@ export default function Spoilers(props: Props) {
     );
   }
 
-  if (hidden) {
-    return (
-      <div className="my-12">
-        <button onClick={() => setHidden(false)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-base text-slate-50 font-semibold leading-none">Show spoilers</button>
-      </div>
-    );
+  if (problem.answer === null && problem.solutions.length === 0) {
+    if (authors.length > 0) {
+      return <AddSolution problem={problem} authorId={authors[0].id} />;
+    } else {
+      return <div className="py-8"></div>;
+    }
   } else {
-    return (
-      <div className="my-12">
-        <button onClick={() => setHidden(true)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-base text-slate-50 font-semibold leading-none">Hide spoilers</button>
-        {answer}
-        {solution}
-        {/* Add Solution not implemented yet
-        <button className="w-44 py-3 text-base text-blue-600 font-semibold rounded-md border-4 border-blue-200 hover:bg-blue-200 hover:text-blue-800 leading-none">Add Solution</button>
-        */}
-      </div>
-    );
-  };
+    if (hidden) {
+      return (
+        <div className="my-12">
+          <button onClick={() => setHidden(false)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-base text-slate-50 font-semibold leading-none">Show spoilers</button>
+        </div>
+      );
+    } else {
+      return (
+        <div className="my-12">
+          <button onClick={() => setHidden(true)} className="w-44 py-4 rounded-md bg-blue-500 hover:bg-blue-600 text-base text-slate-50 font-semibold leading-none">Hide spoilers</button>
+          {answer}
+          {solution}
+        </div>
+      );
+    }
+  }
 }

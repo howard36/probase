@@ -58,7 +58,7 @@ export default function ProblemForm({
     e.preventDefault();
     setSubmitting(true);
 
-    // add new problem
+    // submit new problem
     const url = `/api/problems/add`;
     const response = await fetch(url, {
       method: 'POST',
@@ -80,7 +80,7 @@ export default function ProblemForm({
       router.push(`/c/${collection.cid}/p/${newProblem.pid}`);
       router.refresh();
     } else {
-      // TODO: retry with different PID
+      // TODO: retry with different PID (or use atomic increment)
       console.error("inserting failed!");
     }
   };
