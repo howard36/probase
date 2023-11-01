@@ -49,8 +49,13 @@ export default function ProblemPage(props: Props) {
         <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
           <Title {...props} />
         </div>
-        <div className={`py-2 px-6 inline-block mb-6 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
-          {subject}
+        <div className="mb-6 font-semibold text-sm flex gap-x-3">
+          <div className={`py-2 px-6 text-slate-50 text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
+            {subject}
+          </div>
+          <div className="py-2 px-6 text-slate-700 text-center leading-none rounded-full bg-slate-200">
+            CMIMC 2023 Alg/NT
+          </div>
         </div>
         <div className="mb-4">
           <Statement {...props} />
