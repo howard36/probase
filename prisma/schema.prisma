@@ -95,6 +95,7 @@ model Problem {
   isAnonymous  Boolean
   comments     Comment[]
   createdAt    DateTime   @default(now())
+  testProblems TestProblem[]
   
   @@unique([collectionId, pid])
 }
@@ -118,6 +119,7 @@ model Collection {
   permissions Permission[]
   invites     Invite[]
   shortAnswer Boolean   @default(true)
+  tests       Test[]
 }
 
 enum AccessLevel {
@@ -156,4 +158,23 @@ model Comment {
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Test {
+  id           Int        @id @default(autoincrement())
+  name         String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId Int
+  testProblems TestProblem[]
+}
+
+model TestProblem {
+  test         Test    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId       Int
+  problem      Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId    Int
+  position     Int
+
+  @@unique([testId, problemId])
+  @@unique([testId, position])
 }

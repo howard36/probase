@@ -59,6 +59,17 @@ export const problemInclude = {
   comments: {
     select: commentSelect,
   },
+  testProblems: {
+    select: {
+      test: {
+        select: {
+          id: true,
+          name: true,
+        }
+      },
+      position: true,
+    }
+  },
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   include: problemInclude
