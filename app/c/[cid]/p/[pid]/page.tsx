@@ -75,6 +75,22 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
         source: '',
         isAnonymous: false,
         createdAt: new Date(),
+        testProblems: [
+          {
+            test: {
+              id: 1,
+              name: "CMWMC 2023 Alg/NT Div 1"
+            },
+            position: 1,
+          },
+          {
+            test: {
+              id: 2,
+              name: "CMWMC 2023 Alg/NT Div 2"
+            },
+            position: 1,
+          },
+        ]
       },
       collection: {
         id: 1,

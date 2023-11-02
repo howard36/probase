@@ -49,13 +49,15 @@ export default function ProblemPage(props: Props) {
         <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
           <Title {...props} />
         </div>
-        <div className="mb-6 font-semibold text-sm flex gap-x-3">
-          <div className={`py-2 px-6 text-slate-50 text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
+        <div className="mb-6 font-semibold text-sm flex flex-wrap gap-x-3 gap-y-2">
+          <div className={`py-2 px-6 text-slate-50 text-center leading-none rounded-full whitespace-nowrap bg-gradient-to-r ${gradient}`}>
             {subject}
           </div>
-          <div className="py-2 px-6 text-slate-700 text-center leading-none rounded-full bg-slate-200">
-            CMIMC 2023 Alg/NT
-          </div>
+          {problem.testProblems.map(problem => (
+            <div className="py-2 px-6 text-slate-700 text-center leading-none rounded-full bg-slate-200 whitespace-nowrap" key={problem.test.id}>
+              {problem.test.name}
+            </div>
+          ))}
         </div>
         <div className="mb-4">
           <Statement {...props} />
