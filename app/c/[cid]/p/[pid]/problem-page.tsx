@@ -25,6 +25,14 @@ const subjectToGradient = {
   },
 }
 
+function convertToSlug(name: string) {
+  return name
+    .toLowerCase() // Convert to lowercase
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/[^a-z0-9\-]/g, '') // Remove special characters except hyphens
+    .replace(/\-+/g, '-'); // Replace multiple hyphens with a single hyphen
+}
+
 export default function ProblemPage(props: Props) {
   const { problem, collection } = props;
   let written_by;
@@ -53,10 +61,10 @@ export default function ProblemPage(props: Props) {
           <div className={`py-2 px-6 text-slate-50 text-center leading-none rounded-full whitespace-nowrap bg-gradient-to-r ${gradient}`}>
             {subject}
           </div>
-          {problem.testProblems.map(problem => (
-            <div className="py-2 px-6 text-slate-700 text-center leading-none rounded-full bg-slate-200 whitespace-nowrap" key={problem.test.id}>
-              {problem.test.name}
-            </div>
+          {problem.testProblems.map(testProblem => (
+            <Link href={`/c/${collection.cid}/t/${convertToSlug(testProblem.test.name)}-${testProblem.test.id}`} prefetch={true} className="py-2 px-6 bg-slate-200 hover:bg-slate-300 text-slate-700 hover:text-slate-800 text-center leading-none rounded-full whitespace-nowrap" key={testProblem.test.id}>
+              {testProblem.test.name}
+            </Link>
           ))}
         </div>
         <div className="mb-4">
