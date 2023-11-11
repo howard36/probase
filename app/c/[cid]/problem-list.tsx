@@ -11,19 +11,25 @@ export default function ProblemList({
   collection: CollectionProps
 }) {
   const [query, setQuery] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   }
 
   const lowerQuery = query.toLowerCase();
-  const filteredProblems = collection.problems.filter((problem) => {
-    if (query === "") {
-      // Don't apply filter, just include all problems
-      return true;
-    }
-    return problem.title.toLowerCase().includes(lowerQuery) || problem.statement.toLowerCase().includes(lowerQuery);
-  })
+
+  let problems = collection.problems;
+  if (!showArchived) {  // hide archived problems
+    problems = problems.filter((problem) => !problem.isArchived);
+  }
+  problems = problems.filter((problem) => {
+      if (query === "") {
+        // Don't apply filter, just include all problems
+        return true;
+      }
+      return problem.title.toLowerCase().includes(lowerQuery) || problem.statement.toLowerCase().includes(lowerQuery);
+    })
 
   return (
     <div className="p-8 md:py-24 whitespace-pre-wrap break-words">
@@ -47,7 +53,7 @@ export default function ProblemList({
         </div>
         <div>
           <ul>
-            {filteredProblems.map((problem) => (
+            {problems.map((problem) => (
               <li key={problem.pid}>
                 <ProblemCard collection={collection} problem={problem} />
               </li>

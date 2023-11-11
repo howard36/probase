@@ -12,7 +12,6 @@ export default function ArchiveToggle(props: Props) {
 
   const handleChange = async () => {
     const newArchived = !isArchived
-    console.log({newArchived})
     setArchived(newArchived);
 
     const url = `/api/problems/${problem.id}/edit`;

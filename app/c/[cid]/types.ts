@@ -11,6 +11,7 @@ const problemSelect = {
   subject: true,
   statement: true,
   createdAt: true,
+  isArchived: true,
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   select: problemSelect
