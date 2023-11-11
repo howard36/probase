@@ -139,7 +139,6 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     })
   }
   problems.sort(sortByNew);
-  console.log(problems);
 
   collection.problems = problems;
   return collection;
