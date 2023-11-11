@@ -24,17 +24,17 @@ export default function ProblemList({
     problems = problems.filter((problem) => !problem.isArchived);
   }
   problems = problems.filter((problem) => {
-      if (query === "") {
-        // Don't apply filter, just include all problems
-        return true;
-      }
-      return problem.title.toLowerCase().includes(lowerQuery) || problem.statement.toLowerCase().includes(lowerQuery);
-    })
+    if (query === "") {
+      // Don't apply filter, just include all problems
+      return true;
+    }
+    return problem.title.toLowerCase().includes(lowerQuery) || problem.statement.toLowerCase().includes(lowerQuery);
+  })
 
   return (
     <div className="p-8 md:py-24 whitespace-pre-wrap break-words">
       <div className="w-128 sm:w-144 md:w-160 max-w-full mx-auto">
-        <div className="flex flex-wrap gap-x-12 gap-y-6 mb-12">
+        <div className="flex flex-wrap gap-x-12 gap-y-6 mb-6">
           {/* TODO: blue shadow */}
           <Link href={`/c/${collection.cid}/add-problem`} prefetch={true} className="shrink-0 grow inline-block py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-bold text-base soft-shadow-xl">Add Problem</Link>
           <div className="grow-[1000]">
@@ -49,6 +49,15 @@ export default function ProblemList({
                 </div>
               </form>
             </div>
+          </div>
+        </div>
+        <div className="mb-8 flex">
+          <div className="ml-auto">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" checked={showArchived} onChange={() => setShowArchived(!showArchived)} className="sr-only peer" />
+              <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+              <span className="ms-3 text-sm font-medium text-slate-600">Show archived problems</span>
+            </label>
           </div>
         </div>
         <div>

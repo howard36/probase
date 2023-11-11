@@ -28,7 +28,6 @@ export default function ArchiveToggle(props: Props) {
     } else {
       console.error(`updating failed! status = ${response.status}`);
     }
-
   }
 
   return (
