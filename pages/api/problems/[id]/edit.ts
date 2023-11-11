@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    const { title, statement, answer, source, isAnonymous } = req.body;
+    const { title, statement, answer, source, isAnonymous, isArchived } = req.body;
 
     const updatedProblem = await prisma.problem.update({
       where: { id: problemId },
@@ -107,6 +107,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         answer,
         source,
         isAnonymous,
+        isArchived,
       }
     });
 

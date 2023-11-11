@@ -35,6 +35,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
           subject: 'Combinatorics',
           statement: 'And this is some example text. Totally not random',
           createdAt: new Date(),
+          isArchived: false,
         },
         {
           pid: 'A4',
@@ -43,6 +44,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
           subject: 'Algebra',
           statement: 'And what about here? $$1+1$$ Oh cool it renders properly in the problem card',
           createdAt: new Date(),
+          isArchived: false,
         },
         {
           pid: 'A3',
@@ -51,6 +53,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
           subject: 'Algebra',
           statement: 'a34',
           createdAt: new Date(),
+          isArchived: false,
         },
         {
           pid: 'N3',
@@ -59,16 +62,34 @@ async function getCollection(cid: string): Promise<CollectionProps> {
           subject: 'NumberTheory',
           statement: 'hi',
           createdAt: new Date(),
+          isArchived: false,
         },
-        { pid: 'G1', id: 5, title: 'title', subject: 'Geometry', statement: 'e', createdAt: new Date(), },
-        { pid: 'A2', id: 6, title: 'second', subject: 'Algebra', statement: 's', createdAt: new Date(), },
+        {
+          pid: 'G1',
+          id: 5,
+          title: 'title',
+          subject: 'Geometry',
+          statement: 'e',
+          createdAt: new Date(),
+          isArchived: false,
+        },
+        {
+          pid: 'A2',
+          id: 6,
+          title: 'Archived Alg',
+          subject: 'Algebra',
+          statement: 's',
+          createdAt: new Date(),
+          isArchived: true,
+        },
         {
           pid: 'N2',
           id: 7,
-          title: 'n hi',
+          title: 'Archived NT',
           subject: 'NumberTheory',
           statement: 'n',
           createdAt: new Date(),
+          isArchived: true,
         },
         {
           pid: 'C1',
@@ -79,6 +100,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
             '\n' +
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
           createdAt: new Date(),
+          isArchived: false,
         },
         {
           pid: 'N1',
@@ -87,6 +109,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
           subject: 'NumberTheory',
           statement: 'Find all positive integer solutions to $$a^n + b^n = c^n$$ which satisfy $n \\ge 3$.',
           createdAt: new Date(),
+          isArchived: false,
         },
         {
           pid: 'A1',
@@ -95,6 +118,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
           subject: 'Algebra',
           statement: 'Find all roots of the quadratic $$x^2 - 4x + 2.$$',
           createdAt: new Date(),
+          isArchived: false,
         }
       ],
       showAuthors: true,
