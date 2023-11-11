@@ -4,6 +4,7 @@ import Statement from './statement'
 import Spoilers from './spoilers'
 import type { Props } from './types'
 import Comments from './comments'
+import ArchiveToggle from './archive-toggle'
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -34,7 +35,7 @@ function convertToSlug(name: string) {
 }
 
 export default function ProblemPage(props: Props) {
-  const { problem, collection } = props;
+  const { problem, collection, permission } = props;
   let written_by;
   if (collection.showAuthors && problem.authors.length > 0) {
     written_by = <p className="italic text-slate-700 text-base mb-8 text-right">Written by {problem.authors[0].displayName}</p>;
@@ -75,6 +76,11 @@ export default function ProblemPage(props: Props) {
         <div>
           <Comments {...props} />
         </div>
+        {(permission?.accessLevel === "Admin") && (
+          <div>
+            <ArchiveToggle {...props} />
+          </div>
+        )}
       </div>
     </div>
   );
