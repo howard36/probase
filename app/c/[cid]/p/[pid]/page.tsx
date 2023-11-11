@@ -21,6 +21,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
         subject: "Algebra",
         statement: 'Compute the roots of $$x^2 - 4x + 2$$',
         answer: '$2 \\pm \\sqrt{2}$',
+        isArchived: false,
         authors: [{
           id: 1,
           displayName: 'Howard',

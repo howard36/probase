@@ -96,6 +96,7 @@ model Problem {
   comments     Comment[]
   createdAt    DateTime   @default(now())
   testProblems TestProblem[]
+  isArchived   Boolean    @default(false)
   
   @@unique([collectionId, pid])
 }

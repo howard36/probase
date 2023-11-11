@@ -44,7 +44,14 @@ async function getCollection(cid: string): Promise<CollectionProps> {
           statement: 'And what about here? $$1+1$$ Oh cool it renders properly in the problem card',
           createdAt: new Date(),
         },
-        { pid: 'A3', id: 3, title: 'a2', subject: 'Algebra', statement: 'a34', createdAt: new Date(), },
+        {
+          pid: 'A3',
+          id: 3,
+          title: 'a2',
+          subject: 'Algebra',
+          statement: 'a34',
+          createdAt: new Date(),
+        },
         {
           pid: 'N3',
           id: 4,
