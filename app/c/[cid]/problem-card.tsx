@@ -52,7 +52,7 @@ export default function ProblemCard({
   const titleLineColor = titleLineColors[subjectColor];
 
   return (
-    <Link href={`/c/${collection.cid}/p/${problem.pid}`}>
+    <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
       <div className="bg-white p-8 my-8 rounded-2xl soft-shadow-xl">
         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">{problem.title}</h2>
         <div className={`w-16 h-2 mb-4 ${titleLineColor} rounded-full`}></div>

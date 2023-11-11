@@ -30,7 +30,7 @@ export default function ProblemList({
       <div className="w-128 sm:w-144 md:w-160 max-w-full mx-auto">
         <div className="flex flex-wrap gap-x-12 gap-y-6 mb-12">
           {/* TODO: blue shadow */}
-          <Link href={`/c/${collection.cid}/add-problem`} className="shrink-0 grow inline-block py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-bold text-base soft-shadow-xl">Add Problem</Link>
+          <Link href={`/c/${collection.cid}/add-problem`} prefetch={true} className="shrink-0 grow inline-block py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-bold text-base soft-shadow-xl">Add Problem</Link>
           <div className="grow-[1000]">
             <div className="relative text-slate-600">
               <form>
