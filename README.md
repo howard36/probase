@@ -1,17 +1,64 @@
-# Probase: A Math Problem Database
-[Probase](https://www.probase.app) is an online collaborative database where you can store math problems. It's a tool for math contest organizers and problem writers to easily manage long lists of math problems in an organized way. You can upload any math questions you come up with, share them with others, testsolve other problems, and vote on which ones you think are best. It's an improved version of https://github.com/CMU-Math/probase (because I'm too much of a perfectionist to be satisfied with the first iteration).
+# Probase: A Math Contest Problem Database
 
-I made Probase with the following design goals in mind:
-1. A strong focus on UX and interaction design - the web interface should be really nice to use.
-1. Written in React/Next.js (because I want to learn that stack)
-1. Live preview when typing in LaTeX (or something like Notion where the math is rendered inline, and you can click on any expression to edit it)
-1. Better search capabilities to easily find problems in a large database
-    1. Ultimately, some kind of ML-powered search where each problem has an embedding vector used for nearest-neighbor search. But this requires AI to understand math problems sufficiently well.
-1. Many of the features missing in Probase V1:
-    1. Support for pictures (and Asymptote diagrams)
-    1. Hidden spoilers
-    1. Links between problems
-    1. Automatic test creation
-1. Customizable settings per contest, so different groups can configure Probase to fit their own needs (e.g. anonymous problem writers for the CMO committee)
+[Probase](https://www.probase.app/c/demo) is an online collaborative database for problem writers to save and share the problems they create, and for contest organizers to manage large numbers of problem proposals.
 
-I built Probase in the hopes that it would be useful to lots of people, so if you or someone you know is interested, please reach out!
+
+## Features
+
+- [x] Latex rendering of math expressions
+- [x] Uploading any math problems you create
+- [x] Answer and solutions, hidden by default
+- [x] Discussion thread for each problem
+- [x] Permission roles to control access
+- [x] Draft tests from a chosen set of proposals
+- [x] Invite links to share with others
+- [ ] Timed testsolving
+- [ ] Upvotes for high-quality problems
+
+
+## Roadmap / Vision
+
+TODO
+
+
+## Setup Instructions
+
+For local development:
+
+1. Clone the repository and install dependencies
+```
+git clone https://github.com/howard36/probase.git
+cd probase
+yarn install  # or npm install
+```
+
+2. Set up a PostgreSQL database. You can find instructions on how to do this online.
+
+3. Initialize the `.env.local` file:
+```
+cp .env.example .env.local
+```
+
+You'll want to manually edit some of the variables in `.env.local`:
+- Replace both `DATABASE_URL` and `DIRECT_URL` with the URL of your Postgres instance. 
+- Replace `NEXTAUTH_SECRET` and `INTERNAL_API_KEY` with distinct [random passwords](https://www.random.org/passwords/?num=2&len=32&format=html&rnd=new).
+
+4. Run database migrations:
+
+```
+yarn prisma migrate dev
+```
+
+5. Start the app!
+```
+yarn dev
+```
+
+You should be able to access the website at <http://localhost:3000>
+
+
+## Contributing
+
+Anyone is welcome to contribute!
+
+TODO: add contribution guidelines
