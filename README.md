@@ -1,19 +1,19 @@
 # Probase: A Math Contest Problem Database
 
-[Probase](https://www.probase.app/c/demo) is an online collaborative database for problem writers to save and share the problems they create, and for contest organizers to manage large numbers of problem proposals.
+[Probase](https://www.probase.app/c/demo) is a dynamic online platform designed for math contest enthusiasts, particularly problem writers, testsolvers, and contest organizers. It serves as a collaborative database where authors can save and share the math problems they write. Other users can testsolve these problems and share insights, while contest organizers manage proposals and can compile them into a test.
 
 
 ## Features
 
-- [x] Latex rendering of math expressions
-- [x] Uploading any math problems you create
-- [x] Answer and solutions, hidden by default
-- [x] Discussion thread for each problem
-- [x] Permission roles to control access
-- [x] Draft tests from a chosen set of proposals
-- [x] Invite links to share with others
-- [ ] Timed testsolving
-- [ ] Upvotes for high-quality problems
+- [x] Latex support
+- [x] Problem submission portal
+- [x] Answer and solution section
+- [x] Discussion threads for each problem
+- [x] Customizable permission controls
+- [x] Convenient sharing with invite links
+- [ ] Timed testsolving environment
+- [ ] Community validation with upvotes
+- [ ] Draft test compilation
 
 
 ## Roadmap / Vision
