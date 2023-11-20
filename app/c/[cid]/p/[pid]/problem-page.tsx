@@ -5,6 +5,7 @@ import Spoilers from './spoilers'
 import type { Props } from './types'
 import Comments from './comments'
 import ArchiveToggle from './archive-toggle'
+import Lightbulbs from '@/components/lightbulbs'
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -55,19 +56,29 @@ export default function ProblemPage(props: Props) {
       </div>
       {/* fixed width container, matching ideal 60-character line length */}
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
-        <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
-          <Title {...props} />
-        </div>
-        <div className="mb-6 font-semibold text-sm flex flex-wrap gap-x-3 gap-y-2">
-          <div className={`py-2 px-6 text-slate-50 text-center leading-none rounded-full whitespace-nowrap bg-gradient-to-r ${gradient}`}>
-            {subject}
+        <div className="flex gap-8">
+          <div className="flex-grow">
+            <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
+              <Title {...props} />
+            </div>
+            <div className="mb-6 font-semibold text-sm flex flex-wrap gap-x-3 gap-y-2">
+              <div className={`py-2 px-6 text-slate-50 text-center leading-none rounded-full whitespace-nowrap bg-gradient-to-r ${gradient}`}>
+                {subject}
+              </div>
+              {problem.testProblems.map(testProblem => (
+                <Link href={`/c/${collection.cid}/t/${convertToSlug(testProblem.test.name)}-${testProblem.test.id}`} prefetch={true} className="py-2 px-6 bg-slate-200 hover:bg-slate-300 text-slate-700 hover:text-slate-800 text-center leading-none rounded-full whitespace-nowrap" key={testProblem.test.id}>
+                  {testProblem.test.name}
+                </Link>
+              ))}
+            </div>
           </div>
-          {problem.testProblems.map(testProblem => (
-            <Link href={`/c/${collection.cid}/t/${convertToSlug(testProblem.test.name)}-${testProblem.test.id}`} prefetch={true} className="py-2 px-6 bg-slate-200 hover:bg-slate-300 text-slate-700 hover:text-slate-800 text-center leading-none rounded-full whitespace-nowrap" key={testProblem.test.id}>
-              {testProblem.test.name}
-            </Link>
-          ))}
+          <div className="mt-2">
+            {problem.difficulty !== null && problem.difficulty > 0 &&
+              <Lightbulbs difficulty={problem.difficulty} />
+            }
+          </div>
         </div>
+
         <div className="mb-4">
           <Statement {...props} />
         </div>

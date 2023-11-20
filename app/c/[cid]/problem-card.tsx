@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Latex from '@/components/latex';
 import type { ProblemProps, CollectionProps } from './types';
-import { Lightbulb } from 'lucide-react';
+import Lightbulbs from '@/components/lightbulbs';
 
 const titleLineColors = [
   'bg-red-400', // 0
@@ -41,19 +41,6 @@ const subjectToColor = {
   'NumberTheory': 13,
   'ComputerScience': 16,
 };
-
-function Lightbulbs({difficulty}: {difficulty: number}) {
-  return (
-    <div className="flex">
-      {[1, 2, 3, 4, 5].map((value) => (
-        <Lightbulb 
-          key={value}
-          className={value <= difficulty ? "text-amber-500" : "text-slate-400"} 
-        />
-      ))}
-    </div>
-  );
-}
 
 export default function ProblemCard({
   collection,
