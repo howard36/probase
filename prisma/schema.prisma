@@ -89,8 +89,7 @@ model Problem {
   answer       String?
   solutions    Solution[]
   subject      Subject
-  likes        Int        @default(0)
-  difficulty   Int
+  difficulty   Int?  // 1-5: very easy, easy, medium, hard, very hard
   source       String?
   isAnonymous  Boolean
   comments     Comment[]
@@ -110,17 +109,28 @@ model Solution {
   authors   Author[]
 }
 
+enum AnswerFormat {
+  Proof
+  ShortAnswer
+  Integer
+}
+
 model Collection {
-  id          Int       @id @default(autoincrement())
-  name        String
-  cid         String    @unique
-  problems    Problem[]
-  authors     Author[]
-  showAuthors Boolean
-  permissions Permission[]
-  invites     Invite[]
-  shortAnswer Boolean   @default(true)
-  tests       Test[]
+  id                 Int           @id @default(autoincrement())
+  name               String
+  cid                String        @unique
+  problems           Problem[]
+  authors            Author[]
+  showAuthors        Boolean
+  permissions        Permission[]
+  invites            Invite[]
+  shortAnswer        Boolean       @default(true)  // TODO: remove (replaced by answerFormat)
+  tests              Test[]
+  answerFormat       AnswerFormat  @default(ShortAnswer)
+  requireAnswer      Boolean       @default(true)
+  requireSolution    Boolean       @default(true)
+  requireDifficulty  Boolean       @default(true)
+  requireTestsolve   Boolean       @default(false)  // whether users must testsolve a problem to view it
 }
 
 enum AccessLevel {
