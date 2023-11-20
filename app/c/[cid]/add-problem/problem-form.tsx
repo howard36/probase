@@ -51,6 +51,7 @@ export default function ProblemForm({
   const [subject, setSubject] = useState("");
   const [statement, setStatement] = useState("");
   const [answer, setAnswer] = useState("");
+  const [difficulty, setDifficulty] = useState("");
   const [solution, setSolution] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -71,7 +72,7 @@ export default function ProblemForm({
         answer: (answer === "") ? null : answer,
         solutionText: (solution === "") ? undefined : solution,
         authorId,
-        difficulty: 0,
+        difficulty: parseInt(difficulty),
         isAnonymous: false,
       })
     });
@@ -127,6 +128,17 @@ export default function ProblemForm({
           </div>
           */}
           <div className="my-8">
+            <Label text="DIFFICULTY" />
+            <select value={difficulty} required={collection.requireDifficulty} onChange={(e) => {setDifficulty(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+              <option value="" disabled></option>
+              <option value="1">Very Easy</option>
+              <option value="2">Easy</option>
+              <option value="3">Medium</option>
+              <option value="4">Hard</option>
+              <option value="5">Very Hard</option>
+            </select>
+          </div>
+          <div className="my-8">
             <ClickToEdit
               type="textarea"
               label={statementLabel}
@@ -137,7 +149,7 @@ export default function ProblemForm({
               required={true}
             />
           </div>
-          { collection.shortAnswer && 
+          { (collection.answerFormat == "ShortAnswer" || collection.answerFormat == "Integer") && 
             <div className="my-8">
               <ClickToEdit
                 type="input"
@@ -146,7 +158,7 @@ export default function ProblemForm({
                 placeholder="Enter answer here"
                 autosave={true}
                 onSave={(text: string) => setAnswer(text)}
-                required={false}
+                required={collection.requireAnswer}
               />
             </div>
           }
@@ -158,7 +170,7 @@ export default function ProblemForm({
               placeholder="Enter solution here"
               autosave={true}
               onSave={(text: string) => setSolution(text)}
-              required={false}
+              required={collection.requireSolution}
             />
           </div>
           <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-blue-500 hover:bg-blue-600 focus:outline-none flex flex-auto items-center justify-center">

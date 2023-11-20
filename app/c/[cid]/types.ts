@@ -12,6 +12,7 @@ const problemSelect = {
   statement: true,
   createdAt: true,
   isArchived: true,
+  difficulty: true,
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   select: problemSelect
