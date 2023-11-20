@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Latex from '@/components/latex';
 import type { ProblemProps, CollectionProps } from './types';
+import { Lightbulb } from 'lucide-react';
 
 const titleLineColors = [
   'bg-red-400', // 0
@@ -41,6 +42,19 @@ const subjectToColor = {
   'ComputerScience': 16,
 };
 
+function Lightbulbs({difficulty}: {difficulty: number}) {
+  return (
+    <div className="flex">
+      {[1, 2, 3, 4, 5].map((value) => (
+        <Lightbulb 
+          key={value}
+          className={value <= difficulty ? "text-amber-500" : "text-slate-400"} 
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function ProblemCard({
   collection,
   problem,
@@ -54,8 +68,17 @@ export default function ProblemCard({
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
       <div className="bg-white p-8 my-8 rounded-2xl soft-shadow-xl">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">{problem.title}</h2>
-        <div className={`w-16 h-2 mb-4 ${titleLineColor} rounded-full`}></div>
+        <div className="flex gap-8">
+          <div className="flex-grow">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">{problem.title}</h2>
+            <div className={`w-16 h-2 my-4 ${titleLineColor} rounded-full`}></div>
+          </div>
+          <div className="">
+            {problem.difficulty !== null && problem.difficulty > 0 &&
+              <Lightbulbs difficulty={problem.difficulty} />
+            }
+          </div>
+        </div>
         <div className="text-base sm:text-lg md:text-xl text-slate-800"><Latex>{problem.statement}</Latex></div>
       </div>
     </Link>
