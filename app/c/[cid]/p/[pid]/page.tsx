@@ -46,7 +46,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
   }
   const { problem } = await res.json();
 
-  // TODO: separate internal API calls for solutions and comments
+  // TODO: separate internal API calls for solutions, comments, and likes
 
   if (userId === null) {
     if (collection.cid !== "demo") {

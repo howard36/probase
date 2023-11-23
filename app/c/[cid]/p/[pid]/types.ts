@@ -70,6 +70,7 @@ export const problemInclude = {
       position: true,
     }
   },
+  likes: true,
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   include: problemInclude
