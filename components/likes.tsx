@@ -15,7 +15,8 @@ export default function Likes({
   const [numLikes, setNumLikes] = useState(problem.likes.length);
   const [liked, setLiked] = useState(problem.likes.some(like => like.userId === userId));
 
-  const handleClick = async () => {
+  const handleClick = async (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
     if (liked) {
       setNumLikes(numLikes - 1);
     } else {

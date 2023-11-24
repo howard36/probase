@@ -58,7 +58,7 @@ export default function ProblemCard({
   const liked = problem.likes.some(like => like.userId === userId);
 
   return (
-    <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
+    <a href={`/c/${collection.cid}/p/${problem.pid}`}>
       <div className="bg-white p-8 my-8 rounded-2xl soft-shadow-xl">
         <div className="flex gap-8">
           <div className="flex-grow">
@@ -66,10 +66,7 @@ export default function ProblemCard({
             <div className={`w-16 h-2 my-4 ${titleLineColor} rounded-full`}></div>
           </div>
           <div className="text-base space-y-3">
-            <div className="space-x-1.5">
-              <FontAwesomeIcon icon={faHeart} size="xl" className={liked ? "text-rose-400" : "text-slate-400"}/>
-              <span className="font-semibold text-slate-500 text-lg">{num_likes}</span>
-            </div>
+            <Likes problem={problem} userId={userId} />
             {problem.difficulty !== null && problem.difficulty > 0 &&
               <Lightbulbs difficulty={problem.difficulty} />
             }
@@ -77,6 +74,6 @@ export default function ProblemCard({
         </div>
         <div className="text-base sm:text-lg md:text-xl text-slate-800"><Latex>{problem.statement}</Latex></div>
       </div>
-    </Link>
+    </a>
   );
 }
