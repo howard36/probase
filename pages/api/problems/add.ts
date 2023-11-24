@@ -148,6 +148,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               connect: { id: authorId } // TODO: solution might have different list of authors
             }
           }]
+        },
+        likes: {
+          create: {
+            user: {
+              connect: {
+                id: session.userId,
+              }
+            }
+          }
         }
       }
     });
