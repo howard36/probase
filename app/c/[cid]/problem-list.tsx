@@ -7,8 +7,10 @@ import { useState } from "react";
 
 export default function ProblemList({
   collection,
+  userId,
 }: {
   collection: CollectionProps
+  userId: string
 }) {
   const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
@@ -64,7 +66,7 @@ export default function ProblemList({
           <ul>
             {problems.map((problem) => (
               <li key={problem.pid}>
-                <ProblemCard collection={collection} problem={problem} />
+                <ProblemCard collection={collection} problem={problem} userId={userId} />
               </li>
             ))}
           </ul>

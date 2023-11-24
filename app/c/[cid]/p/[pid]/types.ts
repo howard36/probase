@@ -70,6 +70,7 @@ export const problemInclude = {
       position: true,
     }
   },
+  likes: true,
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   include: problemInclude
@@ -98,4 +99,5 @@ export interface Props {
   collection: CollectionProps;
   permission: PermissionProps;
   authors: AuthorProps[];
+  userId: string;
 }

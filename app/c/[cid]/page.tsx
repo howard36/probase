@@ -85,7 +85,7 @@ export default async function CollectionPage({
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
-      return <ProblemList collection={collection} />;
+      return <ProblemList collection={collection} userId="" />;
     } else {
       redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
     }
@@ -137,6 +137,6 @@ export default async function CollectionPage({
     }
   }
 
-  return <ProblemList collection={collection} />;
+  return <ProblemList collection={collection} userId={userId} />;
 }
 

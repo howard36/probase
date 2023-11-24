@@ -21,6 +21,7 @@ model User {
   permissions   Permission[]
   invites       Invite[]
   comments      Comment[]
+  problemLikes  ProblemLike[]
 }
 
 model Account {
@@ -96,6 +97,7 @@ model Problem {
   createdAt    DateTime   @default(now())
   testProblems TestProblem[]
   isArchived   Boolean    @default(false)
+  likes        ProblemLike[]
   
   @@unique([collectionId, pid])
 }
@@ -188,4 +190,13 @@ model TestProblem {
 
   @@unique([testId, problemId])
   @@unique([testId, position])
+}
+
+model ProblemLike {
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  problem   Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId Int
+
+  @@id([userId, problemId])
 }
