@@ -26,7 +26,7 @@ export default function AddSolution({
   useEffect(() => {
     const textArea = textAreaRef.current;
     if (textArea !== null) {
-      const len = text.length;
+      const len = textArea.value.length;
       textArea.setSelectionRange(len, len);
       textArea.focus();
       updateHeight(textArea);
