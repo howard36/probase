@@ -13,7 +13,7 @@ export default function Lightbulbs({
           key={value}
           icon={faLightbulb}
           size="xl"
-          className={value <= difficulty ? "text-amber-500" : "text-slate-400"} 
+          className={value <= difficulty ? "text-amber-400" : "text-slate-300"} 
         />
       ))}
     </div>

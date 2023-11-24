@@ -6,6 +6,9 @@ import type { Props } from './types'
 import Comments from './comments'
 import ArchiveToggle from './archive-toggle'
 import Lightbulbs from '@/components/lightbulbs'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import Likes from '@/components/likes';
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -36,7 +39,7 @@ function convertToSlug(name: string) {
 }
 
 export default function ProblemPage(props: Props) {
-  const { problem, collection, permission } = props;
+  const { problem, collection, permission, userId } = props;
   let written_by;
   if (collection.showAuthors && problem.authors.length > 0) {
     written_by = <p className="italic text-slate-700 text-base mb-8 text-right">Written by {problem.authors[0].displayName}</p>;
@@ -72,7 +75,8 @@ export default function ProblemPage(props: Props) {
               ))}
             </div>
           </div>
-          <div className="mt-2">
+          <div className="text-base space-y-3 mt-2">
+            <Likes problem={problem} userId={userId} />
             {problem.difficulty !== null && problem.difficulty > 0 &&
               <Lightbulbs difficulty={problem.difficulty} />
             }

@@ -99,4 +99,5 @@ export interface Props {
   collection: CollectionProps;
   permission: PermissionProps;
   authors: AuthorProps[];
+  userId: string;
 }

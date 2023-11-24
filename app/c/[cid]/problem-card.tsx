@@ -1,9 +1,10 @@
-'use client'
-
 import Link from 'next/link';
 import Latex from '@/components/latex';
 import type { ProblemProps, CollectionProps } from './types';
 import Lightbulbs from '@/components/lightbulbs';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import Likes from '@/components/likes'
 
 const titleLineColors = [
   'bg-red-400', // 0
@@ -45,12 +46,16 @@ const subjectToColor = {
 export default function ProblemCard({
   collection,
   problem,
+  userId
 }: {
   collection: CollectionProps
   problem: ProblemProps
+  userId: string
 }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];
+  const num_likes = problem.likes.length;
+  const liked = problem.likes.some(like => like.userId === userId);
 
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
@@ -60,7 +65,11 @@ export default function ProblemCard({
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">{problem.title}</h2>
             <div className={`w-16 h-2 my-4 ${titleLineColor} rounded-full`}></div>
           </div>
-          <div className="">
+          <div className="text-base space-y-3">
+            <div className="space-x-1.5">
+              <FontAwesomeIcon icon={faHeart} size="xl" className={liked ? "text-rose-400" : "text-slate-400"}/>
+              <span className="font-semibold text-slate-500 text-lg">{num_likes}</span>
+            </div>
             {problem.difficulty !== null && problem.difficulty > 0 &&
               <Lightbulbs difficulty={problem.difficulty} />
             }

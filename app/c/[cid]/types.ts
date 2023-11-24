@@ -13,6 +13,11 @@ const problemSelect = {
   createdAt: true,
   isArchived: true,
   difficulty: true,
+  likes: {
+    select: {
+      userId: true,
+    }
+  }
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   select: problemSelect

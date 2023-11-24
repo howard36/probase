@@ -61,6 +61,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
       collection,
       permission,
       authors,
+      userId: "",
     };
     return props;
   }
@@ -99,6 +100,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
     collection,
     permission,
     authors,
+    userId,
   };
 
   return props;
