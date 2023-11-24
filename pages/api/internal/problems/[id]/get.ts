@@ -5,8 +5,6 @@ import { handleApiError } from '@/utils/error';
 import { problemInclude } from 'app/c/[cid]/p/[pid]/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log("Slow DB in problems")
-
   if (req.query.secret !== process.env.INTERNAL_API_KEY) {
     return res.status(403).json({
       error: {
