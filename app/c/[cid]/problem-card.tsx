@@ -2,8 +2,6 @@ import Link from 'next/link';
 import Latex from '@/components/latex';
 import type { ProblemProps, CollectionProps } from './types';
 import Lightbulbs from '@/components/lightbulbs';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import Likes from '@/components/likes'
 
 const titleLineColors = [
@@ -54,11 +52,9 @@ export default function ProblemCard({
 }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];
-  const num_likes = problem.likes.length;
-  const liked = problem.likes.some(like => like.userId === userId);
 
   return (
-    <a href={`/c/${collection.cid}/p/${problem.pid}`}>
+    <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
       <div className="bg-white p-8 my-8 rounded-2xl soft-shadow-xl">
         <div className="flex gap-8">
           <div className="flex-grow">
@@ -74,6 +70,6 @@ export default function ProblemCard({
         </div>
         <div className="text-base sm:text-lg md:text-xl text-slate-800"><Latex>{problem.statement}</Latex></div>
       </div>
-    </a>
+    </Link>
   );
 }

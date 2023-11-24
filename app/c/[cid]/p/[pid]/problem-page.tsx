@@ -6,8 +6,6 @@ import type { Props } from './types'
 import Comments from './comments'
 import ArchiveToggle from './archive-toggle'
 import Lightbulbs from '@/components/lightbulbs'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import Likes from '@/components/likes';
 
 // darker color first, for more contrast
