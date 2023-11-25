@@ -92,6 +92,32 @@ export default function ProblemForm({
   const answerLabel = <Label text="ANSWER" />;
   const solutionLabel = <Label text="SOLUTION" />;
 
+  let answerInput;
+  if (collection.answerFormat === "ShortAnswer") {
+    <div className="my-8">
+      <ClickToEdit
+        type="input"
+        label={answerLabel}
+        initialText={answer}
+        placeholder="Enter answer here"
+        autosave={true}
+        onSave={(text: string) => setAnswer(text)}
+        required={collection.requireAnswer}
+      />
+    </div>
+  } else if (collection.answerFormat === "Integer") {
+    // TODO
+  } else if (collection.answerFormat === "AIME") {
+    <div>
+      {answerLabel}
+      <AimeInput
+        value={answer}
+        onValueChange={setAnswer}
+        required={collection.requireAnswer}
+      />
+    </div>
+  }
+
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
@@ -110,7 +136,7 @@ export default function ProblemForm({
               type="input"
               label={titleLabel}
               initialText={title}
-              placeholder="Enter title here"
+              placeholder="A short, descriptive title"
               autosave={true}
               onSave={(text: string) => setTitle(text)}
               required={true}
@@ -140,41 +166,25 @@ export default function ProblemForm({
             </select>
           </div>
           <div className="my-8">
-            { collection.answerFormat === "AIME" ?
-              <AimeInput
-                value={answer}
-                onValueChange={setAnswer}
-              /> :
-              <ClickToEdit
-                type="textarea"
-                label={statementLabel}
-                initialText={statement}
-                placeholder="Enter problem statement here"
-                autosave={true}
-                onSave={(text: string) => setStatement(text)}
-                required={true}
-              />
-            }
+            <ClickToEdit
+              type="textarea"
+              label={statementLabel}
+              initialText={statement}
+              placeholder="Enter problem statement here"
+              autosave={true}
+              onSave={(text: string) => setStatement(text)}
+              required={true}
+            />
           </div>
-          { (collection.answerFormat == "ShortAnswer" || collection.answerFormat == "Integer") && 
-            <div className="my-8">
-              <ClickToEdit
-                type="input"
-                label={answerLabel}
-                initialText={answer}
-                placeholder="Enter answer here"
-                autosave={true}
-                onSave={(text: string) => setAnswer(text)}
-                required={collection.requireAnswer}
-              />
-            </div>
-          }
+          <div className="my-8">
+            {answerInput}
+          </div>
           <div className="my-8">
             <ClickToEdit
               type="textarea"
               label={solutionLabel}
               initialText={solution}
-              placeholder="Enter solution here"
+              placeholder="A clear solution to the problem"
               autosave={true}
               onSave={(text: string) => setSolution(text)}
               required={collection.requireSolution}
