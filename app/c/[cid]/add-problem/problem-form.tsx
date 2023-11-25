@@ -6,6 +6,7 @@ import type { Collection, Subject } from '@prisma/client'
 import Link from 'next/link'
 import ClickToEdit from '@/components/click-to-edit'
 import Label from '@/components/label'
+import AimeInput from './aime-input'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -139,15 +140,21 @@ export default function ProblemForm({
             </select>
           </div>
           <div className="my-8">
-            <ClickToEdit
-              type="textarea"
-              label={statementLabel}
-              initialText={statement}
-              placeholder="Enter problem statement here"
-              autosave={true}
-              onSave={(text: string) => setStatement(text)}
-              required={true}
-            />
+            { collection.answerFormat === "AIME" ?
+              <AimeInput
+                value={answer}
+                onValueChange={setAnswer}
+              /> :
+              <ClickToEdit
+                type="textarea"
+                label={statementLabel}
+                initialText={statement}
+                placeholder="Enter problem statement here"
+                autosave={true}
+                onSave={(text: string) => setStatement(text)}
+                required={true}
+              />
+            }
           </div>
           { (collection.answerFormat == "ShortAnswer" || collection.answerFormat == "Integer") && 
             <div className="my-8">
