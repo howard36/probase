@@ -39,6 +39,14 @@ const subjects = [
   },
 ];
 
+let difficultyTiers = [
+  "Very easy",
+  "Easy",
+  "Medium",
+  "Hard",
+  "Very hard",
+]
+
 // TODO: types?
 export default function ProblemForm({
   collection,
@@ -118,6 +126,16 @@ export default function ProblemForm({
     </div>
   }
 
+  if (collection.cid === "otis-mock-aime") {
+    difficultyTiers = [
+      "AIME 1-3",
+      "AIME 4-6",
+      "AIME 7-9",
+      "AIME 10-12",
+      "AIME 13-15",
+    ]
+  }
+
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
@@ -158,11 +176,9 @@ export default function ProblemForm({
             <Label text="DIFFICULTY" />
             <select value={difficulty} required={collection.requireDifficulty} onChange={(e) => {setDifficulty(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
               <option value="" disabled></option>
-              <option value="1">Very Easy</option>
-              <option value="2">Easy</option>
-              <option value="3">Medium</option>
-              <option value="4">Hard</option>
-              <option value="5">Very Hard</option>
+              {difficultyTiers.map((tier, idx) =>
+                <option value={idx + 1} key={idx}>{tier}</option>
+              )}
             </select>
           </div>
           <div className="my-8">
