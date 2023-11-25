@@ -6,6 +6,7 @@ import type { Collection, Subject } from '@prisma/client'
 import Link from 'next/link'
 import ClickToEdit from '@/components/click-to-edit'
 import Label from '@/components/label'
+import AimeInput from './aime-input'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -37,6 +38,14 @@ const subjects = [
     letter: "N",
   },
 ];
+
+let difficultyTiers = [
+  "Very easy",
+  "Easy",
+  "Medium",
+  "Hard",
+  "Very hard",
+]
 
 // TODO: types?
 export default function ProblemForm({
@@ -91,6 +100,42 @@ export default function ProblemForm({
   const answerLabel = <Label text="ANSWER" />;
   const solutionLabel = <Label text="SOLUTION" />;
 
+  let answerInput;
+  if (collection.answerFormat === "ShortAnswer") {
+    answerInput = <div className="my-8">
+      <ClickToEdit
+        type="input"
+        label={answerLabel}
+        initialText={answer}
+        placeholder="$42$"
+        autosave={true}
+        onSave={(text: string) => setAnswer(text)}
+        required={collection.requireAnswer}
+      />
+    </div>
+  } else if (collection.answerFormat === "Integer") {
+    // TODO
+  } else if (collection.answerFormat === "AIME") {
+    answerInput = <div>
+      {answerLabel}
+      <AimeInput
+        value={answer}
+        onValueChange={setAnswer}
+        required={collection.requireAnswer}
+      />
+    </div>
+  }
+
+  if (collection.cid === "otis-mock-aime") {
+    difficultyTiers = [
+      "AIME 1-3",
+      "AIME 4-6",
+      "AIME 7-9",
+      "AIME 10-12",
+      "AIME 13-15",
+    ]
+  }
+
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
@@ -109,7 +154,7 @@ export default function ProblemForm({
               type="input"
               label={titleLabel}
               initialText={title}
-              placeholder="Enter title here"
+              placeholder="Short and catchy title"
               autosave={true}
               onSave={(text: string) => setTitle(text)}
               required={true}
@@ -122,7 +167,7 @@ export default function ProblemForm({
               {subjects.map(s => <option value={s.enum} key={s.enum}>{s.display}</option>)}
             </select>
           </div>
-          {/*
+          {/* 
           <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
             {subject}
           </div>
@@ -131,11 +176,9 @@ export default function ProblemForm({
             <Label text="DIFFICULTY" />
             <select value={difficulty} required={collection.requireDifficulty} onChange={(e) => {setDifficulty(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
               <option value="" disabled></option>
-              <option value="1">Very Easy</option>
-              <option value="2">Easy</option>
-              <option value="3">Medium</option>
-              <option value="4">Hard</option>
-              <option value="5">Very Hard</option>
+              {difficultyTiers.map((tier, idx) =>
+                <option value={idx + 1} key={idx}>{tier}</option>
+              )}
             </select>
           </div>
           <div className="my-8">
@@ -143,31 +186,21 @@ export default function ProblemForm({
               type="textarea"
               label={statementLabel}
               initialText={statement}
-              placeholder="Enter problem statement here"
+              placeholder="Given a triangle $ABC$ with circumcenter $O$ and circumcircle $\Gamma$ ..."
               autosave={true}
               onSave={(text: string) => setStatement(text)}
               required={true}
             />
           </div>
-          { (collection.answerFormat == "ShortAnswer" || collection.answerFormat == "Integer") && 
-            <div className="my-8">
-              <ClickToEdit
-                type="input"
-                label={answerLabel}
-                initialText={answer}
-                placeholder="Enter answer here"
-                autosave={true}
-                onSave={(text: string) => setAnswer(text)}
-                required={collection.requireAnswer}
-              />
-            </div>
-          }
+          <div className="my-8">
+            {answerInput}
+          </div>
           <div className="my-8">
             <ClickToEdit
               type="textarea"
               label={solutionLabel}
               initialText={solution}
-              placeholder="Enter solution here"
+              placeholder="Since $O$ is the circumcenter, it lies on the perpendicular bisector of $BC$ ..."
               autosave={true}
               onSave={(text: string) => setSolution(text)}
               required={collection.requireSolution}

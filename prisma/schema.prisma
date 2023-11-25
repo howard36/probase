@@ -115,6 +115,7 @@ enum AnswerFormat {
   Proof
   ShortAnswer
   Integer
+  AIME
 }
 
 model Collection {
