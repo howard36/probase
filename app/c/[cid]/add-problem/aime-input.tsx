@@ -7,8 +7,9 @@ interface AimeInputProps {
 
 const AimeInput: React.FC<AimeInputProps> = ({ value, onValueChange }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    let newValue = e.target.value;
     if (/^\d{1,3}$/.test(newValue) || newValue === '') {
+      newValue = newValue === '' ? '' : String(Number(newValue));
       onValueChange(newValue);
     }
   };
