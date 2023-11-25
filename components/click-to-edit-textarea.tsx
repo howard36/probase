@@ -23,8 +23,8 @@ export default function ClickToEditTextarea({
 
   const updateHeight = (textArea: HTMLTextAreaElement) => {
     textArea.style.height = "0px";
-    const scrollHeight = textArea.scrollHeight;
-    textArea.style.height = scrollHeight + "px";
+    const newHeight = Math.max(textArea.scrollHeight, 56);
+    textArea.style.height = newHeight + "px";
   }
 
   // only runs on component init (i.e. when editing starts)

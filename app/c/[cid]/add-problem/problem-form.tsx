@@ -94,12 +94,12 @@ export default function ProblemForm({
 
   let answerInput;
   if (collection.answerFormat === "ShortAnswer") {
-    <div className="my-8">
+    answerInput = <div className="my-8">
       <ClickToEdit
         type="input"
         label={answerLabel}
         initialText={answer}
-        placeholder="Enter answer here"
+        placeholder="$42$"
         autosave={true}
         onSave={(text: string) => setAnswer(text)}
         required={collection.requireAnswer}
@@ -108,7 +108,7 @@ export default function ProblemForm({
   } else if (collection.answerFormat === "Integer") {
     // TODO
   } else if (collection.answerFormat === "AIME") {
-    <div>
+    answerInput = <div>
       {answerLabel}
       <AimeInput
         value={answer}
@@ -136,7 +136,7 @@ export default function ProblemForm({
               type="input"
               label={titleLabel}
               initialText={title}
-              placeholder="A short, descriptive title"
+              placeholder="Short and catchy title"
               autosave={true}
               onSave={(text: string) => setTitle(text)}
               required={true}
@@ -149,7 +149,7 @@ export default function ProblemForm({
               {subjects.map(s => <option value={s.enum} key={s.enum}>{s.display}</option>)}
             </select>
           </div>
-          {/*
+          {/* 
           <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
             {subject}
           </div>
@@ -170,7 +170,7 @@ export default function ProblemForm({
               type="textarea"
               label={statementLabel}
               initialText={statement}
-              placeholder="Enter problem statement here"
+              placeholder="Given a triangle $ABC$ with circumcenter $O$ and circumcircle $\Gamma$ ..."
               autosave={true}
               onSave={(text: string) => setStatement(text)}
               required={true}
@@ -184,7 +184,7 @@ export default function ProblemForm({
               type="textarea"
               label={solutionLabel}
               initialText={solution}
-              placeholder="A clear solution to the problem"
+              placeholder="Since $O$ is the circumcenter, it lies on the perpendicular bisector of $BC$ ..."
               autosave={true}
               onSave={(text: string) => setSolution(text)}
               required={collection.requireSolution}
