@@ -9,6 +9,9 @@ import Lightbulbs from '@/components/lightbulbs'
 import Likes from '@/components/likes';
 import prisma from '@/utils/prisma';
 import CountdownTimer from './countdown-timer'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLock } from '@fortawesome/free-solid-svg-icons'
+import LockedPage from './locked-page'
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -61,17 +64,15 @@ export default async function ProblemPage(props: Props) {
         }
       }
     });
+    const difficulty = problem.difficulty;
+    if (difficulty === null || difficulty === 0) {
+      throw new Error("Difficulty is null or zero, cannot determine testsolve time")
+    }
+    const testsolveTimeMinutes = difficulty * 5 + 5;  // 10, 15, 20, 25, 30
 
     if (solveAttempt === null) {
-      testsolveOrAnswers = <div>
-        Start Testsolving
-      </div>;
+      testsolveOrAnswers = <LockedPage problem={problem} time={`${testsolveTimeMinutes} minutes`} />;
     } else {
-      const difficulty = problem.difficulty;
-      if (difficulty === null) {
-        throw new Error("Difficulty is null, cannot determine testsolve time")
-      }
-      const testsolveTimeMinutes = difficulty * 5 + 5;  // 10, 15, 20, 25, 30
       const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000;
       const deadline = new Date(solveAttempt.startedAt.getTime() + testsolveTimeMillis);
       const finished = (new Date() >= deadline) || solveAttempt.gaveUp;
