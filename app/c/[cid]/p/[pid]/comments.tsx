@@ -60,7 +60,7 @@ export default function Comments(props: Props) {
               placeholder="Write a comment..." required value={text} onChange={(e)=>{setText(e.target.value)}} ></textarea>
         </div>
         <button type="submit"
-          className="inline-flex items-center py-3 px-6 text-sm font-semibold text-center text-slate-50 bg-blue-500 rounded-md focus:ring-4 focus:ring-primary-200 hover:bg-blue-600">
+          className="inline-flex items-center py-3 px-6 text-sm font-semibold text-center text-slate-50 bg-sky-500 rounded-md focus:ring-4 focus:ring-primary-200 hover:bg-sky-600">
           Post comment
         </button>
       </form>
