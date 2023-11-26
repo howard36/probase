@@ -68,7 +68,7 @@ export default async function ProblemPage(props: Props) {
     if (difficulty === null || difficulty === 0) {
       throw new Error("Difficulty is null or zero, cannot determine testsolve time")
     }
-    const testsolveTimeMinutes = difficulty * 5 + 5;  // 10, 15, 20, 25, 30
+    const testsolveTimeMinutes = difficulty * 50 + 5;  // 10, 15, 20, 25, 30
 
     if (solveAttempt === null) {
       testsolveOrAnswers = <LockedPage problem={problem} time={`${testsolveTimeMinutes} minutes`} />;
