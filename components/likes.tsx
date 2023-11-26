@@ -5,12 +5,18 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import { ProblemProps } from '../app/c/[cid]/types';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'
+import { Problem, ProblemLike } from '@prisma/client';
+
+interface ProblemWithLikes {
+  id: number;
+  likes: { userId: string }[];
+}
 
 export default function Likes({
   problem,
   userId,
 }: {
-  problem: ProblemProps
+  problem: ProblemWithLikes
   userId: string
 }) {
   const [numLikes, setNumLikes] = useState(problem.likes.length);
