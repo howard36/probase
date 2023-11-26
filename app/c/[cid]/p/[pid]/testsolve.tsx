@@ -66,8 +66,8 @@ export default function Testsolve({problem, solveAttempt, deadline}: {problem: P
           { isSubmitting && <div className="animate-spin rounded-full border-solid border-blue-400 border-l-blue-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
           { isSubmitting ? "Saving..." : "Submit" }
         </button>
-        <button disabled={isGivingUp} type="button" onClick={handleGiveUp} className={`text-red-500 hover:text-red-600 text-lg font-bold rounded border-0 py-2 w-40 flex-grow-0 bg-red-100 hover:bg-red-200 focus:outline-none flex flex-auto items-center justify-center`}>
-          { isGivingUp && <div className="animate-spin rounded-full border-solid border-blue-400 border-l-blue-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
+        <button disabled={isGivingUp} type="button" onClick={handleGiveUp} className={`group text-red-500 hover:text-red-600 text-lg font-bold rounded border-0 py-2 w-40 flex-grow-0 bg-red-100 hover:bg-red-200 focus:outline-none flex flex-auto items-center justify-center`}>
+          { isGivingUp && <div className="animate-spin rounded-full border-solid border-red-200 border-l-red-400 group-hover:border-red-300 group-hover:border-l-red-500 border-4 h-6 w-6 mr-3 inline-block"></div> }
           { isGivingUp ? "Saving..." : "Give up" }
         </button>
       </div>
