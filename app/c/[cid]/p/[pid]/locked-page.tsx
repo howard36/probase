@@ -19,15 +19,17 @@ export default async function LockedPage({problem, time}: {problem: ProblemProps
   };
 
   return <div>
-    <div className="text-center text-lg sm:text-xl md:text-2xl mt-12 mb-20">
+    <div className="text-center text-lg sm:text-xl md:text-2xl mt-16 mb-24">
       <FontAwesomeIcon icon={faLock} className="text-slate-400 mr-2.5" />
       <span className="text-slate-500 font-semibold">Testsolve to view</span>
     </div>
-    <button className="mt-12 mb-6 w-full py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold text-xl soft-shadow-xl" onClick={startTestsolving}>
+    <div className="mb-8 space-y-4">
+      <p>Once you start testsolving, you'll have <strong>{time}</strong> to solve the problem. Keep an eye on the clock!</p>
+      <p>Speed and accuracy matter! Solve the problem swiftly, and if your <strong>first</strong> submission is correct, you'll earn a spot on the leaderboard.</p>
+      <p>Best of luck!</p>
+    </div>
+    <button className="w-full py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold text-xl soft-shadow-xl" onClick={startTestsolving}>
       Start Testsolving
     </button>
-    <div>
-      Once you start, you will have <strong>{time}</strong> to solve the problem.
-    </div>
   </div>
 }
