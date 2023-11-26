@@ -16,7 +16,7 @@ export default function Sidebar({
   const links = [
     { href: '/c/demo', label: 'Demo', active: (pathname !== null) && pathname.startsWith('/c/demo') },
     { href: '/c/cmimc', label: 'CMIMC', active: (pathname !== null) && pathname.startsWith('/c/cmimc') },
-    { href: '/c/cmo', label: 'CMO', active: (pathname !== null) && pathname.startsWith('/c/cmo') },
+    { href: '/c/otis-mock-aime', label: 'OTIS Mock AIME', active: (pathname !== null) && pathname.startsWith('/c/otis-mock-aime') },
   ];
 
   return (
