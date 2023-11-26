@@ -10,7 +10,7 @@ export const collectionSelect = {
   cid: true,
   name: true,
   showAuthors: true,
-  requireTestsolving: true,
+  requireTestsolve: true,
 };
 const collectionProps = Prisma.validator<Prisma.CollectionDefaultArgs>()({
   select: collectionSelect

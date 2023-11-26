@@ -13,10 +13,12 @@ const subjectToGradient = {
   'Algebra': {
     subject: 'Algebra',
     gradient: 'from-sky-500 to-cyan-500'
+    // gradient: 'from-blue-500 to-sky-500'
   },
   'Combinatorics': {
     subject: 'Combinatorics',
     gradient: 'from-amber-500 to-yellow-500'
+    // gradient: 'from-orange-500 to-amber-500'
   },
   'Geometry': {
     subject: 'Geometry',
@@ -46,10 +48,33 @@ export default function ProblemPage(props: Props) {
   let { subject, gradient } = subjectToGradient[problem.subject];
 
   let testsolveOrAnswers;
-  if (collection.requireTestsolving) {
-    testsolveOrAnswers = <div></div>;
+  if (collection.requireTestsolve && false) {
+    if (!startedTestsolving) {
+      testsolveOrAnswers = <button>Start Testsolving</button>;
+    } else if (finishedTestsolving) {
+      // TODO: move this into a component
+      testsolveOrAnswers = <div>
+        <div className="mb-4">
+          <Statement {...props} />
+        </div>
+        {written_by}
+        <Spoilers {...props} />
+        <Comments {...props} />
+      </div>;
+    } else {
+      // Currently testsolving
+      // TODO: show timer, input box, give up button
+      testsolveOrAnswers = <div>
+        <div className="mb-4">
+          <Statement {...props} />
+        </div>
+      </div>
+    }
   } else {
     testsolveOrAnswers = <div>
+      <div className="mb-4">
+        <Statement {...props} />
+      </div>
       {written_by}
       <Spoilers {...props} />
       <Comments {...props} />
@@ -92,9 +117,6 @@ export default function ProblemPage(props: Props) {
         </div>
 
         {/* Statement should also be hidden if they haven't clicked "Start testsolve" */}
-        <div className="mb-4">
-          <Statement {...props} />
-        </div>
         {testsolveOrAnswers}
 
         {(permission?.accessLevel === "Admin") && (
