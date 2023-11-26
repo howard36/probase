@@ -1,11 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../auth/[...nextauth]'
+import { authOptions } from '../../../auth/[...nextauth]'
 import prisma from '@/utils/prisma'
 import { canViewCollection } from '@/utils/permissions';
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
-import { Subject } from '@prisma/client';
 import { revalidateTags } from '@/utils/revalidate';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -17,22 +16,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
+  const idString = req.query.id as string;
+  if (!isNonNegativeInt(idString)) {
+    return res.status(400).json({
+      error: {
+        message: 'ID must be a non-negative integer'
+      }
+    });
+  }
+
   const session = await getServerSession(req, res, authOptions);
   if (session === null) {
     return res.status(401).json({
       error: {
         message: 'Not signed in'
-      }
-    });
-  }
-
-  // TODO: validation
-  let { problemId } = req.body;
-
-  if (!isNonNegativeInt(problemId)) {
-    return res.status(400).json({
-      error: {
-        message: 'collectionId must be a non-negative integer'
       }
     });
   }
@@ -47,6 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    const problemId = parseInt(idString);
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
       select: {
@@ -86,7 +84,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    // TODO: solution should probably be in separate API
     const newSolveAttempt = await prisma.solveAttempt.create({
       data: {
         problemId,

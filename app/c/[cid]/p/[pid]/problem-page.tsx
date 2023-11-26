@@ -66,14 +66,14 @@ export default async function ProblemPage(props: Props) {
     if (difficulty === null || difficulty === 0) {
       throw new Error("Difficulty is null or zero, cannot determine testsolve time")
     }
-    const testsolveTimeMinutes = difficulty * 50 + 5;  // 10, 15, 20, 25, 30
+    const testsolveTimeMinutes = difficulty * 5 + 5;  // 10, 15, 20, 25, 30
 
     if (solveAttempt === null) {
       testsolveOrAnswers = <LockedPage problem={problem} time={`${testsolveTimeMinutes} minutes`} />;
     } else {
       const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000;
       const deadline = new Date(solveAttempt.startedAt.getTime() + testsolveTimeMillis);
-      const finished = (new Date() >= deadline) || solveAttempt.gaveUp;
+      const finished = new Date() >= deadline || solveAttempt.gaveUp || solveAttempt.solvedAt !== null;
 
       if (finished) {
         // TODO: move this into a component
@@ -92,7 +92,7 @@ export default async function ProblemPage(props: Props) {
             <Statement {...props} />
           </div>
           <hr className="my-8"/>
-          <Testsolve problem={problem} deadline={deadline} />
+          <Testsolve problem={problem} solveAttempt={solveAttempt} deadline={deadline} />
         </div>
       }
     }

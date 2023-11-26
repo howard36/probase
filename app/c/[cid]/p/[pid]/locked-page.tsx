@@ -9,13 +9,11 @@ export default async function LockedPage({problem, time}: {problem: ProblemProps
   const router = useRouter();
 
   const startTestsolving = async () => {
-    await fetch(`/api/solve-attempts/add`, {
+    await fetch(`/api/problems/${problem.id}/testsolve/start`, {
       method: 'POST',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        problemId: problem.id,
-      }),
+      body: JSON.stringify({}),
     });
     router.refresh();
   };
@@ -25,9 +23,9 @@ export default async function LockedPage({problem, time}: {problem: ProblemProps
       <FontAwesomeIcon icon={faLock} className="text-slate-400 mr-2.5" />
       <span className="text-slate-500 font-semibold">Testsolve to view</span>
     </div>
-    <div className="mt-12 mb-6 py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold text-xl soft-shadow-xl" onClick={startTestsolving}>
+    <button className="mt-12 mb-6 w-full py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold text-xl soft-shadow-xl" onClick={startTestsolving}>
       Start Testsolving
-    </div>
+    </button>
     <div>
       Once you start, you will have <strong>{time}</strong> to solve the problem.
     </div>

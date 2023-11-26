@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 interface CountdownTimerProps {
@@ -8,18 +9,21 @@ interface CountdownTimerProps {
 
 const CountdownTimer: React.FC<CountdownTimerProps> = ({ deadline }) => {
   const [timeLeft, setTimeLeft] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const updateTimer = () => {
+      console.log("Updating timer");
       const currentTime = new Date();
       const difference = deadline.getTime() - currentTime.getTime();
 
       if (difference > 0) {
-        const minutes = Math.floor((difference / (1000 * 60)) % 60);
+        const minutes = Math.floor(difference / (1000 * 60));
         const seconds = Math.floor((difference / 1000) % 60);
         setTimeLeft(`${minutes}m ${seconds}s`);
       } else {
-        setTimeLeft("Time's up!");
+        setTimeLeft("Finished!");
+        router.refresh();
       }
     };
 
