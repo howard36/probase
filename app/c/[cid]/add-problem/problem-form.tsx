@@ -146,7 +146,6 @@ export default function ProblemForm({
           <span className="ml-1">Back to {collection.name}</span>
         </Link>
       </div>
-      {/* fixed width container, matching ideal 60-character line length */}
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
         <form onSubmit={handleSubmit}>
           <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">

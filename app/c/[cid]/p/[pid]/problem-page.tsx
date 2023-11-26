@@ -45,6 +45,17 @@ export default function ProblemPage(props: Props) {
 
   let { subject, gradient } = subjectToGradient[problem.subject];
 
+  let testsolveOrAnswers;
+  if (collection.requireTestsolving) {
+    testsolveOrAnswers = <div></div>;
+  } else {
+    testsolveOrAnswers = <div>
+      {written_by}
+      <Spoilers {...props} />
+      <Comments {...props} />
+    </div>;
+  }
+
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
@@ -55,7 +66,6 @@ export default function ProblemPage(props: Props) {
           <span className="ml-1">Back to {collection.name}</span>
         </Link>
       </div>
-      {/* fixed width container, matching ideal 60-character line length */}
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
         <div className="flex gap-8">
           <div className="flex-grow">
@@ -81,14 +91,12 @@ export default function ProblemPage(props: Props) {
           </div>
         </div>
 
+        {/* Statement should also be hidden if they haven't clicked "Start testsolve" */}
         <div className="mb-4">
           <Statement {...props} />
         </div>
-        {written_by}
-        <Spoilers {...props} />
-        <div>
-          <Comments {...props} />
-        </div>
+        {testsolveOrAnswers}
+
         {(permission?.accessLevel === "Admin") && (
           <div>
             <ArchiveToggle {...props} />

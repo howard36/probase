@@ -32,6 +32,7 @@ export const collectionSelect = {
     select: problemSelect,
   },
   showAuthors: true,
+  requireTestsolve: true,
 };
 const collectionProps = Prisma.validator<Prisma.CollectionDefaultArgs>()({
   select: collectionSelect
