@@ -7,6 +7,8 @@ import Comments from './comments'
 import ArchiveToggle from './archive-toggle'
 import Lightbulbs from '@/components/lightbulbs'
 import Likes from '@/components/likes';
+import prisma from '@/utils/prisma';
+import CountdownTimer from './countdown-timer'
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -38,8 +40,9 @@ function convertToSlug(name: string) {
     .replace(/\-+/g, '-'); // Replace multiple hyphens with a single hyphen
 }
 
-export default function ProblemPage(props: Props) {
+export default async function ProblemPage(props: Props) {
   const { problem, collection, permission, userId } = props;
+
   let written_by;
   if (collection.showAuthors && problem.authors.length > 0) {
     written_by = <p className="italic text-slate-700 text-base mb-8 text-right">Written by {problem.authors[0].displayName}</p>;
@@ -47,28 +50,51 @@ export default function ProblemPage(props: Props) {
 
   let { subject, gradient } = subjectToGradient[problem.subject];
 
+  // TODO: make this a separate Testsolving component
   let testsolveOrAnswers;
-  if (collection.requireTestsolve && false) {
-    if (!startedTestsolving) {
-      testsolveOrAnswers = <button>Start Testsolving</button>;
-    } else if (finishedTestsolving) {
-      // TODO: move this into a component
+  if (collection.requireTestsolve) {
+    const solveAttempt = await prisma.solveAttempt.findUnique({
+      where: {
+        userId_problemId: {
+          userId,
+          problemId: problem.id,
+        }
+      }
+    });
+
+    if (solveAttempt === null) {
       testsolveOrAnswers = <div>
-        <div className="mb-4">
-          <Statement {...props} />
-        </div>
-        {written_by}
-        <Spoilers {...props} />
-        <Comments {...props} />
+        Start Testsolving
       </div>;
     } else {
-      // Currently testsolving
-      // TODO: show timer, input box, give up button
-      testsolveOrAnswers = <div>
-        <div className="mb-4">
-          <Statement {...props} />
+      const difficulty = problem.difficulty;
+      if (difficulty === null) {
+        throw new Error("Difficulty is null, cannot determine testsolve time")
+      }
+      const testsolveTimeMinutes = difficulty * 5 + 5;  // 10, 15, 20, 25, 30
+      const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000;
+      const deadline = new Date(solveAttempt.startedAt.getTime() + testsolveTimeMillis);
+      const finished = (new Date() >= deadline) || solveAttempt.gaveUp;
+
+      if (finished) {
+        // TODO: move this into a component
+        testsolveOrAnswers = <div>
+          <div className="mb-4">
+            <Statement {...props} />
+          </div>
+          {written_by}
+          <Spoilers {...props} />
+          <Comments {...props} />
+        </div>;
+      } else {  // Currently testsolving
+        // TODO: show timer, input box, give up button
+        testsolveOrAnswers = <div>
+          <div className="mb-4">
+            <Statement {...props} />
+          </div>
+          <CountdownTimer deadline={deadline} />
         </div>
-      </div>
+      }
     }
   } else {
     testsolveOrAnswers = <div>
