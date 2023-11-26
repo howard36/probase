@@ -72,6 +72,7 @@ export default function ProblemForm({
     const url = `/api/problems/add`;
     const response = await fetch(url, {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         collectionId: collection.id,

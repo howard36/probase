@@ -8,10 +8,8 @@ import ArchiveToggle from './archive-toggle'
 import Lightbulbs from '@/components/lightbulbs'
 import Likes from '@/components/likes';
 import prisma from '@/utils/prisma';
-import CountdownTimer from './countdown-timer'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLock } from '@fortawesome/free-solid-svg-icons'
 import LockedPage from './locked-page'
+import Testsolve from './testsolve'
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -90,10 +88,11 @@ export default async function ProblemPage(props: Props) {
       } else {  // Currently testsolving
         // TODO: show timer, input box, give up button
         testsolveOrAnswers = <div>
-          <div className="mb-4">
+          <div className="mb-8">
             <Statement {...props} />
           </div>
-          <CountdownTimer deadline={deadline} />
+          <hr className="my-8"/>
+          <Testsolve problem={problem} deadline={deadline} />
         </div>
       }
     }
