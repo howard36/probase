@@ -162,7 +162,7 @@ export default function ProblemForm({
           </div>
           <div className="my-8">
             <Label text="SUBJECT" />
-            <select value={subject} required onChange={(e: React.ChangeEvent<SubjectSelectElement>)=>{setSubject(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            <select value={subject} required onChange={(e: React.ChangeEvent<SubjectSelectElement>)=>{setSubject(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
               <option value="" key="Empty" disabled></option>
               {subjects.map(s => <option value={s.enum} key={s.enum}>{s.display}</option>)}
             </select>
@@ -174,7 +174,7 @@ export default function ProblemForm({
           */}
           <div className="my-8">
             <Label text="DIFFICULTY" />
-            <select value={difficulty} required={collection.requireDifficulty} onChange={(e) => {setDifficulty(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            <select value={difficulty} required={collection.requireDifficulty} onChange={(e) => {setDifficulty(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
               <option value="" disabled></option>
               {difficultyTiers.map((tier, idx) =>
                 <option value={idx + 1} key={idx}>{tier}</option>
@@ -206,8 +206,8 @@ export default function ProblemForm({
               required={collection.requireSolution}
             />
           </div>
-          <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-blue-500 hover:bg-blue-600 focus:outline-none flex flex-auto items-center justify-center">
-            { isSubmitting && <div className="animate-spin rounded-full border-solid border-blue-400 border-l-blue-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
+          <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-sky-500 hover:bg-sky-600 focus:outline-none flex flex-auto items-center justify-center">
+            { isSubmitting && <div className="animate-spin rounded-full border-solid border-sky-400 border-l-sky-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
             { isSubmitting ? "Saving..." : "Submit" }
           </button>
         </form>

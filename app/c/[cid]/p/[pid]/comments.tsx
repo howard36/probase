@@ -53,14 +53,14 @@ export default function Comments(props: Props) {
     <div>
       <h2 className="mb-6 text-lg lg:text-2xl font-bold text-slate-900">Discussion</h2>
       <form className="mb-6" onSubmit={handleSubmit}>
-        <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
+        <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-slate-200">
           <label htmlFor="comment" className="sr-only">Your comment</label>
           <textarea id="comment" rows={6}
-              className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
+              className="px-0 w-full text-sm text-slate-900 border-0 focus:ring-0 focus:outline-none"
               placeholder="Write a comment..." required value={text} onChange={(e)=>{setText(e.target.value)}} ></textarea>
         </div>
         <button type="submit"
-          className="inline-flex items-center py-3 px-6 text-sm font-semibold text-center text-slate-50 bg-blue-500 rounded-md focus:ring-4 focus:ring-primary-200 hover:bg-blue-600">
+          className="inline-flex items-center py-3 px-6 text-sm font-semibold text-center text-slate-50 bg-sky-500 rounded-md focus:ring-4 focus:ring-primary-200 hover:bg-sky-600">
           Post comment
         </button>
       </form>

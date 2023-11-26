@@ -111,7 +111,7 @@ export default function AddSolution({
     return (
       <div className="text-center mt-16 mb-24">
         <div className="mb-5 font-semibold text-slate-500 text-lg">No solutions yet. You could be the first!</div>
-        <button className="w-44 py-4 text-lg bg-blue-500 text-slate-50 font-semibold rounded-md hover:bg-blue-600 leading-none" onClick={() => setEditing(true)}>Add Solution</button>
+        <button className="w-44 py-4 text-lg bg-sky-500 text-slate-50 font-semibold rounded-md hover:bg-sky-600 leading-none" onClick={() => setEditing(true)}>Add Solution</button>
       </div>
     );
   }
