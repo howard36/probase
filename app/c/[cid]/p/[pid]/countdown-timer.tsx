@@ -13,7 +13,6 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ deadline }) => {
 
   useEffect(() => {
     const updateTimer = () => {
-      console.log("Updating timer");
       const currentTime = new Date();
       const difference = deadline.getTime() - currentTime.getTime();
 
@@ -33,7 +32,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ deadline }) => {
     return () => clearInterval(interval);
   }, [deadline]);
 
-  return <div>Time Left: {timeLeft}</div>;
+  return <div>Time remaining: {timeLeft}</div>;
 };
 
 export default CountdownTimer;

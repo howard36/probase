@@ -24,8 +24,8 @@ export default function LockedPage({problem, time}: {problem: ProblemProps, time
       <span className="text-slate-500 font-semibold">Testsolve to view</span>
     </div>
     <div className="mb-8 space-y-4">
-      <p>Once you start testsolving, you&apos;ll have <strong>{time}</strong> to solve the problem. Keep an eye on the clock!</p>
-      <p>Speed and accuracy matter! Solve the problem swiftly, and if your <strong>first</strong> submission is correct, you&apos;ll earn a spot on the leaderboard.</p>
+      <p>Once you start testsolving, you&apos;ll have <strong>{time}</strong>. Keep an eye on the clock!</p>
+      <p>Speed and accuracy matter! A <strong>correct first submission</strong> can earn you a spot on the leaderboard.</p>
       <p>Best of luck!</p>
     </div>
     <button className="w-full py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold text-xl soft-shadow-xl" onClick={startTestsolving}>
