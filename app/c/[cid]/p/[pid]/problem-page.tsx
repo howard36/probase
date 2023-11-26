@@ -15,13 +15,11 @@ import Testsolve from './testsolve'
 const subjectToGradient = {
   'Algebra': {
     subject: 'Algebra',
-    gradient: 'from-sky-500 to-cyan-500'
-    // gradient: 'from-blue-500 to-sky-500'
+    gradient: 'from-blue-500 to-sky-500'
   },
   'Combinatorics': {
     subject: 'Combinatorics',
-    gradient: 'from-amber-500 to-yellow-500'
-    // gradient: 'from-orange-500 to-amber-500'
+    gradient: 'from-orange-500 to-amber-500'
   },
   'Geometry': {
     subject: 'Geometry',

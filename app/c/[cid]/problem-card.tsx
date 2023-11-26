@@ -36,8 +36,8 @@ const titleLineColors = [
 // TODO: allow each collection to define new subjects and 
 // customize its own mapping
 const subjectToColor = {
-  'Algebra': 8,
-  'Combinatorics': 2,
+  'Algebra': 9,
+  'Combinatorics': 1,
   'Geometry': 5,
   'NumberTheory': 13,
   'ComputerScience': 16,
