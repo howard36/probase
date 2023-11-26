@@ -17,7 +17,12 @@ const problemSelect = {
     select: {
       userId: true,
     }
-  }
+  },
+  solveAttempts: {
+    select: {
+      userId: true,
+    }
+  },
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   select: problemSelect
@@ -32,6 +37,7 @@ export const collectionSelect = {
     select: problemSelect,
   },
   showAuthors: true,
+  requireTestsolve: true,
 };
 const collectionProps = Prisma.validator<Prisma.CollectionDefaultArgs>()({
   select: collectionSelect

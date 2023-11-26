@@ -19,8 +19,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       orderBy: {
         id: 'desc'
       },
-      include: {
+      include: {  // TODO: match ProblemProps in [cid]/types
         likes: true,
+        solveAttempts: {
+          select: {
+            userId: true,
+          }
+        },
       }
     });
     res.status(200).json({ problems });

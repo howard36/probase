@@ -7,16 +7,21 @@ import Comments from './comments'
 import ArchiveToggle from './archive-toggle'
 import Lightbulbs from '@/components/lightbulbs'
 import Likes from '@/components/likes';
+import prisma from '@/utils/prisma';
+import LockedPage from './locked-page'
+import Testsolve from './testsolve'
 
 // darker color first, for more contrast
 const subjectToGradient = {
   'Algebra': {
     subject: 'Algebra',
     gradient: 'from-sky-500 to-cyan-500'
+    // gradient: 'from-blue-500 to-sky-500'
   },
   'Combinatorics': {
     subject: 'Combinatorics',
     gradient: 'from-amber-500 to-yellow-500'
+    // gradient: 'from-orange-500 to-amber-500'
   },
   'Geometry': {
     subject: 'Geometry',
@@ -36,14 +41,71 @@ function convertToSlug(name: string) {
     .replace(/\-+/g, '-'); // Replace multiple hyphens with a single hyphen
 }
 
-export default function ProblemPage(props: Props) {
+export default async function ProblemPage(props: Props) {
   const { problem, collection, permission, userId } = props;
+
   let written_by;
   if (collection.showAuthors && problem.authors.length > 0) {
     written_by = <p className="italic text-slate-700 text-base mb-8 text-right">Written by {problem.authors[0].displayName}</p>;
   }
 
   let { subject, gradient } = subjectToGradient[problem.subject];
+
+  // TODO: make this a separate Testsolving component
+  let testsolveOrAnswers;
+  if (collection.requireTestsolve) {
+    const solveAttempt = await prisma.solveAttempt.findUnique({
+      where: {
+        userId_problemId: {
+          userId,
+          problemId: problem.id,
+        }
+      }
+    });
+    const difficulty = problem.difficulty;
+    if (difficulty === null || difficulty === 0) {
+      throw new Error("Difficulty is null or zero, cannot determine testsolve time")
+    }
+    const testsolveTimeMinutes = difficulty * 5 + 5;  // 10, 15, 20, 25, 30
+
+    if (solveAttempt === null) {
+      testsolveOrAnswers = <LockedPage problem={problem} time={`${testsolveTimeMinutes} minutes`} />;
+    } else {
+      const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000;
+      const deadline = new Date(solveAttempt.startedAt.getTime() + testsolveTimeMillis);
+      const finished = new Date() >= deadline || solveAttempt.gaveUp || solveAttempt.solvedAt !== null;
+
+      if (finished) {
+        // TODO: move this into a component
+        testsolveOrAnswers = <div>
+          <div className="mb-4">
+            <Statement {...props} />
+          </div>
+          {written_by}
+          <Spoilers {...props} />
+          <Comments {...props} />
+        </div>;
+      } else {  // Currently testsolving
+        // TODO: show timer, input box, give up button
+        testsolveOrAnswers = <div>
+          <div className="mb-8">
+            <Statement {...props} />
+          </div>
+          <hr className="my-8"/>
+          <Testsolve problem={problem} solveAttempt={solveAttempt} deadline={deadline} />
+        </div>
+      }
+    }
+  } else {
+    testsolveOrAnswers = <div>
+      <div className="mb-4">
+        <Statement {...props} />
+      </div>
+      {written_by}
+      <Spoilers {...props} />
+      <Comments {...props} />
+    </div>;
+  }
 
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
@@ -55,7 +117,6 @@ export default function ProblemPage(props: Props) {
           <span className="ml-1">Back to {collection.name}</span>
         </Link>
       </div>
-      {/* fixed width container, matching ideal 60-character line length */}
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
         <div className="flex gap-8">
           <div className="flex-grow">
@@ -81,14 +142,9 @@ export default function ProblemPage(props: Props) {
           </div>
         </div>
 
-        <div className="mb-4">
-          <Statement {...props} />
-        </div>
-        {written_by}
-        <Spoilers {...props} />
-        <div>
-          <Comments {...props} />
-        </div>
+        {/* Statement should also be hidden if they haven't clicked "Start testsolve" */}
+        {testsolveOrAnswers}
+
         {(permission?.accessLevel === "Admin") && (
           <div>
             <ArchiveToggle {...props} />

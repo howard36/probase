@@ -22,6 +22,7 @@ model User {
   invites       Invite[]
   comments      Comment[]
   problemLikes  ProblemLike[]
+  solveAttempts SolveAttempt[]
 }
 
 model Account {
@@ -78,26 +79,27 @@ enum Subject {
 }
 
 model Problem {
-  id           Int        @id @default(autoincrement())
-  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  collectionId Int
-  pid          String
-  title        String
-  statement    String     @db.Text
-  submitter    User?      @relation(fields: [submitterId], references: [id])
-  submitterId  String?
-  authors      Author[]
-  answer       String?
-  solutions    Solution[]
-  subject      Subject
-  difficulty   Int?  // 1-5: very easy, easy, medium, hard, very hard
-  source       String?
-  isAnonymous  Boolean
-  comments     Comment[]
-  createdAt    DateTime   @default(now())
-  testProblems TestProblem[]
-  isArchived   Boolean    @default(false)
-  likes        ProblemLike[]
+  id            Int        @id @default(autoincrement())
+  collection    Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId  Int
+  pid           String
+  title         String
+  statement     String     @db.Text
+  submitter     User?      @relation(fields: [submitterId], references: [id])
+  submitterId   String?
+  authors       Author[]
+  answer        String?
+  solutions     Solution[]
+  subject       Subject
+  difficulty    Int?  // 1-5: very easy, easy, medium, hard, very hard
+  source        String?
+  isAnonymous   Boolean
+  comments      Comment[]
+  createdAt     DateTime   @default(now())
+  testProblems  TestProblem[]
+  isArchived    Boolean    @default(false)
+  likes         ProblemLike[]
+  solveAttempts SolveAttempt[]
   
   @@unique([collectionId, pid])
 }
@@ -198,6 +200,19 @@ model ProblemLike {
   userId    String
   problem   Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
   problemId Int
+
+  @@id([userId, problemId])
+}
+
+model SolveAttempt {
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  problem        Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId      Int
+  startedAt      DateTime  @default(now())
+  solvedAt       DateTime?
+  numSubmissions Int       @default(0)
+  gaveUp         Boolean   @default(false)
 
   @@id([userId, problemId])
 }

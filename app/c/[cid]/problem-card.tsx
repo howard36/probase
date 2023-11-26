@@ -3,6 +3,8 @@ import Latex from '@/components/latex';
 import type { ProblemProps, CollectionProps } from './types';
 import Lightbulbs from '@/components/lightbulbs';
 import Likes from '@/components/likes'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 
 const titleLineColors = [
   'bg-red-400', // 0
@@ -41,7 +43,7 @@ const subjectToColor = {
   'ComputerScience': 16,
 };
 
-export default function ProblemCard({
+export default async function ProblemCard({
   collection,
   problem,
   userId
@@ -52,6 +54,14 @@ export default function ProblemCard({
 }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];
+
+  let locked = false;
+  if (collection.requireTestsolve) {
+    if (!problem.solveAttempts.some(attempt => attempt.userId === userId)) {
+      // User hasn't started testsolving this problem
+      locked = true;
+    }
+  }
 
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
@@ -68,7 +78,13 @@ export default function ProblemCard({
             }
           </div>
         </div>
-        <div className="text-base sm:text-lg md:text-xl text-slate-800"><Latex>{problem.statement}</Latex></div>
+        { locked 
+        ? <div className="text-center text-lg sm:text-xl md:text-2xl my-4">
+            <FontAwesomeIcon icon={faLock} className="text-slate-400 mr-2.5" />
+            <span className="text-slate-500 font-semibold">Testsolve to view</span>
+          </div>
+        : <div className="text-base sm:text-lg md:text-xl text-slate-800"><Latex>{problem.statement}</Latex></div>
+        }
       </div>
     </Link>
   );
