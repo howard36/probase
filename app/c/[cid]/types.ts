@@ -18,6 +18,11 @@ const problemSelect = {
       userId: true,
     }
   },
+  authors: {
+    select: {
+      id: true,
+    }
+  },
   solveAttempts: {
     select: {
       userId: true,

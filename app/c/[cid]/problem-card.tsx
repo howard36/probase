@@ -5,6 +5,8 @@ import Lightbulbs from '@/components/lightbulbs';
 import Likes from '@/components/likes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { Permission } from '@prisma/client';
+import { canEditProblem } from '@/utils/permissions';
 
 const titleLineColors = [
   'bg-red-400', // 0
@@ -46,20 +48,27 @@ const subjectToColor = {
 export default async function ProblemCard({
   collection,
   problem,
-  userId
+  permission,
+  userId,
+  authors,
 }: {
   collection: CollectionProps
   problem: ProblemProps
+  permission: Permission | null
   userId: string
+  authors: { id: number }[]
 }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];
 
   let locked = false;
   if (collection.requireTestsolve) {
-    if (!problem.solveAttempts.some(attempt => attempt.userId === userId)) {
-      // User hasn't started testsolving this problem
-      locked = true;
+    // TODO: use locked = !canViewProblem(), which should also check solveAttempts
+    if (!canEditProblem(problem, permission, authors)) {  // authors shouldn't testsolve their own problems
+      if (!problem.solveAttempts.some(attempt => attempt.userId === userId)) {
+        // User hasn't started testsolving this problem
+        locked = true;
+      }
     }
   }
 
@@ -78,7 +87,7 @@ export default async function ProblemCard({
             }
           </div>
         </div>
-        { locked 
+        { locked
         ? <div className="text-center text-lg sm:text-xl md:text-2xl my-4">
             <FontAwesomeIcon icon={faLock} className="text-slate-400 mr-2.5" />
             <span className="text-slate-500 font-semibold">Testsolve to view</span>
