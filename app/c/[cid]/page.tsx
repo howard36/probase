@@ -85,7 +85,7 @@ export default async function CollectionPage({
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
-      return <ProblemList collection={collection} userId="" />;
+      return <ProblemList collection={collection} userId="" authors={[]} permission={null} />;
     } else {
       redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
     }
@@ -95,6 +95,14 @@ export default async function CollectionPage({
   if (userId === undefined) {
     throw new Error("userId is undefined despite being logged in");
   }
+
+  const authors = await prisma.author.findMany({
+    where: {
+      userId,
+      collectionId: collection.id,
+    },
+    select: { id: true },
+  });
 
   const res = await fetch(
     internal_api_url(`/permissions/${userId}_${collection.id}/get`),
@@ -109,13 +117,13 @@ export default async function CollectionPage({
     console.error(res);
     throw new Error();
   }
-  const { permission } = await res.json();
+  let { permission } = await res.json();
   
   if (!canViewCollection(permission)) {
     // No permission
     if (cid === "demo") {
       // create permission if it doesn't already exist
-      await prisma.permission.upsert({
+      permission = await prisma.permission.upsert({
         where: {
           userId_collectionId: {
             userId,
@@ -137,6 +145,6 @@ export default async function CollectionPage({
     }
   }
 
-  return <ProblemList collection={collection} userId={userId} />;
+  return <ProblemList collection={collection} userId={userId} permission={permission} authors={authors} />;
 }
 

@@ -4,13 +4,18 @@ import Link from "next/link"
 import { CollectionProps } from "./types";
 import ProblemCard from "./problem-card";
 import { useState } from "react";
+import { Permission } from "@prisma/client";
 
 export default function ProblemList({
   collection,
   userId,
+  authors,
+  permission,
 }: {
   collection: CollectionProps
   userId: string
+  authors: { id: number }[]
+  permission: Permission | null
 }) {
   const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
@@ -66,7 +71,7 @@ export default function ProblemList({
           <ul>
             {problems.map((problem) => (
               <li key={problem.pid}>
-                <ProblemCard collection={collection} problem={problem} userId={userId} />
+                <ProblemCard collection={collection} problem={problem} userId={userId} authors={authors} permission={permission} />
               </li>
             ))}
           </ul>

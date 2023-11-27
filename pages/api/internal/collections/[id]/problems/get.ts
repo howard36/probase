@@ -20,6 +20,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: 'desc'
       },
       include: {  // TODO: match ProblemProps in [cid]/types
+        authors: {
+          select: {
+            id: true,
+          }
+        },
         likes: true,
         solveAttempts: {
           select: {

@@ -78,6 +78,7 @@ export function canAddComment(
   const role = permission.accessLevel;
   return role === "Admin" || role === "TeamMember" || role === "SubmitOnly" || role === "ViewOnly";
 }
+
 export function canViewCollection(
   permission: PermissionPerm | null
 ): boolean {
