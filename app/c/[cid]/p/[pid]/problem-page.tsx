@@ -10,6 +10,8 @@ import Likes from '@/components/likes';
 import prisma from '@/utils/prisma';
 import LockedPage from './locked-page'
 import Testsolve from './testsolve'
+import { canEditProblem } from '@/utils/permissions'
+import { authOptions } from '@/api/auth/[...nextauth]'
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -40,7 +42,7 @@ function convertToSlug(name: string) {
 }
 
 export default async function ProblemPage(props: Props) {
-  const { problem, collection, permission, userId } = props;
+  const { problem, collection, permission, userId, authors } = props;
 
   let written_by;
   if (collection.showAuthors && problem.authors.length > 0) {
@@ -51,7 +53,7 @@ export default async function ProblemPage(props: Props) {
 
   // TODO: make this a separate Testsolving component
   let testsolveOrAnswers;
-  if (collection.requireTestsolve) {
+  if (collection.requireTestsolve && !canEditProblem(problem, permission, authors)) {
     const solveAttempt = await prisma.solveAttempt.findUnique({
       where: {
         userId_problemId: {
