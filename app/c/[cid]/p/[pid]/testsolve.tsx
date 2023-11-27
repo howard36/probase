@@ -62,8 +62,8 @@ export default function Testsolve({problem, solveAttempt, deadline}: {problem: P
       </div>
       <div className="flex gap-x-6 items-center my-4">
         {/* TODO: make this a component */}
-        <button disabled={isSubmitting || answer === ''} type="submit" className={`text-white text-lg font-bold rounded border-0 py-2 w-40 flex-grow-0 ${answer === '' ? "bg-slate-300" : "bg-blue-500 hover:bg-blue-600"} focus:outline-none flex flex-auto items-center justify-center`}>
-          { isSubmitting && <div className="animate-spin rounded-full border-solid border-blue-400 border-l-blue-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
+        <button disabled={isSubmitting || answer === ''} type="submit" className={`text-white text-lg font-bold rounded border-0 py-2 w-40 flex-grow-0 ${answer === '' ? "bg-slate-300" : "bg-sky-500 hover:bg-sky-600"} focus:outline-none flex flex-auto items-center justify-center`}>
+          { isSubmitting && <div className="animate-spin rounded-full border-solid border-sky-400 border-l-sky-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
           { isSubmitting ? "Saving..." : "Submit" }
         </button>
         <button disabled={isGivingUp} type="button" onClick={handleGiveUp} className={`group text-red-500 hover:text-red-600 text-lg font-bold rounded border-0 py-2 w-40 flex-grow-0 bg-red-100 hover:bg-red-200 focus:outline-none flex flex-auto items-center justify-center`}>

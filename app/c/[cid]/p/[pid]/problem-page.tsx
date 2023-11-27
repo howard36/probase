@@ -11,7 +11,6 @@ import prisma from '@/utils/prisma';
 import LockedPage from './locked-page'
 import Testsolve from './testsolve'
 import { canEditProblem } from '@/utils/permissions'
-import { authOptions } from '@/api/auth/[...nextauth]'
 
 // darker color first, for more contrast
 const subjectToGradient = {

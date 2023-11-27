@@ -28,7 +28,7 @@ export default function LockedPage({problem, time}: {problem: ProblemProps, time
       <p>Speed and accuracy matter! A <strong>correct first submission</strong> can earn you a spot on the leaderboard.</p>
       <p>Best of luck!</p>
     </div>
-    <button className="w-full py-3 px-10 text-center rounded-xl bg-blue-500 hover:bg-blue-600 text-slate-50 font-semibold text-xl soft-shadow-xl" onClick={startTestsolving}>
+    <button className="w-full py-3 px-10 text-center rounded-xl bg-sky-500 hover:bg-sky-600 text-slate-50 font-semibold text-xl soft-shadow-xl" onClick={startTestsolving}>
       Start Testsolving
     </button>
   </div>
