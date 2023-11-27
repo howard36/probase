@@ -45,7 +45,7 @@ const subjectToColor = {
   'ComputerScience': 16,
 };
 
-export default async function ProblemCard({
+export default function ProblemCard({
   collection,
   problem,
   permission,
