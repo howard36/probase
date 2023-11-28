@@ -72,7 +72,7 @@ export default async function InvitePage({
       accessLevel: invite.accessLevel,
     },
   });
-  revalidateTags([`GET /permissions/${userId}_${invite.collectionId}`]);
+  await revalidateTags([`GET /permissions/${userId}_${invite.collectionId}`]);
 
   redirect(`/c/${invite.collection.cid}`);
 }
