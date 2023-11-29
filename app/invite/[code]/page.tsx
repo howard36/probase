@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
 import NotLoggedIn from './not-logged-in'
+import Expired from './expired'
 import InvalidEmail from './invalid-email'
 import type { InviteProps } from './types'
 import { inviteInclude } from './types'
@@ -34,6 +35,10 @@ export default async function InvitePage({
 
   const { code } = params;
   const invite = await getInvite(code);
+
+  if (invite.expiresAt !== null) {
+    return <Expired invite={invite} />
+  }
 
   if (session === null) {
     return <NotLoggedIn invite={invite} />;
@@ -73,6 +78,15 @@ export default async function InvitePage({
     },
   });
   await revalidateTags([`GET /permissions/${userId}_${invite.collectionId}`]);
+
+  if (invite.oneTimeUse) {
+    await prisma.invite.update({
+      where: { code: invite.code },
+      data: {
+        expiresAt: new Date(),
+      }
+    });
+  }
 
   redirect(`/c/${invite.collection.cid}`);
 }

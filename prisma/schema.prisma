@@ -146,11 +146,11 @@ enum AccessLevel {
 }
 
 model Permission {
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
-  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collection   Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId Int
-  accessLevel  AccessLevel
+  accessLevel  AccessLevel @default(TeamMember)
 
   @@unique([userId, collectionId])
 }
@@ -163,6 +163,8 @@ model Invite {
   inviter      User       @relation(fields: [inviterId], references: [id], onDelete: Cascade)
   inviterId    String
   emailDomain  String?    @db.Text
+  oneTimeUse   Boolean    @default(false)
+  expiresAt    DateTime?
 }
 
 model Comment {
