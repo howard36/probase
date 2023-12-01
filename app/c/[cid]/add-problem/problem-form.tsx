@@ -7,6 +7,7 @@ import Link from 'next/link'
 import ClickToEdit from '@/components/click-to-edit'
 import Label from '@/components/label'
 import AimeInput from './aime-input'
+import SubmitButton from '@/components/submit-button'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -206,10 +207,9 @@ export default function ProblemForm({
               required={collection.requireSolution}
             />
           </div>
-          <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-sky-500 hover:bg-sky-600 focus:outline-none flex flex-auto items-center justify-center">
-            { isSubmitting && <div className="animate-spin rounded-full border-solid border-sky-400 border-l-sky-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
-            { isSubmitting ? "Saving..." : "Submit" }
-          </button>
+          <SubmitButton isSubmitting={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </SubmitButton>
         </form>
       </div>
     </div>

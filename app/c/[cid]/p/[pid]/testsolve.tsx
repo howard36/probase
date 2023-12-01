@@ -37,7 +37,6 @@ export default function Testsolve({problem, solveAttempt, deadline}: {problem: P
         setAnswer('');
       }
     }
-    setSubmitting(false);
   };
   
   const handleGiveUp = async () => {

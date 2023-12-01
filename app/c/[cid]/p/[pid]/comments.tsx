@@ -9,14 +9,15 @@ import { useRouter } from 'next/navigation';
 export default function Comments(props: Props) {
   const router = useRouter();
   const [text, setText] = useState("");
-  
+  const [isSubmitting, setSubmitting] = useState(false);
+
   const { problem, collection, permission, authors } = props;
   const canComment = canAddComment(permission);
   const allComments = problem.comments;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // setSubmitting(true);
+    setSubmitting(true);
 
     // add new problem
     const url = `/api/comments/add`;
@@ -60,6 +61,7 @@ export default function Comments(props: Props) {
               placeholder="Write a comment..." required value={text} onChange={(e)=>{setText(e.target.value)}} ></textarea>
         </div>
         <button type="submit"
+          disabled={isSubmitting}
           className="inline-flex items-center py-3 px-6 text-sm font-semibold text-center text-slate-50 bg-sky-500 rounded-md focus:ring-4 focus:ring-primary-200 hover:bg-sky-600">
           Post comment
         </button>
