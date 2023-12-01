@@ -16,9 +16,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const problems = await prisma.problem.findMany({
       where: { collectionId },
-      orderBy: {
-        id: 'desc'
-      },
+      orderBy: [
+        {
+          solveAttempts: {
+            _count: 'asc'
+          }
+        },
+        {
+          createdAt: 'desc'
+        },
+      ],
       include: {  // TODO: match ProblemProps in [cid]/types
         authors: {
           select: {

@@ -61,9 +61,9 @@ async function getCollection(cid: string): Promise<CollectionProps> {
         // String to Date (because JSON doesn't have Date)
         problem.createdAt = new Date(problem.createdAt);
       }
-    })
+    });
+    problems.sort(sortByNew);
   }
-  problems.sort(sortByNew);
 
   collection.problems = problems;
   return collection;
