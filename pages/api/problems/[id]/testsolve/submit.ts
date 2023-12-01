@@ -6,6 +6,9 @@ import { canViewCollection } from '@/utils/permissions';
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
 
+// 10 seconds of extra submission time to account for things like network delay, computer clocks being out of sync, etc.
+const BUFFER_TIME_MILLIS = 10_000;
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const submittedAt = new Date();
 
@@ -96,7 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
     const testsolveTimeMinutes = difficulty * 5 + 5;  // 10, 15, 20, 25, 30
-    const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000;
+    const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000 + BUFFER_TIME_MILLIS;
 
     const solveAttempt = await prisma.solveAttempt.findUnique({
       where: {
