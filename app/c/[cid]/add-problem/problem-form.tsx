@@ -208,7 +208,7 @@ export default function ProblemForm({
             />
           </div>
           <SubmitButton isSubmitting={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit"}
+            Submit
           </SubmitButton>
         </form>
       </div>
