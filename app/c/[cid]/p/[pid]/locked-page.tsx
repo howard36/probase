@@ -11,8 +11,10 @@ export default function LockedPage({problem, time}: {problem: ProblemProps, time
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const startTestsolving = async () => {
+  const startTestsolving = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsSubmitting(true);
+
     const response = await fetch(`/api/problems/${problem.id}/testsolve/start`, {
       method: 'POST',
       cache: 'no-store',
@@ -20,9 +22,7 @@ export default function LockedPage({problem, time}: {problem: ProblemProps, time
       body: JSON.stringify({}),
     });
     if (response.status === 201) {
-      console.log("Good")
       router.refresh();
-      console.log("after")
     } else {
       console.error("Failed to start testsolving!");
     }
