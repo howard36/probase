@@ -37,6 +37,8 @@ export default function Testsolve({problem, solveAttempt, deadline}: {problem: P
         setWrongAnswer(answer);
         setAnswer('');
       }
+    } else {
+      console.error("Failed to submit guess!");
     }
     setIsSubmitting(false);
   };
@@ -44,14 +46,19 @@ export default function Testsolve({problem, solveAttempt, deadline}: {problem: P
   const giveUp = async () => {
     setIsGivingUp(true);
 
-    await fetch(`/api/problems/${problem.id}/testsolve/give-up`, {
+    const response = await fetch(`/api/problems/${problem.id}/testsolve/give-up`, {
       method: 'POST',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
     });
 
-    router.refresh();
+    if (response.status === 200) {
+      router.refresh();
+    } else {
+      console.error("Failed to submit give-up request!");
+    }
+
     setIsGivingUp(false);
   };
 
