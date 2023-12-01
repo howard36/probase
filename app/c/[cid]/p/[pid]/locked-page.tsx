@@ -4,18 +4,29 @@ import { faLock } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation";
 import { ProblemProps } from "./types";
+import SubmitButton from "@/components/submit-button";
+import { useState } from "react";
 
 export default function LockedPage({problem, time}: {problem: ProblemProps, time: string}) {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const startTestsolving = async () => {
-    await fetch(`/api/problems/${problem.id}/testsolve/start`, {
+    setIsSubmitting(true);
+    const response = await fetch(`/api/problems/${problem.id}/testsolve/start`, {
       method: 'POST',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
     });
-    router.refresh();
+    if (response.status === 201) {
+      console.log("Good")
+      router.refresh();
+      console.log("after")
+    } else {
+      console.error("Failed to start testsolving!");
+    }
+    setIsSubmitting(false);
   };
 
   return <div>
@@ -28,8 +39,10 @@ export default function LockedPage({problem, time}: {problem: ProblemProps, time
       <p>Speed and accuracy matter! A <strong>correct first submission</strong> can earn you a spot on the leaderboard.</p>
       <p>Best of luck!</p>
     </div>
-    <button className="w-full py-3 px-10 text-center rounded-xl bg-sky-500 hover:bg-sky-600 text-slate-50 font-semibold text-xl soft-shadow-xl" onClick={startTestsolving}>
-      Start Testsolving
-    </button>
+    <form onSubmit={startTestsolving}>
+      <SubmitButton isSubmitting={isSubmitting} className="w-full">
+        Start Testsolving
+      </SubmitButton>
+    </form>
   </div>
 }

@@ -63,11 +63,11 @@ export default function ProblemForm({
   const [answer, setAnswer] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [solution, setSolution] = useState("");
-  const [isSubmitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
+    setIsSubmitting(true);
 
     // submit new problem
     const url = `/api/problems/add`;
@@ -93,8 +93,9 @@ export default function ProblemForm({
       router.refresh();
     } else {
       // TODO: retry with different PID (or use atomic increment)
-      console.error("inserting failed!");
+      console.error("Failed to submit problem!");
     }
+    setIsSubmitting(false);
   };
 
   const titleLabel = <Label text="TITLE" />;
