@@ -7,6 +7,7 @@ import Link from 'next/link'
 import ClickToEdit from '@/components/click-to-edit'
 import Label from '@/components/label'
 import AimeInput from './aime-input'
+import SubmitButton from '@/components/submit-button'
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -62,11 +63,11 @@ export default function ProblemForm({
   const [answer, setAnswer] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [solution, setSolution] = useState("");
-  const [isSubmitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
+    setIsSubmitting(true);
 
     // submit new problem
     const url = `/api/problems/add`;
@@ -92,8 +93,9 @@ export default function ProblemForm({
       router.refresh();
     } else {
       // TODO: retry with different PID (or use atomic increment)
-      console.error("inserting failed!");
+      console.error("Failed to submit problem!");
     }
+    setIsSubmitting(false);
   };
 
   const titleLabel = <Label text="TITLE" />;
@@ -206,10 +208,9 @@ export default function ProblemForm({
               required={collection.requireSolution}
             />
           </div>
-          <button disabled={isSubmitting} className="text-white text-lg font-bold rounded border-0 py-2 w-40 bg-sky-500 hover:bg-sky-600 focus:outline-none flex flex-auto items-center justify-center">
-            { isSubmitting && <div className="animate-spin rounded-full border-solid border-sky-400 border-l-sky-50 border-4 h-6 w-6 mr-3 inline-block"></div> }
-            { isSubmitting ? "Saving..." : "Submit" }
-          </button>
+          <SubmitButton isSubmitting={isSubmitting}>
+            Submit
+          </SubmitButton>
         </form>
       </div>
     </div>

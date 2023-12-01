@@ -5,23 +5,24 @@ import Comment from './comment';
 import type { Props } from './types'
 import { canAddComment } from '@/utils/permissions';
 import { useRouter } from 'next/navigation';
+import SubmitButton from '@/components/submit-button';
 
 export default function Comments(props: Props) {
   const router = useRouter();
   const [text, setText] = useState("");
-  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { problem, collection, permission, authors } = props;
   const canComment = canAddComment(permission);
   const allComments = problem.comments;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // setSubmitting(true);
+    setIsSubmitting(true);
 
-    // add new problem
-    const url = `/api/comments/add`;
-    const response = await fetch(url, {
+    const response = await fetch(`/api/comments/add`, {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         problemId: problem.id,
@@ -29,11 +30,12 @@ export default function Comments(props: Props) {
       })
     });
     if (response.status === 201) {
-      router.refresh();
       setText("");
+      router.refresh();
     } else {
-      console.error("add comment failed!");
+      console.error("Failed to add comment!");
     }
+    setIsSubmitting(false);
   };
 
 
@@ -59,10 +61,9 @@ export default function Comments(props: Props) {
               className="px-0 w-full text-sm text-slate-900 border-0 focus:ring-0 focus:outline-none"
               placeholder="Write a comment..." required value={text} onChange={(e)=>{setText(e.target.value)}} ></textarea>
         </div>
-        <button type="submit"
-          className="inline-flex items-center py-3 px-6 text-sm font-semibold text-center text-slate-50 bg-sky-500 rounded-md focus:ring-4 focus:ring-primary-200 hover:bg-sky-600">
+        <SubmitButton isSubmitting={isSubmitting} size="sm">
           Post comment
-        </button>
+        </SubmitButton>
       </form>
       {comments}
     </div>
