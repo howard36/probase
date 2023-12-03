@@ -5,7 +5,6 @@ import Latex from '@/components/latex';
 
 export default function TestPage(props: any) {
   const { name, testProblems, collection } = props;
-  console.log({testProblems})
 
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">

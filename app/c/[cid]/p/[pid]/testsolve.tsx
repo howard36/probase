@@ -9,7 +9,7 @@ import { SolveAttempt } from "@prisma/client";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 
-export default function Testsolve({problem, solveAttempt, deadline}: {problem: ProblemProps, solveAttempt: SolveAttempt, deadline: Date}) {
+export default function Testsolve({problem, deadline}: {problem: ProblemProps, solveAttempt: SolveAttempt, deadline: Date}) {
   const router = useRouter();
   const [answer, setAnswer] = useState('');
   const [wrongAnswer, setWrongAnswer] = useState('');

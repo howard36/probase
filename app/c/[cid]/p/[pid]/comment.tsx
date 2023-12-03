@@ -1,4 +1,3 @@
-import EditableStatement from './editable-statement'
 import Latex from '@/components/latex'
 import type { CommentProps } from './types'
 // import { canEditComment } from '@/utils/permissions';
@@ -9,9 +8,6 @@ export default function Comment({
   comment: CommentProps
 }) {
   // const canEdit = canEditComment(problem, permission, authors);
-  const canEdit = false;
-  
-  const options = { year: "numeric", month: "short", day: "numeric" };
 
   const date = new Date(comment.createdAt);
 

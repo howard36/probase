@@ -48,7 +48,7 @@ export default async function ProblemPage(props: Props) {
     written_by = <p className="italic text-slate-700 text-base mb-8 text-right">Written by {problem.authors[0].displayName}</p>;
   }
 
-  let { subject, gradient } = subjectToGradient[problem.subject];
+  const { subject, gradient } = subjectToGradient[problem.subject];
 
   // TODO: make this a separate Testsolving component
   let testsolveOrAnswers;

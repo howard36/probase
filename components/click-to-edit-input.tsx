@@ -6,14 +6,12 @@ import type { KeyboardEvent } from 'react'
 export default function ClickToEditInput({
   savedText,
   placeholder,
-  autosave,
   onSave,
   onReset,
   required,
 }: {
   savedText: string
   placeholder?: string
-  autosave: boolean
   onSave: (text: string) => void
   onReset: () => void
   required: boolean
