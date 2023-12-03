@@ -1,14 +1,25 @@
 import prisma from "@/utils/prisma";
 import { notFound, redirect } from "next/navigation";
-import type { Params, CollectionProps, ProblemProps } from "./types";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/api/auth/[...nextauth]";
 import { canViewCollection } from "@/utils/permissions";
 import ProblemList from "./problem-list";
 import { revalidateTags } from "@/utils/revalidate";
 import { internal_api_url } from "@/utils/urls";
+import { Collection, Problem } from "@prisma/client";
+import { ProblemProps } from "./types";
 
-function sortByNew(p1: ProblemProps, p2: ProblemProps): number {
+async function getCollection(cid: string): Promise<Collection> {
+  const collection = await prisma.collection.findUnique({
+    where: { cid }
+  });
+  if (collection === null) {
+    notFound();
+  }
+  return collection;
+}
+
+function sortByNew(p1: Problem, p2: Problem): number {
   const t1 = p1.createdAt;
   const t2 = p2.createdAt;
   if (t1 !== t2) {
@@ -18,30 +29,37 @@ function sortByNew(p1: ProblemProps, p2: ProblemProps): number {
   }
 }
 
-async function getCollection(cid: string): Promise<CollectionProps> {
-  const res = await fetch(internal_api_url(`/collections/${cid}/get`), {
-    next: { tags: [`GET /collections/${cid}`] },
+async function getProblems(collection: Collection): Promise<ProblemProps[]> {
+  const problems = await prisma.problem.findMany({
+    where: { collectionId: collection.id },
+    orderBy: [
+      {
+        solveAttempts: {
+          _count: "asc",
+        },
+      },
+      {
+        createdAt: "desc",
+      },
+    ],
+    include: {
+      // TODO: match ProblemProps in [cid]/types
+      authors: {
+        select: {
+          id: true,
+        },
+      },
+      likes: true,
+      solveAttempts: {
+        select: {
+          userId: true,
+        },
+      },
+    },
   });
-  if (res.status === 404) {
-    notFound();
-  } else if (!res.ok) {
-    console.error(res);
-    throw new Error();
-  }
-  const { collection } = await res.json();
 
-  const res2 = await fetch(
-    internal_api_url(`/collections/${collection.id}/problems/get`),
-    { next: { tags: [`GET /collections/${collection.id}/problems`] } },
-  );
-  if (!res2.ok) {
-    console.error(res2);
-    throw new Error();
-  }
-  const { problems } = await res2.json();
-
-  if (cid === "demo") {
-    problems.forEach((problem: ProblemProps) => {
+  if (collection.cid === "demo") {
+    problems.forEach((problem) => {
       const date = new Date();
       if (problem.pid === "A1") {
         // Quadratic Equation
@@ -63,13 +81,17 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     problems.sort(sortByNew);
   }
 
-  collection.problems = problems;
-  return collection;
+  return problems;
 }
 
-export default async function CollectionPage({ params }: { params: Params }) {
+interface Params {
+  cid: string;
+}
+
+export default async function Page({ params }: { params: Params }) {
   const { cid } = params;
   const collection = await getCollection(cid);
+  const problems = await getProblems(collection);
 
   // This call is still slow.
   // Private pages must wait for security check
@@ -82,6 +104,7 @@ export default async function CollectionPage({ params }: { params: Params }) {
       return (
         <ProblemList
           collection={collection}
+          problems={problems}
           userId=""
           authors={[]}
           permission={null}
@@ -149,6 +172,7 @@ export default async function CollectionPage({ params }: { params: Params }) {
   return (
     <ProblemList
       collection={collection}
+      problems={problems}
       userId={userId}
       permission={permission}
       authors={authors}

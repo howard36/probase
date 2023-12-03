@@ -1,18 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { CollectionProps } from "./types";
 import ProblemCard from "./problem-card";
 import { useState } from "react";
-import { Permission } from "@prisma/client";
+import { Collection, Permission } from "@prisma/client";
+import { ProblemProps } from "./types";
 
 export default function ProblemList({
   collection,
+  problems,
   userId,
   authors,
   permission,
 }: {
-  collection: CollectionProps;
+  collection: Collection;
+  problems: ProblemProps[];
   userId: string;
   authors: { id: number }[];
   permission: Permission | null;
@@ -26,7 +28,6 @@ export default function ProblemList({
 
   const lowerQuery = query.toLowerCase();
 
-  let problems = collection.problems;
   if (!showArchived) {
     // hide archived problems
     problems = problems.filter((problem) => !problem.isArchived);
