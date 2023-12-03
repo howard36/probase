@@ -1,7 +1,7 @@
 import prisma from "@/utils/prisma";
 import { notFound, redirect } from "next/navigation";
 import ProblemPage from "./problem-page";
-import type { AuthorProps, Params, Props } from "./types";
+import { problemInclude, type AuthorProps, type Params, type Props } from "./types";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/api/auth/[...nextauth]";
 import { canViewCollection } from "@/utils/permissions";
@@ -12,32 +12,26 @@ import { internal_api_url } from "@/utils/urls";
 async function getProps(params: Params, userId: string | null): Promise<Props> {
   const { cid, pid } = params;
 
-  let res = await fetch(internal_api_url(`/collections/${cid}/get`), {
-    cache: "force-cache", // force-cache needed because it comes after await getServerSession?
-    next: { tags: [`GET /collections/${cid}`] },
+  const collection = await prisma.collection.findUnique({
+    where: { cid },
   });
-  if (res.status === 404) {
+  if (collection === null) {
     notFound();
-  } else if (!res.ok) {
-    console.error(res);
-    throw new Error();
   }
-  const { collection } = await res.json();
-
   const collectionId = collection.id;
-  res = await fetch(internal_api_url(`/problems/${collectionId}_${pid}/get`), {
-    cache: "force-cache", // force-cache needed because it comes after await getServerSession?
-    next: { tags: [`GET /problems/${collectionId}_${pid}`] },
-  });
-  if (res.status === 404) {
-    notFound();
-  } else if (!res.ok) {
-    console.error(res);
-    throw new Error();
-  }
-  const { problem } = await res.json();
 
-  // TODO: separate internal API calls for solutions, comments, and likes
+  const problem = await prisma.problem.findUnique({
+    where: {
+      collectionId_pid: {
+        collectionId,
+        pid,
+      },
+    },
+    include: problemInclude,
+  });
+  if (problem === null) {
+    notFound();
+  }
 
   if (userId === null) {
     if (collection.cid !== "demo") {
@@ -57,7 +51,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
     return props;
   }
 
-  res = await fetch(
+  const res = await fetch(
     internal_api_url(`/permissions/${userId}_${collectionId}/get`),
     {
       cache: "force-cache", // force-cache needed because it comes after await getServerSession?
