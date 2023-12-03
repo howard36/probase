@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Comment from './comment';
 import type { Props } from './types'
-import { canAddComment } from '@/utils/permissions';
 import { useRouter } from 'next/navigation';
 import SubmitButton from '@/components/submit-button';
 
@@ -12,8 +11,7 @@ export default function Comments(props: Props) {
   const [text, setText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { problem, collection, permission, authors } = props;
-  const canComment = canAddComment(permission);
+  const { problem } = props;
   const allComments = problem.comments;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

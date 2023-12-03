@@ -30,7 +30,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ deadline }) => {
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
-  }, [deadline]);
+  }, [deadline, router]);
 
   return <div>Time remaining: {timeLeft}</div>;
 };

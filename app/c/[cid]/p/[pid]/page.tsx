@@ -110,12 +110,12 @@ export default async function Page({
 }: {
   params: Params
 }) {
-  let { cid, pid } = params;
-  let session = await getServerSession(authOptions);
+  const { cid, pid } = params;
+  const session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
-      let props: Props = await getProps(params, null);
+      const props: Props = await getProps(params, null);
       return <ProblemPage {...props} />;
     } else {
       redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fp%2F${pid}`);
@@ -127,7 +127,7 @@ export default async function Page({
     throw new Error("userId is undefined despite being logged in");
   }
 
-  let props: Props = await getProps(params, userId);
+  const props: Props = await getProps(params, userId);
 
   return <ProblemPage {...props} />;
 }

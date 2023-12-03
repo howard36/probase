@@ -2,10 +2,8 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
-import { ProblemProps } from '../app/c/[cid]/types';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'
-import { Problem, ProblemLike } from '@prisma/client';
 
 interface ProblemWithLikes {
   id: number;

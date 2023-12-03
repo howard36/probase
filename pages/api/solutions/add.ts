@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // TODO: validation
   // TODO: check if author.collection matches problem.collection
-  let { problemId, text, summary, authorId } = req.body;
+  const { problemId, text, summary, authorId } = req.body;
 
   if (!isNonNegativeInt(problemId)) {
     return res.status(400).json({

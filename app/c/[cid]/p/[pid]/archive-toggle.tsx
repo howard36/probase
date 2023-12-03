@@ -1,12 +1,11 @@
 'use client'
 
 import type { Props } from './types'
-import { canEditProblem } from '@/utils/permissions';
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function ArchiveToggle(props: Props) {
-  const { problem, collection, permission, authors } = props;
+  const { problem } = props;
   const [isArchived, setArchived] = useState(problem.isArchived);
   const router = useRouter();
 

@@ -43,7 +43,6 @@ export default function ClickToEdit({
           <ClickToEditInput
             savedText={savedText}
             placeholder={placeholder}
-            autosave={true}
             onSave={handleSave}
             onReset={handleReset}
             required={required}

@@ -1,8 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/utils/prisma';
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../../auth/[...nextauth]'
-import { canViewCollection } from '@/utils/permissions'
 import { isNonNegativeInt } from '@/utils/utils';
 import { handleApiError } from '@/utils/error';
 

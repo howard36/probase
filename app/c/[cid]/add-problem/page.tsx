@@ -73,7 +73,7 @@ export default async function AddProblemPage({
   params: Params
 }) {
   const { cid } = params;
-  let session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
     if (cid === "demo") {

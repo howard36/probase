@@ -43,7 +43,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
     console.error(res2);
     throw new Error();
   }
-  let { problems } = await res2.json();
+  const { problems } = await res2.json();
 
   if (cid === "demo") {
     problems.forEach((problem: ProblemProps) => {

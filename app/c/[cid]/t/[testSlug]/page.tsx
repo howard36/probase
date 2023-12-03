@@ -5,8 +5,6 @@ import TestPage from './test-page'
 // import { problemInclude, collectionSelect, permissionSelect } from './types'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/api/auth/[...nextauth]'
-import { canViewCollection } from '@/utils/permissions'
-import { AccessLevel } from '@prisma/client'
 import { internal_api_url } from '@/utils/urls'
 
 // TODO: params can be null, but the type does not reflect that
@@ -114,8 +112,8 @@ export default async function Page({
 }: {
   params: Params
 }) {
-  let { cid, testSlug } = params;
-  let session = await getServerSession(authOptions);
+  const { cid, testSlug } = params;
+  const session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
@@ -161,7 +159,7 @@ export default async function Page({
     },
   })
   
-  let res = await fetch(
+  const res = await fetch(
     internal_api_url(`/collections/${cid}/get`),
     {
       cache: 'force-cache', // force-cache needed because it comes after await getServerSession?
