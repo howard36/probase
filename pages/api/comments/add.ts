@@ -1,19 +1,22 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '@/utils/prisma';
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../auth/[...nextauth]'
-import { handleApiError } from '@/utils/error';
-import { isNonNegativeInt } from '@/utils/utils';
-import { canAddComment } from '@/utils/permissions';
-import { revalidateTags } from '@/utils/revalidate';
+import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from "@/utils/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
+import { handleApiError } from "@/utils/error";
+import { isNonNegativeInt } from "@/utils/utils";
+import { canAddComment } from "@/utils/permissions";
+import { revalidateTags } from "@/utils/revalidate";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   // TODO: why can't this be PUT? Something about CORS
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(405).json({
       error: {
-        message: 'Invalid method'
-      }
+        message: "Invalid method",
+      },
     });
   }
 
@@ -24,8 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!isNonNegativeInt(problemId)) {
     return res.status(400).json({
       error: {
-        message: 'problemId must be a non-negative integer'
-      }
+        message: "problemId must be a non-negative integer",
+      },
     });
   }
 
@@ -33,8 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (session === null) {
     return res.status(401).json({
       error: {
-        message: 'Not signed in'
-      }
+        message: "Not signed in",
+      },
     });
   }
 
@@ -42,8 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (userId === undefined) {
     return res.status(500).json({
       error: {
-        message: "userId is undefined despite being logged in"
-      }
+        message: "userId is undefined despite being logged in",
+      },
     });
   }
 
@@ -56,15 +59,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         collection: {
           select: {
             id: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
     if (problem === null) {
       return res.status(404).json({
         error: {
-          message: 'Problem not found'
-        }
+          message: "Problem not found",
+        },
       });
     }
 
@@ -73,15 +76,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         userId_collectionId: {
           userId,
           collectionId: problem.collection.id,
-        }
-      }
+        },
+      },
     });
     if (!canAddComment(permission)) {
       // No permission
       return res.status(403).json({
         error: {
-          message: 'You do not have permission to comment on this problem'
-        }
+          message: "You do not have permission to comment on this problem",
+        },
       });
     }
 
@@ -94,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         user: {
           connect: { id: userId },
         },
-      }
+      },
     });
 
     await revalidateTags([
@@ -106,4 +109,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     handleApiError(error, res);
   }
 }
-

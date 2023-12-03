@@ -1,9 +1,9 @@
-import { authOptions } from '@/api/auth/[...nextauth]';
-import ProblemForm from './problem-form'
-import prisma from '@/utils/prisma'
-import { Session, getServerSession } from 'next-auth';
-import { notFound, redirect } from 'next/navigation'
-import LoginRequired from '@/components/login-required';
+import { authOptions } from "@/api/auth/[...nextauth]";
+import ProblemForm from "./problem-form";
+import prisma from "@/utils/prisma";
+import { Session, getServerSession } from "next-auth";
+import { notFound, redirect } from "next/navigation";
+import LoginRequired from "@/components/login-required";
 
 interface Params {
   cid: string;
@@ -45,7 +45,7 @@ async function getOrCreateAuthor(
       displayName: fullName,
       userId,
       collectionId,
-    }
+    },
   });
 
   return newAuthor.id;
@@ -56,8 +56,8 @@ async function getCollection(cid: string) {
   const collection = await prisma.collection.findUnique({
     where: { cid },
     include: {
-      problems: true
-    }
+      problems: true,
+    },
   });
 
   if (collection === null) {
@@ -67,17 +67,18 @@ async function getCollection(cid: string) {
   return collection;
 }
 
-export default async function AddProblemPage({
-  params
-}: {
-  params: Params
-}) {
+export default async function AddProblemPage({ params }: { params: Params }) {
   const { cid } = params;
   const session = await getServerSession(authOptions);
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
-      return <LoginRequired message="Log in to Probase to add a problem" callbackUrl="/c/demo/add-problem" />;
+      return (
+        <LoginRequired
+          message="Log in to Probase to add a problem"
+          callbackUrl="/c/demo/add-problem"
+        />
+      );
     } else {
       redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
     }
@@ -100,15 +101,15 @@ export default async function AddProblemPage({
         userId_collectionId: {
           userId,
           collectionId: collection.id,
-        }
+        },
       },
       update: {
-        accessLevel: 'TeamMember',
+        accessLevel: "TeamMember",
       },
       create: {
         userId,
         collectionId: collection.id,
-        accessLevel: 'TeamMember',
+        accessLevel: "TeamMember",
       },
     });
   }

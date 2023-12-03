@@ -1,14 +1,10 @@
-'use client'
+"use client";
 
-import ClickToEdit from '@/components/click-to-edit'
-import type { Problem } from '@prisma/client'
-import { useRouter } from 'next/navigation'
+import ClickToEdit from "@/components/click-to-edit";
+import type { Problem } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
-export default function EditableTitle({
-  problem
-}: {
-  problem: Problem
-}) {
+export default function EditableTitle({ problem }: { problem: Problem }) {
   const router = useRouter();
 
   const saveTitle = async (text: string) => {
@@ -16,11 +12,11 @@ export default function EditableTitle({
     // React waits for async functions to finish before updating the page
     const url = `/api/problems/${problem.id}/edit`;
     const response = await fetch(url, {
-      method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: text
+        title: text,
       }),
     });
     if (response.status === 200) {
@@ -28,7 +24,7 @@ export default function EditableTitle({
     } else {
       console.error(`updating failed! status = ${response.status}`);
     }
-  }
+  };
 
   return (
     <ClickToEdit

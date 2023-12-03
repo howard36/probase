@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .soft-shadow-xl {
-  box-shadow: 0 20px 28px 0 #94A3B820;
+  box-shadow: 0 20px 28px 0 #94a3b820;
 }
 
 .soft-shadow-r-lg {
-  box-shadow: 0 0 14px 0 #94A3B810;
+  box-shadow: 0 0 14px 0 #94a3b810;
 }
 
 /* From https://katex.org/docs/issues.html#css-customization */

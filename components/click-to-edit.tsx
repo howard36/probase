@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import Latex from '@/components/latex'
-import ClickToEditTextarea from './click-to-edit-textarea'
-import ClickToEditInput from './click-to-edit-input'
+import { useState } from "react";
+import Latex from "@/components/latex";
+import ClickToEditTextarea from "./click-to-edit-textarea";
+import ClickToEditInput from "./click-to-edit-input";
 
 export default function ClickToEdit({
   type,
@@ -12,13 +12,13 @@ export default function ClickToEdit({
   onSave,
   required,
 }: {
-  type: "input" | "textarea"
-  label?: React.ReactNode
-  initialText: string
-  placeholder?: string
-  autosave: boolean
-  onSave: (text: string) => void
-  required: boolean
+  type: "input" | "textarea";
+  label?: React.ReactNode;
+  initialText: string;
+  placeholder?: string;
+  autosave: boolean;
+  onSave: (text: string) => void;
+  required: boolean;
 }) {
   const [isEditing, setEditing] = useState(initialText === "");
   const [savedText, setSavedText] = useState(initialText);
@@ -27,19 +27,19 @@ export default function ClickToEdit({
     setSavedText(text);
     onSave(text);
     setEditing(false);
-  }
+  };
 
   const handleReset = () => {
     if (savedText !== "") {
       setEditing(false);
     }
-  }
+  };
 
   if (isEditing) {
     return (
       <div>
         {label}
-        { (type === "input") ? (
+        {type === "input" ? (
           <ClickToEditInput
             savedText={savedText}
             placeholder={placeholder}
@@ -66,5 +66,5 @@ export default function ClickToEdit({
         <Latex>{`${savedText}`}</Latex>
       </div>
     );
-  };
+  }
 }

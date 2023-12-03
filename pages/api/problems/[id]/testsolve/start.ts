@@ -1,18 +1,21 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../../../auth/[...nextauth]'
-import prisma from '@/utils/prisma'
-import { canViewCollection } from '@/utils/permissions';
-import { isNonNegativeInt } from '@/utils/utils';
-import { handleApiError } from '@/utils/error';
-import { revalidateTags } from '@/utils/revalidate';
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../../auth/[...nextauth]";
+import prisma from "@/utils/prisma";
+import { canViewCollection } from "@/utils/permissions";
+import { isNonNegativeInt } from "@/utils/utils";
+import { handleApiError } from "@/utils/error";
+import { revalidateTags } from "@/utils/revalidate";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "POST") {
     return res.status(405).json({
       error: {
-        message: 'Invalid method'
-      }
+        message: "Invalid method",
+      },
     });
   }
 
@@ -20,8 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!isNonNegativeInt(idString)) {
     return res.status(400).json({
       error: {
-        message: 'ID must be a non-negative integer'
-      }
+        message: "ID must be a non-negative integer",
+      },
     });
   }
 
@@ -29,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (session === null) {
     return res.status(401).json({
       error: {
-        message: 'Not signed in'
-      }
+        message: "Not signed in",
+      },
     });
   }
 
@@ -38,8 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (userId === undefined) {
     return res.status(500).json({
       error: {
-        message: "userId is undefined despite being logged in"
-      }
+        message: "userId is undefined despite being logged in",
+      },
     });
   }
 
@@ -54,15 +57,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           select: {
             id: true,
             cid: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
     if (problem === null) {
       return res.status(404).json({
         error: {
-          message: `No problem with id ${problemId}`
-        }
+          message: `No problem with id ${problemId}`,
+        },
       });
     }
 
@@ -71,16 +74,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         userId_collectionId: {
           userId,
           collectionId: problem.collection.id,
-        }
-      }
+        },
+      },
     });
     // TODO: use canTestsolveProblem
     if (!canViewCollection(permission)) {
       // No permission
       return res.status(403).json({
         error: {
-          message: 'You do not have permission to edit this collection'
-        }
+          message: "You do not have permission to edit this collection",
+        },
       });
     }
 
@@ -88,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: {
         problemId,
         userId,
-      }
+      },
     });
 
     await revalidateTags([

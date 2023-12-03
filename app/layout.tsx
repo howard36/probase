@@ -1,28 +1,28 @@
-import { Metadata } from 'next'
-import Providers from './providers'
-import { Inter } from 'next/font/google'
+import { Metadata } from "next";
+import Providers from "./providers";
+import { Inter } from "next/font/google";
 
-import '../styles/globals.css'
-import 'katex/dist/katex.min.css'
-import '@fortawesome/fontawesome-svg-core/styles.css'
-import { config } from '@fortawesome/fontawesome-svg-core'
-import { cn } from '@/utils/utils'
-config.autoAddCss = false
+import "../styles/globals.css";
+import "katex/dist/katex.min.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import { cn } from "@/utils/utils";
+config.autoAddCss = false;
 
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-})
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: 'Probase',
-  description: 'A math contest problem database',
-}
+  title: "Probase",
+  description: "A math contest problem database",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
@@ -34,5 +34,5 @@ export default function RootLayout({
         <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }

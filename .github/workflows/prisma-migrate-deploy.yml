@@ -1,7 +1,7 @@
 name: Prisma Migrate Deploy
 on:
   push:
-    branches: 
+    branches:
       - main
 
 jobs:

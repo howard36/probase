@@ -1,17 +1,20 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '@/utils/prisma';
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../../auth/[...nextauth]'
-import { canEditProblem } from '@/utils/permissions'
-import { isNonNegativeInt } from '@/utils/utils';
-import { handleApiError } from '@/utils/error';
+import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from "@/utils/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]";
+import { canEditProblem } from "@/utils/permissions";
+import { isNonNegativeInt } from "@/utils/utils";
+import { handleApiError } from "@/utils/error";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "GET") {
     return res.status(405).json({
       error: {
-        message: 'Invalid method'
-      }
+        message: "Invalid method",
+      },
     });
   }
 
@@ -19,8 +22,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!isNonNegativeInt(idString)) {
     return res.status(400).json({
       error: {
-        message: 'ID must be a non-negative integer'
-      }
+        message: "ID must be a non-negative integer",
+      },
     });
   }
 
@@ -34,19 +37,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           select: {
             id: true,
             cid: true,
-          }
+          },
         },
         authors: {
-          select: { id: true }
+          select: { id: true },
         },
-      }
+      },
     });
 
     if (problem === null) {
       return res.status(404).json({
         error: {
-          message: `No problem with id ${problemId}`
-        }
+          message: `No problem with id ${problemId}`,
+        },
       });
     }
 
@@ -55,8 +58,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (session === null) {
         return res.status(401).json({
           error: {
-            message: 'Not signed in'
-          }
+            message: "Not signed in",
+          },
         });
       }
 
@@ -64,8 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (userId === undefined) {
         return res.status(500).json({
           error: {
-            message: "userId is undefined despite being logged in"
-          }
+            message: "userId is undefined despite being logged in",
+          },
         });
       }
 
@@ -75,8 +78,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           userId_collectionId: {
             userId,
             collectionId,
-          }
-        }
+          },
+        },
       });
       const authors = await prisma.author.findMany({
         where: {
@@ -89,8 +92,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // No permission
         return res.status(403).json({
           error: {
-            message: 'You do not have permission to edit this problem'
-          }
+            message: "You do not have permission to edit this problem",
+          },
         });
       }
     }
@@ -105,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         answer,
         source,
         isAnonymous,
-      }
+      },
     });
 
     res.status(200).json(updatedProblem);

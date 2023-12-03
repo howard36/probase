@@ -15,7 +15,7 @@
 //     <>
 //       <header className="fixed h-16 left-0 top-0 h-screen flex flex-col px-6 py-6 bg-white overflow-y-auto soft-shadow-r-lg" aria-label="Sidenav">
 //         <h2 className="text-3xl font-bold text-center text-slate-900 mt-8 mb-4">Probase</h2>
-        
+
 //         <div className="flex flex-col justify-between flex-1">
 //           <nav>
 //             {links.map(({ href, label, active }) => (
@@ -33,4 +33,4 @@
 //   );
 // }
 
-export {}
+export {};

@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import ClickToEdit from '@/components/click-to-edit';
-import type { SolutionProps } from './types'
-import { useRouter } from 'next/navigation'
+import ClickToEdit from "@/components/click-to-edit";
+import type { SolutionProps } from "./types";
+import { useRouter } from "next/navigation";
 
 export default function EditableSolution({
   solution,
   label,
 }: {
-  solution: SolutionProps
-  label: React.ReactNode
+  solution: SolutionProps;
+  label: React.ReactNode;
 }) {
   const router = useRouter();
 
@@ -19,11 +19,11 @@ export default function EditableSolution({
     // React waits for async functions to finish before updating the page
     const url = `/api/solutions/${solution.id}/edit`;
     const response = await fetch(url, {
-      method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        text
+        text,
       }),
     });
     if (response.status === 200) {
@@ -31,7 +31,7 @@ export default function EditableSolution({
     } else {
       console.error(`updating failed! status = ${response.status}`);
     }
-  }
+  };
 
   return (
     <ClickToEdit

@@ -1,14 +1,17 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '@/utils/prisma';
-import { isNonNegativeInt } from '@/utils/utils';
-import { handleApiError } from '@/utils/error';
+import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from "@/utils/prisma";
+import { isNonNegativeInt } from "@/utils/utils";
+import { handleApiError } from "@/utils/error";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "GET") {
     return res.status(405).json({
       error: {
-        message: 'Invalid method'
-      }
+        message: "Invalid method",
+      },
     });
   }
 
@@ -21,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    console.log({where});
+    console.log({ where });
     const collection = await prisma.collection.findUnique({
       where,
     });
@@ -29,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (collection === null) {
       return res.status(404).json({
         error: {
-          message: `No collection with id ${idString}`
-        }
+          message: `No collection with id ${idString}`,
+        },
       });
     }
 
@@ -72,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     //   }
     // }
 
-    res.status(200).json({collection});
+    res.status(200).json({ collection });
   } catch (error) {
     handleApiError(error, res);
   }

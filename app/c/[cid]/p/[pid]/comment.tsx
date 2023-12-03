@@ -1,12 +1,8 @@
-import Latex from '@/components/latex'
-import type { CommentProps } from './types'
+import Latex from "@/components/latex";
+import type { CommentProps } from "./types";
 // import { canEditComment } from '@/utils/permissions';
 
-export default function Comment({
-  comment
-}: {
-  comment: CommentProps
-}) {
+export default function Comment({ comment }: { comment: CommentProps }) {
   // const canEdit = canEditComment(problem, permission, authors);
 
   const date = new Date(comment.createdAt);
@@ -15,12 +11,18 @@ export default function Comment({
     <div className="py-8 px-6 text-base border-t border-slate-200">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
-          <p className="inline-flex items-center mr-3 text-sm text-slate-900 font-semibold">{/*<img
+          <p className="inline-flex items-center mr-3 text-sm text-slate-900 font-semibold">
+            {/*<img
             className="mr-2 w-6 h-6 rounded-full"
             src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
-            alt="Bonnie Green" />*/}{comment.user.name}</p>
-          <p className="text-sm text-slate-600"><time dateTime="2022-03-12"
-            title="March 12th, 2022">{date.toLocaleDateString()}</time></p>
+            alt="Bonnie Green" />*/}
+            {comment.user.name}
+          </p>
+          <p className="text-sm text-slate-600">
+            <time dateTime="2022-03-12" title="March 12th, 2022">
+              {date.toLocaleDateString()}
+            </time>
+          </p>
         </div>
         {/*
         <button id="dropdownComment3Button" data-dropdown-toggle="dropdownComment3"
@@ -47,7 +49,9 @@ export default function Comment({
         </div>
         */}
       </div>
-      <div className="text-slate-700"><Latex>{`${comment.text}`}</Latex></div>
+      <div className="text-slate-700">
+        <Latex>{`${comment.text}`}</Latex>
+      </div>
     </div>
   );
 

@@ -1,12 +1,12 @@
-import prisma from '@/utils/prisma'
-import { notFound, redirect } from 'next/navigation'
-import type { Params, CollectionProps, ProblemProps } from './types'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/api/auth/[...nextauth]'
-import { canViewCollection } from '@/utils/permissions'
-import ProblemList from './problem-list'
-import { revalidateTags } from '@/utils/revalidate'
-import { internal_api_url } from '@/utils/urls'
+import prisma from "@/utils/prisma";
+import { notFound, redirect } from "next/navigation";
+import type { Params, CollectionProps, ProblemProps } from "./types";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/api/auth/[...nextauth]";
+import { canViewCollection } from "@/utils/permissions";
+import ProblemList from "./problem-list";
+import { revalidateTags } from "@/utils/revalidate";
+import { internal_api_url } from "@/utils/urls";
 
 function sortByNew(p1: ProblemProps, p2: ProblemProps): number {
   const t1 = p1.createdAt;
@@ -19,12 +19,9 @@ function sortByNew(p1: ProblemProps, p2: ProblemProps): number {
 }
 
 async function getCollection(cid: string): Promise<CollectionProps> {
-  const res = await fetch(
-    internal_api_url(`/collections/${cid}/get`),
-    { next: { tags: [
-      `GET /collections/${cid}`
-    ]}}
-  );
+  const res = await fetch(internal_api_url(`/collections/${cid}/get`), {
+    next: { tags: [`GET /collections/${cid}`] },
+  });
   if (res.status === 404) {
     notFound();
   } else if (!res.ok) {
@@ -35,9 +32,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
 
   const res2 = await fetch(
     internal_api_url(`/collections/${collection.id}/problems/get`),
-    { next: { tags: [
-      `GET /collections/${collection.id}/problems`
-    ]}}
+    { next: { tags: [`GET /collections/${collection.id}/problems`] } },
   );
   if (!res2.ok) {
     console.error(res2);
@@ -48,13 +43,16 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   if (cid === "demo") {
     problems.forEach((problem: ProblemProps) => {
       const date = new Date();
-      if (problem.pid === "A1") {  // Quadratic Equation
+      if (problem.pid === "A1") {
+        // Quadratic Equation
         date.setHours(date.getHours() - 24);
         problem.createdAt = date;
-      } else if (problem.pid === "N1") {  // Fermat's Last Theorem
+      } else if (problem.pid === "N1") {
+        // Fermat's Last Theorem
         date.setHours(date.getHours() - 25);
         problem.createdAt = date;
-      } else if (problem.pid === "G1") {  // Edit me!
+      } else if (problem.pid === "G1") {
+        // Edit me!
         date.setHours(date.getHours() - 26);
         problem.createdAt = date;
       } else {
@@ -69,11 +67,7 @@ async function getCollection(cid: string): Promise<CollectionProps> {
   return collection;
 }
 
-export default async function CollectionPage({
-  params
-}: {
-  params: Params
-}) {
+export default async function CollectionPage({ params }: { params: Params }) {
   const { cid } = params;
   const collection = await getCollection(cid);
 
@@ -85,7 +79,14 @@ export default async function CollectionPage({
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
-      return <ProblemList collection={collection} userId="" authors={[]} permission={null} />;
+      return (
+        <ProblemList
+          collection={collection}
+          userId=""
+          authors={[]}
+          permission={null}
+        />
+      );
     } else {
       redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
     }
@@ -107,11 +108,11 @@ export default async function CollectionPage({
   const res = await fetch(
     internal_api_url(`/permissions/${userId}_${collection.id}/get`),
     {
-      cache: 'force-cache', // force-cache needed because it comes after await getServerSession?
+      cache: "force-cache", // force-cache needed because it comes after await getServerSession?
       next: {
-        tags: [`GET /permissions/${userId}_${collection.id}`]
-      }
-    }
+        tags: [`GET /permissions/${userId}_${collection.id}`],
+      },
+    },
   );
   if (!res.ok) {
     console.error(res);
@@ -128,15 +129,15 @@ export default async function CollectionPage({
           userId_collectionId: {
             userId,
             collectionId: collection.id,
-          }
+          },
         },
         update: {
-          accessLevel: 'TeamMember',
+          accessLevel: "TeamMember",
         },
         create: {
           userId,
           collectionId: collection.id,
-          accessLevel: 'TeamMember',
+          accessLevel: "TeamMember",
         },
       });
       await revalidateTags([`GET /permissions/${userId}_${collection.id}`]);
@@ -145,6 +146,12 @@ export default async function CollectionPage({
     }
   }
 
-  return <ProblemList collection={collection} userId={userId} permission={permission} authors={authors} />;
+  return (
+    <ProblemList
+      collection={collection}
+      userId={userId}
+      permission={permission}
+      authors={authors}
+    />
+  );
 }
-

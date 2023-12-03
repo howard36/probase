@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent } from "react";
 
 interface AimeInputProps {
   value: string;
@@ -6,11 +6,15 @@ interface AimeInputProps {
   required: boolean;
 }
 
-const AimeInput: React.FC<AimeInputProps> = ({ value, onValueChange, required }) => {
+const AimeInput: React.FC<AimeInputProps> = ({
+  value,
+  onValueChange,
+  required,
+}) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
-    if (/^\d{1,3}$/.test(newValue) || newValue === '') {
-      newValue = newValue === '' ? '' : String(Number(newValue));
+    if (/^\d{1,3}$/.test(newValue) || newValue === "") {
+      newValue = newValue === "" ? "" : String(Number(newValue));
       onValueChange(newValue);
     }
   };
@@ -25,6 +29,6 @@ const AimeInput: React.FC<AimeInputProps> = ({ value, onValueChange, required })
       required={required}
     />
   );
-}
+};
 
 export default AimeInput;
