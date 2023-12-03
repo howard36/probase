@@ -6,7 +6,6 @@ import { canAddProblem } from "@/utils/permissions";
 import { isNonNegativeInt } from "@/utils/utils";
 import { handleApiError } from "@/utils/error";
 import { Subject } from "@prisma/client";
-import { revalidateTags } from "@/utils/revalidate";
 
 const subjectPrefix = {
   Algebra: "A",
@@ -181,12 +180,6 @@ export default async function handler(
       },
     });
 
-    await revalidateTags([
-      `GET /collections/${collection.id}/problems`,
-      `GET /collections/${collection.cid}/problems`,
-      `GET /problems/${newProblem.id}`,
-      `GET /problems/${collectionId}_${pid}`,
-    ]);
     res.status(201).json(newProblem);
   } catch (error) {
     handleApiError(error, res);

@@ -1,43 +1,35 @@
 import prisma from "@/utils/prisma";
 import { notFound, redirect } from "next/navigation";
 import ProblemPage from "./problem-page";
-import type { AuthorProps, Params, Props } from "./types";
+import { problemInclude, type AuthorProps, type Params, type Props } from "./types";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/api/auth/[...nextauth]";
 import { canViewCollection } from "@/utils/permissions";
 import { AccessLevel } from "@prisma/client";
-import { internal_api_url } from "@/utils/urls";
 
 // TODO: params can be null, but the type does not reflect that
 async function getProps(params: Params, userId: string | null): Promise<Props> {
   const { cid, pid } = params;
 
-  let res = await fetch(internal_api_url(`/collections/${cid}/get`), {
-    cache: "force-cache", // force-cache needed because it comes after await getServerSession?
-    next: { tags: [`GET /collections/${cid}`] },
+  const collection = await prisma.collection.findUnique({
+    where: { cid },
   });
-  if (res.status === 404) {
+  if (collection === null) {
     notFound();
-  } else if (!res.ok) {
-    console.error(res);
-    throw new Error();
   }
-  const { collection } = await res.json();
 
-  const collectionId = collection.id;
-  res = await fetch(internal_api_url(`/problems/${collectionId}_${pid}/get`), {
-    cache: "force-cache", // force-cache needed because it comes after await getServerSession?
-    next: { tags: [`GET /problems/${collectionId}_${pid}`] },
+  const problem = await prisma.problem.findUnique({
+    where: {
+      collectionId_pid: {
+        collectionId: collection.id,
+        pid,
+      },
+    },
+    include: problemInclude,
   });
-  if (res.status === 404) {
+  if (problem === null) {
     notFound();
-  } else if (!res.ok) {
-    console.error(res);
-    throw new Error();
   }
-  const { problem } = await res.json();
-
-  // TODO: separate internal API calls for solutions, comments, and likes
 
   if (userId === null) {
     if (collection.cid !== "demo") {
@@ -57,20 +49,14 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
     return props;
   }
 
-  res = await fetch(
-    internal_api_url(`/permissions/${userId}_${collectionId}/get`),
-    {
-      cache: "force-cache", // force-cache needed because it comes after await getServerSession?
-      next: {
-        tags: [`GET /permissions/${userId}_${collectionId}`],
+  const permission = await prisma.permission.findUnique({
+    where: {
+      userId_collectionId: {
+        userId,
+        collectionId: collection.id,
       },
     },
-  );
-  if (!res.ok) {
-    console.error(res);
-    throw new Error();
-  }
-  const { permission } = await res.json();
+  });
 
   // canViewCollection already checks for null, but we include it here so TypeScript knows that permission is non-null later in the program
   if (permission === null || !canViewCollection(permission)) {
@@ -81,7 +67,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
   const authors = await prisma.author.findMany({
     where: {
       userId,
-      collectionId,
+      collectionId: collection.id,
     },
     select: { id: true },
   });

@@ -7,7 +7,6 @@ import Expired from "./expired";
 import InvalidEmail from "./invalid-email";
 import type { InviteProps } from "./types";
 import { inviteInclude } from "./types";
-import { revalidateTags } from "@/utils/revalidate";
 
 interface Params {
   code: string;
@@ -76,7 +75,6 @@ export default async function InvitePage({ params }: { params: Params }) {
       accessLevel: invite.accessLevel,
     },
   });
-  await revalidateTags([`GET /permissions/${userId}_${invite.collectionId}`]);
 
   if (invite.oneTimeUse) {
     await prisma.invite.update({

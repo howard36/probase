@@ -5,7 +5,6 @@ import prisma from "@/utils/prisma";
 import { canViewCollection } from "@/utils/permissions";
 import { isNonNegativeInt } from "@/utils/utils";
 import { handleApiError } from "@/utils/error";
-import { revalidateTags } from "@/utils/revalidate";
 
 export default async function handler(
   req: NextApiRequest,
@@ -94,12 +93,6 @@ export default async function handler(
       },
     });
 
-    await revalidateTags([
-      `GET /collections/${problem.collection.id}/problems`,
-      `GET /collections/${problem.collection.cid}/problems`,
-      `GET /problems/${problem.id}`,
-      `GET /problems/${problem.collection.id}_${problem.pid}`,
-    ]);
     res.status(201).json(newSolveAttempt);
   } catch (error) {
     handleApiError(error, res);

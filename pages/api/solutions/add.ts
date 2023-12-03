@@ -5,7 +5,6 @@ import prisma from "@/utils/prisma";
 import { canAddSolution } from "@/utils/permissions";
 import { isNonNegativeInt } from "@/utils/utils";
 import { handleApiError } from "@/utils/error";
-import { revalidateTags } from "@/utils/revalidate";
 
 export default async function handler(
   req: NextApiRequest,
@@ -96,10 +95,6 @@ export default async function handler(
       },
     });
 
-    await revalidateTags([
-      `GET /problems/${problem.id}`,
-      `GET /problems/${problem.collectionId}_${problem.pid}`,
-    ]);
     res.status(201).json(newSolution);
   } catch (error) {
     handleApiError(error, res);

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Latex from "@/components/latex";
-import type { ProblemProps, CollectionProps } from "./types";
+import type { ProblemProps } from "./types";
 import Lightbulbs from "@/components/lightbulbs";
 import Likes from "@/components/likes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
-import { Permission } from "@prisma/client";
+import { Collection, Permission } from "@prisma/client";
 import { canEditProblem } from "@/utils/permissions";
 
 const titleLineColors = [
@@ -52,7 +52,7 @@ export default function ProblemCard({
   userId,
   authors,
 }: {
-  collection: CollectionProps;
+  collection: Collection;
   problem: ProblemProps;
   permission: Permission | null;
   userId: string;
