@@ -5,7 +5,6 @@ import { authOptions } from "@/api/auth/[...nextauth]";
 import { canViewCollection } from "@/utils/permissions";
 import ProblemList from "./problem-list";
 import { revalidateTags } from "@/utils/revalidate";
-import { internal_api_url } from "@/utils/urls";
 import { Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";
 
@@ -128,20 +127,14 @@ export default async function Page({ params }: { params: Params }) {
     select: { id: true },
   });
 
-  const res = await fetch(
-    internal_api_url(`/permissions/${userId}_${collection.id}/get`),
-    {
-      cache: "force-cache", // force-cache needed because it comes after await getServerSession?
-      next: {
-        tags: [`GET /permissions/${userId}_${collection.id}`],
+  let permission = await prisma.permission.findUnique({
+    where: {
+      userId_collectionId: {
+        userId,
+        collectionId: collection.id,
       },
     },
-  );
-  if (!res.ok) {
-    console.error(res);
-    throw new Error();
-  }
-  let { permission } = await res.json();
+  });
 
   if (!canViewCollection(permission)) {
     // No permission

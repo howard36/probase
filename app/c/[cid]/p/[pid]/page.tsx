@@ -6,7 +6,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/api/auth/[...nextauth]";
 import { canViewCollection } from "@/utils/permissions";
 import { AccessLevel } from "@prisma/client";
-import { internal_api_url } from "@/utils/urls";
 
 // TODO: params can be null, but the type does not reflect that
 async function getProps(params: Params, userId: string | null): Promise<Props> {
@@ -18,12 +17,11 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
   if (collection === null) {
     notFound();
   }
-  const collectionId = collection.id;
 
   const problem = await prisma.problem.findUnique({
     where: {
       collectionId_pid: {
-        collectionId,
+        collectionId: collection.id,
         pid,
       },
     },
@@ -51,20 +49,14 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
     return props;
   }
 
-  const res = await fetch(
-    internal_api_url(`/permissions/${userId}_${collectionId}/get`),
-    {
-      cache: "force-cache", // force-cache needed because it comes after await getServerSession?
-      next: {
-        tags: [`GET /permissions/${userId}_${collectionId}`],
+  const permission = await prisma.permission.findUnique({
+    where: {
+      userId_collectionId: {
+        userId,
+        collectionId: collection.id,
       },
     },
-  );
-  if (!res.ok) {
-    console.error(res);
-    throw new Error();
-  }
-  const { permission } = await res.json();
+  });
 
   // canViewCollection already checks for null, but we include it here so TypeScript knows that permission is non-null later in the program
   if (permission === null || !canViewCollection(permission)) {
@@ -75,7 +67,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
   const authors = await prisma.author.findMany({
     where: {
       userId,
-      collectionId,
+      collectionId: collection.id,
     },
     select: { id: true },
   });
