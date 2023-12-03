@@ -5,102 +5,6 @@ import TestPage from "./test-page";
 // import { problemInclude, collectionSelect, permissionSelect } from './types'
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/api/auth/[...nextauth]";
-import { internal_api_url } from "@/utils/urls";
-
-// TODO: params can be null, but the type does not reflect that
-// async function getProps(params: Params, userId: string | null): Promise<Props> {
-//   const { cid, testSlug } = params;
-
-//   let res = await fetch(
-//     internal_api_url(`/collections/${cid}/get`),
-//     {
-//       cache: 'force-cache', // force-cache needed because it comes after await getServerSession?
-//       next: { tags: [
-//       `GET /collections/${cid}`
-//     ]}}
-//   );
-//   if (res.status === 404) {
-//     notFound();
-//   } else if (!res.ok) {
-//     console.error(res);
-//     throw new Error();
-//   }
-//   const { collection } = await res.json();
-
-//   const collectionId = collection.id;
-//   res = await fetch(
-//     internal_api_url(`/problems/${collectionId}_${pid}/get`),
-//     {
-//       cache: 'force-cache', // force-cache needed because it comes after await getServerSession?
-//       next: { tags: [
-//       `GET /problems/${collectionId}_${pid}`
-//     ]}}
-//   );
-//   if (res.status === 404) {
-//     notFound();
-//   } else if (!res.ok) {
-//     console.error(res);
-//     throw new Error();
-//   }
-//   const { problem } = await res.json();
-
-//   // TODO: separate internal API calls for solutions and comments
-
-//   if (userId === null) {
-//     if (collection.cid !== "demo") {
-//       throw new Error("null userId on non-demo problem page");
-//     }
-//     const permission = {
-//       accessLevel: 'TeamMember' as AccessLevel
-//     };
-//     const authors: AuthorProps[] = [];
-//     const props: Props = {
-//       problem,
-//       collection,
-//       permission,
-//       authors,
-//     };
-//     return props;
-//   }
-
-//   res = await fetch(
-//     internal_api_url(`/permissions/${userId}_${collectionId}/get`),
-//     {
-//       cache: 'force-cache', // force-cache needed because it comes after await getServerSession?
-//       next: {
-//         tags: [`GET /permissions/${userId}_${collectionId}`]
-//       }
-//     }
-//   );
-//   if (!res.ok) {
-//     console.error(res);
-//     throw new Error();
-//   }
-//   const { permission } = await res.json();
-
-//   // canViewCollection already checks for null, but we include it here so TypeScript knows that permission is non-null later in the program
-//   if (permission === null || !canViewCollection(permission)) {
-//     // No permission to view this page
-//     redirect("/need-permission");
-//   }
-
-//   const authors = await prisma.author.findMany({
-//     where: {
-//       userId,
-//       collectionId,
-//     },
-//     select: { id: true },
-//   });
-
-//   const props: Props = {
-//     problem,
-//     collection,
-//     permission,
-//     authors,
-//   };
-
-//   return props;
-// };
 
 interface Params {
   cid: string;
@@ -155,17 +59,12 @@ export default async function Page({ params }: { params: Params }) {
     },
   });
 
-  const res = await fetch(internal_api_url(`/collections/${cid}/get`), {
-    cache: "force-cache", // force-cache needed because it comes after await getServerSession?
-    next: { tags: [`GET /collections/${cid}`] },
+  const collection = await prisma.collection.findUnique({
+    where: {cid},
   });
-  if (res.status === 404) {
+  if (collection === null) {
     notFound();
-  } else if (!res.ok) {
-    console.error(res);
-    throw new Error();
   }
-  const { collection } = await res.json();
 
   return (
     <TestPage
