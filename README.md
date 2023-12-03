@@ -2,7 +2,6 @@
 
 [Probase](https://www.probase.app/c/demo) is a dynamic online platform designed for math contest enthusiasts, particularly problem writers, testsolvers, and contest organizers. It serves as a collaborative database where authors can save and share the math problems they write. Other users can testsolve these problems and share insights, while contest organizers manage proposals and can compile them into a test.
 
-
 ## Features
 
 - [x] Latex support
@@ -15,11 +14,9 @@
 - [ ] Community validation with upvotes
 - [ ] Draft test compilation
 
-
 ## Roadmap / Vision
 
 TODO
-
 
 ## Development Setup
 
@@ -48,6 +45,7 @@ cp .env.example .env.local
 ```
 
 You'll want to manually edit some of the variables in `.env.local`:
+
 - Replace both `DATABASE_URL` and `DIRECT_URL` with your Postgres connection string. This depends on the username, password, hostname, port, and database name chosen during the Postgres setup above.
 - Replace `NEXTAUTH_SECRET` and `INTERNAL_API_KEY` with unique [random passwords](https://www.random.org/passwords/?num=2&len=32&format=html&rnd=new).
 
@@ -58,17 +56,18 @@ yarn prisma migrate dev
 ```
 
 ### 5. Seed the database with dummy data
+
 ```
 yarn prisma db seed
 ```
 
 ### 6. Start the app!
+
 ```
 yarn dev
 ```
 
 The website should now be running at <http://localhost:3000>
-
 
 ## Contributing
 

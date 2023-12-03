@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface CountdownTimerProps {
   deadline: Date;
 }
 
 const CountdownTimer: React.FC<CountdownTimerProps> = ({ deadline }) => {
-  const [timeLeft, setTimeLeft] = useState('');
+  const [timeLeft, setTimeLeft] = useState("");
   const router = useRouter();
 
   useEffect(() => {

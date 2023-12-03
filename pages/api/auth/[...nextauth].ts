@@ -1,10 +1,16 @@
-import NextAuth from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
-import type { JWT } from "next-auth/jwt"
-import type { User, Account, Profile, Session, NextAuthOptions } from "next-auth"
-import type { AdapterUser } from "next-auth/adapters"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import prisma from '@/utils/prisma'
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import type { JWT } from "next-auth/jwt";
+import type {
+  User,
+  Account,
+  Profile,
+  Session,
+  NextAuthOptions,
+} from "next-auth";
+import type { AdapterUser } from "next-auth/adapters";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import prisma from "@/utils/prisma";
 
 interface jwtCallbackParams {
   token: JWT;
@@ -71,9 +77,9 @@ async function refreshAccessToken(token: JWT) {
       accessToken: refreshedTokens.access_token,
       accessTokenExpires: refreshedTokens.expires_at,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
-    }
+    };
   } catch (error) {
-    console.log("Refresh Token Error:", error)
+    console.log("Refresh Token Error:", error);
 
     return {
       ...token,
@@ -100,7 +106,14 @@ export const authOptions: NextAuthOptions = {
     // ...add more providers here
   ],
   callbacks: {
-    async jwt({ token, user, account, profile, trigger, session }: jwtCallbackParams) {
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+      trigger,
+      session,
+    }: jwtCallbackParams) {
       if (user && account && profile) {
         // Initial sign in
         // when trigger is "signIn" or "signUp", token contains a subset of JWT.
@@ -110,8 +123,8 @@ export const authOptions: NextAuthOptions = {
         token.type = account.type;
         token.emailVerified = profile.email_verified ?? false;
         token.version = 0; // TODO: hardcoded
-        
-        if (account.provider === 'google') {
+
+        if (account.provider === "google") {
           // profile changes depending on which account you use to log in
           token.givenName = profile.given_name;
           token.familyName = profile.family_name;
@@ -121,7 +134,6 @@ export const authOptions: NextAuthOptions = {
           token.refreshToken = account.refresh_token;
         }
 
-
         // Save permission info in JWT
         const permissions = await prisma.permission.findMany({
           where: { userId: token.sub },
@@ -130,12 +142,12 @@ export const authOptions: NextAuthOptions = {
               select: {
                 cid: true,
                 id: true,
-              }
+              },
             },
             accessLevel: true,
           },
         });
-        token.collectionPerms = permissions.map(permission => ({
+        token.collectionPerms = permissions.map((permission) => ({
           colId: permission.collection.id,
           cid: permission.collection.cid,
           isAdmin: permission.accessLevel === "Admin",
@@ -146,7 +158,7 @@ export const authOptions: NextAuthOptions = {
           select: {
             id: true,
             collectionId: true,
-          }
+          },
         });
 
         return token;
@@ -162,14 +174,14 @@ export const authOptions: NextAuthOptions = {
             select: {
               id: true,
               collectionId: true,
-            }
+            },
           });
         }
       }
 
       // TODO: this prevents the saved token from being updated
       // Return previous token if the access token has not expired yet
-      if (token.provider === 'google') {
+      if (token.provider === "google") {
         if (token.accessTokenExpires) {
           // convert from milliseconds to seconds, add 10 second buffer
           if (Date.now() / 1000 + 10 < token.accessTokenExpires) {

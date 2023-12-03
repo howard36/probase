@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from "@prisma/client";
 
 export interface Params {
   cid: string;
@@ -16,21 +16,21 @@ const problemSelect = {
   likes: {
     select: {
       userId: true,
-    }
+    },
   },
   authors: {
     select: {
       id: true,
-    }
+    },
   },
   solveAttempts: {
     select: {
       userId: true,
-    }
+    },
   },
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
-  select: problemSelect
+  select: problemSelect,
 });
 export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
 
@@ -45,6 +45,8 @@ export const collectionSelect = {
   requireTestsolve: true,
 };
 const collectionProps = Prisma.validator<Prisma.CollectionDefaultArgs>()({
-  select: collectionSelect
+  select: collectionSelect,
 });
-export type CollectionProps = Prisma.CollectionGetPayload<typeof collectionProps>;
+export type CollectionProps = Prisma.CollectionGetPayload<
+  typeof collectionProps
+>;

@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
-import readline from 'readline';
+import { PrismaClient } from "@prisma/client";
+import readline from "readline";
 
 const prisma = new PrismaClient();
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 function prompt(question: string): Promise<string> {
@@ -14,8 +14,9 @@ function prompt(question: string): Promise<string> {
 }
 
 function generateRandomCode(length: number): string {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -25,23 +26,23 @@ function generateRandomCode(length: number): string {
 
 async function getCollectionId(cid: string): Promise<number | null> {
   const collection = await prisma.collection.findUnique({
-    where: { cid }
+    where: { cid },
   });
   return collection ? collection.id : null;
 }
 
 async function createInvites() {
-  const inviterId = await prompt('Enter the User ID for the inviter: ');
-  const cid = await prompt('Enter the Collection CID: ');
+  const inviterId = await prompt("Enter the User ID for the inviter: ");
+  const cid = await prompt("Enter the Collection CID: ");
   const collectionId = await getCollectionId(cid);
 
   if (!collectionId) {
-    console.error('Collection not found.');
+    console.error("Collection not found.");
     process.exit(1);
   }
 
   const numberOfInvites = 1000;
-  const accessLevel = 'TeamMember';
+  const accessLevel = "TeamMember";
   const oneTimeUse = true;
   let inviteCodes: string[] = [];
 
@@ -62,7 +63,7 @@ async function createInvites() {
   console.log(`${numberOfInvites} invites created successfully.`);
 
   // Print all the invite codes
-  inviteCodes.forEach(code => console.log(code));
+  inviteCodes.forEach((code) => console.log(code));
 
   rl.close();
 }

@@ -1,7 +1,7 @@
 import { AccessLevel } from "@prisma/client";
 import NextAuth, { DefaultSession } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import { Prisma } from "@prisma/client"
+import { Prisma } from "@prisma/client";
 
 interface CollectionPerm {
   colId: number;
@@ -13,7 +13,7 @@ const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
   select: {
     id: true,
     collectionId: true,
-  }
+  },
 });
 type AuthorPerm = Prisma.AuthorGetPayload<typeof authorPerm>;
 

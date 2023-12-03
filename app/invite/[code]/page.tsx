@@ -1,13 +1,13 @@
-import prisma from '@/utils/prisma'
-import { notFound, redirect } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/api/auth/[...nextauth]'
-import NotLoggedIn from './not-logged-in'
-import Expired from './expired'
-import InvalidEmail from './invalid-email'
-import type { InviteProps } from './types'
-import { inviteInclude } from './types'
-import { revalidateTags } from '@/utils/revalidate'
+import prisma from "@/utils/prisma";
+import { notFound, redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/api/auth/[...nextauth]";
+import NotLoggedIn from "./not-logged-in";
+import Expired from "./expired";
+import InvalidEmail from "./invalid-email";
+import type { InviteProps } from "./types";
+import { inviteInclude } from "./types";
+import { revalidateTags } from "@/utils/revalidate";
 
 interface Params {
   code: string;
@@ -26,18 +26,14 @@ async function getInvite(code: string): Promise<InviteProps> {
   return invite;
 }
 
-export default async function InvitePage({
-  params
-}: {
-  params: Params
-}) {
+export default async function InvitePage({ params }: { params: Params }) {
   const session = await getServerSession(authOptions);
 
   const { code } = params;
   const invite = await getInvite(code);
 
   if (invite.expiresAt !== null) {
-    return <Expired invite={invite} />
+    return <Expired invite={invite} />;
   }
 
   if (session === null) {
@@ -48,16 +44,19 @@ export default async function InvitePage({
 
   const email = session.currentEmail;
   if (email === null || email === undefined) {
-    throw new Error('session.email is null or undefined');
+    throw new Error("session.email is null or undefined");
   }
 
-  if (invite.emailDomain !== null && !email.endsWith("@" + invite.emailDomain)) {
+  if (
+    invite.emailDomain !== null &&
+    !email.endsWith("@" + invite.emailDomain)
+  ) {
     return <InvalidEmail invite={invite} email={email} />;
   }
 
   const userId = session.userId;
   if (userId === undefined) {
-    throw new Error('session.userId is undefined')
+    throw new Error("session.userId is undefined");
   }
 
   // create permission if it doesn't already exist
@@ -66,7 +65,7 @@ export default async function InvitePage({
       userId_collectionId: {
         userId,
         collectionId: invite.collectionId,
-      }
+      },
     },
     update: {
       accessLevel: invite.accessLevel,
@@ -84,7 +83,7 @@ export default async function InvitePage({
       where: { code: invite.code },
       data: {
         expiresAt: new Date(),
-      }
+      },
     });
   }
 

@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { useState, useRef, useEffect } from 'react'
-import type { KeyboardEvent } from 'react'
+import { useState, useRef, useEffect } from "react";
+import type { KeyboardEvent } from "react";
 
 export default function ClickToEditInput({
   savedText,
@@ -10,11 +10,11 @@ export default function ClickToEditInput({
   onReset,
   required,
 }: {
-  savedText: string
-  placeholder?: string
-  onSave: (text: string) => void
-  onReset: () => void
-  required: boolean
+  savedText: string;
+  placeholder?: string;
+  onSave: (text: string) => void;
+  onReset: () => void;
+  required: boolean;
 }) {
   const [text, setText] = useState(savedText);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,9 +44,9 @@ export default function ClickToEditInput({
       value={text}
       placeholder={placeholder}
       ref={inputRef}
-      onChange={e => setText(e.target.value)}
+      onChange={(e) => setText(e.target.value)}
       onKeyDown={handleKeyDown}
-      onBlur={() => (text !== "") && onSave(text)}
+      onBlur={() => text !== "" && onSave(text)}
       className="bg-slate-50 w-full rounded-md"
       required={required}
     />

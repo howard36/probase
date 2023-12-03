@@ -1,14 +1,17 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '@/utils/prisma';
-import { isNonNegativeInt } from '@/utils/utils';
-import { handleApiError } from '@/utils/error';
+import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from "@/utils/prisma";
+import { isNonNegativeInt } from "@/utils/utils";
+import { handleApiError } from "@/utils/error";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.query.secret !== process.env.INTERNAL_API_KEY) {
     return res.status(403).json({
       error: {
-        message: `You need an API key to access this endpoint`
-      }
+        message: `You need an API key to access this endpoint`,
+      },
     });
   }
 
@@ -22,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       collectionId_pid: {
         collectionId: parseInt(collectionId),
         pid,
-      }
+      },
     };
   }
 
@@ -34,12 +37,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (problem === null) {
       return res.status(404).json({
         error: {
-          message: `No problem with id ${idString}`
-        }
+          message: `No problem with id ${idString}`,
+        },
       });
     }
 
-    res.status(200).json({problem});
+    res.status(200).json({ problem });
   } catch (error) {
     handleApiError(error, res);
   }

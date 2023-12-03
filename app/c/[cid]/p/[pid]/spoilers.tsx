@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useState } from 'react';
-import Answer from './answer';
-import Solution from './solution'
-import AddSolution from './add-solution'
-import type { Props } from './types'
+import { useState } from "react";
+import Answer from "./answer";
+import Solution from "./solution";
+import AddSolution from "./add-solution";
+import type { Props } from "./types";
 
 export default function Spoilers(props: Props) {
   const { problem, collection, permission, authors } = props;
@@ -22,7 +22,12 @@ export default function Spoilers(props: Props) {
     const sol = problem.solutions[0];
     solution = (
       <div className="my-8">
-        <Solution solution={sol} collection={collection} permission={permission} authors={authors} />
+        <Solution
+          solution={sol}
+          collection={collection}
+          permission={permission}
+          authors={authors}
+        />
       </div>
     );
   }
@@ -37,13 +42,23 @@ export default function Spoilers(props: Props) {
     if (hidden) {
       return (
         <div className="my-12">
-          <button onClick={() => setHidden(false)} className="w-44 py-4 rounded-md bg-sky-500 hover:bg-sky-600 text-base text-slate-50 font-semibold leading-none">Show spoilers</button>
+          <button
+            onClick={() => setHidden(false)}
+            className="w-44 py-4 rounded-md bg-sky-500 hover:bg-sky-600 text-base text-slate-50 font-semibold leading-none"
+          >
+            Show spoilers
+          </button>
         </div>
       );
     } else {
       return (
         <div className="my-12">
-          <button onClick={() => setHidden(true)} className="w-44 py-4 rounded-md bg-sky-500 hover:bg-sky-600 text-base text-slate-50 font-semibold leading-none">Hide spoilers</button>
+          <button
+            onClick={() => setHidden(true)}
+            className="w-44 py-4 rounded-md bg-sky-500 hover:bg-sky-600 text-base text-slate-50 font-semibold leading-none"
+          >
+            Hide spoilers
+          </button>
           {answer}
           {solution}
         </div>

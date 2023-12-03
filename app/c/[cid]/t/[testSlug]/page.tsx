@@ -1,11 +1,11 @@
-import prisma from '@/utils/prisma'
-import { notFound, redirect } from 'next/navigation'
-import TestPage from './test-page'
+import prisma from "@/utils/prisma";
+import { notFound, redirect } from "next/navigation";
+import TestPage from "./test-page";
 // import type { AuthorProps, Params, Props } from './types'
 // import { problemInclude, collectionSelect, permissionSelect } from './types'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/api/auth/[...nextauth]'
-import { internal_api_url } from '@/utils/urls'
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/api/auth/[...nextauth]";
+import { internal_api_url } from "@/utils/urls";
 
 // TODO: params can be null, but the type does not reflect that
 // async function getProps(params: Params, userId: string | null): Promise<Props> {
@@ -103,15 +103,11 @@ import { internal_api_url } from '@/utils/urls'
 // };
 
 interface Params {
-  cid: string
-  testSlug: string
+  cid: string;
+  testSlug: string;
 }
 
-export default async function Page({
-  params
-}: {
-  params: Params
-}) {
+export default async function Page({ params }: { params: Params }) {
   const { cid, testSlug } = params;
   const session = await getServerSession(authOptions);
   if (session === null) {
@@ -132,7 +128,7 @@ export default async function Page({
 
   // let props: Props = await getProps(params, userId);
 
-  const testIdStr = testSlug.split('-').pop();
+  const testIdStr = testSlug.split("-").pop();
   if (testIdStr === undefined) {
     return;
   }
@@ -141,8 +137,8 @@ export default async function Page({
   const test = await prisma.test.findUnique({
     where: {
       id: testId,
-    }
-  })
+    },
+  });
   if (test === null) {
     notFound();
   }
@@ -155,18 +151,14 @@ export default async function Page({
       problem: true,
     },
     orderBy: {
-      position: "asc"
+      position: "asc",
     },
-  })
-  
-  const res = await fetch(
-    internal_api_url(`/collections/${cid}/get`),
-    {
-      cache: 'force-cache', // force-cache needed because it comes after await getServerSession?
-      next: { tags: [
-      `GET /collections/${cid}`
-    ]}}
-  );
+  });
+
+  const res = await fetch(internal_api_url(`/collections/${cid}/get`), {
+    cache: "force-cache", // force-cache needed because it comes after await getServerSession?
+    next: { tags: [`GET /collections/${cid}`] },
+  });
   if (res.status === 404) {
     notFound();
   } else if (!res.ok) {
@@ -175,5 +167,11 @@ export default async function Page({
   }
   const { collection } = await res.json();
 
-  return <TestPage name={test.name} testProblems={testProblems} collection={collection} />;
+  return (
+    <TestPage
+      name={test.name}
+      testProblems={testProblems}
+      collection={collection}
+    />
+  );
 }

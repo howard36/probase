@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import type { Collection, Subject } from '@prisma/client'
-import Link from 'next/link'
-import ClickToEdit from '@/components/click-to-edit'
-import Label from '@/components/label'
-import AimeInput from './aime-input'
-import SubmitButton from '@/components/submit-button'
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import type { Collection, Subject } from "@prisma/client";
+import Link from "next/link";
+import ClickToEdit from "@/components/click-to-edit";
+import Label from "@/components/label";
+import AimeInput from "./aime-input";
+import SubmitButton from "@/components/submit-button";
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -40,21 +40,15 @@ const subjects = [
   },
 ];
 
-let difficultyTiers = [
-  "Very easy",
-  "Easy",
-  "Medium",
-  "Hard",
-  "Very hard",
-]
+let difficultyTiers = ["Very easy", "Easy", "Medium", "Hard", "Very hard"];
 
 // TODO: types?
 export default function ProblemForm({
   collection,
   authorId,
 }: {
-  collection: Collection
-  authorId: number
+  collection: Collection;
+  authorId: number;
 }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -72,20 +66,20 @@ export default function ProblemForm({
     // submit new problem
     const url = `/api/problems/add`;
     const response = await fetch(url, {
-      method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         collectionId: collection.id,
         title,
         subject,
         statement,
-        answer: (answer === "") ? null : answer,
-        solutionText: (solution === "") ? undefined : solution,
+        answer: answer === "" ? null : answer,
+        solutionText: solution === "" ? undefined : solution,
         authorId,
         difficulty: parseInt(difficulty),
         isAnonymous: false,
-      })
+      }),
     });
     if (response.status === 201) {
       const newProblem = await response.json();
@@ -105,28 +99,32 @@ export default function ProblemForm({
 
   let answerInput;
   if (collection.answerFormat === "ShortAnswer") {
-    answerInput = <div className="my-8">
-      <ClickToEdit
-        type="input"
-        label={answerLabel}
-        initialText={answer}
-        placeholder="$42$"
-        autosave={true}
-        onSave={(text: string) => setAnswer(text)}
-        required={collection.requireAnswer}
-      />
-    </div>
+    answerInput = (
+      <div className="my-8">
+        <ClickToEdit
+          type="input"
+          label={answerLabel}
+          initialText={answer}
+          placeholder="$42$"
+          autosave={true}
+          onSave={(text: string) => setAnswer(text)}
+          required={collection.requireAnswer}
+        />
+      </div>
+    );
   } else if (collection.answerFormat === "Integer") {
     // TODO
   } else if (collection.answerFormat === "AIME") {
-    answerInput = <div>
-      {answerLabel}
-      <AimeInput
-        value={answer}
-        onValueChange={setAnswer}
-        required={collection.requireAnswer}
-      />
-    </div>
+    answerInput = (
+      <div>
+        {answerLabel}
+        <AimeInput
+          value={answer}
+          onValueChange={setAnswer}
+          required={collection.requireAnswer}
+        />
+      </div>
+    );
   }
 
   if (collection.cid === "otis-mock-aime") {
@@ -136,15 +134,30 @@ export default function ProblemForm({
       "AIME 7-9",
       "AIME 10-12",
       "AIME 13-15",
-    ]
+    ];
   }
 
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
-        <Link href={`/c/${collection.cid}`} prefetch={true} className="text-slate-600 hover:text-slate-800 underline flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        <Link
+          href={`/c/${collection.cid}`}
+          prefetch={true}
+          className="text-slate-600 hover:text-slate-800 underline flex items-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
           </svg>
           <span className="ml-1">Back to {collection.name}</span>
         </Link>
@@ -164,9 +177,20 @@ export default function ProblemForm({
           </div>
           <div className="my-8">
             <Label text="SUBJECT" />
-            <select value={subject} required onChange={(e: React.ChangeEvent<SubjectSelectElement>)=>{setSubject(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            <select
+              value={subject}
+              required
+              onChange={(e: React.ChangeEvent<SubjectSelectElement>) => {
+                setSubject(e.target.value);
+              }}
+              className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            >
               <option value="" key="Empty" disabled></option>
-              {subjects.map(s => <option value={s.enum} key={s.enum}>{s.display}</option>)}
+              {subjects.map((s) => (
+                <option value={s.enum} key={s.enum}>
+                  {s.display}
+                </option>
+              ))}
             </select>
           </div>
           {/* 
@@ -176,11 +200,20 @@ export default function ProblemForm({
           */}
           <div className="my-8">
             <Label text="DIFFICULTY" />
-            <select value={difficulty} required={collection.requireDifficulty} onChange={(e) => {setDifficulty(e.target.value)}} className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            <select
+              value={difficulty}
+              required={collection.requireDifficulty}
+              onChange={(e) => {
+                setDifficulty(e.target.value);
+              }}
+              className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            >
               <option value="" disabled></option>
-              {difficultyTiers.map((tier, idx) =>
-                <option value={idx + 1} key={idx}>{tier}</option>
-              )}
+              {difficultyTiers.map((tier, idx) => (
+                <option value={idx + 1} key={idx}>
+                  {tier}
+                </option>
+              ))}
             </select>
           </div>
           <div className="my-8">
@@ -194,9 +227,7 @@ export default function ProblemForm({
               required={true}
             />
           </div>
-          <div className="my-8">
-            {answerInput}
-          </div>
+          <div className="my-8">{answerInput}</div>
           <div className="my-8">
             <ClickToEdit
               type="textarea"
@@ -208,9 +239,7 @@ export default function ProblemForm({
               required={collection.requireSolution}
             />
           </div>
-          <SubmitButton isSubmitting={isSubmitting}>
-            Submit
-          </SubmitButton>
+          <SubmitButton isSubmitting={isSubmitting}>Submit</SubmitButton>
         </form>
       </div>
     </div>

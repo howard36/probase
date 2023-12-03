@@ -1,13 +1,19 @@
-'use client'
+"use client";
 
-import { faLock } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faLock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { useState } from "react";
 
-export default function LockedPage({problem, time}: {problem: ProblemProps, time: string}) {
+export default function LockedPage({
+  problem,
+  time,
+}: {
+  problem: ProblemProps;
+  time: string;
+}) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -15,12 +21,15 @@ export default function LockedPage({problem, time}: {problem: ProblemProps, time
     e.preventDefault();
     setIsSubmitting(true);
 
-    const response = await fetch(`/api/problems/${problem.id}/testsolve/start`, {
-      method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({}),
-    });
+    const response = await fetch(
+      `/api/problems/${problem.id}/testsolve/start`,
+      {
+        method: "POST",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      },
+    );
     if (response.status === 201) {
       router.refresh();
     } else {
@@ -36,8 +45,14 @@ export default function LockedPage({problem, time}: {problem: ProblemProps, time
         <span className="text-slate-500 font-semibold">Testsolve to view</span>
       </div>
       <div className="mb-8 space-y-4">
-        <p>Once you start testsolving, you&apos;ll have <strong>{time}</strong>. Keep an eye on the clock!</p>
-        <p>Speed and accuracy matter! A <strong>correct first submission</strong> can earn you a spot on the leaderboard.</p>
+        <p>
+          Once you start testsolving, you&apos;ll have <strong>{time}</strong>.
+          Keep an eye on the clock!
+        </p>
+        <p>
+          Speed and accuracy matter! A <strong>correct first submission</strong>{" "}
+          can earn you a spot on the leaderboard.
+        </p>
         <p>Best of luck!</p>
       </div>
       <form onSubmit={startTestsolving}>
