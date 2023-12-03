@@ -47,7 +47,7 @@ cp .env.example .env.local
 You'll want to manually edit some of the variables in `.env.local`:
 
 - Replace both `DATABASE_URL` and `DIRECT_URL` with your Postgres connection string. This depends on the username, password, hostname, port, and database name chosen during the Postgres setup above.
-- Replace `NEXTAUTH_SECRET` and `INTERNAL_API_KEY` with unique [random passwords](https://www.random.org/passwords/?num=2&len=32&format=html&rnd=new).
+- Replace `NEXTAUTH_SECRET` with a [random password](https://www.random.org/passwords/?num=1&len=32&format=html&rnd=new).
 
 ### 4. Run database migrations
 
