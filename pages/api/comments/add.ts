@@ -5,7 +5,6 @@ import { authOptions } from "../auth/[...nextauth]";
 import { handleApiError } from "@/utils/error";
 import { isNonNegativeInt } from "@/utils/utils";
 import { canAddComment } from "@/utils/permissions";
-import { revalidateTags } from "@/utils/revalidate";
 
 export default async function handler(
   req: NextApiRequest,
@@ -100,10 +99,6 @@ export default async function handler(
       },
     });
 
-    await revalidateTags([
-      `GET /problems/${problemId}`,
-      `GET /problems/${problem.collection.id}_${problem.pid}`,
-    ]);
     res.status(201).json(newComment);
   } catch (error) {
     handleApiError(error, res);

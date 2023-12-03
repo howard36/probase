@@ -5,7 +5,6 @@ import { authOptions } from "../../auth/[...nextauth]";
 import { canEditProblem } from "@/utils/permissions";
 import { isNonNegativeInt } from "@/utils/utils";
 import { handleApiError } from "@/utils/error";
-import { revalidateTags } from "@/utils/revalidate";
 
 export default async function handler(
   req: NextApiRequest,
@@ -115,15 +114,6 @@ export default async function handler(
       },
     });
 
-    const { id: collectionId, cid } = problem.collection;
-    const { pid } = updatedProblem;
-
-    await revalidateTags([
-      `GET /collections/${collectionId}/problems`,
-      `GET /collections/${cid}/problems`,
-      `GET /problems/${problemId}`,
-      `GET /problems/${collectionId}_${pid}`,
-    ]);
     res.status(200).json(updatedProblem);
   } catch (error) {
     handleApiError(error, res);

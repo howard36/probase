@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/api/auth/[...nextauth]";
 import { canViewCollection } from "@/utils/permissions";
 import ProblemList from "./problem-list";
-import { revalidateTags } from "@/utils/revalidate";
 import { Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";
 
@@ -156,7 +155,6 @@ export default async function Page({ params }: { params: Params }) {
           accessLevel: "TeamMember",
         },
       });
-      await revalidateTags([`GET /permissions/${userId}_${collection.id}`]);
     } else {
       redirect("/need-permission");
     }
