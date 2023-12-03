@@ -118,7 +118,7 @@ export default async function CollectionPage({
     throw new Error();
   }
   let { permission } = await res.json();
-  
+
   if (!canViewCollection(permission)) {
     // No permission
     if (cid === "demo") {
@@ -139,7 +139,7 @@ export default async function CollectionPage({
           accessLevel: 'TeamMember',
         },
       });
-      revalidateTags([`GET /permissions/${userId}_${collection.id}`]);
+      await revalidateTags([`GET /permissions/${userId}_${collection.id}`]);
     } else {
       redirect("/need-permission");
     }

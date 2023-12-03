@@ -67,13 +67,13 @@ export default function AddSolution({
     setEditing(false);
   }
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = async (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Escape") {
       handleDiscard();
     } else if (event.key === 'Enter' && (event.shiftKey || event.ctrlKey || event.metaKey)) { 
       // Equivalent to clicking the "Submit" button
       if (text !== "") {
-        handleSubmit();
+        await handleSubmit();
       }
     }
   };
