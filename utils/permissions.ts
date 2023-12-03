@@ -1,4 +1,4 @@
-import { AccessLevel, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type { Session } from "next-auth";
 
 const collectionPerm = Prisma.validator<Prisma.CollectionArgs>()({

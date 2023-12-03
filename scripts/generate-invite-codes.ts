@@ -44,7 +44,7 @@ async function createInvites() {
   const numberOfInvites = 1000;
   const accessLevel = "TeamMember";
   const oneTimeUse = true;
-  let inviteCodes: string[] = [];
+  const inviteCodes: string[] = [];
 
   for (let i = 0; i < numberOfInvites; i++) {
     const code = generateRandomCode(22);
