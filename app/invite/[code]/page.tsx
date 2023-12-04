@@ -35,18 +35,9 @@ export default async function InvitePage({ params }: { params: Params }) {
     return <NotLoggedIn invite={invite} />;
   }
 
-  // TODO: if you already have permission, skip (unless this gives you higher permission)
-
   const email = session.currentEmail;
   if (email === null || email === undefined) {
     throw new Error("session.email is null or undefined");
-  }
-
-  if (
-    invite.emailDomain !== null &&
-    !email.endsWith("@" + invite.emailDomain)
-  ) {
-    return <InvalidEmail invite={invite} email={email} />;
   }
 
   const userId = session.userId;
@@ -69,6 +60,17 @@ export default async function InvitePage({ params }: { params: Params }) {
   }
 
   if (!hasPermission) {
+    if (invite.expiresAt !== null) {
+      return <Expired invite={invite} />;
+    }
+
+    if (
+      invite.emailDomain !== null &&
+      !email.endsWith("@" + invite.emailDomain)
+    ) {
+      return <InvalidEmail invite={invite} email={email} />;
+    }
+
     await prisma.permission.upsert({
       where: {
         userId_collectionId: {
