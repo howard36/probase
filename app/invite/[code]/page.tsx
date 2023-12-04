@@ -31,10 +31,6 @@ export default async function InvitePage({ params }: { params: Params }) {
   const { code } = params;
   const invite = await getInvite(code);
 
-  if (invite.expiresAt !== null) {
-    return <Expired invite={invite} />;
-  }
-
   if (session === null) {
     return <NotLoggedIn invite={invite} />;
   }
@@ -58,23 +54,38 @@ export default async function InvitePage({ params }: { params: Params }) {
     throw new Error("session.userId is undefined");
   }
 
-  // create permission if it doesn't already exist
-  await prisma.permission.upsert({
+  const permission = await prisma.permission.findUnique({
     where: {
       userId_collectionId: {
         userId,
         collectionId: invite.collectionId,
       },
     },
-    update: {
-      accessLevel: invite.accessLevel,
-    },
-    create: {
-      userId,
-      collectionId: invite.collectionId,
-      accessLevel: invite.accessLevel,
-    },
   });
+
+  let hasPermission = false;
+  if (permission !== null && (permission.accessLevel === "Admin" || permission.accessLevel === "TeamMember")) {
+    hasPermission = true;
+  }
+
+  if (!hasPermission) {
+    await prisma.permission.upsert({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId: invite.collectionId,
+        },
+      },
+      update: {
+        accessLevel: invite.accessLevel,
+      },
+      create: {
+        userId,
+        collectionId: invite.collectionId,
+        accessLevel: invite.accessLevel,
+      },
+    });
+  }
 
   if (invite.oneTimeUse) {
     await prisma.invite.update({
