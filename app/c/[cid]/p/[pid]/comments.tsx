@@ -3,11 +3,10 @@
 import { useState } from "react";
 import Comment from "./comment";
 import type { Props } from "./types";
-import { useRouter } from "next/navigation";
 import SubmitButton from "@/components/submit-button";
+import { addComment } from "./actions";
 
 export default function Comments(props: Props) {
-  const router = useRouter();
   const [text, setText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -15,25 +14,17 @@ export default function Comments(props: Props) {
   const allComments = problem.comments;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
     setIsSubmitting(true);
+    e.preventDefault();
 
-    const response = await fetch(`/api/comments/add`, {
-      method: "POST",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        problemId: problem.id,
-        text,
-      }),
-    });
-    if (response.status === 201) {
+    const resp = await addComment(problem.id, text);
+
+    if (resp.ok) {
       setText("");
-      router.refresh();
-    } else {
-      console.error("Failed to add comment!");
+      setIsSubmitting(false);
+    } else if ('error' in resp) {
+      console.error(resp.error.message);
     }
-    setIsSubmitting(false);
   };
 
   const comments = (
