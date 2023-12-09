@@ -5,6 +5,7 @@ import ClickToEditInput from "./click-to-edit-input";
 
 export default function ClickToEdit({
   type,
+  name,
   label,
   initialText,
   placeholder,
@@ -13,6 +14,7 @@ export default function ClickToEdit({
   required,
 }: {
   type: "input" | "textarea";
+  name: string;
   label?: React.ReactNode;
   initialText: string;
   placeholder?: string;
@@ -41,6 +43,7 @@ export default function ClickToEdit({
         {label}
         {type === "input" ? (
           <ClickToEditInput
+            name={name}
             savedText={savedText}
             placeholder={placeholder}
             onSave={handleSave}
@@ -49,6 +52,7 @@ export default function ClickToEdit({
           />
         ) : (
           <ClickToEditTextarea
+            name={name}
             savedText={savedText}
             placeholder={placeholder}
             autosave={autosave}
@@ -64,6 +68,7 @@ export default function ClickToEdit({
       <div onClick={() => setEditing(true)}>
         {label}
         <Latex>{`${savedText}`}</Latex>
+        <input type="hidden" name={name} value={savedText} />
       </div>
     );
   }

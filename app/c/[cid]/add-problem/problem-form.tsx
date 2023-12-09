@@ -8,6 +8,7 @@ import ClickToEdit from "@/components/click-to-edit";
 import Label from "@/components/label";
 import AimeInput from "./aime-input";
 import SubmitButton from "@/components/submit-button";
+import { addProblem } from "./actions";
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -59,36 +60,40 @@ export default function ProblemForm({
   const [solution, setSolution] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // submit new problem
-    const url = `/api/problems/add`;
-    const response = await fetch(url, {
-      method: "POST",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        collectionId: collection.id,
-        title,
-        subject,
-        statement,
-        answer: answer === "" ? null : answer,
-        solutionText: solution === "" ? undefined : solution,
-        authorId,
-        difficulty: parseInt(difficulty),
-        isAnonymous: false,
-      }),
-    });
-    if (response.status === 201) {
-      const newProblem = await response.json();
-      router.push(`/c/${collection.cid}/p/${newProblem.pid}`);
-      router.refresh();
-    } else {
-      // TODO: retry with different PID (or use atomic increment)
-      console.error("Failed to submit problem!");
-    }
+    const formData = new FormData(e.currentTarget);
+    console.log(formData)
+    const resp = await addProblem(collection.id, formData)
+
+    // // submit new problem
+    // const url = `/api/problems/add`;
+    // const response = await fetch(url, {
+    //   method: "POST",
+    //   cache: "no-store",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     collectionId: collection.id,
+    //     title,
+    //     subject,
+    //     statement,
+    //     answer: answer === "" ? null : answer,
+    //     solutionText: solution === "" ? undefined : solution,
+    //     authorId,
+    //     difficulty: parseInt(difficulty),
+    //     isAnonymous: false,
+    //   }),
+    // });
+    // if (response.status === 201) {
+    //   const newProblem = await response.json();
+    //   router.push(`/c/${collection.cid}/p/${newProblem.pid}`);
+    //   router.refresh();
+    // } else {
+    //   // TODO: retry with different PID (or use atomic increment)
+    //   console.error("Failed to submit problem!");
+    // }
     setIsSubmitting(false);
   };
 
@@ -102,6 +107,7 @@ export default function ProblemForm({
     answerInput = (
       <div className="my-8">
         <ClickToEdit
+          name="answer"
           type="input"
           label={answerLabel}
           initialText={answer}
@@ -166,6 +172,7 @@ export default function ProblemForm({
         <form onSubmit={handleSubmit}>
           <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
             <ClickToEdit
+              name="title"
               type="input"
               label={titleLabel}
               initialText={title}
@@ -178,6 +185,7 @@ export default function ProblemForm({
           <div className="my-8">
             <Label text="SUBJECT" />
             <select
+              name="subject"
               value={subject}
               required
               onChange={(e: React.ChangeEvent<SubjectSelectElement>) => {
@@ -193,14 +201,10 @@ export default function ProblemForm({
               ))}
             </select>
           </div>
-          {/* 
-          <div className={`py-2 px-6 inline-block mb-4 text-slate-50 font-semibold text-sm text-center leading-none rounded-full bg-gradient-to-r ${gradient}`}>
-            {subject}
-          </div>
-          */}
           <div className="my-8">
             <Label text="DIFFICULTY" />
             <select
+              name="difficulty"
               value={difficulty}
               required={collection.requireDifficulty}
               onChange={(e) => {
@@ -218,6 +222,7 @@ export default function ProblemForm({
           </div>
           <div className="my-8">
             <ClickToEdit
+              name="statement"
               type="textarea"
               label={statementLabel}
               initialText={statement}
@@ -230,6 +235,7 @@ export default function ProblemForm({
           <div className="my-8">{answerInput}</div>
           <div className="my-8">
             <ClickToEdit
+              name="solution"
               type="textarea"
               label={solutionLabel}
               initialText={solution}
@@ -239,6 +245,7 @@ export default function ProblemForm({
               required={collection.requireSolution}
             />
           </div>
+          <input name="authorId" value={authorId} type="hidden" />
           <SubmitButton isSubmitting={isSubmitting}>Submit</SubmitButton>
         </form>
       </div>

@@ -21,6 +21,7 @@ const AimeInput: React.FC<AimeInputProps> = ({
 
   return (
     <input
+      name="answer"
       type="text"
       value={value}
       onChange={handleChange}
