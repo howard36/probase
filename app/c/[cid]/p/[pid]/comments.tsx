@@ -50,7 +50,7 @@ export default function Comments(props: Props) {
 
   return (
     <div>
-      <h2 className="mb-6 text-lg lg:text-2xl font-bold text-slate-900">
+      <h2 className="mb-4 text-lg lg:text-2xl font-bold text-slate-900">
         Discussion
       </h2>
       <form className="mb-6" onSubmit={handleSubmit}>

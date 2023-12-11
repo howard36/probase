@@ -55,8 +55,8 @@ export default function Testsolve({
   }
 
   return (
-    <div>
-      <Label text="LEADERBOARD" />
+    <div className="my-8">
+      <h2 className="mb-4 text-lg lg:text-2xl font-bold text-slate-900">Leaderboard</h2>
       <table className="min-w-full divide-y divide-gray-200">
         <tbody className="bg-white divide-y divide-gray-200">
           {entries.map((entry, idx) => (
