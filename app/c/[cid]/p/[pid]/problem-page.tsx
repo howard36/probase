@@ -7,9 +7,9 @@ import Comments from "./comments";
 import ArchiveToggle from "./archive-toggle";
 import Lightbulbs from "@/components/lightbulbs";
 import Likes from "@/components/likes";
-import prisma from "@/utils/prisma";
 import LockedPage from "./locked-page";
 import Testsolve from "./testsolve";
+import Leaderboard from "./leaderboard";
 import { canEditProblem } from "@/utils/permissions";
 
 // darker color first, for more contrast
@@ -60,14 +60,6 @@ export default async function ProblemPage(props: Props) {
     collection.requireTestsolve &&
     !canEditProblem(problem, permission, authors)
   ) {
-    const solveAttempt = await prisma.solveAttempt.findUnique({
-      where: {
-        userId_problemId: {
-          userId,
-          problemId: problem.id,
-        },
-      },
-    });
     const difficulty = problem.difficulty;
     if (difficulty === null || difficulty === 0) {
       throw new Error(
@@ -76,7 +68,8 @@ export default async function ProblemPage(props: Props) {
     }
     const testsolveTimeMinutes = difficulty * 5 + 5; // 10, 15, 20, 25, 30
 
-    if (solveAttempt === null) {
+    const solveAttempt = problem.solveAttempts.find(attempt => attempt.userId === userId);
+    if (solveAttempt === undefined) {
       testsolveOrAnswers = (
         <LockedPage
           problem={problem}
@@ -102,6 +95,7 @@ export default async function ProblemPage(props: Props) {
             </div>
             {written_by}
             <Spoilers {...props} />
+            {collection.requireTestsolve && <Leaderboard solveAttempts={problem.solveAttempts} userId={userId} />}
             <Comments {...props} />
           </div>
         );
@@ -131,6 +125,7 @@ export default async function ProblemPage(props: Props) {
         </div>
         {written_by}
         <Spoilers {...props} />
+        {collection.requireTestsolve && <Leaderboard solveAttempts={problem.solveAttempts} userId={userId} />}
         <Comments {...props} />
       </div>
     );
