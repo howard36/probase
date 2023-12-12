@@ -1,4 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PermissionProps, SolveAttemptProps } from "./types";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { cn } from "@/utils/utils";
 
 interface LeaderboardEntry {
   rank: number;
@@ -72,11 +75,16 @@ export default function Testsolve({
         <tbody className="bg-white divide-y divide-gray-200">
           {visibleEntries.map((entry, idx) => (
             <tr key={idx} className={entry.highlight ? "bg-yellow-100" : ""}>
-              <td className="px-6 py-3 whitespace-nowrap">{entry.rank}. {entry.name}</td>
-              <td className="px-6 py-3 whitespace-nowrap text-red-500">✖ {entry.numFailed}</td>
-              <td className="px-6 py-3 whitespace-nowrap text-green-500">
+              <td className="pr-3 py-3 whitespace-nowrap text-right">{entry.rank}.</td>
+              <td className="py-3 whitespace-nowrap font-semibold">{entry.name}</td>
+              <td className="py-3 whitespace-nowrap text-red-500">
+                {entry.numFailed > 0 &&
+                  <span><FontAwesomeIcon icon={faTimes} /> {entry.numFailed}</span>
+                }
+              </td>
+              <td className="pr-6 py-3 whitespace-nowrap text-green-500">
                 {entry.solveTimeMillis &&
-                  <span>✔ {formatTime(entry.solveTimeMillis)}</span>
+                  <span><FontAwesomeIcon icon={faCheck} /> {formatTime(entry.solveTimeMillis)}</span>
                 }
               </td>
             </tr>
