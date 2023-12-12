@@ -95,7 +95,7 @@ export default async function ProblemPage(props: Props) {
             </div>
             {written_by}
             <Spoilers {...props} />
-            {collection.requireTestsolve && <Leaderboard solveAttempts={problem.solveAttempts} userId={userId} />}
+            {collection.requireTestsolve && <Leaderboard solveAttempts={problem.solveAttempts} userId={userId} permission={permission} />}
             <Comments {...props} />
           </div>
         );
@@ -125,7 +125,7 @@ export default async function ProblemPage(props: Props) {
         </div>
         {written_by}
         <Spoilers {...props} />
-        {collection.requireTestsolve && <Leaderboard solveAttempts={problem.solveAttempts} userId={userId} />}
+        {collection.requireTestsolve && <Leaderboard solveAttempts={problem.solveAttempts} userId={userId} permission={permission} />}
         <Comments {...props} />
       </div>
     );
