@@ -49,6 +49,18 @@ const commentProps = Prisma.validator<Prisma.CommentDefaultArgs>()({
 });
 export type CommentProps = Prisma.CommentGetPayload<typeof commentProps>;
 
+const solveAttemptInclude = {
+  user: {
+    select: {
+      name: true,
+    },
+  },
+};
+const solveAttemptProps = Prisma.validator<Prisma.SolveAttemptDefaultArgs>()({
+  include: solveAttemptInclude,
+});
+export type SolveAttemptProps = Prisma.SolveAttemptGetPayload<typeof solveAttemptProps>;
+
 export const problemInclude = {
   authors: {
     select: {
@@ -74,6 +86,9 @@ export const problemInclude = {
     },
   },
   likes: true,
+  solveAttempts: {
+    include: solveAttemptInclude,
+  },
 };
 const problemProps = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   include: problemInclude,
