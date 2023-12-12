@@ -74,6 +74,7 @@ export default async function ProblemPage(props: Props) {
         <LockedPage
           problem={problem}
           time={`${testsolveTimeMinutes} minutes`}
+          unsolved={problem.solveAttempts.every(attempt => attempt.solvedAt === null)}
         />
       );
     } else {

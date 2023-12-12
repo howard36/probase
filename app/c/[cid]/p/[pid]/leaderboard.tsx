@@ -69,15 +69,15 @@ export default function Testsolve({
   });
 
   // Non-admin users are restricted to only seeing the top 3
-  const numTop = permission?.accessLevel === "Admin" ? numAttempts : Math.min(3, numSolved);
-  const visibleEntries = entries.filter((entry, idx) => idx < numTop || entry.highlight)
+  const numShown = permission?.accessLevel === "Admin" ? numAttempts : Math.min(3, numSolved);
+  const shownEntries = entries.filter((entry, idx) => idx < numShown || entry.highlight)
 
   return (
     <div className="my-12">
       <h2 className="mb-4 text-lg lg:text-2xl font-bold text-slate-900">Leaderboard</h2>
       <table className="min-w-full">
         <tbody className="">
-          {visibleEntries.map((entry, idx) => (
+          {shownEntries.map((entry, idx) => (
             <tr key={idx} className={entry.highlight ? "bg-yellow-100" : ""}>
               <td className="pr-3 py-3 whitespace-nowrap text-right w-12">{entry.rank}{entry.rank && '.'}</td>
               <td className="py-3 whitespace-nowrap font-semibold">{entry.name}</td>
@@ -95,7 +95,7 @@ export default function Testsolve({
           ))}
         </tbody>
       </table>
-      <p className="my-4 text-slate-700 text-base">{numSolved} out of {numAttempts} testsolvers solved this problem{numTop < numSolved && ` (showing top ${numTop})`}</p>
+      <p className="my-4 text-slate-700 text-base">{numSolved} out of {numAttempts} testsolvers solved this problem{numShown < numSolved && ` (showing top ${numShown})`}</p>
     </div>
   );
 }
