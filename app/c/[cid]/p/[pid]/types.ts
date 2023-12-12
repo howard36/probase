@@ -59,7 +59,9 @@ const solveAttemptInclude = {
 const solveAttemptProps = Prisma.validator<Prisma.SolveAttemptDefaultArgs>()({
   include: solveAttemptInclude,
 });
-export type SolveAttemptProps = Prisma.SolveAttemptGetPayload<typeof solveAttemptProps>;
+export type SolveAttemptProps = Prisma.SolveAttemptGetPayload<
+  typeof solveAttemptProps
+>;
 
 export const problemInclude = {
   authors: {

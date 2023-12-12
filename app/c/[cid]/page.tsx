@@ -9,7 +9,7 @@ import { ProblemProps } from "./types";
 
 async function getCollection(cid: string): Promise<Collection> {
   const collection = await prisma.collection.findUnique({
-    where: { cid }
+    where: { cid },
   });
   if (collection === null) {
     notFound();
