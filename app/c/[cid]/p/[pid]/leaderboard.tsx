@@ -3,7 +3,7 @@ import { PermissionProps, SolveAttemptProps } from "./types";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 interface LeaderboardEntry {
-  rank: number;
+  rank: number | null;
   name: string;
   solveTimeMillis: number | null;
   numFailed: number;
@@ -31,7 +31,7 @@ export default function Testsolve({
   const entries: LeaderboardEntry[] = solveAttempts.map(attempt => {
     if (attempt.solvedAt !== null) {
       return {
-        rank: 0,
+        rank: null,
         name: attempt.user.name!,
         solveTimeMillis: attempt.solvedAt!.getTime() - attempt.startedAt.getTime(),
         numFailed: attempt.numSubmissions - 1,
@@ -39,7 +39,7 @@ export default function Testsolve({
       };
     } else {
       return {
-        rank: 0,
+        rank: null,
         name: attempt.user.name!,
         solveTimeMillis: null,
         numFailed: attempt.numSubmissions,
@@ -50,6 +50,9 @@ export default function Testsolve({
 
   entries.sort((a, b) => {
     if (a.solveTimeMillis !== null && b.solveTimeMillis !== null) {
+      if (a.numFailed !== b.numFailed) {
+        return a.numFailed - b.numFailed;
+      }
       return a.solveTimeMillis - b.solveTimeMillis;
     } else if (a.solveTimeMillis === null && b.solveTimeMillis === null) {
       return a.name.localeCompare(b.name);
@@ -60,7 +63,9 @@ export default function Testsolve({
 
   // Set ranks. All non-solves have the same rank
   entries.forEach((entry, idx) => {
-    entry.rank = Math.min(idx, numSolved) + 1
+    if (entry.solveTimeMillis !== null) {
+      entry.rank = idx + 1;
+    }
   });
 
   // Non-admin users are restricted to only seeing the top 3
@@ -74,10 +79,10 @@ export default function Testsolve({
         <tbody className="">
           {visibleEntries.map((entry, idx) => (
             <tr key={idx} className={entry.highlight ? "bg-yellow-100" : ""}>
-              <td className="pr-3 py-3 whitespace-nowrap text-right w-12">{entry.rank}.</td>
+              <td className="pr-3 py-3 whitespace-nowrap text-right w-12">{entry.rank}{entry.rank && '.'}</td>
               <td className="py-3 whitespace-nowrap font-semibold">{entry.name}</td>
               <td className="py-3 whitespace-nowrap text-red-500">
-                {entry.numFailed > 0 &&
+                {(entry.numFailed > 0 || entry.solveTimeMillis === null) &&
                   <span><FontAwesomeIcon icon={faTimes} /> {entry.numFailed}</span>
                 }
               </td>
