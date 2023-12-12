@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PermissionProps, SolveAttemptProps } from "./types";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { cn } from "@/utils/utils";
 
 interface LeaderboardEntry {
   rank: number;
@@ -29,7 +28,7 @@ export default function Testsolve({
   const numSolved = solveAttempts.filter(attempt => attempt.solvedAt !== null).length;
   const numAttempts = solveAttempts.length;
 
-  let entries: LeaderboardEntry[] = solveAttempts.map(attempt => {
+  const entries: LeaderboardEntry[] = solveAttempts.map(attempt => {
     if (attempt.solvedAt !== null) {
       return {
         rank: 0,
