@@ -55,7 +55,11 @@ export default async function InvitePage({ params }: { params: Params }) {
   });
 
   let hasPermission = false;
-  if (permission !== null && (permission.accessLevel === "Admin" || permission.accessLevel === "TeamMember")) {
+  if (
+    permission !== null &&
+    (permission.accessLevel === "Admin" ||
+      permission.accessLevel === "TeamMember")
+  ) {
     hasPermission = true;
   }
 

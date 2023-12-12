@@ -55,9 +55,12 @@ export default function LockedPage({
           Speed and accuracy matter! A <strong>correct first submission</strong>{" "}
           can earn you a spot on the leaderboard.
         </p>
-        {unsolved &&
-          <p>No one has solved this problem yet&mdash;<strong>You could be the first!</strong></p>
-        }
+        {unsolved && (
+          <p>
+            No one has solved this problem yet&mdash;
+            <strong>You could be the first!</strong>
+          </p>
+        )}
         <p>Best of luck!</p>
       </div>
       <form onSubmit={startTestsolving}>

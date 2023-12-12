@@ -60,7 +60,7 @@ export default async function Page({ params }: { params: Params }) {
   });
 
   const collection = await prisma.collection.findUnique({
-    where: {cid},
+    where: { cid },
   });
   if (collection === null) {
     notFound();

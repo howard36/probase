@@ -68,13 +68,17 @@ export default async function ProblemPage(props: Props) {
     }
     const testsolveTimeMinutes = difficulty * 5 + 5; // 10, 15, 20, 25, 30
 
-    const solveAttempt = problem.solveAttempts.find(attempt => attempt.userId === userId);
+    const solveAttempt = problem.solveAttempts.find(
+      (attempt) => attempt.userId === userId,
+    );
     if (solveAttempt === undefined) {
       testsolveOrAnswers = (
         <LockedPage
           problem={problem}
           time={`${testsolveTimeMinutes} minutes`}
-          unsolved={problem.solveAttempts.every(attempt => attempt.solvedAt === null)}
+          unsolved={problem.solveAttempts.every(
+            (attempt) => attempt.solvedAt === null,
+          )}
         />
       );
     } else {
@@ -96,7 +100,13 @@ export default async function ProblemPage(props: Props) {
             </div>
             {written_by}
             <Spoilers {...props} />
-            {collection.requireTestsolve && <Leaderboard solveAttempts={problem.solveAttempts} userId={userId} permission={permission} />}
+            {collection.requireTestsolve && (
+              <Leaderboard
+                solveAttempts={problem.solveAttempts}
+                userId={userId}
+                permission={permission}
+              />
+            )}
             <Comments {...props} />
           </div>
         );
@@ -126,7 +136,13 @@ export default async function ProblemPage(props: Props) {
         </div>
         {written_by}
         <Spoilers {...props} />
-        {collection.requireTestsolve && <Leaderboard solveAttempts={problem.solveAttempts} userId={userId} permission={permission} />}
+        {collection.requireTestsolve && (
+          <Leaderboard
+            solveAttempts={problem.solveAttempts}
+            userId={userId}
+            permission={permission}
+          />
+        )}
         <Comments {...props} />
       </div>
     );
