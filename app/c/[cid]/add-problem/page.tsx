@@ -1,9 +1,9 @@
-import { authOptions } from "@/api/auth/[...nextauth]";
 import ProblemForm from "./problem-form";
 import prisma from "@/utils/prisma";
-import { Session, getServerSession } from "next-auth";
+import { Session } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import LoginRequired from "@/components/login-required";
+import { auth } from "auth";
 
 interface Params {
   cid: string;
@@ -69,7 +69,8 @@ async function getCollection(cid: string) {
 
 export default async function AddProblemPage({ params }: { params: Params }) {
   const { cid } = params;
-  const session = await getServerSession(authOptions);
+  const session = await auth();
+  console.log({session})
   if (session === null) {
     // Not logged in
     if (cid === "demo") {

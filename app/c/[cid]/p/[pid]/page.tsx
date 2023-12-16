@@ -1,14 +1,7 @@
 import prisma from "@/utils/prisma";
 import { notFound, redirect } from "next/navigation";
 import ProblemPage from "./problem-page";
-import {
-  problemInclude,
-  type AuthorProps,
-  type Params,
-  type Props,
-} from "./types";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/api/auth/[...nextauth]";
+import { problemInclude, type AuthorProps, type Params, type Props } from "./types";
 import { canViewCollection } from "@/utils/permissions";
 import { AccessLevel } from "@prisma/client";
 
