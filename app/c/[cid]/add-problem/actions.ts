@@ -125,7 +125,7 @@ export async function addProblem(collectionId: number, formData: FormData) {
       },
     });
 
-    revalidateTag(`collection/${collectionId}/problems`);
+    revalidateTag(`collection/${collection.cid}/problems`);
     redirect(`/c/${collection.cid}/p/${newProblem.pid}`);
   } catch (err) {
     if (isRedirectError(err)) {

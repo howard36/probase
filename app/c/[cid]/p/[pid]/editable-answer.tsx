@@ -2,7 +2,7 @@
 
 import ClickToEdit from "@/components/click-to-edit";
 import type { Problem } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { editProblem } from "./actions";
 
 export default function EditableAnswer({
   problem,
@@ -11,25 +11,10 @@ export default function EditableAnswer({
   problem: Problem;
   label: React.ReactNode;
 }) {
-  const router = useRouter();
+  const action = editProblem.bind(null, problem.id);
 
   const saveAnswer = async (text: string) => {
-    // alert(text);
-    // React waits for async functions to finish before updating the page
-    const url = `/api/problems/${problem.id}/edit`;
-    const response = await fetch(url, {
-      method: "POST",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        answer: text,
-      }),
-    });
-    if (response.status === 200) {
-      router.refresh();
-    } else {
-      console.error(`updating failed! status = ${response.status}`);
-    }
+    await action({ answer: text });
   };
 
   if (problem.answer === null) {
@@ -41,6 +26,7 @@ export default function EditableAnswer({
   return (
     <ClickToEdit
       type="input"
+      name="answer"
       label={label}
       initialText={problem.answer}
       autosave={true}
