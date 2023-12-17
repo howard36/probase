@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { likeProblem } from "../app/c/[cid]/p/[pid]/actions";
 
 interface ProblemWithLikes {
   id: number;
@@ -21,7 +22,7 @@ export default function Likes({
   const [liked, setLiked] = useState(
     problem.likes.some((like) => like.userId === userId),
   );
-  const router = useRouter();
+  const action = likeProblem.bind(null, problem.id);
 
   const handleClick = async (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -31,16 +32,7 @@ export default function Likes({
       setNumLikes(numLikes + 1);
     }
     setLiked(!liked);
-
-    await fetch(`/api/problems/${problem.id}/like`, {
-      method: "POST",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        like: !liked,
-      }),
-    });
-    router.refresh();
+    action(!liked);
   };
 
   return (

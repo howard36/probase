@@ -1,10 +1,100 @@
 'use server'
 
-import { canAddComment, canEditProblem } from "@/utils/permissions";
+import { canAddComment, canEditProblem, canViewCollection } from "@/utils/permissions";
 import prisma from "@/utils/prisma";
 import { error } from "@/utils/server-actions";
+import { Prisma } from "@prisma/client";
 import { auth } from "auth";
 import { revalidateTag } from "next/cache";
+
+export async function likeProblem(problemId: number, like: boolean) {
+  try {
+    const problem = await prisma.problem.findUnique({
+      where: { id: problemId },
+      select: {
+        pid: true,
+        collection: {
+          select: {
+            id: true,
+            cid: true,
+          },
+        },
+      },
+    });
+  
+    if (problem === null) {
+      return error(`No problem with id ${problemId}`);
+    }
+
+    const session = await auth();
+    if (session === null) {
+      return error("Not signed in");
+    }
+
+    const userId = session.userId;
+    if (userId === undefined) {
+      return error("userId is undefined despite being logged in");
+    }
+
+    const collectionId = problem.collection.id;
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId,
+        },
+      },
+    });
+    if (!canViewCollection(permission)) {
+      // No permission
+      return error("You do not have permission to like this problem");
+    }
+
+    if (like === true) {
+      await prisma.problemLike.upsert({
+        where: {
+          userId_problemId: {
+            userId,
+            problemId,
+          },
+        },
+        update: {},
+        create: {
+          userId,
+          problemId,
+        },
+      });
+    } else if (like === false) {
+      try {
+        await prisma.problemLike.delete({
+          where: {
+            userId_problemId: {
+              userId,
+              problemId,
+            },
+          },
+        });
+      } catch (err) {
+        if (
+          err instanceof Prisma.PrismaClientKnownRequestError &&
+          err?.code === "P2025"
+        ) {
+          // This error is okay, we're deleting something that doesn't exist.
+          // But it's still unexpected, because it shouldn't happen under normal use. So we log it
+          console.error(err);
+        } else {
+          return error(String(err));
+        }
+      }
+    } else {
+      return error(`like must be a boolean, but got ${like}`);
+    }
+
+    revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
+  } catch (err) {
+    return error(String(err));
+  }
+}
 
 interface Data {
   title?: string;
@@ -18,6 +108,7 @@ export async function editProblem(problemId: number, data: Data) {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
       select: {
+        pid: true,
         collection: {
           select: {
             id: true,
@@ -80,7 +171,7 @@ export async function editProblem(problemId: number, data: Data) {
       },
     });
 
-    revalidateTag(`problem/${problem.collection.cid}_${problemId}`);
+    revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
   } catch (err) {
     return error(String(err));
   }
