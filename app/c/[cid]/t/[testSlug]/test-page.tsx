@@ -29,14 +29,14 @@ export default function TestPage(props: any) {
           <span className="ml-1">Back to {collection.name}</span>
         </Link>
       </div>
-      <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
-        <div className="text-3xl sm:text-4xl text-slate-900 font-bold mb-12">
+      <div className="w-128 sm:w-144 md:w-160 max-w-full mx-auto text-base sm:text-lg md:text-xl">
+        <div className="px-8 text-3xl sm:text-4xl text-slate-900 font-bold mb-12">
           {name}
         </div>
         <ol>
           {testProblems.map((testProblem: any) => (
             <li key={testProblem.position}>
-              <div className="mb-16">
+              <div className="my-8">
                 <TestCard position={testProblem.position} problem={testProblem.problem} collection={collection} solveAttempts={solveAttempts} permission={permission} authors={authors} />
               </div>
             </li>
