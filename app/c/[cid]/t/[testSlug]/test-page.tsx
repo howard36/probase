@@ -1,10 +1,8 @@
 import Link from "next/link";
-// import type { Props } from './types'
-import Label from "@/components/label";
-import Latex from "@/components/latex";
+import TestCard from "./test-card";
 
 export default function TestPage(props: any) {
-  const { name, testProblems, collection } = props;
+  const { name, testProblems, collection, solveAttempts, permission, authors } = props;
 
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
@@ -39,8 +37,7 @@ export default function TestPage(props: any) {
           {testProblems.map((testProblem: any) => (
             <li key={testProblem.position}>
               <div className="mb-16">
-                <Label text={"PROBLEM " + testProblem.position} />
-                <Latex>{testProblem.problem.statement}</Latex>
+                <TestCard position={testProblem.position} problem={testProblem.problem} collection={collection} solveAttempts={solveAttempts} permission={permission} authors={authors} />
               </div>
             </li>
           ))}
