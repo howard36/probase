@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PermissionProps, SolveAttemptProps } from "./types";
+import { SolveAttemptProps } from "./types";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 interface LeaderboardEntry {
@@ -19,11 +19,11 @@ function formatTime(millis: number): string {
 export default function Testsolve({
   solveAttempts,
   userId,
-  permission,
+  canViewAll,
 }: {
   solveAttempts: SolveAttemptProps[];
   userId: string;
-  permission: PermissionProps | null;
+  canViewAll: boolean;
 }) {
   const numSolved = solveAttempts.filter(
     (attempt) => attempt.solvedAt !== null,
@@ -71,9 +71,8 @@ export default function Testsolve({
     }
   });
 
-  // Non-admin users are restricted to only seeing the top 3
-  const numShown =
-    permission?.accessLevel === "Admin" ? numAttempts : Math.min(3, numSolved);
+  // Non-admin users are restricted to only seeing the top 5
+  const numShown = canViewAll ? numAttempts : Math.min(5, numSolved);
   const shownEntries = entries.filter(
     (entry, idx) => idx < numShown || entry.highlight,
   );

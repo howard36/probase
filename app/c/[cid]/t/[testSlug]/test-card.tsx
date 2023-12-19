@@ -1,4 +1,4 @@
-import { Collection, Permission, Problem, SolveAttempt } from "@prisma/client";
+import { Collection, Permission, SolveAttempt } from "@prisma/client";
 import Label from "@/components/label";
 import Latex from "@/components/latex";
 import { canEditProblem } from "@/utils/permissions";
@@ -53,4 +53,3 @@ export default function ProblemCard({
     </Link>
   );
 }
-

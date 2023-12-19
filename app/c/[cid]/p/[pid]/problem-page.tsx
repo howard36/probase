@@ -44,7 +44,10 @@ export default async function ProblemPage(props: Props) {
   const { problem, collection, permission, userId, authors } = props;
 
   let written_by;
-  if (problem.authors.length > 0 && (collection.showAuthors || permission.accessLevel === "Admin")) {
+  if (
+    problem.authors.length > 0 &&
+    (collection.showAuthors || permission.accessLevel === "Admin")
+  ) {
     written_by = (
       <p className="italic text-slate-700 text-base mb-8 text-right">
         Written by {problem.authors[0].displayName}
@@ -104,7 +107,7 @@ export default async function ProblemPage(props: Props) {
               <Leaderboard
                 solveAttempts={problem.solveAttempts}
                 userId={userId}
-                permission={permission}
+                canViewAll={canEditProblem(problem, permission, authors)}
               />
             )}
             <Comments {...props} />
@@ -140,7 +143,7 @@ export default async function ProblemPage(props: Props) {
           <Leaderboard
             solveAttempts={problem.solveAttempts}
             userId={userId}
-            permission={permission}
+            canViewAll={canEditProblem(problem, permission, authors)}
           />
         )}
         <Comments {...props} />
