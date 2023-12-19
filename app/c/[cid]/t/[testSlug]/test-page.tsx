@@ -2,7 +2,8 @@ import Link from "next/link";
 import TestCard from "./test-card";
 
 export default function TestPage(props: any) {
-  const { name, testProblems, collection, solveAttempts, permission, authors } = props;
+  const { name, testProblems, collection, solveAttempts, permission, authors } =
+    props;
 
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
@@ -37,7 +38,14 @@ export default function TestPage(props: any) {
           {testProblems.map((testProblem: any) => (
             <li key={testProblem.position}>
               <div className="my-8">
-                <TestCard position={testProblem.position} problem={testProblem.problem} collection={collection} solveAttempts={solveAttempts} permission={permission} authors={authors} />
+                <TestCard
+                  position={testProblem.position}
+                  problem={testProblem.problem}
+                  collection={collection}
+                  solveAttempts={solveAttempts}
+                  permission={permission}
+                  authors={authors}
+                />
               </div>
             </li>
           ))}

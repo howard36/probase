@@ -6,7 +6,7 @@ import TestPage from "./test-page";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/api/auth/[...nextauth]";
 import { canViewCollection } from "@/utils/permissions";
-import { AccessLevel, Author, SolveAttempt } from "@prisma/client";
+import { AccessLevel, SolveAttempt } from "@prisma/client";
 
 interface Params {
   cid: string;
@@ -25,12 +25,11 @@ export default async function Page({ params }: { params: Params }) {
     where: { id: testId },
     include: {
       collection: true,
-    }
+    },
   });
   if (test === null) {
     notFound();
   }
-
 
   let userId = null;
   const session = await getServerSession(authOptions);
@@ -45,7 +44,6 @@ export default async function Page({ params }: { params: Params }) {
     }
   }
 
-
   let permission = null;
   if (userId !== null) {
     permission = await prisma.permission.findUnique({
@@ -57,12 +55,12 @@ export default async function Page({ params }: { params: Params }) {
       },
       select: {
         accessLevel: true,
-      }
+      },
     });
   } else if (cid === "demo") {
     permission = {
       accessLevel: "TeamMember" as AccessLevel,
-    }
+    };
   }
 
   let solveAttempts: SolveAttempt[] = [];
@@ -72,7 +70,7 @@ export default async function Page({ params }: { params: Params }) {
       redirect("/need-permission");
     }
     solveAttempts = await prisma.solveAttempt.findMany({
-      where: { userId }
+      where: { userId },
     });
     authors = await prisma.author.findMany({
       where: {
@@ -92,10 +90,10 @@ export default async function Page({ params }: { params: Params }) {
         include: {
           authors: {
             select: {
-              id: true
-            }
-          }
-        }
+              id: true,
+            },
+          },
+        },
       },
     },
     orderBy: {
