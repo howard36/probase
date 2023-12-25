@@ -70,7 +70,6 @@ async function getCollection(cid: string) {
 export default async function AddProblemPage({ params }: { params: Params }) {
   const { cid } = params;
   const session = await auth();
-  console.log({session})
   if (session === null) {
     // Not logged in
     if (cid === "demo") {

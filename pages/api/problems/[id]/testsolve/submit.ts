@@ -1,10 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../auth/[...nextauth]";
 import prisma from "@/utils/prisma";
 import { canViewCollection } from "@/utils/permissions";
 import { isNonNegativeInt } from "@/utils/utils";
 import { handleApiError } from "@/utils/error";
+import { auth } from "auth";
 
 // 10 seconds of extra submission time to account for things like network delay, computer clocks being out of sync, etc.
 const BUFFER_TIME_MILLIS = 10_000;
@@ -32,7 +31,7 @@ export default async function handler(
     });
   }
 
-  const session = await getServerSession(req, res, authOptions);
+  const session = await auth(req, res);
   if (session === null) {
     return res.status(401).json({
       error: {

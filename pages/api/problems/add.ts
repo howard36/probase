@@ -1,11 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]";
 import prisma from "@/utils/prisma";
 import { canAddProblem } from "@/utils/permissions";
 import { isNonNegativeInt } from "@/utils/utils";
 import { handleApiError } from "@/utils/error";
 import { Subject } from "@prisma/client";
+import { auth } from "auth";
 
 const subjectPrefix = {
   Algebra: "A",
@@ -26,7 +25,7 @@ export default async function handler(
     });
   }
 
-  const session = await getServerSession(req, res, authOptions);
+  const session = await auth(req, res);
   if (session === null) {
     return res.status(401).json({
       error: {

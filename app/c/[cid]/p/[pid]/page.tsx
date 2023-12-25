@@ -4,6 +4,7 @@ import ProblemPage from "./problem-page";
 import { problemInclude, type AuthorProps, type Params, type Props } from "./types";
 import { canViewCollection } from "@/utils/permissions";
 import { AccessLevel } from "@prisma/client";
+import { auth } from "auth";
 
 // TODO: params can be null, but the type does not reflect that
 async function getProps(params: Params, userId: string | null): Promise<Props> {
@@ -83,7 +84,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
 
 export default async function Page({ params }: { params: Params }) {
   const { cid, pid } = params;
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (session === null) {
     // Not logged in
     if (cid === "demo") {

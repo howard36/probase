@@ -1,12 +1,9 @@
 import prisma from "@/utils/prisma";
 import { notFound, redirect } from "next/navigation";
 import TestPage from "./test-page";
-// import type { AuthorProps, Params, Props } from './types'
-// import { problemInclude, collectionSelect, permissionSelect } from './types'
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/api/auth/[...nextauth]";
-import { canViewCollection } from "@/utils/permissions";
+import { auth } from "auth";
 import { AccessLevel, SolveAttempt } from "@prisma/client";
+import { canViewCollection } from "@/utils/permissions";
 
 interface Params {
   cid: string;
@@ -32,7 +29,7 @@ export default async function Page({ params }: { params: Params }) {
   }
 
   let userId = null;
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (session === null) {
     if (cid !== "demo") {
       redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Ft%2F${testSlug}`);

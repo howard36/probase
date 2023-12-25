@@ -40,11 +40,12 @@ const solutionPerm = Prisma.validator<Prisma.SolutionArgs>()({
 });
 type SolutionPerm = Prisma.SolutionGetPayload<typeof solutionPerm>;
 
-export function isAdmin(session: Session, collection: CollectionPerm) {
-  const id = collection.id;
-  return session.collectionPerms.some(
-    (perm) => perm.colId === id && perm.isAdmin,
-  );
+// TODO: don't include null, the caller should handle it
+export function isAdmin(permission: PermissionPerm | null) {
+  if (permission === null) {
+    return false;
+  }
+  return permission.accessLevel === "Admin"
 }
 
 export function canAddProblem(permission: PermissionPerm | null): boolean {

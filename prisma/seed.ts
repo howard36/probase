@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
 const prisma = new PrismaClient();
 const adapter = PrismaAdapter(prisma);

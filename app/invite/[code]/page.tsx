@@ -1,12 +1,11 @@
 import prisma from "@/utils/prisma";
 import { notFound, redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/api/auth/[...nextauth]";
 import NotLoggedIn from "./not-logged-in";
 import Expired from "./expired";
 import InvalidEmail from "./invalid-email";
 import type { InviteProps } from "./types";
 import { inviteInclude } from "./types";
+import { auth } from "auth";
 
 interface Params {
   code: string;
@@ -26,7 +25,7 @@ async function getInvite(code: string): Promise<InviteProps> {
 }
 
 export default async function InvitePage({ params }: { params: Params }) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   const { code } = params;
   const invite = await getInvite(code);
