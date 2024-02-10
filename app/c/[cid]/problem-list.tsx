@@ -28,21 +28,20 @@ export default function ProblemList({
 
   const lowerQuery = query.toLowerCase();
 
-  const showProblem = (problem: ProblemProps): boolean => {
-    if (!showArchived && problem.isArchived) {
-      // hide archived problems
-      return false;
-    }
-    if (query) {
-      return (
-        problem.title.toLowerCase().includes(lowerQuery) ||
-        problem.statement.toLowerCase().includes(lowerQuery)
-      );
-    }
-    // include all problems by default
-    return true;
+  if (!showArchived) {
+    // hide archived problems
+    problems = problems.filter((problem) => !problem.isArchived);
   }
-
+  problems = problems.filter((problem) => {
+    if (query === "") {
+      // Don't apply filter, just include all problems
+      return true;
+    }
+    return (
+      problem.title.toLowerCase().includes(lowerQuery) ||
+      problem.statement.toLowerCase().includes(lowerQuery)
+    );
+  });
 
   return (
     <div className="p-8 md:py-24 whitespace-pre-wrap break-words">
@@ -101,7 +100,7 @@ export default function ProblemList({
         <div>
           <ul>
             {problems.map((problem) => (
-              <li key={problem.pid} className={showProblem(problem) ? "" : "hidden"}>
+              <li key={problem.pid}>
                 <ProblemCard
                   collection={collection}
                   problem={problem}
