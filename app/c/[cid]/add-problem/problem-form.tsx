@@ -65,7 +65,6 @@ export default function ProblemForm({
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
-    console.log(formData)
     const resp = await addProblem(collection.id, formData)
 
     // // submit new problem

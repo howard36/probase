@@ -234,3 +234,58 @@ export async function addComment(problemId: number, text: string) {
     return error(String(err))
   }
 }
+
+export async function startTestsolve(problemId: number) {
+  const session = await auth();
+  if (session === null) {
+    return error("Not signed in");
+  }
+
+  const userId = session.userId;
+  if (userId === undefined) {
+    return error("userId is undefined despite being logged in")
+  }
+
+  try {
+    const problem = await prisma.problem.findUnique({
+      where: { id: problemId },
+      select: {
+        id: true,
+        pid: true,
+        collection: {
+          select: {
+            id: true,
+            cid: true,
+          },
+        },
+      },
+    });
+    if (problem === null) {
+      return error("Problem not found");
+    }
+
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId: problem.collection.id,
+        },
+      },
+    });
+    // TODO: use canTestsolveProblem
+    if (!canViewCollection(permission)) {
+      return error("You do not have permission to edit this collection");
+    }
+
+    await prisma.solveAttempt.create({
+      data: {
+        problemId,
+        userId,
+      },
+    });
+
+    return { ok: true };
+  } catch (err) {
+    return error(String(err))
+  }
+}
