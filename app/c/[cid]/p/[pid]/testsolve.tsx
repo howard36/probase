@@ -8,6 +8,7 @@ import Label from "@/components/label";
 import { SolveAttempt } from "@prisma/client";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
+import { submitTestsolve } from "./actions";
 
 export default function Testsolve({
   problem,
@@ -27,21 +28,10 @@ export default function Testsolve({
     e.preventDefault();
     setIsSubmitting(true);
 
-    const response = await fetch(
-      `/api/problems/${problem.id}/testsolve/submit`,
-      {
-        method: "POST",
-        cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          answer,
-        }),
-      },
-    );
+    const resp = await submitTestsolve(problem.id, answer);
 
-    if (response.status === 200) {
-      const { correct } = await response.json();
-      if (correct) {
+    if (resp.ok) {
+      if (resp.correct) {
         router.refresh();
       } else {
         setWrongAnswer(answer);

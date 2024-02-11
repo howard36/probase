@@ -289,3 +289,94 @@ export async function startTestsolve(problemId: number) {
     return error(String(err))
   }
 }
+
+const BUFFER_TIME_MILLIS = 10_000;
+
+export async function submitTestsolve(problemId: number, answer: string) {
+  const submittedAt = new Date();
+
+  const session = await auth();
+  if (session === null) {
+    return error("Not signed in");
+  }
+
+  const userId = session.userId;
+  if (userId === undefined) {
+    return error("userId is undefined despite being logged in")
+  }
+
+  try {
+    const problem = await prisma.problem.findUnique({
+      where: { id: problemId },
+      select: {
+        id: true,
+        pid: true,
+        difficulty: true,
+        answer: true,
+        collection: {
+          select: {
+            id: true,
+            cid: true,
+          },
+        },
+      },
+    });
+    if (problem === null) {
+      return error("Problem not found");
+    }
+
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId: problem.collection.id,
+        },
+      },
+    });
+    // TODO: use canTestsolveProblem
+    if (!canViewCollection(permission)) {
+      return error("You do not have permission to edit this collection");
+    }
+
+    const difficulty = problem.difficulty;
+    if (difficulty === null) {
+      return error("Problem difficulty should not be null");
+    }
+    const testsolveTimeMinutes = difficulty * 5 + 5; // 10, 15, 20, 25, 30
+    const testsolveTimeMillis =
+      testsolveTimeMinutes * 60 * 1000 + BUFFER_TIME_MILLIS;
+
+    const solveAttempt = await prisma.solveAttempt.findUnique({
+      where: {
+        userId_problemId: {
+          userId,
+          problemId: problem.id,
+        },
+      },
+    });
+    if (solveAttempt === null) {
+      return error("Tried to submit before starting testsolve");
+    }
+
+    const correct = answer === problem.answer;
+
+    await prisma.solveAttempt.update({
+      where: {
+        userId_problemId: {
+          userId,
+          problemId,
+        },
+      },
+      data: {
+        numSubmissions: {
+          increment: 1,
+        },
+        solvedAt: correct ? submittedAt : undefined,
+      },
+    });
+
+    return { ok: true, correct };
+  } catch (err) {
+    return error(String(err))
+  }
+}
