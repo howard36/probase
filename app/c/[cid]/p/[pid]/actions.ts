@@ -1,6 +1,6 @@
 'use server'
 
-import { canAddComment, canEditProblem, canViewCollection } from "@/utils/permissions";
+import { canAddComment, canAddSolution, canEditProblem, canViewCollection } from "@/utils/permissions";
 import prisma from "@/utils/prisma";
 import { error } from "@/utils/server-actions";
 import { Prisma } from "@prisma/client";
@@ -473,6 +473,56 @@ export async function giveUpTestsolve(problemId: number) {
       },
     });
 
+    return { ok: true };
+  } catch (err) {
+    return error(String(err))
+  }
+}
+
+export async function addSolution(problemId: number, text: string, authorId: number) {
+  const session = await auth();
+  if (session === null) {
+    return error("Not signed in");
+  }
+
+  const userId = session.userId;
+  if (userId === undefined) {
+    return error("userId is undefined despite being logged in")
+  }
+
+  try {
+    const problem = await prisma.problem.findUnique({
+      where: { id: problemId },
+    });
+    if (problem === null) {
+      return error("Problem not found");
+    }
+
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId: problem.collectionId,
+        },
+      },
+    });
+    if (!canAddSolution(permission)) {
+      return error("You do not have permission to edit this collection");
+    }
+
+    await prisma.solution.create({
+      data: {
+        problem: {
+          connect: { id: problemId },
+        },
+        text,
+        authors: {
+          connect: { id: authorId },
+        },
+      },
+    });
+
+    // TODO: revalidateTag problem.id/solutions
     return { ok: true };
   } catch (err) {
     return error(String(err))
