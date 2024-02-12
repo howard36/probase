@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import type { KeyboardEvent } from "react";
 
 export default function ClickToEditTextarea({
+  name,
   savedText,
   placeholder,
   autosave,
@@ -11,6 +12,7 @@ export default function ClickToEditTextarea({
   onReset,
   required,
 }: {
+  name: string;
   savedText: string;
   placeholder?: string;
   autosave: boolean;
@@ -63,6 +65,7 @@ export default function ClickToEditTextarea({
   return (
     <>
       <textarea
+        name={name}
         value={text}
         placeholder={placeholder}
         ref={textAreaRef}

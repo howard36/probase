@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import type { KeyboardEvent } from "react";
 import { ProblemProps } from "./types";
+import { addSolution } from "./actions";
 
 export default function AddSolution({
   problem,
@@ -42,20 +43,8 @@ export default function AddSolution({
   }, [text]);
 
   const handleSubmit = async () => {
-    // setSubmitting(true);
-
-    // submit new solution
-    const url = `/api/solutions/add`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        problemId: problem.id,
-        text,
-        authorId,
-      }),
-    });
-    if (response.status === 201) {
+    const resp = await addSolution(problem.id, text, authorId);
+    if (resp.ok) {
       router.refresh();
     } else {
       console.error("failed to add solution");

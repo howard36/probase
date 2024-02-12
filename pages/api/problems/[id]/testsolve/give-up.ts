@@ -1,10 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../auth/[...nextauth]";
 import prisma from "@/utils/prisma";
 import { canViewCollection } from "@/utils/permissions";
 import { isNonNegativeInt } from "@/utils/utils";
 import { handleApiError } from "@/utils/error";
+import { auth } from "auth";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,7 +28,7 @@ export default async function handler(
     });
   }
 
-  const session = await getServerSession(req, res, authOptions);
+  const session = await auth(req, res);
   if (session === null) {
     return res.status(401).json({
       error: {

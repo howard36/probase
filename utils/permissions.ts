@@ -1,12 +1,4 @@
-import { AccessLevel, Prisma } from "@prisma/client";
-import type { Session } from "next-auth";
-
-const collectionPerm = Prisma.validator<Prisma.CollectionArgs>()({
-  select: {
-    id: true,
-  },
-});
-type CollectionPerm = Prisma.CollectionGetPayload<typeof collectionPerm>;
+import { Prisma } from "@prisma/client";
 
 const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
   select: {
@@ -40,11 +32,12 @@ const solutionPerm = Prisma.validator<Prisma.SolutionArgs>()({
 });
 type SolutionPerm = Prisma.SolutionGetPayload<typeof solutionPerm>;
 
-export function isAdmin(session: Session, collection: CollectionPerm) {
-  const id = collection.id;
-  return session.collectionPerms.some(
-    (perm) => perm.colId === id && perm.isAdmin,
-  );
+// TODO: don't include null, the caller should handle it
+export function isAdmin(permission: PermissionPerm | null) {
+  if (permission === null) {
+    return false;
+  }
+  return permission.accessLevel === "Admin"
 }
 
 export function canAddProblem(permission: PermissionPerm | null): boolean {

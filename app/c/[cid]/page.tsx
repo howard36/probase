@@ -1,11 +1,10 @@
 import prisma from "@/utils/prisma";
 import { notFound, redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/api/auth/[...nextauth]";
 import { canViewCollection } from "@/utils/permissions";
 import ProblemList from "./problem-list";
 import { Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";
+import { auth } from "auth";
 
 async function getCollection(cid: string): Promise<Collection> {
   const collection = await prisma.collection.findUnique({
@@ -94,7 +93,7 @@ export default async function Page({ params }: { params: Params }) {
   // This call is still slow.
   // Private pages must wait for security check
   // Public pages can show the problems immediately, and stream personalized data as the page loads
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (session === null) {
     // Not logged in

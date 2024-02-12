@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { useState } from "react";
+import { startTestsolve } from "./actions";
 
 export default function LockedPage({
   problem,
@@ -23,21 +24,14 @@ export default function LockedPage({
     e.preventDefault();
     setIsSubmitting(true);
 
-    const response = await fetch(
-      `/api/problems/${problem.id}/testsolve/start`,
-      {
-        method: "POST",
-        cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      },
-    );
-    if (response.status === 201) {
+    const resp = await startTestsolve(problem.id);
+
+    if (resp.ok) {
       router.refresh();
-    } else {
-      console.error("Failed to start testsolving!");
+      setIsSubmitting(false);
+    } else if ('error' in resp) {
+      console.error(resp.error.message);
     }
-    setIsSubmitting(false);
   };
 
   return (

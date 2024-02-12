@@ -1,21 +1,4 @@
-import { AccessLevel } from "@prisma/client";
-import NextAuth, { DefaultSession } from "next-auth";
-import { JWT } from "next-auth/jwt";
-import { Prisma } from "@prisma/client";
-
-interface CollectionPerm {
-  colId: number;
-  cid: string;
-  isAdmin: boolean;
-}
-
-const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
-  select: {
-    id: true,
-    collectionId: true,
-  },
-});
-type AuthorPerm = Prisma.AuthorGetPayload<typeof authorPerm>;
+import "next-auth";
 
 declare module "next-auth" {
   /**
@@ -25,15 +8,13 @@ declare module "next-auth" {
     accessToken?: string;
     email?: string | null;
     emailVerified: bool;
-    currentEmail?: string;
+    currentEmail?: string | null;
     fullName?: string | null;
     givenName?: string;
     familyName?: string;
-    locale?: string;
+    locale?: string | null;
     userId?: string;
-    collectionPerms: CollectionPerm[];
-    authors: AuthorPerm[];
-  }
+  };
 
   interface Profile {
     email_verified?: bool;
@@ -43,7 +24,7 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
+declare module "@auth/core/jwt" {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
     accessToken?: string;
@@ -53,12 +34,9 @@ declare module "next-auth/jwt" {
     emailVerified?: boolean;
     givenName?: string;
     familyName?: string;
-    locale?: string;
-    currentEmail?: string;
+    locale?: string | null;
+    currentEmail?: string | null;
     accessTokenExpires?: number;
     refreshToken?: string;
-
-    collectionPerms: CollectionPerm[];
-    authors: AuthorPerm[];
   }
 }

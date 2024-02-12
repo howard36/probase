@@ -1,10 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]";
 import prisma from "@/utils/prisma";
 import { canAddProblem, isAdmin } from "@/utils/permissions";
 import { handleApiError } from "@/utils/error";
 import { isNonNegativeInt } from "@/utils/utils";
+import { auth } from "auth";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,7 +17,7 @@ export default async function handler(
     });
   }
 
-  const session = await getServerSession(req, res, authOptions);
+  const session = await auth(req, res);
   if (session === null) {
     return res.status(401).json({
       error: {
@@ -72,8 +71,7 @@ export default async function handler(
     // Solution: allow submitting on behalf of someone else,
     // but if submitter is not one of the authors,
     // include "(Submitted by X)" underneath "Written by Y"
-    const collection = { id: collectionId };
-    if (!isAdmin(session, collection) && userId !== session.userId) {
+    if (!isAdmin(permission) && userId !== session.userId) {
       return res.status(403).json({
         error: {
           message:

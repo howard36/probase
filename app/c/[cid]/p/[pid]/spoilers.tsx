@@ -17,7 +17,10 @@ export default function Spoilers(props: Props) {
         <Answer {...props} />
       </div>
     );
+  } else {
+    answer = null;
   }
+
   if (problem.solutions.length > 0) {
     const sol = problem.solutions[0];
     solution = (
@@ -30,14 +33,14 @@ export default function Spoilers(props: Props) {
         />
       </div>
     );
+  } else if (authors.length > 0) {
+    solution = <AddSolution problem={problem} authorId={authors[0].id} />;
+  } else {
+    solution = null;
   }
 
-  if (problem.answer === null && problem.solutions.length === 0) {
-    if (authors.length > 0) {
-      return <AddSolution problem={problem} authorId={authors[0].id} />;
-    } else {
-      return <div className="py-8"></div>;
-    }
+  if (answer === null && solution === null) {
+    return <div className="py-8"></div>;
   } else {
     if (hidden) {
       return (

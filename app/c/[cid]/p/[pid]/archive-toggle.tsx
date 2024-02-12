@@ -2,31 +2,17 @@
 
 import type { Props } from "./types";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { editProblem } from "./actions";
 
 export default function ArchiveToggle(props: Props) {
   const { problem } = props;
   const [isArchived, setArchived] = useState(problem.isArchived);
-  const router = useRouter();
+  const action = editProblem.bind(null, problem.id);
 
   const handleChange = async () => {
-    const newArchived = !isArchived;
-    setArchived(newArchived);
-
-    const url = `/api/problems/${problem.id}/edit`;
-    const response = await fetch(url, {
-      method: "POST",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        isArchived: newArchived,
-      }),
-    });
-    if (response.status === 200) {
-      router.refresh();
-    } else {
-      console.error(`updating failed! status = ${response.status}`);
-    }
+    const newIsArchived = !isArchived;
+    setArchived(newIsArchived);
+    await action({ isArchived: newIsArchived });
   };
 
   return (

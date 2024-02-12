@@ -4,12 +4,14 @@ import { useState, useRef, useEffect } from "react";
 import type { KeyboardEvent } from "react";
 
 export default function ClickToEditInput({
+  name,
   savedText,
   placeholder,
   onSave,
   onReset,
   required,
 }: {
+  name: string;
   savedText: string;
   placeholder?: string;
   onSave: (text: string) => void;
@@ -41,6 +43,7 @@ export default function ClickToEditInput({
 
   return (
     <input
+      name={name}
       value={text}
       placeholder={placeholder}
       ref={inputRef}
