@@ -1,6 +1,6 @@
 'use server'
 
-import { canAddComment, canAddSolution, canEditProblem, canViewCollection } from "@/utils/permissions";
+import { canAddComment, canAddSolution, canEditProblem, canEditSolution, canViewCollection } from "@/utils/permissions";
 import prisma from "@/utils/prisma";
 import { error } from "@/utils/server-actions";
 import { Prisma } from "@prisma/client";
@@ -519,6 +519,76 @@ export async function addSolution(problemId: number, text: string, authorId: num
         authors: {
           connect: { id: authorId },
         },
+      },
+    });
+
+    // TODO: revalidateTag problem.id/solutions
+    return { ok: true };
+  } catch (err) {
+    return error(String(err))
+  }
+}
+
+export async function editSolution(solutionId: number, text: string) {
+  const session = await auth();
+  if (session === null) {
+    return error("Not signed in");
+  }
+
+  const userId = session.userId;
+  if (userId === undefined) {
+    return error("userId is undefined despite being logged in")
+  }
+
+  try {
+    const solution = await prisma.solution.findUnique({
+      where: { id: solutionId },
+      select: {
+        authors: {
+          select: { id: true },
+        },
+        problem: {
+          select: {
+            id: true,
+            pid: true,
+            collection: {
+              select: {
+                id: true,
+                cid: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (solution === null) {
+      return error("Problem not found");
+    }
+
+    const collectionId = solution.problem.collection.id
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
+          userId,
+          collectionId,
+        },
+      },
+    });
+    const authors = await prisma.author.findMany({
+      where: {
+        userId,
+        collectionId,
+      },
+      select: { id: true },
+    });
+    if (!canEditSolution(solution, permission, authors)) {
+      return error("You do not have permission to edit this collection");
+    }
+
+    await prisma.solution.update({
+      where: { id: solutionId },
+      data: {
+        text,
       },
     });
 

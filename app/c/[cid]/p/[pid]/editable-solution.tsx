@@ -3,6 +3,7 @@
 import ClickToEdit from "@/components/click-to-edit";
 import type { SolutionProps } from "./types";
 import { useRouter } from "next/navigation";
+import { editSolution } from "./actions";
 
 export default function EditableSolution({
   solution,
@@ -15,27 +16,18 @@ export default function EditableSolution({
 
   // const authorName = solution.authors[0].displayName;
   const saveSolution = async (text: string) => {
-    // alert(text);
-    // React waits for async functions to finish before updating the page
-    const url = `/api/solutions/${solution.id}/edit`;
-    const response = await fetch(url, {
-      method: "POST",
-      cache: "no-store",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text,
-      }),
-    });
-    if (response.status === 200) {
+    const resp = await editSolution(solution.id, text);
+    if (resp.ok) {
       router.refresh();
     } else {
-      console.error(`updating failed! status = ${response.status}`);
+      console.error(`updating failed!`);
     }
   };
 
   return (
     <ClickToEdit
       type="textarea"
+      name="solution"
       label={label}
       initialText={solution.text}
       autosave={false}
