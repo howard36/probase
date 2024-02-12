@@ -8,7 +8,7 @@ import Label from "@/components/label";
 import { SolveAttempt } from "@prisma/client";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
-import { submitTestsolve } from "./actions";
+import { giveUpTestsolve, submitTestsolve } from "./actions";
 
 export default function Testsolve({
   problem,
@@ -46,17 +46,9 @@ export default function Testsolve({
   const giveUp = async () => {
     setIsGivingUp(true);
 
-    const response = await fetch(
-      `/api/problems/${problem.id}/testsolve/give-up`,
-      {
-        method: "POST",
-        cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      },
-    );
+    const resp = await giveUpTestsolve(problem.id);
 
-    if (response.status === 200) {
+    if (resp.ok) {
       router.refresh();
     } else {
       console.error("Failed to submit give-up request!");
