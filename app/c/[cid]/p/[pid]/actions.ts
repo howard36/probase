@@ -161,7 +161,7 @@ export async function editProblem(problemId: number, data: Data) {
     // TODO: validate input
     const { title, statement, answer, isArchived } = data;
 
-    const updatedProblem = await prisma.problem.update({
+    await prisma.problem.update({
       where: { id: problemId },
       data: {
         title,

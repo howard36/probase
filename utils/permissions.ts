@@ -1,12 +1,4 @@
 import { Prisma } from "@prisma/client";
-import type { Session } from "next-auth";
-
-const collectionPerm = Prisma.validator<Prisma.CollectionArgs>()({
-  select: {
-    id: true,
-  },
-});
-type CollectionPerm = Prisma.CollectionGetPayload<typeof collectionPerm>;
 
 const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
   select: {

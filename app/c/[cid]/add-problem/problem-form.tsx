@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Collection, Subject } from "@prisma/client";
 import Link from "next/link";
@@ -51,7 +50,6 @@ export default function ProblemForm({
   collection: Collection;
   authorId: number;
 }) {
-  const router = useRouter();
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
   const [statement, setStatement] = useState("");
@@ -65,34 +63,7 @@ export default function ProblemForm({
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
-    const resp = await addProblem(collection.id, formData)
-
-    // // submit new problem
-    // const url = `/api/problems/add`;
-    // const response = await fetch(url, {
-    //   method: "POST",
-    //   cache: "no-store",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     collectionId: collection.id,
-    //     title,
-    //     subject,
-    //     statement,
-    //     answer: answer === "" ? null : answer,
-    //     solutionText: solution === "" ? undefined : solution,
-    //     authorId,
-    //     difficulty: parseInt(difficulty),
-    //     isAnonymous: false,
-    //   }),
-    // });
-    // if (response.status === 201) {
-    //   const newProblem = await response.json();
-    //   router.push(`/c/${collection.cid}/p/${newProblem.pid}`);
-    //   router.refresh();
-    // } else {
-    //   // TODO: retry with different PID (or use atomic increment)
-    //   console.error("Failed to submit problem!");
-    // }
+    await addProblem(collection.id, formData);
     setIsSubmitting(false);
   };
 
