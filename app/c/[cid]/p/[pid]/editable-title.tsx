@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import ClickToEdit from "@/components/click-to-edit";
 import type { Problem } from "@prisma/client";

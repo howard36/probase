@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { canAddProblem } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
@@ -24,7 +24,7 @@ export async function addProblem(collectionId: number, formData: FormData) {
 
   const userId = session.userId;
   if (userId === undefined) {
-    return error("userId is undefined despite being logged in")
+    return error("userId is undefined despite being logged in");
   }
 
   const title = formData.get("title") as string;
@@ -103,16 +103,19 @@ export async function addProblem(collectionId: number, formData: FormData) {
         authors: {
           connect: { id: authorId },
         },
-        solutions: solution === "" ? undefined : {
-          create: [
-            {
-              text: solution,
-              authors: {
-                connect: { id: authorId }, // TODO: solution might have different list of authors
+        solutions:
+          solution === ""
+            ? undefined
+            : {
+                create: [
+                  {
+                    text: solution,
+                    authors: {
+                      connect: { id: authorId }, // TODO: solution might have different list of authors
+                    },
+                  },
+                ],
               },
-            },
-          ],
-        },
         likes: {
           create: {
             user: {

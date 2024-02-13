@@ -14,7 +14,7 @@ declare module "next-auth" {
     familyName?: string;
     locale?: string | null;
     userId?: string;
-  };
+  }
 
   interface Profile {
     email_verified?: bool;

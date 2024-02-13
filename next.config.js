@@ -3,7 +3,16 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   eslint: {
-    dirs: ['app', 'components', 'lib', 'pages', 'scripts', 'types', 'prisma', 'auth.ts'],
+    dirs: [
+      "app",
+      "components",
+      "lib",
+      "pages",
+      "scripts",
+      "types",
+      "prisma",
+      "auth.ts",
+    ],
   },
 };
 
