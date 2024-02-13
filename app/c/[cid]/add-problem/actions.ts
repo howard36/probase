@@ -1,8 +1,8 @@
 "use server"
 
-import { canAddProblem } from "@/utils/permissions";
-import prisma from "@/utils/prisma";
-import { error } from "@/utils/server-actions";
+import { canAddProblem } from "@/lib/permissions";
+import prisma from "@/lib/prisma";
+import { error } from "@/lib/server-actions";
 import { Subject } from "@prisma/client";
 import { auth } from "auth";
 import { revalidateTag } from "next/cache";

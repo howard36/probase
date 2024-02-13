@@ -6,7 +6,7 @@ import Likes from "@/components/likes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { Collection, Permission } from "@prisma/client";
-import { canEditProblem } from "@/utils/permissions";
+import { canEditProblem } from "@/lib/permissions";
 
 const titleLineColors = [
   "bg-red-400", // 0

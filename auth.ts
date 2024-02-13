@@ -4,7 +4,7 @@ import type { NextAuthConfig, User, Session } from "next-auth";
 import type { JWT } from "@auth/core/jwt";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { AdapterUser } from "@auth/core/adapters";
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma";
 
 interface sessionCallbackParams {
   session: Session;

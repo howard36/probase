@@ -1,7 +1,7 @@
 import EditableAnswer from "./editable-answer";
 import Latex from "@/components/latex";
 import type { Props } from "./types";
-import { canEditProblem } from "@/utils/permissions";
+import { canEditProblem } from "@/lib/permissions";
 import Label from "@/components/label";
 
 export default function Answer(props: Props) {

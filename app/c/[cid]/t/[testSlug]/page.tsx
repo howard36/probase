@@ -1,9 +1,9 @@
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import TestPage from "./test-page";
 import { auth } from "auth";
 import { AccessLevel, SolveAttempt } from "@prisma/client";
-import { canViewCollection } from "@/utils/permissions";
+import { canViewCollection } from "@/lib/permissions";
 
 interface Params {
   cid: string;

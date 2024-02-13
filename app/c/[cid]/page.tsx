@@ -1,6 +1,6 @@
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
-import { canViewCollection } from "@/utils/permissions";
+import { canViewCollection } from "@/lib/permissions";
 import ProblemList from "./problem-list";
 import { Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";

@@ -1,5 +1,5 @@
 import ProblemForm from "./problem-form";
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma";
 import { Session } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import LoginRequired from "@/components/login-required";
