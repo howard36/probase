@@ -1,6 +1,12 @@
-'use server'
+"use server";
 
-import { canAddComment, canAddSolution, canEditProblem, canEditSolution, canViewCollection } from "@/lib/permissions";
+import {
+  canAddComment,
+  canAddSolution,
+  canEditProblem,
+  canEditSolution,
+  canViewCollection,
+} from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { error } from "@/lib/server-actions";
 import { Prisma } from "@prisma/client";
@@ -21,7 +27,7 @@ export async function likeProblem(problemId: number, like: boolean) {
         },
       },
     });
-  
+
     if (problem === null) {
       return error(`No problem with id ${problemId}`);
     }
@@ -120,7 +126,7 @@ export async function editProblem(problemId: number, data: Data) {
         },
       },
     });
-  
+
     if (problem === null) {
       return error(`No problem with id ${problemId}`);
     }
@@ -185,7 +191,7 @@ export async function addComment(problemId: number, text: string) {
 
   const userId = session.userId;
   if (userId === undefined) {
-    return error("userId is undefined despite being logged in")
+    return error("userId is undefined despite being logged in");
   }
 
   try {
@@ -231,7 +237,7 @@ export async function addComment(problemId: number, text: string) {
     revalidateTag(`problem/${problemId}/comments`);
     return { ok: true };
   } catch (err) {
-    return error(String(err))
+    return error(String(err));
   }
 }
 
@@ -243,7 +249,7 @@ export async function startTestsolve(problemId: number) {
 
   const userId = session.userId;
   if (userId === undefined) {
-    return error("userId is undefined despite being logged in")
+    return error("userId is undefined despite being logged in");
   }
 
   try {
@@ -286,7 +292,7 @@ export async function startTestsolve(problemId: number) {
 
     return { ok: true };
   } catch (err) {
-    return error(String(err))
+    return error(String(err));
   }
 }
 
@@ -302,7 +308,7 @@ export async function submitTestsolve(problemId: number, answer: string) {
 
   const userId = session.userId;
   if (userId === undefined) {
-    return error("userId is undefined despite being logged in")
+    return error("userId is undefined despite being logged in");
   }
 
   try {
@@ -384,7 +390,7 @@ export async function submitTestsolve(problemId: number, answer: string) {
 
     return { ok: true, correct };
   } catch (err) {
-    return error(String(err))
+    return error(String(err));
   }
 }
 
@@ -398,7 +404,7 @@ export async function giveUpTestsolve(problemId: number) {
 
   const userId = session.userId;
   if (userId === undefined) {
-    return error("userId is undefined despite being logged in")
+    return error("userId is undefined despite being logged in");
   }
 
   try {
@@ -439,8 +445,7 @@ export async function giveUpTestsolve(problemId: number) {
       return error("Problem difficulty should not be null");
     }
     const testsolveTimeMinutes = difficulty * 5 + 5; // 10, 15, 20, 25, 30
-    const testsolveTimeMillis =
-      testsolveTimeMinutes * 60 * 1000;
+    const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000;
 
     const solveAttempt = await prisma.solveAttempt.findUnique({
       where: {
@@ -475,11 +480,15 @@ export async function giveUpTestsolve(problemId: number) {
 
     return { ok: true };
   } catch (err) {
-    return error(String(err))
+    return error(String(err));
   }
 }
 
-export async function addSolution(problemId: number, text: string, authorId: number) {
+export async function addSolution(
+  problemId: number,
+  text: string,
+  authorId: number,
+) {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");
@@ -487,7 +496,7 @@ export async function addSolution(problemId: number, text: string, authorId: num
 
   const userId = session.userId;
   if (userId === undefined) {
-    return error("userId is undefined despite being logged in")
+    return error("userId is undefined despite being logged in");
   }
 
   try {
@@ -525,7 +534,7 @@ export async function addSolution(problemId: number, text: string, authorId: num
     // TODO: revalidateTag problem.id/solutions
     return { ok: true };
   } catch (err) {
-    return error(String(err))
+    return error(String(err));
   }
 }
 
@@ -537,7 +546,7 @@ export async function editSolution(solutionId: number, text: string) {
 
   const userId = session.userId;
   if (userId === undefined) {
-    return error("userId is undefined despite being logged in")
+    return error("userId is undefined despite being logged in");
   }
 
   try {
@@ -565,7 +574,7 @@ export async function editSolution(solutionId: number, text: string) {
       return error("Problem not found");
     }
 
-    const collectionId = solution.problem.collection.id
+    const collectionId = solution.problem.collection.id;
     const permission = await prisma.permission.findUnique({
       where: {
         userId_collectionId: {
@@ -595,6 +604,6 @@ export async function editSolution(solutionId: number, text: string) {
     // TODO: revalidateTag problem.id/solutions
     return { ok: true };
   } catch (err) {
-    return error(String(err))
+    return error(String(err));
   }
 }

@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthConfig, User, Session } from "next-auth";
 import type { JWT } from "@auth/core/jwt";
@@ -32,12 +32,7 @@ const authOptions: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({
-      token,
-      user,
-      account,
-      profile,
-    }) {
+    async jwt({ token, user, account, profile }) {
       if (user && account && profile) {
         // Initial sign in
         // when trigger is "signIn" or "signUp", token contains a subset of JWT.
@@ -84,4 +79,4 @@ const authOptions: NextAuthConfig = {
 export const {
   handlers: { GET, POST },
   auth,
-} = NextAuth(authOptions)
+} = NextAuth(authOptions);

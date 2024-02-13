@@ -1,7 +1,12 @@
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import ProblemPage from "./problem-page";
-import { problemInclude, type AuthorProps, type Params, type Props } from "./types";
+import {
+  problemInclude,
+  type AuthorProps,
+  type Params,
+  type Props,
+} from "./types";
 import { canViewCollection } from "@/lib/permissions";
 import { AccessLevel } from "@prisma/client";
 import { auth } from "auth";

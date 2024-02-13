@@ -22,7 +22,7 @@ export default function Comments(props: Props) {
     if (resp.ok) {
       setText("");
       setIsSubmitting(false);
-    } else if ('error' in resp) {
+    } else if ("error" in resp) {
       console.error(resp.error.message);
     }
   };

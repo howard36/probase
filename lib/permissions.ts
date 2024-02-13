@@ -37,7 +37,7 @@ export function isAdmin(permission: PermissionPerm | null) {
   if (permission === null) {
     return false;
   }
-  return permission.accessLevel === "Admin"
+  return permission.accessLevel === "Admin";
 }
 
 export function canAddProblem(permission: PermissionPerm | null): boolean {

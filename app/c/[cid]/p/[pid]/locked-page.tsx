@@ -29,7 +29,7 @@ export default function LockedPage({
     if (resp.ok) {
       router.refresh();
       setIsSubmitting(false);
-    } else if ('error' in resp) {
+    } else if ("error" in resp) {
       console.error(resp.error.message);
     }
   };
