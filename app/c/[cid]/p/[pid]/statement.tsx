@@ -1,7 +1,7 @@
 import EditableStatement from "./editable-statement";
 import Latex from "@/components/latex";
 import type { Props } from "./types";
-import { canEditProblem } from "@/utils/permissions";
+import { canEditProblem } from "@/lib/permissions";
 
 export default function Statement(props: Props) {
   const { problem, collection, permission, authors } = props;

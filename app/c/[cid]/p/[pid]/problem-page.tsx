@@ -10,7 +10,7 @@ import Likes from "@/components/likes";
 import LockedPage from "./locked-page";
 import Testsolve from "./testsolve";
 import Leaderboard from "./leaderboard";
-import { canEditProblem } from "@/utils/permissions";
+import { canEditProblem } from "@/lib/permissions";
 
 // darker color first, for more contrast
 const subjectToGradient = {

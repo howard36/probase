@@ -1,4 +1,4 @@
-import prisma from "@/utils/prisma";
+import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import NotLoggedIn from "./not-logged-in";
 import Expired from "./expired";

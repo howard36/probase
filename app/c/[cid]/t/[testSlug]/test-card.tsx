@@ -1,7 +1,7 @@
 import { Collection, Permission, SolveAttempt } from "@prisma/client";
 import Label from "@/components/label";
 import Latex from "@/components/latex";
-import { canEditProblem } from "@/utils/permissions";
+import { canEditProblem } from "@/lib/permissions";
 import { ProblemProps } from "../../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";

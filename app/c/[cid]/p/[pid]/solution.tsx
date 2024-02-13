@@ -6,7 +6,7 @@ import type {
   PermissionProps,
   SolutionProps,
 } from "./types";
-import { canEditSolution } from "@/utils/permissions";
+import { canEditSolution } from "@/lib/permissions";
 import Label from "@/components/label";
 
 export default function Solution({

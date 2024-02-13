@@ -1,7 +1,7 @@
 import EditableTitle from "./editable-title";
 import Latex from "@/components/latex";
 import type { Props } from "./types";
-import { canEditProblem } from "@/utils/permissions";
+import { canEditProblem } from "@/lib/permissions";
 
 export default function Title(props: Props) {
   const { problem, collection, permission, authors } = props;

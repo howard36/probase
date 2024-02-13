@@ -6,7 +6,7 @@ import "../styles/globals.css";
 import "katex/dist/katex.min.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils";
 config.autoAddCss = false;
 
 const inter = Inter({
