@@ -2,7 +2,6 @@
 module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
-    "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -15,5 +14,17 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["light"],
+          "primary": "#0ea5e9",  // sky-500
+          "base-100": "#f8fafc",  // slate-50
+          "neutral": "#1e293b",  // slate-800
+        },
+      },
+    ],
+  },
 };
