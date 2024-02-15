@@ -6,7 +6,6 @@ import "../styles/globals.css";
 import "katex/dist/katex.min.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import { cn } from "@/lib/utils";
 config.autoAddCss = false;
 
 const inter = Inter({
@@ -30,7 +29,7 @@ export default function RootLayout({
       <link rel="icon" href="/favicon.ico" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" />
       */}
-      <body className={cn("bg-slate-50", inter.className)}>
+      <body className={inter.className}>
         <Providers>{children}</Providers>
       </body>
     </html>
