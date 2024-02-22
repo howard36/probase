@@ -134,24 +134,42 @@ export default function ProblemList({
             ))}
           </ul>
         </div>
-        {numPages > 1 &&
+        {numPages > 1 && (
           <div className="mt-12 flex flex-row justify-center gap-0.5">
-            {page > 1 ?
-              <button className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base" onClick={() => setPage(page - 1)}>
+            {page > 1 ? (
+              <button
+                className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
+                onClick={() => setPage(page - 1)}
+              >
                 <FontAwesomeIcon icon={faAngleLeft} />
-              </button> :
-              <div className="min-w-8 sm:min-w-12"></div>}
-            {Array.from({ length: maxPage - minPage + 1 }, (_, idx) =>
-              <button className={cn("btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base", idx + minPage == page && "btn-active")} onClick={() => setPage(idx + minPage)}>
+              </button>
+            ) : (
+              <div className="min-w-8 sm:min-w-12"></div>
+            )}
+            {Array.from({ length: maxPage - minPage + 1 }, (_, idx) => (
+              <button
+                key={idx + minPage}
+                className={cn(
+                  "btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base",
+                  idx + minPage == page && "btn-active",
+                )}
+                onClick={() => setPage(idx + minPage)}
+              >
                 {idx + minPage}
               </button>
-            )}
-            {page < numPages ?
-              <button className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base" onClick={() => setPage(page + 1)}>
+            ))}
+            {page < numPages ? (
+              <button
+                className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
+                onClick={() => setPage(page + 1)}
+              >
                 <FontAwesomeIcon icon={faAngleRight} />
-              </button> :
-              <div className="min-w-8 sm:min-w-12"></div>}
-          </div>}
+              </button>
+            ) : (
+              <div className="min-w-8 sm:min-w-12"></div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
