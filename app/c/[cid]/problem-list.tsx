@@ -5,6 +5,9 @@ import ProblemCard from "./problem-card";
 import { useState } from "react";
 import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
+import { cn } from "@/lib/utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function ProblemList({
   collection,
@@ -21,6 +24,7 @@ export default function ProblemList({
 }) {
   const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
+  const [page, setPage] = useState(1);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -42,6 +46,24 @@ export default function ProblemList({
       problem.statement.toLowerCase().includes(lowerQuery)
     );
   });
+
+  const numPages = Math.ceil(problems.length / 20);
+  const halfInterval = 3;
+
+  let minPage = page - halfInterval;
+  let maxPage = page + halfInterval;
+  if (minPage <= 0) {
+    minPage = 1;
+    maxPage = 1 + 2 * halfInterval;
+  } else if (maxPage > numPages) {
+    minPage = numPages - 2 * halfInterval;
+    maxPage = numPages;
+  }
+  // Clamp to [1, numPages]
+  minPage = Math.max(minPage, 1);
+  maxPage = Math.min(maxPage, numPages);
+
+  problems = problems.slice(20 * (page - 1), 20 * page);
 
   return (
     <div className="p-8 md:py-24 whitespace-pre-wrap break-words">
@@ -112,6 +134,42 @@ export default function ProblemList({
             ))}
           </ul>
         </div>
+        {numPages > 1 && (
+          <div className="mt-12 flex flex-row justify-center gap-0.5">
+            {page > 1 ? (
+              <button
+                className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
+                onClick={() => setPage(page - 1)}
+              >
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </button>
+            ) : (
+              <div className="min-w-8 sm:min-w-12"></div>
+            )}
+            {Array.from({ length: maxPage - minPage + 1 }, (_, idx) => (
+              <button
+                key={idx + minPage}
+                className={cn(
+                  "btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base",
+                  idx + minPage == page && "btn-active",
+                )}
+                onClick={() => setPage(idx + minPage)}
+              >
+                {idx + minPage}
+              </button>
+            ))}
+            {page < numPages ? (
+              <button
+                className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
+                onClick={() => setPage(page + 1)}
+              >
+                <FontAwesomeIcon icon={faAngleRight} />
+              </button>
+            ) : (
+              <div className="min-w-8 sm:min-w-12"></div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
