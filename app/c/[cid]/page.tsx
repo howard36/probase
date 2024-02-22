@@ -112,6 +112,8 @@ export default async function Page({ params }: { params: Params }) {
     }
   }
 
+  console.log("Session = ", session)
+
   const userId = session.userId;
   if (userId === undefined) {
     throw new Error("userId is undefined despite being logged in");

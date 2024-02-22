@@ -24,6 +24,7 @@ async function main() {
     name: "Howard Halim",
     email: "howardhalim@gmail.com",
     emailVerified: null,
+    id: "howardUserId",
   });
 
   const howardUser = await prisma.user.findUniqueOrThrow({
@@ -167,6 +168,42 @@ $$x = \frac{4 \pm \sqrt{4^2 - 4 \cdot 1 \cdot 2}}{2} = 2 \pm \sqrt{2}$$`,
       isAnonymous: false,
     },
   });
+
+  for (let i = 1; i <= 1000; i++) {
+    await prisma.problem.upsert({
+      where: {
+        collectionId_pid: {
+          collectionId: demo.id,
+          pid: "G" + i,
+        },
+      },
+      update: {},
+      create: {
+        collectionId: demo.id,
+        pid: "G" + i,
+        title: "Dummy Geo " + i,
+        statement: "Example statement " + i,
+        submitterId: howardUser.id,
+        authors: {
+          connect: [{ id: defaultAuthor.id }],
+        },
+        answer: i.toString(),
+        solutions: {
+          create: [
+            {
+              text: "The answer is " + i,
+              authors: {
+                connect: [{ id: defaultAuthor.id }],
+              },
+            },
+          ],
+        },
+        subject: "Geometry",
+        difficulty: 0,
+        isAnonymous: false,
+      },
+    });
+  }
 }
 
 main()
