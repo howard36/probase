@@ -61,7 +61,7 @@ These future plans are currently out of scope. They'll only be a priority once t
 ```
 git clone https://github.com/howard36/probase.git
 cd probase
-yarn install  # or npm install
+npm install
 ```
 
 ### 2. Set up a PostgreSQL database. Here's a rough overview of the steps involved:
@@ -88,19 +88,19 @@ You'll want to manually edit some of the variables in `.env.local`:
 ### 4. Run database migrations
 
 ```
-yarn prisma migrate dev
+npx prisma migrate dev
 ```
 
 ### 5. Seed the database with dummy data
 
 ```
-yarn prisma db seed
+npx prisma db seed
 ```
 
 ### 6. Start the app!
 
 ```
-yarn dev
+npm run dev
 ```
 
 The website should now be running at <http://localhost:3000>
