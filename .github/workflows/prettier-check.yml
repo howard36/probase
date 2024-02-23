@@ -18,5 +18,5 @@ jobs:
 
       - name: Prettier Check Code Format
         run: |
-          yarn install
-          yarn prettier . --check
+          npm ci
+          npx prettier . --check
