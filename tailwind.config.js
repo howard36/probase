@@ -23,6 +23,7 @@ module.exports = {
         },
       },
     ],
+    darkTheme: "light",
     logs: false,
   },
 };
