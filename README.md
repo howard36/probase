@@ -55,9 +55,9 @@ You'll want to manually edit some of the variables in `.env.local`:
 ### 4. Initialize the database
 
 1. Run migrations: `npx migrate-dev`
-2. Seed the database with dummy data `npx db-seed`
+2. Seed the database with dummy data `npx db-seed`. (Note: this might not work at the moment. You can skip to step 5, there just won't be any data)
 
-### 6. Start the app!
+### 5. Start the app!
 
 ```
 npm run dev
