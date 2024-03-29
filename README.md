@@ -37,6 +37,10 @@ npm install
 
 Using Docker is probably easiest. Follow the steps in [this guide](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/) to set it up.
 
+1. Download the latest [Docker Desktop release](https://www.docker.com/products/docker-desktop/)
+2. Pulling the official Postgres Docker image: `docker pull postgres`
+3. Start a new Docker container running Postgres: `docker run -d --name probase-db -e POSTGRES_PASSWORD=<db-password> -p 5432:5432 postgres`. Make sure to replace `<db-password>` with a [random password](https://www.random.org/passwords/?num=1&len=22&format=html&rnd=new).
+
 ### 3. Initialize the `.env.local` file
 
 ```
@@ -45,22 +49,15 @@ cp .env.example .env.local
 
 You'll want to manually edit some of the variables in `.env.local`:
 
-- Replace both `DATABASE_URL` and `DIRECT_URL` with your Postgres connection string. This depends on the username, password, hostname, port, and database name chosen during the Postgres setup above.
-- Replace `NEXTAUTH_SECRET` with a [random password](https://www.random.org/passwords/?num=1&len=32&format=html&rnd=new).
+- Replace both `DATABASE_URL` and `DIRECT_URL` with your Postgres connection string. It should use the same `<db-password>` as step 2.3.
+- Set `NEXTAUTH_SECRET` to another [random password](https://www.random.org/passwords/?num=1&len=22&format=html&rnd=new).
 
-### 4. Run database migrations
+### 4. Initialize the database
 
-```
-npx prisma migrate dev
-```
+1. Run migrations: `npx migrate-dev`
+2. Seed the database with dummy data `npx db-seed`. (Note: this might not work at the moment. You can skip to step 5, there just won't be any data)
 
-### 5. Seed the database with dummy data
-
-```
-npx prisma db seed
-```
-
-### 6. Start the app!
+### 5. Start the app!
 
 ```
 npm run dev
