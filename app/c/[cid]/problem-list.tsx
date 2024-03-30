@@ -15,7 +15,7 @@ const subjects: Subject[] = [
   "Combinatorics",
   "Geometry",
   "NumberTheory",
-]
+];
 
 export default function ProblemList({
   collection,
@@ -37,10 +37,10 @@ export default function ProblemList({
   const [showArchived, setShowArchived] = useState(false);
   const [page, setPage] = useState(1);
   const [subjectFilter, setSubjectFilter] = useState({
-    "Algebra": searchParams.get("subject")?.includes("a") || false,
-    "Combinatorics": searchParams.get("subject")?.includes("c") || false,
-    "Geometry": searchParams.get("subject")?.includes("g") || false,
-    "NumberTheory": searchParams.get("subject")?.includes("n") || false,
+    Algebra: searchParams.get("subject")?.includes("a") || false,
+    Combinatorics: searchParams.get("subject")?.includes("c") || false,
+    Geometry: searchParams.get("subject")?.includes("g") || false,
+    NumberTheory: searchParams.get("subject")?.includes("n") || false,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +50,7 @@ export default function ProblemList({
   const toggleSubject = (subject: Subject) => {
     const newSubjectFilter = {
       ...subjectFilter,
-      [subject]: !subjectFilter[subject]
+      [subject]: !subjectFilter[subject],
     };
     setSubjectFilter(newSubjectFilter);
     const newParams = Object.entries(newSubjectFilter)
@@ -61,20 +61,20 @@ export default function ProblemList({
     router.replace(pathname + "?subject=" + newParams);
   };
 
-
   // Apply filters to problem list
   if (!showArchived) {
     // hide archived problems
     problems = problems.filter((problem) => !problem.isArchived);
   }
-  if (Object.values(subjectFilter).some(value => value)) {
+  if (Object.values(subjectFilter).some((value) => value)) {
     problems = problems.filter((problem) => subjectFilter[problem.subject]);
   }
   if (query !== "") {
     const lowerQuery = query.toLowerCase();
-    problems = problems.filter((problem) =>
-      problem.title.toLowerCase().includes(lowerQuery) ||
-      problem.statement.toLowerCase().includes(lowerQuery)
+    problems = problems.filter(
+      (problem) =>
+        problem.title.toLowerCase().includes(lowerQuery) ||
+        problem.statement.toLowerCase().includes(lowerQuery),
     );
   }
 
@@ -137,15 +137,20 @@ export default function ProblemList({
         <div className="mb-8 flex flex-row justify-between">
           <div>
             <div className="form-control">
-              {subjects.map(subject => (
-                <label key={subject} className="label cursor-pointer justify-start">
+              {subjects.map((subject) => (
+                <label
+                  key={subject}
+                  className="label cursor-pointer justify-start"
+                >
                   <input
                     type="checkbox"
                     checked={subjectFilter[subject]}
                     onChange={() => toggleSubject(subject)}
                     className="checkbox checkbox-primary"
                   />
-                  <span className="label-text ml-2 text-sm font-medium text-slate-600">{subject}</span>
+                  <span className="label-text ml-2 text-sm font-medium text-slate-600">
+                    {subject}
+                  </span>
                 </label>
               ))}
             </div>
