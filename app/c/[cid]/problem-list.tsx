@@ -54,7 +54,7 @@ export default function ProblemList({
     };
     setSubjectFilter(newSubjectFilter);
     const newParams = Object.entries(newSubjectFilter)
-      .filter(([_, value]) => value)
+      .filter(([, value]) => value)
       .map(([subject]) => subject[0])
       .join()
       .toLowerCase();
