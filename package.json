@@ -9,7 +9,7 @@
     "launch": "next build && next start",
     "lint": "next lint",
     "local": "dotenv -e .env.local",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "node prisma/seed.mjs"
