@@ -146,7 +146,7 @@ export default function ProblemList({
                     type="checkbox"
                     checked={subjectFilter[subject]}
                     onChange={() => toggleSubject(subject)}
-                    className="checkbox checkbox-primary"
+                    className="checkbox checkbox-primary [--chkfg:white]"
                   />
                   <span className="label-text ml-2 text-sm font-medium text-slate-600">
                     {subject}
