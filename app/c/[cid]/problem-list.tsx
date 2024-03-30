@@ -3,11 +3,19 @@
 import Link from "next/link";
 import ProblemCard from "./problem-card";
 import { useState } from "react";
-import { Collection, Permission } from "@prisma/client";
+import { Collection, Permission, Subject } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+const subjects: Subject[] = [
+  "Algebra",
+  "Combinatorics",
+  "Geometry",
+  "NumberTheory",
+]
 
 export default function ProblemList({
   collection,
@@ -22,30 +30,53 @@ export default function ProblemList({
   authors: { id: number }[];
   permission: Permission | null;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [page, setPage] = useState(1);
+  const [subjectFilter, setSubjectFilter] = useState({
+    "Algebra": searchParams.get("subject")?.includes("a") || false,
+    "Combinatorics": searchParams.get("subject")?.includes("c") || false,
+    "Geometry": searchParams.get("subject")?.includes("g") || false,
+    "NumberTheory": searchParams.get("subject")?.includes("n") || false,
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
 
-  const lowerQuery = query.toLowerCase();
+  const toggleSubject = (subject: Subject) => {
+    const newSubjectFilter = {
+      ...subjectFilter,
+      [subject]: !subjectFilter[subject]
+    };
+    setSubjectFilter(newSubjectFilter);
+    const newParams = Object.entries(newSubjectFilter)
+      .filter(([_, value]) => value)
+      .map(([subject]) => subject[0])
+      .join()
+      .toLowerCase();
+    router.replace(pathname + "?subject=" + newParams);
+  };
 
+
+  // Apply filters to problem list
   if (!showArchived) {
     // hide archived problems
     problems = problems.filter((problem) => !problem.isArchived);
   }
-  problems = problems.filter((problem) => {
-    if (query === "") {
-      // Don't apply filter, just include all problems
-      return true;
-    }
-    return (
+  if (Object.values(subjectFilter).some(value => value)) {
+    problems = problems.filter((problem) => subjectFilter[problem.subject]);
+  }
+  if (query !== "") {
+    const lowerQuery = query.toLowerCase();
+    problems = problems.filter((problem) =>
       problem.title.toLowerCase().includes(lowerQuery) ||
       problem.statement.toLowerCase().includes(lowerQuery)
     );
-  });
+  }
 
   const numPages = Math.ceil(problems.length / 20);
   const halfInterval = 3;
@@ -103,7 +134,22 @@ export default function ProblemList({
             </div>
           </div>
         </div>
-        <div className="mb-8 flex">
+        <div className="mb-8 flex flex-row justify-between">
+          <div>
+            <div className="form-control">
+              {subjects.map(subject => (
+                <label key={subject} className="label cursor-pointer justify-start">
+                  <input
+                    type="checkbox"
+                    checked={subjectFilter[subject]}
+                    onChange={() => toggleSubject(subject)}
+                    className="checkbox checkbox-primary"
+                  />
+                  <span className="label-text ml-2 text-sm font-medium text-slate-600">{subject}</span>
+                </label>
+              ))}
+            </div>
+          </div>
           <div className="ml-auto">
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -113,7 +159,7 @@ export default function ProblemList({
                 className="sr-only peer"
               />
               <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
-              <span className="ms-3 text-sm font-medium text-slate-600">
+              <span className="ml-2 text-sm font-medium text-slate-600">
                 Show archived problems
               </span>
             </label>
