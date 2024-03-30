@@ -8,13 +8,11 @@
     "start": "next start",
     "launch": "next build && next start",
     "lint": "next lint",
-    "migrate-dev": "dotenv -e .env.local -- prisma migrate dev",
-    "db-seed": "dotenv -e .env.local -- prisma db seed",
+    "local": "dotenv -e .env.local",
     "postinstall": "prisma generate",
-    "ts": "dotenv -e .env.local -- tsx"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "node prisma/seed.mjs"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.4.0",
