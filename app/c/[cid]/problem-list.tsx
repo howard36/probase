@@ -53,12 +53,18 @@ export default function ProblemList({
       [subject]: !subjectFilter[subject],
     };
     setSubjectFilter(newSubjectFilter);
-    const newParams = Object.entries(newSubjectFilter)
+    const newFilterString = Object.entries(newSubjectFilter)
       .filter(([, value]) => value)
       .map(([subject]) => subject[0])
-      .join()
+      .join("")
       .toLowerCase();
-    router.replace(pathname + "?subject=" + newParams);
+    const newParams = new URLSearchParams(searchParams.toString());
+    if (newFilterString !== "") {
+      newParams.set("subject", newFilterString);
+    } else {
+      newParams.delete("subject");
+    }
+    router.replace(pathname + "?" + newParams.toString(), { scroll: false });
   };
 
   // Apply filters to problem list
