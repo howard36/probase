@@ -78,6 +78,9 @@ export default function ProblemCard({
       <div className="bg-white p-8 my-8 rounded-2xl soft-shadow-xl">
         <div className="flex gap-8">
           <div className="flex-grow">
+          <h2 className="text-1xl sm:text-1xl font-bold text-slate-500 mb-4">
+              {problem.pid}
+            </h2>
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
               {problem.title}
             </h2>
@@ -103,6 +106,8 @@ export default function ProblemCard({
           <div className="text-base sm:text-lg md:text-xl text-slate-800">
             <Latex>{problem.statement}</Latex>
           </div>
+
+          
         )}
       </div>
     </Link>
