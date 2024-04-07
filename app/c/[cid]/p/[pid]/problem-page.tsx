@@ -41,7 +41,7 @@ function convertToSlug(name: string) {
     .replace(/\-+/g, "-"); // Replace multiple hyphens with a single hyphen
 }
 
-export default async function ProblemPage(props: Props) {
+export default function ProblemPage(props: Props) {
   const { problem, collection, permission, userId, authors } = props;
 
   let written_by;

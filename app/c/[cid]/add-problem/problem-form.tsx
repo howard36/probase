@@ -122,7 +122,7 @@ export default function ProblemForm({
         />
       </div>
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
             <ClickToEdit
               name="title"

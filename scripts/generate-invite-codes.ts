@@ -72,6 +72,8 @@ createInvites()
   .catch((e) => {
     throw e;
   })
-  .finally(async () => {
-    await prisma.$disconnect();
+  .finally(() => {
+    prisma.$disconnect().catch((disconnectError) => {
+      console.error(disconnectError);
+    });
   });

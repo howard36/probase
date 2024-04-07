@@ -36,7 +36,7 @@ export default function Testsolve({
         rank: null,
         name: attempt.user.name!,
         solveTimeMillis:
-          attempt.solvedAt!.getTime() - attempt.startedAt.getTime(),
+          attempt.solvedAt.getTime() - attempt.startedAt.getTime(),
         numFailed: attempt.numSubmissions - 1,
         highlight: attempt.userId === userId,
       };
