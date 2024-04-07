@@ -1,5 +1,5 @@
-import Link from "next/link";
 import TestCard from "./test-card";
+import BackButton from "@/components/back-button";
 
 export default function TestPage(props: any) {
   const { name, testProblems, collection, solveAttempts, permission, authors } =
@@ -8,27 +8,10 @@ export default function TestPage(props: any) {
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
-        <Link
+        <BackButton
           href={`/c/${collection.cid}`}
-          prefetch={true}
-          className="text-slate-600 hover:text-slate-800 underline flex items-center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5"
-            />
-          </svg>
-          <span className="ml-1">Back to {collection.name}</span>
-        </Link>
+          label={`Back to ${collection.name}`}
+        />
       </div>
       <div className="w-128 sm:w-144 md:w-160 max-w-full mx-auto text-base sm:text-lg md:text-xl">
         <div className="px-8 text-3xl sm:text-4xl text-slate-900 font-bold mb-12">
