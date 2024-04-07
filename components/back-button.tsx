@@ -1,8 +1,14 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 
-export default function BackButton({ href, label }: { href: string, label: string }) {
+export default function BackButton({
+  href,
+  label,
+}: {
+  href: string;
+  label: string;
+}) {
   return (
     <Link
       href={href}
@@ -25,5 +31,5 @@ export default function BackButton({ href, label }: { href: string, label: strin
       </svg>
       <span className="ml-1">{label}</span>
     </Link>
-  )
+  );
 }

@@ -116,7 +116,10 @@ export default function ProblemForm({
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
-        <BackButton href={`/c/${collection.cid}`} label={`Back to ${collection.name}`} />
+        <BackButton
+          href={`/c/${collection.cid}`}
+          label={`Back to ${collection.name}`}
+        />
       </div>
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
         <form onSubmit={handleSubmit}>
