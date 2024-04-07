@@ -18,7 +18,7 @@ const GOOGLE_AUTHORIZATION_URL: string =
     prompt: "consent",
     access_type: "offline",
     response_type: "code",
-  });
+  }).toString();
 
 // TODO: https://next-auth.js.org/tutorials/refresh-token-rotation
 const authOptions: NextAuthConfig = {
@@ -32,7 +32,7 @@ const authOptions: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account, profile }) {
+    jwt({ token, user, account, profile }) {
       if (user && account && profile) {
         // Initial sign in
         // when trigger is "signIn" or "signUp", token contains a subset of JWT.
@@ -54,7 +54,7 @@ const authOptions: NextAuthConfig = {
       }
       return token;
     },
-    async session({ session, token }: sessionCallbackParams) {
+    session({ session, token }: sessionCallbackParams) {
       // Send properties to the client, like an access_token and user id from a provider.
       session.accessToken = token.accessToken;
       session.currentEmail = token.currentEmail;
