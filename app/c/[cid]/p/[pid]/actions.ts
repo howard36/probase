@@ -9,9 +9,12 @@ import {
 } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { error } from "@/lib/server-actions";
+import { sleep } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { auth } from "auth";
 import { revalidateTag } from "next/cache";
+
+type ActionReturn = Promise<{ ok: true } | { ok: false, error: { message: string } }>;
 
 export async function likeProblem(problemId: number, like: boolean) {
   try {
@@ -183,7 +186,13 @@ export async function editProblem(problemId: number, data: Data) {
   }
 }
 
-export async function addComment(problemId: number, text: string) {
+export async function addComment(problemId: number, formData: FormData): ActionReturn {
+  const text = formData.get("comment");
+  // TODO: replace with zod
+  if (text === null) {
+    return error("Text is null");
+  }
+
   const session = await auth();
   if (session === null) {
     return error("Not signed in");

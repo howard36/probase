@@ -1,4 +1,7 @@
+"use client"
+
 import { cn } from "@/lib/utils";
+import { useFormStatus } from "react-dom";
 
 interface SpinnerProps {
   visible: boolean;
@@ -18,22 +21,21 @@ const Spinner = ({ visible, size }: SpinnerProps) => (
 
 interface SubmitButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  isSubmitting: boolean;
   size?: "sm" | "md";
 }
 
 export default function SubmitButton({
-  isSubmitting,
   size = "md",
   className,
   children,
   ...props
 }: SubmitButtonProps) {
+  const { pending } = useFormStatus();
   return (
     <button
-      disabled={isSubmitting}
-      aria-disabled={isSubmitting}
-      aria-busy={isSubmitting}
+      disabled={pending}
+      aria-disabled={pending}
+      aria-busy={pending}
       className={cn(
         "rounded-lg text-white font-semibold border-0 inline-flex items-center justify-center",
         size === "sm"
@@ -46,7 +48,7 @@ export default function SubmitButton({
       )}
       {...props}
     >
-      <Spinner visible={isSubmitting} size={size} />
+      <Spinner visible={pending} size={size} />
       {children}
       <Spinner visible={false} size={size} />
     </button>

@@ -8,21 +8,15 @@ import { addComment } from "./actions";
 
 export default function Comments(props: Props) {
   const [text, setText] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { problem } = props;
   const allComments = problem.comments;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true);
-    e.preventDefault();
-
-    const resp = await addComment(problem.id, text);
-
+  const action = async (formData: FormData) => {
+    const resp = await addComment(problem.id, formData);
     if (resp.ok) {
       setText("");
-      setIsSubmitting(false);
-    } else if ("error" in resp) {
+    } else {
       console.error(resp.error.message);
     }
   };
@@ -44,13 +38,14 @@ export default function Comments(props: Props) {
       <h2 className="mb-4 text-lg lg:text-2xl font-bold text-slate-900">
         Discussion
       </h2>
-      <form className="mb-6" onSubmit={handleSubmit}>
+      <form className="mb-6" action={action}>
         <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-slate-200">
           <label htmlFor="comment" className="sr-only">
             Your comment
           </label>
           <textarea
             id="comment"
+            name="comment"
             rows={6}
             className="px-0 w-full text-sm text-slate-900 border-0 focus:ring-0 focus:outline-none"
             placeholder="Write a comment..."
@@ -61,7 +56,7 @@ export default function Comments(props: Props) {
             }}
           ></textarea>
         </div>
-        <SubmitButton isSubmitting={isSubmitting} size="sm">
+        <SubmitButton size="sm">
           Post comment
         </SubmitButton>
       </form>
