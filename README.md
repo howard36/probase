@@ -21,7 +21,6 @@ Probase will be a set of tools and resources for organizers to run top-notch mat
 
 Probase is still in the early stages of development. If you want to help out, you're welcome to join the team! We're using a Discord server to collaborate, just [ask me](mailto:howardhalim@gmail.com) for an invite.
 
-
 ## Development Setup
 
 ### 1. Clone the repository and install dependencies
