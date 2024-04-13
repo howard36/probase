@@ -96,6 +96,7 @@ export async function likeProblem(problemId: number, like: boolean) {
         }
       }
     } else {
+      // TODO: use zod
       return error(`like must be a boolean, but got ${like}`);
     }
 
