@@ -33,20 +33,11 @@ export default function Testsolve({
     }
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    trySubmitTestsolve(problem.id, answer);
-  };
-
   const tryGiveUpTestsolve = wrapAction(giveUpTestsolve, () => router.refresh())
-
-  const giveUp = () => {
-    tryGiveUpTestsolve(problem.id);
-  };
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="mb-8">
+      <form action={() => trySubmitTestsolve(problem.id, answer)} className="mb-8">
         <Label text="ANSWER" />
         <div className="mb-3">
           <AimeInput
@@ -60,7 +51,7 @@ export default function Testsolve({
             Submit
           </SubmitButton>
           <SubmitButton
-            onClick={giveUp}
+            onClick={() => tryGiveUpTestsolve(problem.id)}
             className="flex-grow-0 bg-red-500 hover:bg-red-600 active:bg-red-700 shadow-red-500/20 hover:shadow-red-500/20 focus-visible:ring-red-300 active:shadow-red-500/20 disabled:bg-red-300"
           >
             Give Up
