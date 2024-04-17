@@ -16,7 +16,10 @@ const subjectPrefix = {
   NumberTheory: "N",
 };
 
-export async function addProblem(collectionId: number, formData: FormData): Promise<ActionResponse> {
+export async function addProblem(
+  collectionId: number,
+  formData: FormData,
+): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");
@@ -107,15 +110,15 @@ export async function addProblem(collectionId: number, formData: FormData): Prom
           solution === ""
             ? undefined
             : {
-              create: [
-                {
-                  text: solution,
-                  authors: {
-                    connect: { id: authorId }, // TODO: solution might have different list of authors
+                create: [
+                  {
+                    text: solution,
+                    authors: {
+                      connect: { id: authorId }, // TODO: solution might have different list of authors
+                    },
                   },
-                },
-              ],
-            },
+                ],
+              },
         likes: {
           create: {
             user: {

@@ -113,7 +113,11 @@ export default function ProblemForm({
         />
       </div>
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
-        <form action={(formData: FormData) => wrapAction(addProblem)(collection.id, formData)}>
+        <form
+          action={(formData: FormData) =>
+            wrapAction(addProblem)(collection.id, formData)
+          }
+        >
           <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
             <ClickToEdit
               name="title"
@@ -193,6 +197,6 @@ export default function ProblemForm({
           <SubmitButton>Submit</SubmitButton>
         </form>
       </div>
-    </div >
+    </div>
   );
 }

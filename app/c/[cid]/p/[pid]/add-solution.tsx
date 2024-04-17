@@ -41,7 +41,6 @@ export default function AddSolution({
     }
   }, [text]);
 
-
   const handleSubmit = () => {
     wrapAction(addSolution)(problem.id, text, authorId);
   };

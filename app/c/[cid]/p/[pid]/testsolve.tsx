@@ -33,11 +33,16 @@ export default function Testsolve({
     }
   });
 
-  const tryGiveUpTestsolve = wrapAction(giveUpTestsolve, () => router.refresh())
+  const tryGiveUpTestsolve = wrapAction(giveUpTestsolve, () =>
+    router.refresh(),
+  );
 
   return (
     <div>
-      <form action={() => trySubmitTestsolve(problem.id, answer)} className="mb-8">
+      <form
+        action={() => trySubmitTestsolve(problem.id, answer)}
+        className="mb-8"
+      >
         <Label text="ANSWER" />
         <div className="mb-3">
           <AimeInput
@@ -47,9 +52,7 @@ export default function Testsolve({
           />
         </div>
         <div className="flex gap-x-6 items-center my-4">
-          <SubmitButton className="flex-grow-0">
-            Submit
-          </SubmitButton>
+          <SubmitButton className="flex-grow-0">Submit</SubmitButton>
           <SubmitButton
             onClick={() => tryGiveUpTestsolve(problem.id)}
             className="flex-grow-0 bg-red-500 hover:bg-red-600 active:bg-red-700 shadow-red-500/20 hover:shadow-red-500/20 focus-visible:ring-red-300 active:shadow-red-500/20 disabled:bg-red-300"

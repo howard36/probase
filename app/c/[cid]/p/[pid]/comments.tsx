@@ -54,9 +54,7 @@ export default function Comments(props: Props) {
             }}
           ></textarea>
         </div>
-        <SubmitButton size="sm">
-          Post comment
-        </SubmitButton>
+        <SubmitButton size="sm">Post comment</SubmitButton>
       </form>
       {comments}
     </div>

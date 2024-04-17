@@ -13,8 +13,10 @@ import { Prisma } from "@prisma/client";
 import { auth } from "auth";
 import { revalidateTag } from "next/cache";
 
-
-export async function likeProblem(problemId: number, like: boolean): Promise<ActionResponse> {
+export async function likeProblem(
+  problemId: number,
+  like: boolean,
+): Promise<ActionResponse> {
   // TODO: zod
   try {
     const problem = await prisma.problem.findUnique({
@@ -110,7 +112,10 @@ interface Data {
   isArchived?: boolean;
 }
 
-export async function editProblem(problemId: number, data: Data): Promise<ActionResponse> {
+export async function editProblem(
+  problemId: number,
+  data: Data,
+): Promise<ActionResponse> {
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
@@ -185,7 +190,10 @@ export async function editProblem(problemId: number, data: Data): Promise<Action
   }
 }
 
-export async function addComment(problemId: number, formData: FormData): Promise<ActionResponse> {
+export async function addComment(
+  problemId: number,
+  formData: FormData,
+): Promise<ActionResponse> {
   const text = formData.get("comment") as string;
   // TODO: replace with zod
   if (text === null) {
@@ -249,7 +257,9 @@ export async function addComment(problemId: number, formData: FormData): Promise
   }
 }
 
-export async function startTestsolve(problemId: number): Promise<ActionResponse> {
+export async function startTestsolve(
+  problemId: number,
+): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");
@@ -306,7 +316,10 @@ export async function startTestsolve(problemId: number): Promise<ActionResponse>
 
 const BUFFER_TIME_MILLIS = 10_000;
 
-export async function submitTestsolve(problemId: number, answer: string): Promise<ActionResponse<{ correct: boolean }>> {
+export async function submitTestsolve(
+  problemId: number,
+  answer: string,
+): Promise<ActionResponse<{ correct: boolean }>> {
   const submittedAt = new Date();
 
   const session = await auth();
@@ -402,7 +415,9 @@ export async function submitTestsolve(problemId: number, answer: string): Promis
   }
 }
 
-export async function giveUpTestsolve(problemId: number): Promise<ActionResponse> {
+export async function giveUpTestsolve(
+  problemId: number,
+): Promise<ActionResponse> {
   const submittedAt = new Date();
 
   const session = await auth();
@@ -546,7 +561,10 @@ export async function addSolution(
   }
 }
 
-export async function editSolution(solutionId: number, text: string): Promise<ActionResponse> {
+export async function editSolution(
+  solutionId: number,
+  text: string,
+): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");

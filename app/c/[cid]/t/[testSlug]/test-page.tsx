@@ -1,4 +1,10 @@
-import { AccessLevel, Collection, Problem, SolveAttempt, TestProblem } from "@prisma/client";
+import {
+  AccessLevel,
+  Collection,
+  Problem,
+  SolveAttempt,
+  TestProblem,
+} from "@prisma/client";
 import TestCard from "./test-card";
 import BackButton from "@/components/back-button";
 

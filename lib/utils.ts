@@ -10,5 +10,5 @@ export function isNonNegativeInt(s: string) {
 }
 
 export function sleep(seconds: number) {
-  return new Promise(resolve => setTimeout(resolve, 1000 * seconds));
+  return new Promise((resolve) => setTimeout(resolve, 1000 * seconds));
 }

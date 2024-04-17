@@ -20,7 +20,9 @@ export default function LockedPage({
   const router = useRouter();
 
   // TODO: replace router.refresh
-  const tryStartTestsolving = wrapAction(startTestsolve, () => router.refresh());
+  const tryStartTestsolving = wrapAction(startTestsolve, () =>
+    router.refresh(),
+  );
 
   return (
     <div>
@@ -46,9 +48,7 @@ export default function LockedPage({
         <p>Best of luck!</p>
       </div>
       <form action={() => tryStartTestsolving(problem.id)}>
-        <SubmitButton className="w-full">
-          Start testsolving
-        </SubmitButton>
+        <SubmitButton className="w-full">Start testsolving</SubmitButton>
       </form>
     </div>
   );
