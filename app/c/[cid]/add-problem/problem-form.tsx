@@ -58,8 +58,6 @@ export default function ProblemForm({
   const [difficulty, setDifficulty] = useState("");
   const [solution, setSolution] = useState("");
 
-  const action = wrapAction(addProblem.bind(null, collection.id));
-
   const titleLabel = <Label text="TITLE" />;
   const statementLabel = <Label text="PROBLEM STATEMENT" />;
   const answerLabel = <Label text="ANSWER" />;
@@ -115,7 +113,7 @@ export default function ProblemForm({
         />
       </div>
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
-        <form action={action}>
+        <form action={(formData: FormData) => wrapAction(addProblem)(collection.id, formData)}>
           <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
             <ClickToEdit
               name="title"

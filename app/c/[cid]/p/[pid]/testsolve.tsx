@@ -24,8 +24,8 @@ export default function Testsolve({
   const [answer, setAnswer] = useState("");
   const [wrongAnswer, setWrongAnswer] = useState("");
 
-  const trySubmitTestsolve = wrapAction(submitTestsolve, (data) => {
-    if (data.correct) {
+  const trySubmitTestsolve = wrapAction(submitTestsolve, (resp) => {
+    if (resp.data.correct) {
       router.refresh();
     } else {
       setWrongAnswer(answer);

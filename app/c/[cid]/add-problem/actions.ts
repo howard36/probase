@@ -2,7 +2,7 @@
 
 import { canAddProblem } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { error } from "@/lib/server-actions";
+import { ActionResponse, error } from "@/lib/server-actions";
 import { Subject } from "@prisma/client";
 import { auth } from "auth";
 import { revalidateTag } from "next/cache";
@@ -16,7 +16,7 @@ const subjectPrefix = {
   NumberTheory: "N",
 };
 
-export async function addProblem(collectionId: number, formData: FormData) {
+export async function addProblem(collectionId: number, formData: FormData): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");

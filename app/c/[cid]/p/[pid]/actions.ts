@@ -186,7 +186,7 @@ export async function editProblem(problemId: number, data: Data): Promise<Action
 }
 
 export async function addComment(problemId: number, formData: FormData): Promise<ActionResponse> {
-  const text = formData.get("comment");
+  const text = formData.get("comment") as string;
   // TODO: replace with zod
   if (text === null) {
     return error("Text is null");
@@ -396,7 +396,7 @@ export async function submitTestsolve(problemId: number, answer: string): Promis
       },
     });
 
-    return { ok: true, correct };
+    return { ok: true, data: { correct } };
   } catch (err) {
     return error(String(err));
   }
