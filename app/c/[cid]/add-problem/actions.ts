@@ -107,15 +107,15 @@ export async function addProblem(collectionId: number, formData: FormData) {
           solution === ""
             ? undefined
             : {
-                create: [
-                  {
-                    text: solution,
-                    authors: {
-                      connect: { id: authorId }, // TODO: solution might have different list of authors
-                    },
+              create: [
+                {
+                  text: solution,
+                  authors: {
+                    connect: { id: authorId }, // TODO: solution might have different list of authors
                   },
-                ],
-              },
+                },
+              ],
+            },
         likes: {
           create: {
             user: {

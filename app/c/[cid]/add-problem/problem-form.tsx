@@ -8,6 +8,7 @@ import AimeInput from "./aime-input";
 import SubmitButton from "@/components/submit-button";
 import { addProblem } from "./actions";
 import BackButton from "@/components/back-button";
+import { wrapAction } from "@/lib/server-actions";
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -57,7 +58,7 @@ export default function ProblemForm({
   const [difficulty, setDifficulty] = useState("");
   const [solution, setSolution] = useState("");
 
-  const action = addProblem.bind(null, collection.id);
+  const action = wrapAction(addProblem.bind(null, collection.id));
 
   const titleLabel = <Label text="TITLE" />;
   const statementLabel = <Label text="PROBLEM STATEMENT" />;
@@ -194,6 +195,6 @@ export default function ProblemForm({
           <SubmitButton>Submit</SubmitButton>
         </form>
       </div>
-    </div>
+    </div >
   );
 }

@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { likeProblem } from "../app/c/[cid]/p/[pid]/actions";
+import { wrapAction } from "@/lib/server-actions";
 
 interface ProblemWithLikes {
   id: number;
@@ -22,7 +23,9 @@ export default function Likes({
     problem.likes.some((like) => like.userId === userId),
   );
 
-  const handleClick = async (event: React.MouseEvent<HTMLDivElement>) => {
+  const action = wrapAction(likeProblem);
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (liked) {
       setNumLikes(numLikes - 1);
@@ -30,7 +33,7 @@ export default function Likes({
       setNumLikes(numLikes + 1);
     }
     setLiked(!liked);
-    await likeProblem(problem.id, !liked);
+    action(problem.id, !liked);
   };
 
   return (

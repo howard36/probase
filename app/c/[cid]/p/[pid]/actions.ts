@@ -8,15 +8,13 @@ import {
   canViewCollection,
 } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { error } from "@/lib/server-actions";
-import { sleep } from "@/lib/utils";
+import { type ActionResponse, error } from "@/lib/server-actions";
 import { Prisma } from "@prisma/client";
 import { auth } from "auth";
 import { revalidateTag } from "next/cache";
 
-type ActionReturn = Promise<{ ok: true } | { ok: false, error: { message: string } }>;
 
-export async function likeProblem(problemId: number, like: boolean) {
+export async function likeProblem(problemId: number, like: boolean): Promise<ActionResponse> {
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
@@ -101,6 +99,7 @@ export async function likeProblem(problemId: number, like: boolean) {
     }
 
     revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
+    return { ok: true };
   } catch (err) {
     return error(String(err));
   }
@@ -187,7 +186,7 @@ export async function editProblem(problemId: number, data: Data) {
   }
 }
 
-export async function addComment(problemId: number, formData: FormData): ActionReturn {
+export async function addComment(problemId: number, formData: FormData): Promise<ActionResponse> {
   const text = formData.get("comment");
   // TODO: replace with zod
   if (text === null) {
