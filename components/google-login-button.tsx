@@ -7,9 +7,10 @@ export default function GoogleLoginButton({
 }: {
   callbackUrl?: string;
 }) {
-  let handleClick = () => signIn("google");
-  if (callbackUrl !== undefined) {
-    handleClick = () => signIn("google", { callbackUrl });
+  const signInOptions = callbackUrl ? { callbackUrl } : undefined;
+  const handleClick = () => {
+    signIn("google", signInOptions)
+      .catch(err => console.log(err));
   }
 
   return (
