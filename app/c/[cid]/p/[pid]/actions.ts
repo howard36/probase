@@ -402,7 +402,7 @@ export async function submitTestsolve(problemId: number, answer: string): Promis
   }
 }
 
-export async function giveUpTestsolve(problemId: number) {
+export async function giveUpTestsolve(problemId: number): Promise<ActionResponse> {
   const submittedAt = new Date();
 
   const session = await auth();

@@ -11,6 +11,7 @@ import SubmitButton from "@/components/submit-button";
 import { giveUpTestsolve, submitTestsolve } from "./actions";
 import { wrapAction } from "@/lib/server-actions";
 
+// TODO: fix loading spinners for the two submit buttons. Probably need to show a single loading spinner outside of the buttons. That also lets us keep the same button text and width
 export default function Testsolve({
   problem,
   deadline,
@@ -22,8 +23,6 @@ export default function Testsolve({
   const router = useRouter();
   const [answer, setAnswer] = useState("");
   const [wrongAnswer, setWrongAnswer] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGivingUp, setIsGivingUp] = useState(false);
 
   const trySubmitTestsolve = wrapAction(submitTestsolve, (data) => {
     if (data.correct) {
@@ -36,23 +35,13 @@ export default function Testsolve({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
     trySubmitTestsolve(problem.id, answer);
-    setIsSubmitting(false);
   };
 
-  const giveUp = async () => {
-    setIsGivingUp(true);
+  const tryGiveUpTestsolve = wrapAction(giveUpTestsolve, () => router.refresh())
 
-    const resp = await giveUpTestsolve(problem.id);
-
-    if (resp.ok) {
-      router.refresh();
-    } else {
-      console.error("Failed to submit give-up request!");
-    }
-
-    setIsGivingUp(false);
+  const giveUp = () => {
+    tryGiveUpTestsolve(problem.id);
   };
 
   return (
@@ -67,11 +56,10 @@ export default function Testsolve({
           />
         </div>
         <div className="flex gap-x-6 items-center my-4">
-          <SubmitButton isSubmitting={isSubmitting} className="flex-grow-0">
+          <SubmitButton className="flex-grow-0">
             Submit
           </SubmitButton>
           <SubmitButton
-            isSubmitting={isGivingUp}
             onClick={giveUp}
             className="flex-grow-0 bg-red-500 hover:bg-red-600 active:bg-red-700 shadow-red-500/20 hover:shadow-red-500/20 focus-visible:ring-red-300 active:shadow-red-500/20 disabled:bg-red-300"
           >
