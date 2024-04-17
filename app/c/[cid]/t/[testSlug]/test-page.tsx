@@ -1,4 +1,4 @@
-import { Author, Collection, Permission, Problem, SolveAttempt, TestProblem } from "@prisma/client";
+import { AccessLevel, Collection, Problem, SolveAttempt, TestProblem } from "@prisma/client";
 import TestCard from "./test-card";
 import BackButton from "@/components/back-button";
 
@@ -15,8 +15,8 @@ interface Props {
   testProblems: TestProblemWithProblem[];
   collection: Collection;
   solveAttempts: SolveAttempt[];
-  permission: Permission;
-  authors: Author[];
+  permission: { accessLevel: AccessLevel } | null;
+  authors: { id: number }[];
 }
 
 export default function TestPage(props: Props) {

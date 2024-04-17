@@ -1,4 +1,4 @@
-import { Collection, Permission, Problem, SolveAttempt } from "@prisma/client";
+import { AccessLevel, Collection, Problem, SolveAttempt } from "@prisma/client";
 import Label from "@/components/label";
 import Latex from "@/components/latex";
 import { canEditProblem } from "@/lib/permissions";
@@ -22,7 +22,7 @@ export default function TestCard({
   problem: ProblemWithAuthors;
   collection: Collection;
   solveAttempts: SolveAttempt[];
-  permission: Permission | null;
+  permission: { accessLevel: AccessLevel } | null;
   authors: { id: number }[];
 }) {
   let locked = false;
