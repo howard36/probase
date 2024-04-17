@@ -15,6 +15,7 @@ import { revalidateTag } from "next/cache";
 
 
 export async function likeProblem(problemId: number, like: boolean): Promise<ActionResponse> {
+  // TODO: zod
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
@@ -71,7 +72,7 @@ export async function likeProblem(problemId: number, like: boolean): Promise<Act
           problemId,
         },
       });
-    } else if (like === false) {
+    } else (like === false) {
       try {
         await prisma.problemLike.delete({
           where: {
@@ -93,9 +94,6 @@ export async function likeProblem(problemId: number, like: boolean): Promise<Act
           return error(String(err));
         }
       }
-    } else {
-      // TODO: use zod
-      return error(`like must be a boolean, but got ${like}`);
     }
 
     revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
@@ -497,7 +495,7 @@ export async function addSolution(
   problemId: number,
   text: string,
   authorId: number,
-) {
+): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");
