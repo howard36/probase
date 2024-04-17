@@ -9,6 +9,7 @@ import { SolveAttempt } from "@prisma/client";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { giveUpTestsolve, submitTestsolve } from "./actions";
+import { wrapAction } from "@/lib/server-actions";
 
 export default function Testsolve({
   problem,
@@ -24,22 +25,19 @@ export default function Testsolve({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGivingUp, setIsGivingUp] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const trySubmitTestsolve = wrapAction(submitTestsolve, (data) => {
+    if (data.correct) {
+      router.refresh();
+    } else {
+      setWrongAnswer(answer);
+      setAnswer("");
+    }
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    const resp = await submitTestsolve(problem.id, answer);
-
-    if (resp.ok) {
-      if (resp.correct) {
-        router.refresh();
-      } else {
-        setWrongAnswer(answer);
-        setAnswer("");
-      }
-    } else {
-      console.error("Failed to submit guess!");
-    }
+    trySubmitTestsolve(problem.id, answer);
     setIsSubmitting(false);
   };
 

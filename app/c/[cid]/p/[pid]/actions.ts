@@ -306,7 +306,7 @@ export async function startTestsolve(problemId: number) {
 
 const BUFFER_TIME_MILLIS = 10_000;
 
-export async function submitTestsolve(problemId: number, answer: string) {
+export async function submitTestsolve(problemId: number, answer: string): Promise<ActionResponse<{ correct: boolean }>> {
   const submittedAt = new Date();
 
   const session = await auth();
