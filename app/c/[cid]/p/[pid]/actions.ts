@@ -546,7 +546,7 @@ export async function addSolution(
   }
 }
 
-export async function editSolution(solutionId: number, text: string) {
+export async function editSolution(solutionId: number, text: string): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");

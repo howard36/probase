@@ -3,6 +3,7 @@
 import ClickToEdit from "@/components/click-to-edit";
 import type { Problem } from "@prisma/client";
 import { editProblem } from "./actions";
+import { wrapAction } from "@/lib/server-actions";
 
 export default function EditableAnswer({
   problem,
@@ -11,10 +12,8 @@ export default function EditableAnswer({
   problem: Problem;
   label: React.ReactNode;
 }) {
-  const action = editProblem.bind(null, problem.id);
-
-  const saveAnswer = async (text: string) => {
-    await action({ answer: text });
+  const saveAnswer = (text: string) => {
+    wrapAction(editProblem)(problem.id, { answer: text });
   };
 
   if (problem.answer === null) {

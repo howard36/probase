@@ -3,12 +3,11 @@
 import ClickToEdit from "@/components/click-to-edit";
 import type { Problem } from "@prisma/client";
 import { editProblem } from "./actions";
+import { wrapAction } from "@/lib/server-actions";
 
 export default function EditableTitle({ problem }: { problem: Problem }) {
-  const action = editProblem.bind(null, problem.id);
-
-  const saveTitle = async (text: string) => {
-    await action({ title: text });
+  const saveTitle = (text: string) => {
+    wrapAction(editProblem)(problem.id, { title: text });
   };
 
   return (
