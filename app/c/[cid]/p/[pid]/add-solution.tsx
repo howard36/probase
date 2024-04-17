@@ -1,10 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import type { KeyboardEvent } from "react";
 import { ProblemProps } from "./types";
 import { addSolution } from "./actions";
+import { wrapAction } from "@/lib/server-actions";
 
 export default function AddSolution({
   problem,
@@ -13,7 +13,6 @@ export default function AddSolution({
   problem: ProblemProps;
   authorId: number;
 }) {
-  const router = useRouter();
   const [isEditing, setEditing] = useState(false);
   const [text, setText] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -42,13 +41,8 @@ export default function AddSolution({
     }
   }, [text]);
 
-  const handleSubmit = async () => {
-    const resp = await addSolution(problem.id, text, authorId);
-    if (resp.ok) {
-      router.refresh();
-    } else {
-      console.error("failed to add solution");
-    }
+  const handleSubmit = () => {
+    wrapAction(addSolution)(problem.id, text, authorId);
   };
 
   const handleDiscard = () => {
@@ -56,7 +50,7 @@ export default function AddSolution({
     setEditing(false);
   };
 
-  const handleKeyDown = async (event: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Escape") {
       handleDiscard();
     } else if (
@@ -65,7 +59,7 @@ export default function AddSolution({
     ) {
       // Equivalent to clicking the "Submit" button
       if (text !== "") {
-        await handleSubmit();
+        handleSubmit();
       }
     }
   };

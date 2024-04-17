@@ -1,13 +1,16 @@
-import { Collection, Permission, SolveAttempt } from "@prisma/client";
+import { AccessLevel, Collection, Problem, SolveAttempt } from "@prisma/client";
 import Label from "@/components/label";
 import Latex from "@/components/latex";
 import { canEditProblem } from "@/lib/permissions";
-import { ProblemProps } from "../../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
-export default function ProblemCard({
+interface ProblemWithAuthors extends Problem {
+  authors: { id: number }[];
+}
+
+export default function TestCard({
   position,
   problem,
   collection,
@@ -16,10 +19,10 @@ export default function ProblemCard({
   authors,
 }: {
   position: number;
-  problem: ProblemProps;
+  problem: ProblemWithAuthors;
   collection: Collection;
   solveAttempts: SolveAttempt[];
-  permission: Permission | null;
+  permission: { accessLevel: AccessLevel } | null;
   authors: { id: number }[];
 }) {
   let locked = false;

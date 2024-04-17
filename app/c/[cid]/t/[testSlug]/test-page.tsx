@@ -1,7 +1,31 @@
+import {
+  AccessLevel,
+  Collection,
+  Problem,
+  SolveAttempt,
+  TestProblem,
+} from "@prisma/client";
 import TestCard from "./test-card";
 import BackButton from "@/components/back-button";
 
-export default function TestPage(props: any) {
+interface ProblemWithAuthors extends Problem {
+  authors: { id: number }[];
+}
+
+interface TestProblemWithProblem extends TestProblem {
+  problem: ProblemWithAuthors;
+}
+
+interface Props {
+  name: string;
+  testProblems: TestProblemWithProblem[];
+  collection: Collection;
+  solveAttempts: SolveAttempt[];
+  permission: { accessLevel: AccessLevel } | null;
+  authors: { id: number }[];
+}
+
+export default function TestPage(props: Props) {
   const { name, testProblems, collection, solveAttempts, permission, authors } =
     props;
 
@@ -18,7 +42,7 @@ export default function TestPage(props: any) {
           {name}
         </div>
         <ol>
-          {testProblems.map((testProblem: any) => (
+          {testProblems.map((testProblem: TestProblemWithProblem) => (
             <li key={testProblem.position}>
               <div className="my-8">
                 <TestCard

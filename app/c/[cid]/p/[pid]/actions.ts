@@ -8,12 +8,16 @@ import {
   canViewCollection,
 } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { error } from "@/lib/server-actions";
+import { type ActionResponse, error } from "@/lib/server-actions";
 import { Prisma } from "@prisma/client";
 import { auth } from "auth";
 import { revalidateTag } from "next/cache";
 
-export async function likeProblem(problemId: number, like: boolean) {
+export async function likeProblem(
+  problemId: number,
+  like: boolean,
+): Promise<ActionResponse> {
+  // TODO: zod
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
@@ -70,7 +74,7 @@ export async function likeProblem(problemId: number, like: boolean) {
           problemId,
         },
       });
-    } else if (like === false) {
+    } else {
       try {
         await prisma.problemLike.delete({
           where: {
@@ -92,11 +96,10 @@ export async function likeProblem(problemId: number, like: boolean) {
           return error(String(err));
         }
       }
-    } else {
-      return error(`like must be a boolean, but got ${like}`);
     }
 
     revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
+    return { ok: true };
   } catch (err) {
     return error(String(err));
   }
@@ -109,7 +112,10 @@ interface Data {
   isArchived?: boolean;
 }
 
-export async function editProblem(problemId: number, data: Data) {
+export async function editProblem(
+  problemId: number,
+  data: Data,
+): Promise<ActionResponse> {
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
@@ -178,12 +184,22 @@ export async function editProblem(problemId: number, data: Data) {
     });
 
     revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
+    return { ok: true };
   } catch (err) {
     return error(String(err));
   }
 }
 
-export async function addComment(problemId: number, text: string) {
+export async function addComment(
+  problemId: number,
+  formData: FormData,
+): Promise<ActionResponse> {
+  const text = formData.get("comment") as string;
+  // TODO: replace with zod
+  if (text === null) {
+    return error("Text is null");
+  }
+
   const session = await auth();
   if (session === null) {
     return error("Not signed in");
@@ -241,7 +257,9 @@ export async function addComment(problemId: number, text: string) {
   }
 }
 
-export async function startTestsolve(problemId: number) {
+export async function startTestsolve(
+  problemId: number,
+): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");
@@ -298,7 +316,10 @@ export async function startTestsolve(problemId: number) {
 
 const BUFFER_TIME_MILLIS = 10_000;
 
-export async function submitTestsolve(problemId: number, answer: string) {
+export async function submitTestsolve(
+  problemId: number,
+  answer: string,
+): Promise<ActionResponse<{ correct: boolean }>> {
   const submittedAt = new Date();
 
   const session = await auth();
@@ -388,13 +409,15 @@ export async function submitTestsolve(problemId: number, answer: string) {
       },
     });
 
-    return { ok: true, correct };
+    return { ok: true, data: { correct } };
   } catch (err) {
     return error(String(err));
   }
 }
 
-export async function giveUpTestsolve(problemId: number) {
+export async function giveUpTestsolve(
+  problemId: number,
+): Promise<ActionResponse> {
   const submittedAt = new Date();
 
   const session = await auth();
@@ -488,7 +511,7 @@ export async function addSolution(
   problemId: number,
   text: string,
   authorId: number,
-) {
+): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");
@@ -538,7 +561,10 @@ export async function addSolution(
   }
 }
 
-export async function editSolution(solutionId: number, text: string) {
+export async function editSolution(
+  solutionId: number,
+  text: string,
+): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");

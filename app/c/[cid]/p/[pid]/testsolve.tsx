@@ -9,7 +9,9 @@ import { SolveAttempt } from "@prisma/client";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { giveUpTestsolve, submitTestsolve } from "./actions";
+import { wrapAction } from "@/lib/server-actions";
 
+// TODO: fix loading spinners for the two submit buttons. Probably need to show a single loading spinner outside of the buttons. That also lets us keep the same button text and width
 export default function Testsolve({
   problem,
   deadline,
@@ -21,45 +23,26 @@ export default function Testsolve({
   const router = useRouter();
   const [answer, setAnswer] = useState("");
   const [wrongAnswer, setWrongAnswer] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGivingUp, setIsGivingUp] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const resp = await submitTestsolve(problem.id, answer);
-
-    if (resp.ok) {
-      if (resp.correct) {
-        router.refresh();
-      } else {
-        setWrongAnswer(answer);
-        setAnswer("");
-      }
-    } else {
-      console.error("Failed to submit guess!");
-    }
-    setIsSubmitting(false);
-  };
-
-  const giveUp = async () => {
-    setIsGivingUp(true);
-
-    const resp = await giveUpTestsolve(problem.id);
-
-    if (resp.ok) {
+  const trySubmitTestsolve = wrapAction(submitTestsolve, (resp) => {
+    if (resp.data.correct) {
       router.refresh();
     } else {
-      console.error("Failed to submit give-up request!");
+      setWrongAnswer(answer);
+      setAnswer("");
     }
+  });
 
-    setIsGivingUp(false);
-  };
+  const tryGiveUpTestsolve = wrapAction(giveUpTestsolve, () =>
+    router.refresh(),
+  );
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="mb-8">
+      <form
+        action={() => trySubmitTestsolve(problem.id, answer)}
+        className="mb-8"
+      >
         <Label text="ANSWER" />
         <div className="mb-3">
           <AimeInput
@@ -69,12 +52,9 @@ export default function Testsolve({
           />
         </div>
         <div className="flex gap-x-6 items-center my-4">
-          <SubmitButton isSubmitting={isSubmitting} className="flex-grow-0">
-            Submit
-          </SubmitButton>
+          <SubmitButton className="flex-grow-0">Submit</SubmitButton>
           <SubmitButton
-            isSubmitting={isGivingUp}
-            onClick={giveUp}
+            onClick={() => tryGiveUpTestsolve(problem.id)}
             className="flex-grow-0 bg-red-500 hover:bg-red-600 active:bg-red-700 shadow-red-500/20 hover:shadow-red-500/20 focus-visible:ring-red-300 active:shadow-red-500/20 disabled:bg-red-300"
           >
             Give Up

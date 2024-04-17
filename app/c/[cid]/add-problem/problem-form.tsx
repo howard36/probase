@@ -8,6 +8,7 @@ import AimeInput from "./aime-input";
 import SubmitButton from "@/components/submit-button";
 import { addProblem } from "./actions";
 import BackButton from "@/components/back-button";
+import { wrapAction } from "@/lib/server-actions";
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -56,16 +57,6 @@ export default function ProblemForm({
   const [answer, setAnswer] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [solution, setSolution] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const formData = new FormData(e.currentTarget);
-    await addProblem(collection.id, formData);
-    setIsSubmitting(false);
-  };
 
   const titleLabel = <Label text="TITLE" />;
   const statementLabel = <Label text="PROBLEM STATEMENT" />;
@@ -122,7 +113,11 @@ export default function ProblemForm({
         />
       </div>
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
-        <form onSubmit={(e) => handleSubmit(e)}>
+        <form
+          action={(formData: FormData) =>
+            wrapAction(addProblem)(collection.id, formData)
+          }
+        >
           <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
             <ClickToEdit
               name="title"
@@ -199,7 +194,7 @@ export default function ProblemForm({
             />
           </div>
           <input name="authorId" value={authorId} type="hidden" />
-          <SubmitButton isSubmitting={isSubmitting}>Submit</SubmitButton>
+          <SubmitButton>Submit</SubmitButton>
         </form>
       </div>
     </div>
