@@ -72,7 +72,7 @@ export async function likeProblem(problemId: number, like: boolean): Promise<Act
           problemId,
         },
       });
-    } else (like === false) {
+    } else {
       try {
         await prisma.problemLike.delete({
           where: {
@@ -110,7 +110,7 @@ interface Data {
   isArchived?: boolean;
 }
 
-export async function editProblem(problemId: number, data: Data) {
+export async function editProblem(problemId: number, data: Data): Promise<ActionResponse> {
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
@@ -179,6 +179,7 @@ export async function editProblem(problemId: number, data: Data) {
     });
 
     revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
+    return { ok: true };
   } catch (err) {
     return error(String(err));
   }

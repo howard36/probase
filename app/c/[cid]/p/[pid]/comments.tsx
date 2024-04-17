@@ -5,6 +5,7 @@ import Comment from "./comment";
 import type { Props } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { addComment } from "./actions";
+import { wrapAction } from "@/lib/server-actions";
 
 export default function Comments(props: Props) {
   const [text, setText] = useState("");
@@ -12,13 +13,10 @@ export default function Comments(props: Props) {
   const { problem } = props;
   const allComments = problem.comments;
 
-  const action = async (formData: FormData) => {
-    const resp = await addComment(problem.id, formData);
-    if (resp.ok) {
-      setText("");
-    } else {
-      console.error(resp.error.message);
-    }
+  const tryAddComment = wrapAction(addComment, () => setText(""));
+
+  const action = (formData: FormData) => {
+    tryAddComment(problem.id, formData);
   };
 
   const comments = (

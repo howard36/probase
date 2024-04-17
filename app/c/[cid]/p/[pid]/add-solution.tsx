@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import type { KeyboardEvent } from "react";
 import { ProblemProps } from "./types";

@@ -10,11 +10,15 @@ export function error(message: string): ActionResponse {
 }
 
 // Takes in an async server action, and returns a synchronous version of that action (with extra error logging)
-export function wrapAction<T extends unknown[]>(asyncAction: (...args: T) => Promise<ActionResponse>): (...args: T) => void {
+export function wrapAction<T extends unknown[]>(asyncAction: (...args: T) => Promise<ActionResponse>, onSuccess?: () => void): (...args: T) => void {
   const syncAction = (...args: T) => {
     (async () => {
       const resp = await asyncAction(...args);
-      if (!resp.ok) {
+      if (resp.ok) {
+        if (onSuccess) {
+          onSuccess();
+        }
+      } else {
         console.error("Server action returned error: ", resp.error.message)
       }
     })().catch((err) => console.error(err));

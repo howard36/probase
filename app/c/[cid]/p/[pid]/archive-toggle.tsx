@@ -3,16 +3,16 @@
 import type { Props } from "./types";
 import { useState } from "react";
 import { editProblem } from "./actions";
+import { wrapAction } from "@/lib/server-actions";
 
 export default function ArchiveToggle(props: Props) {
   const { problem } = props;
   const [isArchived, setArchived] = useState(problem.isArchived);
-  const action = editProblem.bind(null, problem.id);
 
-  const handleChange = async () => {
+  const handleChange = () => {
     const newIsArchived = !isArchived;
     setArchived(newIsArchived);
-    await action({ isArchived: newIsArchived });
+    wrapAction(editProblem)(problem.id, { isArchived: newIsArchived });
   };
 
   return (
