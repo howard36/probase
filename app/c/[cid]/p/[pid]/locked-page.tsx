@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
-import { useState } from "react";
 import { startTestsolve } from "./actions";
+import { wrapAction } from "@/lib/server-actions";
 
 export default function LockedPage({
   problem,
@@ -18,21 +18,9 @@ export default function LockedPage({
   unsolved: boolean;
 }) {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const startTestsolving = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const resp = await startTestsolve(problem.id);
-
-    if (resp.ok) {
-      router.refresh();
-      setIsSubmitting(false);
-    } else if ("error" in resp) {
-      console.error(resp.error.message);
-    }
-  };
+  // TODO: replace router.refresh
+  const tryStartTestsolving = wrapAction(startTestsolve, () => router.refresh());
 
   return (
     <div>
@@ -57,8 +45,8 @@ export default function LockedPage({
         )}
         <p>Best of luck!</p>
       </div>
-      <form onSubmit={startTestsolving}>
-        <SubmitButton isSubmitting={isSubmitting} className="w-full">
+      <form action={() => tryStartTestsolving(problem.id)}>
+        <SubmitButton className="w-full">
           Start testsolving
         </SubmitButton>
       </form>

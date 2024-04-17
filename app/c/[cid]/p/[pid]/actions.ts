@@ -249,7 +249,7 @@ export async function addComment(problemId: number, formData: FormData): Promise
   }
 }
 
-export async function startTestsolve(problemId: number) {
+export async function startTestsolve(problemId: number): Promise<ActionResponse> {
   const session = await auth();
   if (session === null) {
     return error("Not signed in");
