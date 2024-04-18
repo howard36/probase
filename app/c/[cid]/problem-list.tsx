@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import ProblemCard from "./problem-card";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Collection, Permission, Subject } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { cn } from "@/lib/utils";
@@ -35,13 +35,24 @@ export default function ProblemList({
   const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(
+    parseInt(searchParams.get("page") ?? "1", 10),
+  );
   const [subjectFilter, setSubjectFilter] = useState({
     Algebra: searchParams.get("subject")?.includes("a") || false,
     Combinatorics: searchParams.get("subject")?.includes("c") || false,
     Geometry: searchParams.get("subject")?.includes("g") || false,
     NumberTheory: searchParams.get("subject")?.includes("n") || false,
   });
+  const changePage = useCallback(
+    (newPage: number) => {
+      setPage(newPage);
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.set("page", newPage.toString());
+      router.replace(pathname + "?" + newParams.toString());
+    },
+    [pathname, router, searchParams],
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -84,8 +95,14 @@ export default function ProblemList({
     );
   }
 
-  const numPages = Math.ceil(problems.length / 20);
+  const numPages = Math.max(Math.ceil(problems.length / 20), 1);
   const halfInterval = 3;
+
+  useEffect(() => {
+    if (page > numPages) {
+      changePage(numPages);
+    }
+  }, [page, numPages, changePage]);
 
   let minPage = page - halfInterval;
   let maxPage = page + halfInterval;
@@ -196,7 +213,7 @@ export default function ProblemList({
             {page > 1 ? (
               <button
                 className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
-                onClick={() => setPage(page - 1)}
+                onClick={() => changePage(page - 1)}
               >
                 <FontAwesomeIcon icon={faAngleLeft} />
               </button>
@@ -210,7 +227,7 @@ export default function ProblemList({
                   "btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base",
                   idx + minPage == page && "btn-active",
                 )}
-                onClick={() => setPage(idx + minPage)}
+                onClick={() => changePage(idx + minPage)}
               >
                 {idx + minPage}
               </button>
@@ -218,7 +235,7 @@ export default function ProblemList({
             {page < numPages ? (
               <button
                 className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
-                onClick={() => setPage(page + 1)}
+                onClick={() => changePage(page + 1)}
               >
                 <FontAwesomeIcon icon={faAngleRight} />
               </button>
