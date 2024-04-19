@@ -167,11 +167,12 @@ export default function ProblemPage(props: Props) {
               <Title {...props} />
             </div>
             <div className="mb-6 font-semibold text-sm flex flex-wrap gap-x-3 gap-y-2">
-              <div
+              <Link
+                href={`/c/${collection.cid}?subject=${subject.charAt(0).toLowerCase()}`}
                 className={`py-2 px-6 text-slate-50 text-center leading-none rounded-full whitespace-nowrap bg-gradient-to-r ${gradient}`}
               >
                 {subject}
-              </div>
+              </Link>
               {problem.testProblems.map((testProblem) => (
                 <Link
                   href={`/c/${collection.cid}/t/${convertToSlug(
