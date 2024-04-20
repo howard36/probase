@@ -75,20 +75,20 @@ export default function ProblemCard({
 
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
-      <div className="bg-white px-8 pt-7 pb-7 my-6 rounded-2xl soft-shadow-xl">
-        <div className="flex mb-2 md:mb-4 items-center">
+      <div className="bg-white p-6 pb-5 md:p-8 md:pb-7 my-6 rounded-2xl soft-shadow-xl">
+        <div className="flex mb-2.5 md:mb-4 items-start">
           <div
-            className={`min-w-1 my-0.5 self-stretch ${titleLineColor} rounded-full mr-2 md:mr-2.5`}
+            className={`min-w-1 self-stretch ${titleLineColor} rounded-full mr-2 md:mr-2.5`}
           ></div>
-          <h2 className="grow text-xl md:text-2xl font-bold text-slate-900">
+          <h2 className="grow text-xl leading-6 md:text-2xl md:leading-7 font-bold text-slate-900">
             {problem.title}
           </h2>
-          <div className="mx-4 md:mx-6">
+          <div className="ml-4 sm:ml-5 md:ml-6 h-6 md:h-7 flex items-center gap-x-4 sm:gap-x-5 md:gap-x-6">
             {problem.difficulty !== null && problem.difficulty > 0 && (
               <Lightbulbs difficulty={problem.difficulty} />
             )}
+            <Likes problem={problem} userId={userId} />
           </div>
-          <Likes problem={problem} userId={userId} />
         </div>
         {locked ? (
           <div className="text-center text-lg sm:text-xl md:text-2xl my-4">

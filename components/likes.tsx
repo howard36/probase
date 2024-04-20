@@ -48,7 +48,7 @@ export default function Likes({
             : "text-slate-400 group-hover:text-slate-500"
         )}
       />
-      <span className="font-bold text-slate-500 group-hover:text-slate-600 text-lg">
+      <span className="font-bold text-slate-500 group-hover:text-slate-600 text-lg leading-none">
         {numLikes}
       </span>
     </div>
