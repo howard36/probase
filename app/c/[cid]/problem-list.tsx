@@ -121,7 +121,7 @@ export default function ProblemList({
 
   return (
     <div className="p-8 md:py-24 whitespace-pre-wrap break-words">
-      <div className="w-128 sm:w-144 md:w-160 max-w-full mx-auto">
+      <div className="max-w-screen-md mx-auto">
         <div className="flex flex-wrap gap-x-12 gap-y-6 mb-6">
           {/* TODO: blue shadow */}
           <Link

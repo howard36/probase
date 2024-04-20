@@ -37,7 +37,7 @@ export default function Likes({
   };
 
   return (
-    <div className="space-x-1.5 group" onClick={handleClick}>
+    <div className="space-x-1.5 group whitespace-nowrap" onClick={handleClick}>
       <FontAwesomeIcon
         icon={faHeart}
         size="xl"
@@ -47,7 +47,7 @@ export default function Likes({
             : "text-slate-400 group-hover:text-slate-500"
         }
       />
-      <span className="font-semibold text-slate-500 group-hover:text-slate-600 text-lg">
+      <span className="font-bold text-slate-500 group-hover:text-slate-600 text-lg">
         {numLikes}
       </span>
     </div>

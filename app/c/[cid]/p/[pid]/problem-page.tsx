@@ -17,19 +17,19 @@ import BackButton from "@/components/back-button";
 const subjectToGradient = {
   Algebra: {
     subject: "Algebra",
-    gradient: "from-blue-500 to-sky-500",
+    gradient: "from-blue-400 to-sky-500",
   },
   Combinatorics: {
     subject: "Combinatorics",
-    gradient: "from-orange-500 to-amber-500",
+    gradient: "from-amber-500 to-orange-400",
   },
   Geometry: {
     subject: "Geometry",
-    gradient: "from-emerald-500 to-green-500",
+    gradient: "from-green-500 to-emerald-500",
   },
   NumberTheory: {
     subject: "Number Theory",
-    gradient: "from-violet-500 to-purple-500",
+    gradient: "from-purple-500 to-violet-500",
   },
 };
 
@@ -169,7 +169,7 @@ export default function ProblemPage(props: Props) {
             <div className="mb-6 font-semibold text-sm flex flex-wrap gap-x-3 gap-y-2">
               <Link
                 href={`/c/${collection.cid}?subject=${subject.charAt(0).toLowerCase()}`}
-                className={`py-2 px-6 text-slate-50 text-center leading-none rounded-full whitespace-nowrap bg-gradient-to-r ${gradient}`}
+                className={`py-2 px-6 text-white text-center leading-none rounded-full whitespace-nowrap bg-gradient-to-br ${gradient}`}
               >
                 {subject}
               </Link>
