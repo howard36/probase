@@ -75,12 +75,12 @@ export default function ProblemCard({
 
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
-      <div className="bg-white p-6 pb-5 md:p-8 md:pb-7 my-6 rounded-2xl soft-shadow-xl">
+      <div className="bg-white p-6 pb-5 md:p-8 md:pb-7 my-4 sm:my-6 rounded-2xl soft-shadow-xl">
         <div className="flex mb-2.5 md:mb-4 items-start">
           <div
             className={`min-w-1 self-stretch ${titleLineColor} rounded-full mr-2 md:mr-2.5`}
           ></div>
-          <h2 className="grow text-xl leading-6 md:text-2xl md:leading-7 font-bold text-slate-900">
+          <h2 className="grow text-xl leading-6 md:text-2xl md:leading-7 font-bold text-slate-900 line-clamp-2">
             {problem.title}
           </h2>
           <div className="ml-4 sm:ml-5 md:ml-6 h-6 md:h-7 flex items-center gap-x-4 sm:gap-x-5 md:gap-x-6">
