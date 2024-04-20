@@ -38,9 +38,9 @@ const titleLineColors = [
 // TODO: allow each collection to define new subjects and
 // customize its own mapping
 const subjectToColor = {
-  Algebra: 9,
+  Algebra: 10,
   Combinatorics: 1,
-  Geometry: 5,
+  Geometry: 6,
   NumberTheory: 13,
   ComputerScience: 16,
 };
@@ -75,24 +75,19 @@ export default function ProblemCard({
 
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
-      <div className="bg-white p-8 my-8 rounded-2xl soft-shadow-xl">
-        <div className="flex gap-8">
-          <div className="flex-grow">
-            <h2 className="text-1xl sm:text-1xl font-bold text-slate-500 mb-4">
-              {problem.pid}
-            </h2>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
-              {problem.title}
-            </h2>
-            <div
-              className={`w-16 h-2 my-4 ${titleLineColor} rounded-full`}
-            ></div>
-          </div>
-          <div className="text-base space-y-3">
-            <Likes problem={problem} userId={userId} />
+      <div className="bg-white px-8 pt-7 pb-7 my-6 rounded-2xl soft-shadow-xl">
+        <div className="flex gap-2.5 mb-4">
+          <div
+            className={`min-w-1 my-0.5 ${titleLineColor} rounded-full`}
+          ></div>
+          <h2 className="grow text-xl md:text-2xl font-bold text-slate-900">
+            {problem.title}
+          </h2>
+          <div className="flex gap-x-4 ml-2 h-8 items-center">
             {problem.difficulty !== null && problem.difficulty > 0 && (
               <Lightbulbs difficulty={problem.difficulty} />
             )}
+            <Likes problem={problem} userId={userId} />
           </div>
         </div>
         {locked ? (
@@ -103,7 +98,7 @@ export default function ProblemCard({
             </span>
           </div>
         ) : (
-          <div className="text-base sm:text-lg md:text-xl text-slate-800">
+          <div className="text-base md:text-lg text-slate-800">
             <Latex>{problem.statement}</Latex>
           </div>
         )}

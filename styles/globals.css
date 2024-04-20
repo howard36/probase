@@ -14,4 +14,15 @@
 /* Add horizontal scrollbar for long display equations */
 .katex-display {
   overflow: auto hidden;
+
+  /* 
+  Calculations based on https://tonsky.me/blog/centering/
+  KaTeX_Math-Italic font metrics:
+  - UPM = 1000
+  - Ascender = 717
+  - Descender = -218
+  - Cap Height = 683
+  margin-top should be (218 - (717 - 683)) / 1000 = 0.184em larger than margin-bottom
+  */
+  margin: 0.684em 0 0.5em 0 !important;
 }
