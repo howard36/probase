@@ -45,7 +45,7 @@ export default function Likes({
           "text-xl md:text-2xl",
           liked
             ? "text-rose-400 group-hover:text-rose-500"
-            : "text-slate-400 group-hover:text-slate-500"
+            : "text-slate-400 group-hover:text-slate-500",
         )}
       />
       <span className="font-bold text-slate-500 group-hover:text-slate-600 text-lg leading-none">

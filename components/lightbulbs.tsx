@@ -10,7 +10,10 @@ export default function Lightbulbs({ difficulty }: { difficulty: number }) {
           <FontAwesomeIcon
             key={value}
             icon={faLightbulb}
-            className={clsx("text-xl md:text-2xl", value <= difficulty ? "text-amber-400" : "text-slate-300")}
+            className={clsx(
+              "text-xl md:text-2xl",
+              value <= difficulty ? "text-amber-400" : "text-slate-300",
+            )}
           />
         ))}
       </div>
