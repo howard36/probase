@@ -120,7 +120,7 @@ export default function ProblemList({
   problems = problems.slice(20 * (page - 1), 20 * page);
 
   return (
-    <div className="p-8 md:py-24 whitespace-pre-wrap break-words">
+    <div className="p-4 sm:p-8 md:py-24 whitespace-pre-wrap break-words">
       <div className="max-w-screen-md mx-auto">
         <div className="flex flex-wrap gap-x-12 gap-y-6 mb-6">
           {/* TODO: blue shadow */}
@@ -157,7 +157,7 @@ export default function ProblemList({
             </div>
           </div>
         </div>
-        <div className="mb-8 flex flex-row justify-between">
+        <div className="mb-4 flex flex-row justify-between">
           <div>
             <div className="form-control">
               {subjects.map((subject) => (
@@ -188,7 +188,7 @@ export default function ProblemList({
               />
               <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
               <span className="ml-2 text-sm font-medium text-slate-600">
-                Show archived problems
+                Show archived
               </span>
             </label>
           </div>
