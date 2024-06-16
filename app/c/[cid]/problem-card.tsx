@@ -51,12 +51,14 @@ export default function ProblemCard({
   permission,
   userId,
   authors,
+  filter,
 }: {
   collection: Collection;
   problem: ProblemProps;
   permission: Permission | null;
   userId: string;
   authors: { id: number }[];
+  filter: string | undefined;
 }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];
@@ -73,8 +75,14 @@ export default function ProblemCard({
     }
   }
 
+  // TODO: rewrite better
+  const queryParams = filter ? `?subject=${filter}` : "?hi";
+
   return (
-    <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
+    <Link
+      href={`/c/${collection.cid}/p/${problem.pid}${queryParams}`}
+      prefetch={true}
+    >
       <div className="bg-white p-6 pb-5 pr-[22px] md:p-8 md:pb-7 my-4 sm:my-6 rounded-2xl soft-shadow-xl">
         <div className="flex mb-2.5 md:mb-4 items-start">
           <div
