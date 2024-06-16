@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Title from "./title";
 import Statement from "./statement";
@@ -12,6 +14,7 @@ import Testsolve from "./testsolve";
 import Leaderboard from "./leaderboard";
 import { canEditProblem } from "@/lib/permissions";
 import BackButton from "@/components/back-button";
+import { useSearchParams } from "next/navigation";
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -42,7 +45,13 @@ function convertToSlug(name: string) {
 }
 
 export default function ProblemPage(props: Props) {
+  const searchParams = useSearchParams(); // TODO: move `use client` to a CollectionBackButton
   const { problem, collection, permission, userId, authors } = props;
+
+  const filter = { subject: searchParams.get("subject") };
+  // Normally it would be something like:
+  // const filterStr = filterToString(filter);
+  const filterStr = filter["subject"] ? `?subject=${filter["subject"]}` : "";
 
   let written_by;
   if (
@@ -156,7 +165,7 @@ export default function ProblemPage(props: Props) {
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
         <BackButton
-          href={`/c/${collection.cid}`}
+          href={`/c/${collection.cid}${filterStr}`}
           label={`Back to ${collection.name}`}
         />
       </div>

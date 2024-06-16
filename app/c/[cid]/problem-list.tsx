@@ -203,6 +203,11 @@ export default function ProblemList({
                   userId={userId}
                   authors={authors}
                   permission={permission}
+                  filter={Object.entries(subjectFilter)
+                    .filter(([, value]) => value)
+                    .map(([subject]) => subject[0])
+                    .join("")
+                    .toLowerCase()}
                 />
               </li>
             ))}
