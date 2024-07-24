@@ -16,8 +16,8 @@ import { canEditProblem } from "@/lib/permissions";
 import BackButton from "@/components/back-button";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -231,16 +231,16 @@ export default function ProblemPage(props: Props) {
             onClick={handlePrevProblem}
             disabled={!hasPrevProblem}
             className={`py-2 px-4 rounded text-sm font-bold transition-colors flex items-center
-              ${hasPrevProblem 
-                ? 'text-slate-500 hover:text-slate-700' 
-                : 'text-slate-300 cursor-not-allowed'}`}
+              ${
+                hasPrevProblem
+                  ? "text-slate-500 hover:text-slate-700"
+                  : "text-slate-300 cursor-not-allowed"
+              }`}
           >
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Previous
           </button>
-          {permission?.accessLevel === "Admin" && (
-            <ArchiveToggle {...props} />
-          )}
+          {permission?.accessLevel === "Admin" && <ArchiveToggle {...props} />}
           <button
             onClick={handleNextProblem}
             className="py-2 px-4 rounded text-slate-500 hover:text-slate-700 text-sm font-bold transition-colors flex items-center"
