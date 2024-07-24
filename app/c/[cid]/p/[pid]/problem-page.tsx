@@ -15,6 +15,9 @@ import Leaderboard from "./leaderboard";
 import { canEditProblem } from "@/lib/permissions";
 import BackButton from "@/components/back-button";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -45,6 +48,7 @@ function convertToSlug(name: string) {
 }
 
 export default function ProblemPage(props: Props) {
+  const router = useRouter();
   const searchParams = useSearchParams(); // TODO: move `use client` to a CollectionBackButton
   const { problem, collection, permission, userId, authors } = props;
 
@@ -161,6 +165,21 @@ export default function ProblemPage(props: Props) {
     );
   }
 
+  const currentPid = problem.pid;
+  const nextPid = incrementPid(currentPid);
+  const prevPid = decrementPid(currentPid);
+  const hasPrevProblem = prevPid !== null;
+
+  const handleNextProblem = () => {
+    router.push(`/c/${collection.cid}/p/${nextPid}${filterStr}`);
+  };
+
+  const handlePrevProblem = () => {
+    if (hasPrevProblem) {
+      router.push(`/c/${collection.cid}/p/${prevPid}${filterStr}`);
+    }
+  };
+
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
       <div className="mb-8 sm:mb-16 inline-block">
@@ -207,12 +226,45 @@ export default function ProblemPage(props: Props) {
         {/* Statement should also be hidden if they haven't clicked "Start testsolve" */}
         {testsolveOrAnswers}
 
-        {permission?.accessLevel === "Admin" && (
-          <div>
-            <ArchiveToggle {...props} />
-          </div>
-        )}
+        <div className="mt-8 flex justify-between items-center">
+          <button
+            onClick={handlePrevProblem}
+            disabled={!hasPrevProblem}
+            className={`py-2 px-4 rounded text-sm font-bold transition-colors flex items-center
+              ${
+                hasPrevProblem
+                  ? "text-slate-500 hover:text-slate-700"
+                  : "text-slate-300 cursor-not-allowed"
+              }`}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+            Previous
+          </button>
+          {permission?.accessLevel === "Admin" && <ArchiveToggle {...props} />}
+          <button
+            onClick={handleNextProblem}
+            className="py-2 px-4 rounded text-slate-500 hover:text-slate-700 text-sm font-bold transition-colors flex items-center"
+          >
+            Next
+            <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+          </button>
+        </div>
       </div>
     </div>
   );
+}
+
+function incrementPid(pid: string): string {
+  const letter = pid.charAt(0);
+  const number = parseInt(pid.slice(1), 10);
+  return `${letter}${number + 1}`;
+}
+
+function decrementPid(pid: string): string | null {
+  const letter = pid.charAt(0);
+  const number = parseInt(pid.slice(1), 10);
+  if (number <= 1) {
+    return null;
+  }
+  return `${letter}${number - 1}`;
 }
