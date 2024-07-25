@@ -225,8 +225,13 @@ export default function ProblemPage(props: Props) {
 
         {/* Statement should also be hidden if they haven't clicked "Start testsolve" */}
         {testsolveOrAnswers}
+        {permission?.accessLevel === "Admin" && (
+          <div className="mt-8">
+            <ArchiveToggle {...props} />
+          </div>
+        )}
 
-        <div className="mt-8 flex justify-between items-center">
+        <div className="mt-4 flex justify-between items-center">
           <button
             onClick={handlePrevProblem}
             disabled={!hasPrevProblem}
@@ -240,7 +245,6 @@ export default function ProblemPage(props: Props) {
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Previous
           </button>
-          {permission?.accessLevel === "Admin" && <ArchiveToggle {...props} />}
           <button
             onClick={handleNextProblem}
             className="py-2 px-4 rounded text-slate-500 hover:text-slate-700 text-sm font-bold transition-colors flex items-center"
