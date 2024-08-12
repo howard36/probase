@@ -76,7 +76,7 @@ export default function ProblemCard({
   }
 
   // TODO: rewrite better
-  const queryParams = filter ? `?subject=${filter}` : "?hi";
+  const queryParams = filter ? `?subject=${filter}` : "";
 
   return (
     <Link
