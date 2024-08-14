@@ -85,7 +85,13 @@ interface Params {
   cid: string;
 }
 
-export default async function Page({ params }: { params: Params }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: { page?: string; subject?: string };
+}) {
   const { cid } = params;
   const collection = await getCollection(cid);
   const problems = await getProblems(collection);
@@ -105,6 +111,7 @@ export default async function Page({ params }: { params: Params }) {
           userId=""
           authors={[]}
           permission={null}
+          searchParams={searchParams}
         />
       );
     } else {
@@ -166,6 +173,7 @@ export default async function Page({ params }: { params: Params }) {
       userId={userId}
       permission={permission}
       authors={authors}
+      searchParams={searchParams}
     />
   );
 }

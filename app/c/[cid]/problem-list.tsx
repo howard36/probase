@@ -23,32 +23,31 @@ export default function ProblemList({
   userId,
   authors,
   permission,
+  searchParams,
 }: {
   collection: Collection;
   problems: ProblemProps[];
   userId: string;
   authors: { id: number }[];
   permission: Permission | null;
+  searchParams: { page?: string; subject?: string };
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
-  const [page, setPage] = useState(
-    parseInt(searchParams.get("page") ?? "1", 10),
-  );
+  const [page, setPage] = useState(parseInt(searchParams?.page ?? "1", 10));
   const [subjectFilter, setSubjectFilter] = useState({
-    Algebra: searchParams.get("subject")?.includes("a") || false,
-    Combinatorics: searchParams.get("subject")?.includes("c") || false,
-    Geometry: searchParams.get("subject")?.includes("g") || false,
-    NumberTheory: searchParams.get("subject")?.includes("n") || false,
+    Algebra: searchParams?.subject?.includes("a") || false,
+    Combinatorics: searchParams?.subject?.includes("c") || false,
+    Geometry: searchParams?.subject?.includes("g") || false,
+    NumberTheory: searchParams?.subject?.includes("n") || false,
   });
   const changePage = useCallback(
     (newPage: number) => {
       setPage(newPage);
-      const newParams = new URLSearchParams(searchParams.toString());
-      newParams.set("page", newPage.toString());
+      const newParams = { ...searchParams };
+      newParams.page = newPage.toString();
       router.replace(pathname + "?" + newParams.toString());
     },
     [pathname, router, searchParams],
@@ -69,13 +68,16 @@ export default function ProblemList({
       .map(([subject]) => subject[0])
       .join("")
       .toLowerCase();
-    const newParams = new URLSearchParams(searchParams.toString());
+
+    const newParams = { ...searchParams };
     if (newFilterString !== "") {
-      newParams.set("subject", newFilterString);
+      newParams.subject = newFilterString;
     } else {
-      newParams.delete("subject");
+      delete newParams.subject;
     }
-    router.replace(pathname + "?" + newParams.toString(), { scroll: false });
+
+    const queryString = new URLSearchParams(newParams).toString();
+    router.replace(`${pathname}?${queryString}`, { scroll: false });
   };
 
   // Apply filters to problem list
