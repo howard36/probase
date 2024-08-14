@@ -9,8 +9,9 @@ import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Filter, parseFilter, filterToString } from "@/lib/filter";
 
-const subjects: Subject[] = [
+const allSubjects: Subject[] = [
   "Algebra",
   "Combinatorics",
   "Geometry",
@@ -36,21 +37,15 @@ export default function ProblemList({
   const pathname = usePathname();
   const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
-  const [page, setPage] = useState(parseInt(searchParams?.page ?? "1", 10));
-  const [subjectFilter, setSubjectFilter] = useState({
-    Algebra: searchParams?.subject?.includes("a") || false,
-    Combinatorics: searchParams?.subject?.includes("c") || false,
-    Geometry: searchParams?.subject?.includes("g") || false,
-    NumberTheory: searchParams?.subject?.includes("n") || false,
-  });
+  const [filter, setFilter] = useState<Filter>(parseFilter(searchParams));
+
   const changePage = useCallback(
     (newPage: number) => {
-      setPage(newPage);
-      const newParams = { ...searchParams };
-      newParams.page = newPage.toString();
-      router.replace(pathname + "?" + newParams.toString());
+      setFilter((prev) => ({ ...prev, page: newPage }));
+      const newParams = filterToString({ ...filter, page: newPage });
+      router.replace(`${pathname}?${newParams}`, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [pathname, router, filter],
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,26 +53,13 @@ export default function ProblemList({
   };
 
   const toggleSubject = (subject: Subject) => {
-    const newSubjectFilter = {
-      ...subjectFilter,
-      [subject]: !subjectFilter[subject],
-    };
-    setSubjectFilter(newSubjectFilter);
-    const newFilterString = Object.entries(newSubjectFilter)
-      .filter(([, value]) => value)
-      .map(([subject]) => subject[0])
-      .join("")
-      .toLowerCase();
-
-    const newParams = { ...searchParams };
-    if (newFilterString !== "") {
-      newParams.subject = newFilterString;
-    } else {
-      delete newParams.subject;
-    }
-
-    const queryString = new URLSearchParams(newParams).toString();
-    router.replace(`${pathname}?${queryString}`, { scroll: false });
+    const newSubjects = filter.subjects.includes(subject)
+      ? filter.subjects.filter((s) => s !== subject)
+      : [...filter.subjects, subject].sort();
+    const newFilter = { ...filter, subjects: newSubjects };
+    setFilter(newFilter);
+    const newParams = filterToString(newFilter);
+    router.replace(`${pathname}?${newParams}`, { scroll: false });
   };
 
   // Apply filters to problem list
@@ -85,8 +67,10 @@ export default function ProblemList({
     // hide archived problems
     problems = problems.filter((problem) => !problem.isArchived);
   }
-  if (Object.values(subjectFilter).some((value) => value)) {
-    problems = problems.filter((problem) => subjectFilter[problem.subject]);
+  if (filter.subjects.length > 0) {
+    problems = problems.filter((problem) =>
+      filter.subjects.includes(problem.subject),
+    );
   }
   if (query !== "") {
     const lowerQuery = query.toLowerCase();
@@ -101,13 +85,13 @@ export default function ProblemList({
   const halfInterval = 3;
 
   useEffect(() => {
-    if (page > numPages) {
-      changePage(numPages);
+    if (filter.page > numPages) {
+      setFilter((prev) => ({ ...prev, page: numPages }));
     }
-  }, [page, numPages, changePage]);
+  }, [filter.page, numPages]);
 
-  let minPage = page - halfInterval;
-  let maxPage = page + halfInterval;
+  let minPage = filter.page - halfInterval;
+  let maxPage = filter.page + halfInterval;
   if (minPage <= 0) {
     minPage = 1;
     maxPage = 1 + 2 * halfInterval;
@@ -119,7 +103,7 @@ export default function ProblemList({
   minPage = Math.max(minPage, 1);
   maxPage = Math.min(maxPage, numPages);
 
-  problems = problems.slice(20 * (page - 1), 20 * page);
+  problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
 
   return (
     <div className="p-4 sm:p-8 md:py-24 whitespace-pre-wrap break-words">
@@ -162,14 +146,14 @@ export default function ProblemList({
         <div className="mb-4 flex flex-row justify-between">
           <div>
             <div className="form-control">
-              {subjects.map((subject) => (
+              {allSubjects.map((subject) => (
                 <label
                   key={subject}
                   className="label cursor-pointer justify-start"
                 >
                   <input
                     type="checkbox"
-                    checked={subjectFilter[subject]}
+                    checked={filter.subjects.includes(subject)}
                     onChange={() => toggleSubject(subject)}
                     className="checkbox checkbox-primary [--chkfg:white]"
                   />
@@ -205,11 +189,9 @@ export default function ProblemList({
                   userId={userId}
                   authors={authors}
                   permission={permission}
-                  filter={Object.entries(subjectFilter)
-                    .filter(([, value]) => value)
-                    .map(([subject]) => subject[0])
-                    .join("")
-                    .toLowerCase()}
+                  filter={filter.subjects
+                    .map((s) => s[0].toLowerCase())
+                    .join("")}
                 />
               </li>
             ))}
@@ -217,10 +199,10 @@ export default function ProblemList({
         </div>
         {numPages > 1 && (
           <div className="mt-12 flex flex-row justify-center gap-0.5">
-            {page > 1 ? (
+            {filter.page > 1 ? (
               <button
                 className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
-                onClick={() => changePage(page - 1)}
+                onClick={() => changePage(filter.page - 1)}
               >
                 <FontAwesomeIcon icon={faAngleLeft} />
               </button>
@@ -232,17 +214,17 @@ export default function ProblemList({
                 key={idx + minPage}
                 className={cn(
                   "btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base",
-                  idx + minPage == page && "btn-active",
+                  idx + minPage == filter.page && "btn-active",
                 )}
                 onClick={() => changePage(idx + minPage)}
               >
                 {idx + minPage}
               </button>
             ))}
-            {page < numPages ? (
+            {filter.page < numPages ? (
               <button
                 className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
-                onClick={() => changePage(page + 1)}
+                onClick={() => changePage(filter.page + 1)}
               >
                 <FontAwesomeIcon icon={faAngleRight} />
               </button>
