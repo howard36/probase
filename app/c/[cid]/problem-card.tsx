@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { Collection, Permission } from "@prisma/client";
 import { canEditProblem } from "@/lib/permissions";
+import { Filter, filterToString } from "@/lib/filter";
 
 const titleLineColors = [
   "bg-red-400", // 0
@@ -58,7 +59,7 @@ export default function ProblemCard({
   permission: Permission | null;
   userId: string;
   authors: { id: number }[];
-  filter: string | undefined;
+  filter: Filter;
 }) {
   const subjectColor = subjectToColor[problem.subject];
   const titleLineColor = titleLineColors[subjectColor];
@@ -75,12 +76,11 @@ export default function ProblemCard({
     }
   }
 
-  // TODO: rewrite better
-  const queryParams = filter ? `?subject=${filter}` : "";
+  const searchParams = filterToString(filter);
 
   return (
     <Link
-      href={`/c/${collection.cid}/p/${problem.pid}${queryParams}`}
+      href={`/c/${collection.cid}/p/${problem.pid}${searchParams}`}
       prefetch={true}
     >
       <div className="bg-white p-6 pb-5 pr-[22px] md:p-8 md:pb-7 my-4 sm:my-6 rounded-2xl soft-shadow-xl">

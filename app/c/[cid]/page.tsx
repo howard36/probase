@@ -5,6 +5,7 @@ import ProblemList from "./problem-list";
 import { Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { auth } from "auth";
+import { parseFilter } from "@/lib/filter";
 
 async function getCollection(cid: string): Promise<Collection> {
   const collection = await prisma.collection.findUnique({
@@ -85,8 +86,15 @@ interface Params {
   cid: string;
 }
 
-export default async function Page({ params }: { params: Params }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: { page?: string; subject?: string };
+}) {
   const { cid } = params;
+  const filter = parseFilter(searchParams);
   const collection = await getCollection(cid);
   const problems = await getProblems(collection);
 
@@ -105,6 +113,7 @@ export default async function Page({ params }: { params: Params }) {
           userId=""
           authors={[]}
           permission={null}
+          initialFilter={filter}
         />
       );
     } else {
@@ -166,6 +175,7 @@ export default async function Page({ params }: { params: Params }) {
       userId={userId}
       permission={permission}
       authors={authors}
+      initialFilter={filter}
     />
   );
 }
