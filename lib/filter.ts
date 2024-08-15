@@ -12,6 +12,7 @@ export type Filter = {
   subjects: Subject[];
 };
 
+// TODO: allow arbitrary JSON as input
 export function parseFilter(searchParams: {
   page?: string;
   subject?: string;
