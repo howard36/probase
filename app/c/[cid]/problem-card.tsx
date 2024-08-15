@@ -76,10 +76,7 @@ export default function ProblemCard({
     }
   }
 
-  let searchParams = filterToString(filter);
-  if (searchParams !== "") {
-    searchParams = `?${searchParams}`;
-  }
+  const searchParams = filterToString(filter);
 
   return (
     <Link

@@ -35,5 +35,6 @@ export function filterToString(filter: Filter): string {
       .join("");
     queryParams.set("subject", subjectString);
   }
-  return queryParams.toString();
+  const queryString = queryParams.toString();
+  return queryString ? `?${queryString}` : "";
 }

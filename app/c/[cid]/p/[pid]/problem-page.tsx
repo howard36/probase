@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { Filter, filterToString } from "@/lib/filter";
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -47,15 +48,15 @@ function convertToSlug(name: string) {
     .replace(/\-+/g, "-"); // Replace multiple hyphens with a single hyphen
 }
 
-export default function ProblemPage(props: Props) {
-  const router = useRouter();
-  const searchParams = useSearchParams(); // TODO: move `use client` to a CollectionBackButton
-  const { problem, collection, permission, userId, authors } = props;
+interface PropsWithFilter extends Props {
+  filter: Filter;
+}
 
-  const filter = { subject: searchParams.get("subject") };
-  // Normally it would be something like:
-  // const filterStr = filterToString(filter);
-  const filterStr = filter["subject"] ? `?subject=${filter["subject"]}` : "";
+export default function ProblemPage(props: PropsWithFilter) {
+  const router = useRouter();
+  const { problem, collection, permission, userId, authors, filter } = props;
+
+  const filterStr = filterToString(filter);
 
   let written_by;
   if (

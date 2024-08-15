@@ -24,26 +24,26 @@ export default function ProblemList({
   userId,
   authors,
   permission,
-  searchParams,
+  initialFilter,
 }: {
   collection: Collection;
   problems: ProblemProps[];
   userId: string;
   authors: { id: number }[];
   permission: Permission | null;
-  searchParams: { page?: string; subject?: string };
+  initialFilter: Filter;
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
-  const [filter, setFilter] = useState<Filter>(parseFilter(searchParams));
+  const [filter, setFilter] = useState<Filter>(initialFilter);
 
   const changePage = useCallback(
     (newPage: number) => {
       setFilter((prev) => ({ ...prev, page: newPage }));
       const newParams = filterToString({ ...filter, page: newPage });
-      router.replace(`${pathname}?${newParams}`, { scroll: false });
+      router.replace(`${pathname}${newParams}`, { scroll: false });
     },
     [pathname, router, filter],
   );
@@ -59,7 +59,7 @@ export default function ProblemList({
     const newFilter = { ...filter, subjects: newSubjects };
     setFilter(newFilter);
     const newParams = filterToString(newFilter);
-    router.replace(`${pathname}?${newParams}`, { scroll: false });
+    router.replace(`${pathname}${newParams}`, { scroll: false });
   };
 
   // Apply filters to problem list
@@ -189,9 +189,7 @@ export default function ProblemList({
                   userId={userId}
                   authors={authors}
                   permission={permission}
-                  filter={filter.subjects
-                    .map((s) => s[0].toLowerCase())
-                    .join("")}
+                  filter={filter}
                 />
               </li>
             ))}

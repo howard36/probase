@@ -10,6 +10,7 @@ import {
 import { canViewCollection } from "@/lib/permissions";
 import { AccessLevel } from "@prisma/client";
 import { auth } from "auth";
+import { parseFilter } from "@/lib/filter";
 
 // TODO: params can be null, but the type does not reflect that
 async function getProps(params: Params, userId: string | null): Promise<Props> {
@@ -87,14 +88,21 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
   return props;
 }
 
-export default async function Page({ params }: { params: Params }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: { page?: string; subjects?: string };
+}) {
   const { cid, pid } = params;
+  const filter = parseFilter(searchParams);
   const session = await auth();
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
       const props: Props = await getProps(params, null);
-      return <ProblemPage {...props} />;
+      return <ProblemPage {...props} filter={filter} />;
     } else {
       redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fp%2F${pid}`);
     }
@@ -107,5 +115,5 @@ export default async function Page({ params }: { params: Params }) {
 
   const props: Props = await getProps(params, userId);
 
-  return <ProblemPage {...props} />;
+  return <ProblemPage {...props} filter={filter} />;
 }
