@@ -35,27 +35,7 @@ export default function ProblemList({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [showArchived, setShowArchived] = useState(false);
   const [filter, setFilter] = useState<Filter>(initialFilter);
-
-  const changePage = useCallback(
-    (newPage: number) => {
-      setFilter((prev) => ({ ...prev, page: newPage }));
-      const newParams = filterToString({ ...filter, page: newPage });
-      router.replace(`${pathname}${newParams}`, { scroll: false });
-    },
-    [pathname, router, filter],
-  );
-
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newSearch = e.target.value;
-      setFilter((prev) => ({ ...prev, search: newSearch }));
-      const newParams = filterToString({ ...filter, search: newSearch });
-      router.replace(`${pathname}${newParams}`, { scroll: false });
-    },
-    [pathname, router, filter],
-  );
 
   const toggleSubject = (subject: Subject) => {
     const newSubjects = filter.subjects.includes(subject)
@@ -67,11 +47,29 @@ export default function ProblemList({
     router.replace(`${pathname}${newParams}`, { scroll: false });
   };
 
-  // Apply filters to problem list
-  if (!showArchived) {
-    // hide archived problems
-    problems = problems.filter((problem) => !problem.isArchived);
-  }
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearch = e.target.value;
+    setFilter((prev) => ({ ...prev, search: newSearch }));
+    const newParams = filterToString({ ...filter, search: newSearch });
+    router.replace(`${pathname}${newParams}`, { scroll: false });
+  };
+
+  const toggleArchived = () => {
+    const newFilter = { ...filter, archived: !filter.archived };
+    setFilter(newFilter);
+    const newParams = filterToString(newFilter);
+    router.replace(`${pathname}${newParams}`, { scroll: false });
+  };
+
+  const changePage = (newPage: number) => {
+    setFilter((prev) => ({ ...prev, page: newPage }));
+    const newParams = filterToString({ ...filter, page: newPage });
+    router.replace(`${pathname}${newParams}`, { scroll: false });
+  };
+
+  problems = problems.filter(
+    (problem) => problem.isArchived === filter.archived,
+  );
   if (filter.subjects.length > 0) {
     problems = problems.filter((problem) =>
       filter.subjects.includes(problem.subject),
@@ -129,7 +127,7 @@ export default function ProblemList({
                   type="search"
                   placeholder="Search"
                   value={filter.search}
-                  onChange={handleChange}
+                  onChange={handleSearchChange}
                   className="border-2 border-slate-300 bg-white h-12 w-full pl-4 pr-12 rounded-xl text-base focus:outline-none"
                 />
                 <div className="absolute right-0 top-0 mt-4 mr-4">
@@ -173,8 +171,8 @@ export default function ProblemList({
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                checked={showArchived}
-                onChange={() => setShowArchived(!showArchived)}
+                checked={filter.archived}
+                onChange={toggleArchived}
                 className="sr-only peer"
               />
               <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>

@@ -93,7 +93,7 @@ export default async function Page({
   searchParams,
 }: {
   params: Params;
-  searchParams: { page?: string; subjects?: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { cid, pid } = params;
   const filter = parseFilter(searchParams);
