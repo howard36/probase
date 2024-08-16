@@ -47,7 +47,7 @@ export default function ProblemList({
     [pathname, router, filter],
   );
 
-  const handleChange = useCallback(
+  const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newSearch = e.target.value;
       setFilter((prev) => ({ ...prev, search: newSearch }));
@@ -129,7 +129,7 @@ export default function ProblemList({
                   type="search"
                   placeholder="Search"
                   value={filter.search}
-                  onChange={handleChange}
+                  onChange={handleSearchChange}
                   className="border-2 border-slate-300 bg-white h-12 w-full pl-4 pr-12 rounded-xl text-base focus:outline-none"
                 />
                 <div className="absolute right-0 top-0 mt-4 mr-4">
