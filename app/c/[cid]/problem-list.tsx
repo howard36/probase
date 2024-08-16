@@ -8,8 +8,8 @@ import { ProblemProps } from "./types";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Filter, parseFilter, filterToString } from "@/lib/filter";
+import { usePathname, useRouter } from "next/navigation";
+import { Filter, filterToString } from "@/lib/filter";
 
 const allSubjects: Subject[] = [
   "Algebra",
