@@ -35,7 +35,6 @@ export default function ProblemList({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [query, setQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [filter, setFilter] = useState<Filter>(initialFilter);
 
@@ -48,9 +47,15 @@ export default function ProblemList({
     [pathname, router, filter],
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newSearch = e.target.value;
+      setFilter((prev) => ({ ...prev, search: newSearch }));
+      const newParams = filterToString({ ...filter, search: newSearch });
+      router.replace(`${pathname}${newParams}`, { scroll: false });
+    },
+    [pathname, router, filter],
+  );
 
   const toggleSubject = (subject: Subject) => {
     const newSubjects = filter.subjects.includes(subject)
@@ -72,8 +77,8 @@ export default function ProblemList({
       filter.subjects.includes(problem.subject),
     );
   }
-  if (query !== "") {
-    const lowerQuery = query.toLowerCase();
+  if (filter.search !== "") {
+    const lowerQuery = filter.search.toLowerCase();
     problems = problems.filter(
       (problem) =>
         problem.title.toLowerCase().includes(lowerQuery) ||
@@ -123,7 +128,7 @@ export default function ProblemList({
                 <input
                   type="search"
                   placeholder="Search"
-                  value={query}
+                  value={filter.search}
                   onChange={handleChange}
                   className="border-2 border-slate-300 bg-white h-12 w-full pl-4 pr-12 rounded-xl text-base focus:outline-none"
                 />

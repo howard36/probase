@@ -28,6 +28,7 @@ export function parseFilter(searchParams: {
   return { page, subjects, search };
 }
 
+// TODO: escape special characters
 export function filterToString(filter: Filter): string {
   const queryParams = new URLSearchParams();
   if (filter.page !== undefined && filter.page !== 1) {
