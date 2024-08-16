@@ -31,9 +31,6 @@ export function parseFilter(searchParams: {
 // TODO: escape special characters
 export function filterToString(filter: Filter): string {
   const queryParams = new URLSearchParams();
-  if (filter.page !== undefined && filter.page !== 1) {
-    queryParams.set("page", filter.page.toString());
-  }
   if (filter.subjects !== undefined && filter.subjects.length > 0) {
     const subjectString = filter.subjects
       .map((s) => s[0].toLowerCase())
@@ -42,6 +39,9 @@ export function filterToString(filter: Filter): string {
   }
   if (filter.search !== "") {
     queryParams.set("search", filter.search);
+  }
+  if (filter.page !== undefined && filter.page !== 1) {
+    queryParams.set("page", filter.page.toString());
   }
   const queryString = queryParams.toString();
   return queryString ? `?${queryString}` : "";
