@@ -3,7 +3,7 @@
 import Link from "next/link";
 import ProblemCard from "./problem-card";
 import { useEffect, useState } from "react";
-import { Collection, Permission, Subject } from "@prisma/client";
+import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
