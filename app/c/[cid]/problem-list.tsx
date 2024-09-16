@@ -81,40 +81,38 @@ export default function ProblemList({
 
   return (
     <div className="p-4 sm:p-8 xl:py-24 whitespace-pre-wrap break-words">
-      <div className="mx-auto">
-        <div className="flex flex-col xl:flex-row xl:gap-x-12">
-          <div className="xl:max-w-72 xl:flex-grow"></div>
-          <div className="xl:max-w-72 w-full xl:mr-auto xl:mt-0 xl:order-3">
-            <div className="xl:sticky xl:top-24">
-              <div className="mb-2 flex flex-col sm:flex-row xl:flex-col gap-x-8 gap-y-6">
-                <Link
-                  href={`/c/${collection.cid}/add-problem`}
-                  prefetch={true}
-                  className="w-full sm:max-w-56 xl:max-w-full inline-block py-3 px-10 text-center rounded-xl bg-sky-500 hover:bg-sky-600 text-slate-50 font-bold text-base soft-shadow-xl"
-                >
-                  Add Problem
-                </Link>
-                <ProblemListSearch filter={filter} setFilter={setFilter} />
-              </div>
-              <ProblemListFilter filter={filter} setFilter={setFilter} />
+      <div className="flex flex-col xl:flex-row xl:gap-x-12 xl:justify-center">
+        <div className="xl:max-w-72 xl:flex-grow"></div>
+        <div className="xl:max-w-72 w-full xl:order-3">
+          <div className="xl:sticky xl:top-24">
+            <div className="mb-2 flex flex-col sm:flex-row xl:flex-col gap-x-8 gap-y-6">
+              <Link
+                href={`/c/${collection.cid}/add-problem`}
+                prefetch={true}
+                className="w-full sm:max-w-56 xl:max-w-full inline-block py-3 px-10 text-center rounded-xl bg-sky-500 hover:bg-sky-600 text-slate-50 font-bold text-base soft-shadow-xl"
+              >
+                Add Problem
+              </Link>
+              <ProblemListSearch filter={filter} setFilter={setFilter} />
             </div>
+            <ProblemListFilter filter={filter} setFilter={setFilter} />
           </div>
-          <div className="xl:max-w-screen-md w-full">
-            <ul>
-              {problems.map((problem) => (
-                <li key={problem.pid}>
-                  <ProblemCard
-                    collection={collection}
-                    problem={problem}
-                    userId={userId}
-                    authors={authors}
-                    permission={permission}
-                    filter={filter}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
+        </div>
+        <div className="xl:max-w-screen-md w-full">
+          <ul>
+            {problems.map((problem) => (
+              <li key={problem.pid}>
+                <ProblemCard
+                  collection={collection}
+                  problem={problem}
+                  userId={userId}
+                  authors={authors}
+                  permission={permission}
+                  filter={filter}
+                />
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
       {numPages > 1 && (
