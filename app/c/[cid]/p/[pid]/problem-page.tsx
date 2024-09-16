@@ -14,7 +14,6 @@ import Testsolve from "./testsolve";
 import Leaderboard from "./leaderboard";
 import { canEditProblem } from "@/lib/permissions";
 import BackButton from "@/components/back-button";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
