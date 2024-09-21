@@ -106,7 +106,7 @@ export default function ProblemCard({
             </span>
           </div>
         ) : (
-          <div className="text-base md:text-lg text-slate-800">
+          <div className="text-base md:text-lg text-slate-800 whitespace-pre-wrap break-words">
             <Latex>{problem.statement}</Latex>
           </div>
         )}
