@@ -1,17 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import ProblemCard from "./problem-card";
 import { useEffect, useState } from "react";
 import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
-import { cn } from "@/lib/utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { usePathname, useRouter } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
-import { ProblemListFilter } from "@/components/ProblemListFilter";
-import { ProblemListSearch } from "@/components/ProblemListSearch";
+import { Pagination } from "@/components/Pagination";
+import { ProblemListSidebar } from "@/components/ProblemListSidebar";
 
 export default function ProblemList({
   collection,
@@ -32,12 +28,6 @@ export default function ProblemList({
   const pathname = usePathname();
   const [filter, setFilter] = useState<Filter>(initialFilter);
 
-  const changePage = (newPage: number) => {
-    setFilter((prev) => ({ ...prev, page: newPage }));
-    const newParams = filterToString({ ...filter, page: newPage });
-    router.replace(`${pathname}${newParams}`, { scroll: false });
-  };
-
   problems = problems.filter(
     (problem) => problem.isArchived === filter.archived,
   );
@@ -56,7 +46,13 @@ export default function ProblemList({
   }
 
   const numPages = Math.max(Math.ceil(problems.length / 20), 1);
-  const halfInterval = 3;
+  problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
+
+  const changePage = (newPage: number) => {
+    setFilter((prev) => ({ ...prev, page: newPage }));
+    const newParams = filterToString({ ...filter, page: newPage });
+    router.replace(`${pathname}${newParams}`, { scroll: false });
+  };
 
   useEffect(() => {
     if (filter.page > numPages) {
@@ -64,38 +60,17 @@ export default function ProblemList({
     }
   }, [filter.page, numPages]);
 
-  let minPage = filter.page - halfInterval;
-  let maxPage = filter.page + halfInterval;
-  if (minPage <= 0) {
-    minPage = 1;
-    maxPage = 1 + 2 * halfInterval;
-  } else if (maxPage > numPages) {
-    minPage = numPages - 2 * halfInterval;
-    maxPage = numPages;
-  }
-  // Clamp to [1, numPages]
-  minPage = Math.max(minPage, 1);
-  maxPage = Math.min(maxPage, numPages);
-
-  problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
-
   return (
-    <div className="p-4 sm:p-8 xl:py-24 whitespace-pre-wrap break-words">
+    <div className="p-4 sm:p-8 xl:py-24">
       <div className="flex flex-col xl:flex-row xl:gap-x-12 xl:justify-center">
         <div className="xl:max-w-72 xl:flex-grow"></div>
         <div className="xl:max-w-72 w-full xl:order-3">
           <div className="xl:sticky xl:top-24">
-            <div className="mb-2 flex flex-col sm:flex-row xl:flex-col gap-x-8 gap-y-6">
-              <Link
-                href={`/c/${collection.cid}/add-problem`}
-                prefetch={true}
-                className="w-full sm:max-w-56 xl:max-w-full inline-block py-3 px-10 text-center rounded-xl bg-sky-500 hover:bg-sky-600 text-slate-50 font-bold text-base soft-shadow-xl"
-              >
-                Add Problem
-              </Link>
-              <ProblemListSearch filter={filter} setFilter={setFilter} />
-            </div>
-            <ProblemListFilter filter={filter} setFilter={setFilter} />
+            <ProblemListSidebar
+              collectionCid={collection.cid}
+              filter={filter}
+              setFilter={setFilter}
+            />
           </div>
         </div>
         <div className="xl:max-w-screen-md w-full">
@@ -116,40 +91,11 @@ export default function ProblemList({
         </div>
       </div>
       {numPages > 1 && (
-        <div className="mt-12 flex flex-row justify-center gap-0.5">
-          {filter.page > 1 ? (
-            <button
-              className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
-              onClick={() => changePage(filter.page - 1)}
-            >
-              <FontAwesomeIcon icon={faAngleLeft} />
-            </button>
-          ) : (
-            <div className="min-w-8 sm:min-w-12"></div>
-          )}
-          {Array.from({ length: maxPage - minPage + 1 }, (_, idx) => (
-            <button
-              key={idx + minPage}
-              className={cn(
-                "btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base",
-                idx + minPage === filter.page && "btn-active",
-              )}
-              onClick={() => changePage(idx + minPage)}
-            >
-              {idx + minPage}
-            </button>
-          ))}
-          {filter.page < numPages ? (
-            <button
-              className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
-              onClick={() => changePage(filter.page + 1)}
-            >
-              <FontAwesomeIcon icon={faAngleRight} />
-            </button>
-          ) : (
-            <div className="min-w-8 sm:min-w-12"></div>
-          )}
-        </div>
+        <Pagination
+          currentPage={filter.page}
+          totalPages={numPages}
+          onPageChange={changePage}
+        />
       )}
     </div>
   );
