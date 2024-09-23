@@ -17,7 +17,7 @@ module.exports = {
       {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
-          primary: "#0ea5e9", // sky-500
+          primary: "#8b5cf6", // violet-500
           "base-100": "#f8fafc", // slate-50
           neutral: "#1e293b", // slate-800
         },

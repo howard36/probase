@@ -9,9 +9,9 @@ export default function HomePage() {
         <p className="mb-3">
           There&apos;s not much here yet, but you can check out the{" "}
           <Link
-            href="/demo"
+            href="/c/demo"
             prefetch={true}
-            className="text-sky-600 hover:underline"
+            className="text-violet-600 hover:underline"
           >
             demo
           </Link>{" "}
@@ -19,7 +19,7 @@ export default function HomePage() {
           <Link
             href="https://github.com/howard36/probase"
             prefetch={true}
-            className="text-sky-600 hover:underline"
+            className="text-violet-600 hover:underline"
           >
             Github repo
           </Link>

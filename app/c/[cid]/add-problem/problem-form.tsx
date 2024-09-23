@@ -139,7 +139,7 @@ export default function ProblemForm({
               onChange={(e: React.ChangeEvent<SubjectSelectElement>) => {
                 setSubject(e.target.value);
               }}
-              className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+              className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             >
               <option value="" key="Empty" disabled></option>
               {subjects.map((s) => (
@@ -158,7 +158,7 @@ export default function ProblemForm({
               onChange={(e) => {
                 setDifficulty(e.target.value);
               }}
-              className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+              className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             >
               <option value="" disabled></option>
               {difficultyTiers.map((tier, idx) => (

@@ -20,7 +20,7 @@ export function ProblemListSidebar({
         <Link
           href={`/c/${collectionCid}/add-problem`}
           prefetch={true}
-          className="w-full sm:max-w-56 xl:max-w-full inline-block py-3 px-10 text-center rounded-xl bg-sky-500 hover:bg-sky-600 text-slate-50 font-bold text-base soft-shadow-xl"
+          className="w-full sm:max-w-56 xl:max-w-full inline-block py-3 px-10 text-center rounded-xl bg-violet-500 hover:bg-violet-600 text-slate-50 font-bold text-base soft-shadow-xl"
         >
           Add Problem
         </Link>
