@@ -69,9 +69,6 @@ export default function ProblemCard({
   authors: { id: number }[];
   filter: Filter;
 }) {
-  const subjectColor = subjectToColor[problem.subject];
-  const titleLineColor = titleLineColors[subjectColor];
-
   let locked = false;
   if (collection.requireTestsolve) {
     // TODO: use locked = !canViewProblem(), which should also check solveAttempts
