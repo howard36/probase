@@ -23,7 +23,7 @@ import { Filter, filterToString } from "@/lib/filter";
 const subjectToGradient = {
   Algebra: {
     subject: "Algebra",
-    gradient: "from-blue-400 to-sky-500",
+    gradient: "from-blue-500 to-indigo-500",
   },
   Combinatorics: {
     subject: "Combinatorics",
@@ -35,7 +35,7 @@ const subjectToGradient = {
   },
   NumberTheory: {
     subject: "Number Theory",
-    gradient: "from-purple-500 to-violet-500",
+    gradient: "from-rose-500 to-red-500",
   },
 };
 

@@ -61,7 +61,7 @@ export default function ProblemList({
   }, [filter.page, numPages]);
 
   return (
-    <div className="p-4 sm:p-8 xl:py-24">
+    <div className="p-4 sm:p-8 xl:px-12 xl:py-24">
       <div className="flex flex-col xl:flex-row xl:gap-x-12 xl:justify-center">
         <div className="xl:max-w-72 xl:flex-grow"></div>
         <div className="xl:max-w-72 w-full xl:order-3">

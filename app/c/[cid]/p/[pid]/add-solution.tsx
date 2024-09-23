@@ -100,7 +100,7 @@ export default function AddSolution({
           No solutions yet. You could be the first!
         </div>
         <button
-          className="w-44 py-4 text-lg bg-sky-500 text-slate-50 font-semibold rounded-md hover:bg-sky-600 leading-none"
+          className="w-44 py-4 text-lg bg-violet-500 text-slate-50 font-semibold rounded-md hover:bg-violet-600 leading-none"
           onClick={() => setEditing(true)}
         >
           Add Solution

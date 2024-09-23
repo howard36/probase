@@ -43,7 +43,7 @@ export default function SubmitButton({
           : "gap-x-3 py-2 px-4 text-lg",
         "shadow hover:shadow-md active:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 disabled:pointer-events-none",
         "transition-colors ease-in-out duration-150",
-        "bg-sky-500 hover:bg-sky-600 active:bg-sky-700 shadow-sky-500/20 hover:shadow-sky-500/20  focus-visible:ring-sky-300 active:shadow-sky-500/20 disabled:bg-sky-300",
+        "bg-violet-500 hover:bg-violet-600 active:bg-violet-700 shadow-violet-500/20 hover:shadow-violet-500/20  focus-visible:ring-violet-300 active:shadow-violet-500/20 disabled:bg-violet-300",
         className,
       )}
       {...props}
