@@ -93,18 +93,13 @@ export default function ProblemCard({
     >
       <div className="bg-white p-6 pb-5 pr-[22px] md:p-8 md:pb-7 mb-4 sm:mb-6 rounded-2xl soft-shadow-xl">
         <div className="flex mb-2.5 md:mb-4 items-start">
-          {/*
-          <div
-            className={`min-w-1 self-stretch ${titleLineColor} rounded-full mr-2 md:mr-2.5`}
-          ></div>
-          */}
-          <h2 className="grow text-xl leading-6 md:text-2xl md:leading-7 font-bold text-slate-900 line-clamp-2">
+          <h2 className="grow text-xl leading-6 md:text-2xl md:leading-7 font-bold truncate">
             <span className={`${subjectToTextColor[problem.subject]} mr-1.5`}>
               {problem.pid}.
             </span>
-            {problem.title}
+            <span className="text-slate-900">{problem.title}</span>
           </h2>
-          <div className="ml-4 sm:ml-5 md:ml-6 h-6 md:h-7 flex items-center gap-x-4 sm:gap-x-5 md:gap-x-6">
+          <div className="hidden sm:flex ml-4 h-6 md:h-7 gap-x-4 md:gap-x-6">
             {problem.difficulty !== null && problem.difficulty > 0 && (
               <Lightbulbs difficulty={problem.difficulty} />
             )}
@@ -123,6 +118,12 @@ export default function ProblemCard({
             <Latex>{problem.statement}</Latex>
           </div>
         )}
+        <div className="mt-2.5 h-6 flex sm:hidden items-center justify-between">
+          <Likes problem={problem} userId={userId} />
+          {problem.difficulty !== null && problem.difficulty > 0 && (
+            <Lightbulbs difficulty={problem.difficulty} />
+          )}
+        </div>
       </div>
     </Link>
   );
