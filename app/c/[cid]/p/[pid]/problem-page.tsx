@@ -191,7 +191,7 @@ export default function ProblemPage(props: PropsWithFilter) {
       <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
         <div className="flex gap-8">
           <div className="flex-grow">
-            <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
+            <div className="text-xl md:text-2xl font-bold mb-4">
               <Title {...props} />
             </div>
             <div className="mb-6 font-semibold text-sm flex flex-wrap gap-x-3 gap-y-2">
