@@ -152,7 +152,7 @@ model Permission {
   collectionId           Int
   accessLevel            AccessLevel @default(TeamMember)
   createdAt              DateTime    @default(now())
-  testsolveLockStartedAt DateTime?
+  testsolveLockStartedAt DateTime?  // if collection.requireTestsolve is true, any problems created after this time cannot be viewed without testsolving
 
   @@unique([userId, collectionId])
 }
