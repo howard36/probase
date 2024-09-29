@@ -146,11 +146,13 @@ enum AccessLevel {
 }
 
 model Permission {
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  collection   Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  collectionId Int
-  accessLevel  AccessLevel @default(TeamMember)
+  user                   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                 String
+  collection             Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId           Int
+  accessLevel            AccessLevel @default(TeamMember)
+  createdAt              DateTime    @default(now())
+  testsolveLockStartedAt DateTime?  // if collection.requireTestsolve is true, any problems created after this time cannot be viewed without testsolving
 
   @@unique([userId, collectionId])
 }
@@ -165,6 +167,7 @@ model Invite {
   emailDomain  String?    @db.Text
   oneTimeUse   Boolean    @default(false)
   expiresAt    DateTime?
+  createdAt    DateTime   @default(now())
 }
 
 model Comment {
