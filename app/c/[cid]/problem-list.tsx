@@ -21,7 +21,7 @@ export default function ProblemList({
   problems: ProblemProps[];
   userId: string;
   authors: { id: number }[];
-  permission: Permission;
+  permission: Permission | null;
   initialFilter: Filter;
 }) {
   const router = useRouter();

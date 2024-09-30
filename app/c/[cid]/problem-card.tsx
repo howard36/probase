@@ -64,7 +64,7 @@ export default function ProblemCard({
 }: {
   collection: Collection;
   problem: ProblemProps;
-  permission: Permission;
+  permission: Permission | null;
   userId: string;
   authors: { id: number }[];
   filter: Filter;
@@ -72,10 +72,11 @@ export default function ProblemCard({
   let locked = false;
   // TODO: use locked = !canViewProblem(), which should also check solveAttempts
   if (
-    collection.requireTestsolve &&
-    permission.testsolveLockStartedAt !== null &&
-    permission.testsolveLockStartedAt < problem.createdAt &&
-    !canEditProblem(problem, permission, authors)
+    permission === null ||
+    (collection.requireTestsolve &&
+      permission.testsolveLockStartedAt !== null &&
+      permission.testsolveLockStartedAt < problem.createdAt &&
+      !canEditProblem(problem, permission, authors))
   ) {
     // authors shouldn't testsolve their own problems
     if (!problem.solveAttempts.some((attempt) => attempt.userId === userId)) {

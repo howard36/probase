@@ -106,20 +106,13 @@ export default async function Page({
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
-      const demoPermission = {
-        userId: "",
-        collectionId: collection.id,
-        accessLevel: "TeamMember" as AccessLevel,
-        createdAt: new Date(),
-        testsolveLockStartedAt: null,
-      };
       return (
         <ProblemList
           collection={collection}
           problems={problems}
           userId=""
           authors={[]}
-          permission={demoPermission}
+          permission={null}
           initialFilter={filter}
         />
       );
@@ -180,7 +173,7 @@ export default async function Page({
       collection={collection}
       problems={problems}
       userId={userId}
-      permission={permission!}
+      permission={permission}
       authors={authors}
       initialFilter={filter}
     />
