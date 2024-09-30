@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { canViewCollection } from "@/lib/permissions";
 import ProblemList from "./problem-list";
-import { Collection, Problem } from "@prisma/client";
+import { AccessLevel, Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { auth } from "auth";
 import { parseFilter } from "@/lib/filter";
@@ -106,13 +106,20 @@ export default async function Page({
   if (session === null) {
     // Not logged in
     if (cid === "demo") {
+      const demoPermission = {
+        userId: "",
+        collectionId: collection.id,
+        accessLevel: "TeamMember" as AccessLevel,
+        createdAt: new Date(),
+        testsolveLockStartedAt: null,
+      };
       return (
         <ProblemList
           collection={collection}
           problems={problems}
           userId=""
           authors={[]}
-          permission={null}
+          permission={demoPermission}
           initialFilter={filter}
         />
       );
@@ -173,7 +180,7 @@ export default async function Page({
       collection={collection}
       problems={problems}
       userId={userId}
-      permission={permission}
+      permission={permission!}
       authors={authors}
       initialFilter={filter}
     />

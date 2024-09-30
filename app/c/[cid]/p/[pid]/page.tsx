@@ -42,6 +42,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
     }
     const permission = {
       accessLevel: "TeamMember" as AccessLevel,
+      testsolveLockStartedAt: null,
     };
     const authors: AuthorProps[] = [];
     const props: Props = {

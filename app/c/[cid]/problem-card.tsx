@@ -64,20 +64,23 @@ export default function ProblemCard({
 }: {
   collection: Collection;
   problem: ProblemProps;
-  permission: Permission | null;
+  permission: Permission;
   userId: string;
   authors: { id: number }[];
   filter: Filter;
 }) {
   let locked = false;
-  if (collection.requireTestsolve) {
-    // TODO: use locked = !canViewProblem(), which should also check solveAttempts
-    if (!canEditProblem(problem, permission, authors)) {
-      // authors shouldn't testsolve their own problems
-      if (!problem.solveAttempts.some((attempt) => attempt.userId === userId)) {
-        // User hasn't started testsolving this problem
-        locked = true;
-      }
+  // TODO: use locked = !canViewProblem(), which should also check solveAttempts
+  if (
+    collection.requireTestsolve &&
+    permission.testsolveLockStartedAt !== null &&
+    permission.testsolveLockStartedAt < problem.createdAt &&
+    !canEditProblem(problem, permission, authors)
+  ) {
+    // authors shouldn't testsolve their own problems
+    if (!problem.solveAttempts.some((attempt) => attempt.userId === userId)) {
+      // User hasn't started testsolving this problem
+      locked = true;
     }
   }
 
@@ -88,8 +91,8 @@ export default function ProblemCard({
       href={`/c/${collection.cid}/p/${problem.pid}${searchParams}`}
       prefetch={true}
     >
-      <div className="bg-white p-6 pb-5 pr-[22px] md:p-8 md:pb-7 mb-4 sm:mb-6 rounded-2xl soft-shadow-xl">
-        <div className="flex mb-2.5 md:mb-4 items-start">
+      <div className="bg-white p-6 pb-5 pr-[22px] md:p-8 md:pb-7 mb-4 sm:mb-6 rounded-2xl soft-shadow-xl flex flex-col gap-y-2.5 sm:gap-y-4">
+        <div className="flex items-start">
           <h2 className="grow text-xl leading-6 md:text-2xl md:leading-7 font-bold truncate">
             <span className={`${subjectToTextColor[problem.subject]} mr-1.5`}>
               {problem.pid}.
@@ -104,7 +107,7 @@ export default function ProblemCard({
           </div>
         </div>
         {locked ? (
-          <div className="text-center text-lg sm:text-xl md:text-2xl my-4">
+          <div className="text-center text-lg md:text-xl pt-1 sm:pb-2">
             <FontAwesomeIcon icon={faLock} className="text-slate-400 mr-2.5" />
             <span className="text-slate-500 font-semibold">
               Testsolve to view
@@ -115,7 +118,7 @@ export default function ProblemCard({
             <Latex>{problem.statement}</Latex>
           </div>
         )}
-        <div className="mt-2.5 h-6 flex sm:hidden items-center justify-between">
+        <div className="h-6 flex sm:hidden items-center justify-between">
           <Likes problem={problem} userId={userId} />
           {problem.difficulty !== null && problem.difficulty > 0 && (
             <Lightbulbs difficulty={problem.difficulty} />
