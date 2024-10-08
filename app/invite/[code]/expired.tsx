@@ -16,7 +16,6 @@ export default function Expired({ invite }: { invite: InviteProps }) {
           <span className="font-bold text-slate-900">{inviterName}</span> for
           access to <span>{collectionName}</span>.
         </p>
-        <GoogleLoginButton />
       </div>
     </div>
   );

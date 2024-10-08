@@ -1,11 +1,12 @@
 import prisma from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import NotLoggedIn from "./not-logged-in";
 import Expired from "./expired";
 import InvalidEmail from "./invalid-email";
 import type { InviteProps } from "./types";
 import { inviteInclude } from "./types";
 import { auth } from "auth";
+import InviteJoinPage from "./invite-join-page";
 
 interface Params {
   code: string;
@@ -74,32 +75,9 @@ export default async function InvitePage({ params }: { params: Params }) {
       return <InvalidEmail invite={invite} email={email} />;
     }
 
-    await prisma.permission.upsert({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: invite.collectionId,
-        },
-      },
-      update: {
-        accessLevel: invite.accessLevel,
-      },
-      create: {
-        userId,
-        collectionId: invite.collectionId,
-        accessLevel: invite.accessLevel,
-      },
-    });
+    return <InviteJoinPage invite={invite} />;
   }
 
-  if (invite.oneTimeUse) {
-    await prisma.invite.update({
-      where: { code: invite.code },
-      data: {
-        expiresAt: new Date(),
-      },
-    });
-  }
-
-  redirect(`/c/${invite.collection.cid}`);
+  // TODO: show "you've already accepted this invite" page with a link to the collection page
+  console.log("Already Joined!");
 }
