@@ -1,11 +1,13 @@
 import prisma from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import NotLoggedIn from "./not-logged-in";
 import Expired from "./expired";
 import InvalidEmail from "./invalid-email";
 import type { InviteProps } from "./types";
 import { inviteInclude } from "./types";
 import { auth } from "auth";
+import InviteJoinPage from "./invite-join-page";
+import AlreadyJoined from "./already-joined";
 
 interface Params {
   code: string;
@@ -53,53 +55,27 @@ export default async function InvitePage({ params }: { params: Params }) {
     },
   });
 
-  let hasPermission = false;
   if (
     permission !== null &&
     (permission.accessLevel === "Admin" ||
       permission.accessLevel === "TeamMember")
   ) {
-    hasPermission = true;
+    // User has already joined the collection
+    return <AlreadyJoined invite={invite} />;
   }
 
-  if (!hasPermission) {
-    if (invite.expiresAt !== null) {
-      return <Expired invite={invite} />;
-    }
+  // User has not joined the collection, so they need to use the invite
 
-    if (
-      invite.emailDomain !== null &&
-      !email.endsWith("@" + invite.emailDomain)
-    ) {
-      return <InvalidEmail invite={invite} email={email} />;
-    }
-
-    await prisma.permission.upsert({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: invite.collectionId,
-        },
-      },
-      update: {
-        accessLevel: invite.accessLevel,
-      },
-      create: {
-        userId,
-        collectionId: invite.collectionId,
-        accessLevel: invite.accessLevel,
-      },
-    });
+  if (invite.expiresAt !== null) {
+    return <Expired invite={invite} />;
   }
 
-  if (invite.oneTimeUse) {
-    await prisma.invite.update({
-      where: { code: invite.code },
-      data: {
-        expiresAt: new Date(),
-      },
-    });
+  if (
+    invite.emailDomain !== null &&
+    !email.endsWith("@" + invite.emailDomain)
+  ) {
+    return <InvalidEmail invite={invite} email={email} />;
   }
 
-  redirect(`/c/${invite.collection.cid}`);
+  return <InviteJoinPage invite={invite} />;
 }
