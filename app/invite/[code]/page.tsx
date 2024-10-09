@@ -7,6 +7,7 @@ import type { InviteProps } from "./types";
 import { inviteInclude } from "./types";
 import { auth } from "auth";
 import InviteJoinPage from "./invite-join-page";
+import AlreadyJoined from "./already-joined";
 
 interface Params {
   code: string;
@@ -54,30 +55,27 @@ export default async function InvitePage({ params }: { params: Params }) {
     },
   });
 
-  let hasPermission = false;
   if (
     permission !== null &&
     (permission.accessLevel === "Admin" ||
       permission.accessLevel === "TeamMember")
   ) {
-    hasPermission = true;
+    // User has already joined the collection
+    return <AlreadyJoined invite={invite} />;
   }
 
-  if (!hasPermission) {
-    if (invite.expiresAt !== null) {
-      return <Expired invite={invite} />;
-    }
+  // User has not joined the collection, so they need to use the invite
 
-    if (
-      invite.emailDomain !== null &&
-      !email.endsWith("@" + invite.emailDomain)
-    ) {
-      return <InvalidEmail invite={invite} email={email} />;
-    }
-
-    return <InviteJoinPage invite={invite} />;
+  if (invite.expiresAt !== null) {
+    return <Expired invite={invite} />;
   }
 
-  // TODO: show "you've already accepted this invite" page with a link to the collection page
-  console.log("Already Joined!");
+  if (
+    invite.emailDomain !== null &&
+    !email.endsWith("@" + invite.emailDomain)
+  ) {
+    return <InvalidEmail invite={invite} email={email} />;
+  }
+
+  return <InviteJoinPage invite={invite} />;
 }

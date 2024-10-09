@@ -1,4 +1,3 @@
-import GoogleLoginButton from "@/components/google-login-button";
 import type { InviteProps } from "./types";
 
 export default function Expired({ invite }: { invite: InviteProps }) {
