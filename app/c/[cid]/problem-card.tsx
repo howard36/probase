@@ -74,6 +74,7 @@ export default function ProblemCard({
   if (
     permission === null ||
     (collection.requireTestsolve &&
+      permission.testsolveLock === true &&
       permission.testsolveLockStartedAt !== null &&
       permission.testsolveLockStartedAt < problem.createdAt &&
       !canEditProblem(problem, permission, authors))
