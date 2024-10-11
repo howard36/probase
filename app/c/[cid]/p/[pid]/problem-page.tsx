@@ -75,6 +75,7 @@ export default function ProblemPage(props: PropsWithFilter) {
   let testsolveOrAnswers;
   if (
     collection.requireTestsolve &&
+    permission.testsolveLock === true &&
     permission.testsolveLockStartedAt !== null &&
     permission.testsolveLockStartedAt < problem.createdAt &&
     !canEditProblem(problem, permission, authors)
