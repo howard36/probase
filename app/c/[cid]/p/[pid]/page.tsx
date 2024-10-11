@@ -8,7 +8,7 @@ import {
   type Props,
 } from "./types";
 import { canViewCollection } from "@/lib/permissions";
-import { AccessLevel, TestsolverType, TestsolverType } from "@prisma/client";
+import { AccessLevel, TestsolverType } from "@prisma/client";
 import { auth } from "auth";
 import { parseFilter } from "@/lib/filter";
 
