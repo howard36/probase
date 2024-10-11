@@ -75,9 +75,9 @@ export default function ProblemPage(props: PropsWithFilter) {
   let testsolveOrAnswers;
   if (
     collection.requireTestsolve &&
-    permission.testsolveLock === true &&
-    permission.testsolveLockStartedAt !== null &&
-    permission.testsolveLockStartedAt < problem.createdAt &&
+    permission.testsolverType === "Serious" &&
+    permission.seriousTestsolverStartedAt !== null &&
+    permission.seriousTestsolverStartedAt < problem.createdAt &&
     !canEditProblem(problem, permission, authors)
   ) {
     const difficulty = problem.difficulty;

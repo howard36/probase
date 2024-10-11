@@ -74,9 +74,9 @@ export default function ProblemCard({
   if (
     permission === null ||
     (collection.requireTestsolve &&
-      permission.testsolveLock === true &&
-      permission.testsolveLockStartedAt !== null &&
-      permission.testsolveLockStartedAt < problem.createdAt &&
+      permission.testsolverType === "Serious" &&
+      permission.seriousTestsolverStartedAt !== null &&
+      permission.seriousTestsolverStartedAt < problem.createdAt &&
       !canEditProblem(problem, permission, authors))
   ) {
     // authors shouldn't testsolve their own problems

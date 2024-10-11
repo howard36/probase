@@ -8,7 +8,7 @@ import {
   type Props,
 } from "./types";
 import { canViewCollection } from "@/lib/permissions";
-import { AccessLevel } from "@prisma/client";
+import { AccessLevel, TestsolverType } from "@prisma/client";
 import { auth } from "auth";
 import { parseFilter } from "@/lib/filter";
 
@@ -42,8 +42,8 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
     }
     const permission = {
       accessLevel: "TeamMember" as AccessLevel,
-      testsolveLock: false,
-      testsolveLockStartedAt: null,
+      testsolverType: "Casual" as TestsolverType,
+      seriousTestsolverStartedAt: null,
     };
     const authors: AuthorProps[] = [];
     const props: Props = {
