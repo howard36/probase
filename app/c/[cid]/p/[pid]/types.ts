@@ -99,8 +99,8 @@ export type ProblemProps = Prisma.ProblemGetPayload<typeof problemProps>;
 
 export const permissionSelect = {
   accessLevel: true,
-  testsolveLock: true,
-  testsolveLockStartedAt: true,
+  testsolverType: true,
+  seriousTestsolverStartedAt: true,
 };
 const permissionProps = Prisma.validator<Prisma.PermissionDefaultArgs>()({
   select: permissionSelect,
