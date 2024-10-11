@@ -75,7 +75,7 @@ export default function ProblemPage(props: PropsWithFilter) {
   let testsolveOrAnswers;
   if (
     collection.requireTestsolve &&
-    permission.testsolverType === "Serious" &&
+    permission.testsolverType !== "Casual" &&
     permission.seriousTestsolverStartedAt !== null &&
     permission.seriousTestsolverStartedAt < problem.createdAt &&
     !canEditProblem(problem, permission, authors)
