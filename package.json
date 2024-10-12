@@ -8,7 +8,7 @@
     "start": "next start",
     "launch": "next build && next start",
     "lint": "next lint",
-    "local": "dotenv -e .env.local",
+    "local": "dotenv -e .env.local --",
     "postinstall": "prisma generate"
   },
   "prisma": {
