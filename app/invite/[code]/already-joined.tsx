@@ -2,7 +2,6 @@ import { InviteProps } from "./types";
 import Link from "next/link";
 
 export default function AlreadyJoined({ invite }: { invite: InviteProps }) {
-  const inviterName = invite.inviter.name;
   const collectionName = invite.collection.name;
 
   return (

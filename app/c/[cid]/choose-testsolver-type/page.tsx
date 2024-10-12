@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { canViewCollection } from "@/lib/permissions";
 import { Collection } from "@prisma/client";
 import { auth } from "auth";
+import ChooseTestsolverTypePage from "@/components/choose-testsolver-type-page";
 
 async function getCollection(cid: string): Promise<Collection> {
   const collection = await prisma.collection.findUnique({
@@ -33,7 +34,7 @@ export default async function Page({ params }: { params: Params }) {
     throw new Error("userId is undefined despite being logged in");
   }
 
-  let permission = await prisma.permission.findUnique({
+  const permission = await prisma.permission.findUnique({
     where: {
       userId_collectionId: {
         userId,
@@ -48,16 +49,10 @@ export default async function Page({ params }: { params: Params }) {
 
   if (
     collection.requireTestsolve === false ||
-    permission.testsolveLock !== null
+    permission.testsolverType !== null
   ) {
     redirect(`/c/${cid}`);
   }
 
-  return (
-    <ChooseTestsolverTypePage
-      collection={collection}
-      userId={userId}
-      permission={permission}
-    />
-  );
+  return <ChooseTestsolverTypePage collection={collection} />;
 }

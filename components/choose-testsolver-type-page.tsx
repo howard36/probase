@@ -1,5 +1,6 @@
 import { wrapAction } from "@/lib/server-actions";
 import { Collection } from "@prisma/client";
+import { setTestsolverType } from "app/c/[cid]/choose-testsolver-type/actions";
 import { useState } from "react";
 
 export default function ChooseTestsolverTypePage({
@@ -7,6 +8,7 @@ export default function ChooseTestsolverTypePage({
 }: {
   collection: Collection;
 }) {
+  // TODO: rewrite as form with <select>
   const [testsolveType, setTestsolveType] = useState<
     "serious" | "casual" | null
   >(null);
