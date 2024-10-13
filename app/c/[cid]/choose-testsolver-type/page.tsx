@@ -4,6 +4,7 @@ import { canViewCollection } from "@/lib/permissions";
 import { Collection } from "@prisma/client";
 import { auth } from "auth";
 import ChooseTestsolverTypePage from "@/components/choose-testsolver-type-page";
+import { setTestsolverType } from "./actions";
 
 async function getCollection(cid: string): Promise<Collection> {
   const collection = await prisma.collection.findUnique({
@@ -54,5 +55,10 @@ export default async function Page({ params }: { params: Params }) {
     redirect(`/c/${cid}`);
   }
 
-  return <ChooseTestsolverTypePage collection={collection} />;
+  return (
+    <ChooseTestsolverTypePage
+      collection={collection}
+      submitAction={setTestsolverType}
+    />
+  );
 }

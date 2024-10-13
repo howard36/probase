@@ -71,6 +71,10 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
     redirect("/need-permission");
   }
 
+  if (permission.testsolverType === null) {
+    redirect(`/c/${cid}/choose-testsolver-type`);
+  }
+
   const authors = await prisma.author.findMany({
     where: {
       userId,
