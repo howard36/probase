@@ -48,10 +48,7 @@ export default async function Page({ params }: { params: Params }) {
     redirect("/need-permission");
   }
 
-  if (
-    collection.requireTestsolve === false ||
-    permission.testsolverType !== null
-  ) {
+  if (collection.requireTestsolve === false) {
     redirect(`/c/${cid}`);
   }
 
