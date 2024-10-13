@@ -4,13 +4,13 @@ import { notFound, redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { ActionResponse, error } from "@/lib/server-actions";
 import { auth } from "auth";
+import { TestsolverType } from "@prisma/client";
 
 export async function setTestsolverType(
   collectionId: number,
-  formData: FormData,
+  testsolverType: TestsolverType,
 ): Promise<ActionResponse> {
   // TODO: zod
-  const testsolveType = formData.get("testsolveType") as "serious" | "casual";
 
   const session = await auth();
   if (session === null) {
@@ -50,8 +50,8 @@ export async function setTestsolverType(
       },
     },
     data: {
-      testsolveLock: testsolveType === "serious",
-      testsolveLockStartedAt: collection.createdAt,
+      testsolverType,
+      seriousTestsolverStartedAt: collection.createdAt, // TODO: change this when allowing casual -> serious switch
     },
   });
 

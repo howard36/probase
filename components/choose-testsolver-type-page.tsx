@@ -1,23 +1,30 @@
-import { wrapAction } from "@/lib/server-actions";
-import { Collection } from "@prisma/client";
-import { setTestsolverType } from "app/c/[cid]/choose-testsolver-type/actions";
+"use client";
+
+import { ActionResponse, wrapAction } from "@/lib/server-actions";
+import { Collection, TestsolverType } from "@prisma/client";
 import { useState } from "react";
 
 export default function ChooseTestsolverTypePage({
   collection,
+  submitAction,
 }: {
   collection: Collection;
+  submitAction: (
+    collectionId: number,
+    testsolverType: TestsolverType,
+  ) => Promise<ActionResponse>;
 }) {
   // TODO: rewrite as form with <select>
-  const [testsolveType, setTestsolveType] = useState<
-    "serious" | "casual" | null
-  >(null);
-  const action = wrapAction(setTestsolverType);
+  const [testsolverType, setTestsolverType] = useState<TestsolverType | null>(
+    null,
+  );
+
+  const action = wrapAction(submitAction);
 
   const handleAcceptInvite = () => {
-    const formData = new FormData();
-    formData.append("testsolveType", testsolveType || "casual");
-    action(collection.id, formData);
+    if (testsolverType !== null) {
+      action(collection.id, testsolverType);
+    }
   };
 
   return (
@@ -37,9 +44,9 @@ export default function ChooseTestsolverTypePage({
           </p>
           <div className="flex space-x-4">
             <button
-              onClick={() => setTestsolveType("serious")}
+              onClick={() => setTestsolverType(TestsolverType.Serious)}
               className={`py-2 px-4 rounded ${
-                testsolveType === "serious"
+                testsolverType === TestsolverType.Serious
                   ? "bg-violet-500 text-white"
                   : "bg-gray-200 text-gray-800"
               }`}
@@ -47,9 +54,9 @@ export default function ChooseTestsolverTypePage({
               Serious
             </button>
             <button
-              onClick={() => setTestsolveType("casual")}
+              onClick={() => setTestsolverType(TestsolverType.Casual)}
               className={`py-2 px-4 rounded ${
-                testsolveType === "casual"
+                testsolverType === TestsolverType.Casual
                   ? "bg-violet-500 text-white"
                   : "bg-gray-200 text-gray-800"
               }`}

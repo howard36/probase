@@ -41,8 +41,8 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
       throw new Error("null userId on non-demo problem page");
     }
     const permission = {
-      accessLevel: "TeamMember" as AccessLevel,
-      testsolverType: "Casual" as TestsolverType,
+      accessLevel: AccessLevel.TeamMember,
+      testsolverType: TestsolverType.Casual,
       seriousTestsolverStartedAt: null,
     };
     const authors: AuthorProps[] = [];
