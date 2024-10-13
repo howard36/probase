@@ -71,9 +71,6 @@ async function getProblems(collection: Collection): Promise<ProblemProps[]> {
         // Edit me!
         date.setHours(date.getHours() - 26);
         problem.createdAt = date;
-      } else {
-        // String to Date (because JSON doesn't have Date)
-        problem.createdAt = new Date(problem.createdAt);
       }
     });
   }
