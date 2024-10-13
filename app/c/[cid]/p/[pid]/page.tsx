@@ -71,7 +71,7 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
     redirect("/need-permission");
   }
 
-  if (permission.testsolverType === null) {
+  if (collection.requireTestsolve && permission.testsolverType === null) {
     redirect(`/c/${cid}/choose-testsolver-type`);
   }
 

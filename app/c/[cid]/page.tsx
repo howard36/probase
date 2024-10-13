@@ -168,7 +168,7 @@ export default async function Page({
     }
   }
 
-  if (permission!.testsolverType === null) {
+  if (collection.requireTestsolve && permission!.testsolverType === null) {
     redirect(`/c/${cid}/choose-testsolver-type`);
   }
 
