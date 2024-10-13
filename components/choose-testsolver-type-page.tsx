@@ -45,7 +45,7 @@ export default function ChooseTestsolverTypePage({
             <h3 className="text-lg font-bold mb-2">Serious</h3>
             <ul className="ml-3 list-disc list-inside">
               <li>Practice with timed contest conditions</li>
-              <li>Top 3 featured on leaderboard</li>
+              <li>Top 5 testsolvers featured on leaderboard</li>
               <li>Problems unlock when you start the timer</li>
             </ul>
           </div>
