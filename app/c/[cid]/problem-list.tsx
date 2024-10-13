@@ -45,6 +45,10 @@ export default function ProblemList({
     );
   }
 
+  problems = problems.sort(
+    (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+  );
+
   const numPages = Math.max(Math.ceil(problems.length / 20), 1);
   problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
 

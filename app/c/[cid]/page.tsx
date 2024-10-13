@@ -76,8 +76,9 @@ async function getProblems(collection: Collection): Promise<ProblemProps[]> {
         problem.createdAt = new Date(problem.createdAt);
       }
     });
-    problems.sort(sortByNew);
   }
+
+  problems.sort(sortByNew);
 
   return problems;
 }
