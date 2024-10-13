@@ -21,7 +21,7 @@ export default function ChooseTestsolverTypePage({
 
   const action = wrapAction(submitAction);
 
-  const handleAcceptInvite = () => {
+  const confirmTestsolverType = () => {
     if (testsolverType !== null) {
       action(collection.id, testsolverType);
     }
@@ -29,47 +29,52 @@ export default function ChooseTestsolverTypePage({
 
   return (
     <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
-      <div className="sm:w-144 mx-auto my-12 sm:my-24">
-        <h1 className="text-3xl mb-6 font-bold text-slate-900">
-          Choose your testsolving preference
+      <div className="w-full max-w-[800px] mx-auto my-12 sm:my-24">
+        <h1 className="text-3xl mb-8 font-bold text-slate-900">
+          Choose your testsolving style
         </h1>
-        <p className="text-xl mb-8">
-          You&apos;ve been invited to join{" "}
-          <span className="font-bold">{collection.name}</span>.
-        </p>
-        <div className="mb-8">
-          <p className="mb-4">
-            This collection requires testsolving. Please choose your testsolving
-            preference:
-          </p>
-          <div className="flex space-x-4">
-            <button
-              onClick={() => setTestsolverType(TestsolverType.Serious)}
-              className={`py-2 px-4 rounded ${
-                testsolverType === TestsolverType.Serious
-                  ? "bg-violet-500 text-white"
-                  : "bg-gray-200 text-gray-800"
-              }`}
-            >
-              Serious
-            </button>
-            <button
-              onClick={() => setTestsolverType(TestsolverType.Casual)}
-              className={`py-2 px-4 rounded ${
-                testsolverType === TestsolverType.Casual
-                  ? "bg-violet-500 text-white"
-                  : "bg-gray-200 text-gray-800"
-              }`}
-            >
-              Casual
-            </button>
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div
+            onClick={() => setTestsolverType(TestsolverType.Serious)}
+            className={`w-full p-4 rounded-xl cursor-pointer bg-white text-gray-800 shadow-lg border-2 ${
+              testsolverType === TestsolverType.Serious
+                ? "border-violet-500 shadow-violet-500/30"
+                : "border-white shadow-slate-500/20"
+            }`}
+          >
+            <h3 className="text-lg font-bold mb-2">Serious</h3>
+            <ul className="ml-3 list-disc list-inside">
+              <li>Practice with timed contest conditions</li>
+              <li>Top 3 featured on leaderboard</li>
+              <li>Problems unlock when you start the timer</li>
+            </ul>
+          </div>
+          <div
+            onClick={() => setTestsolverType(TestsolverType.Casual)}
+            className={`w-full p-4 rounded-xl cursor-pointer bg-white text-gray-800 shadow-lg border-2 ${
+              testsolverType === TestsolverType.Casual
+                ? "border-violet-500 shadow-violet-500/30"
+                : "border-white shadow-slate-500/20"
+            }`}
+          >
+            <h3 className="text-lg font-bold mb-2">Casual</h3>
+            <ul className="ml-3 list-disc list-inside">
+              <li>No time limit</li>
+              <li>Work on problems at your own pace</li>
+              <li>All problems unlocked immediately</li>
+            </ul>
           </div>
         </div>
+        <p className="mb-6 text-slate-600">
+          If you're not sure, pick Serious. It's more challenging, but provides
+          accurate info on problem difficulty. You can always switch to Casual
+          later.
+        </p>
         <button
-          onClick={handleAcceptInvite}
+          onClick={confirmTestsolverType}
           className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
         >
-          Accept Invite
+          Confirm
         </button>
       </div>
     </div>
