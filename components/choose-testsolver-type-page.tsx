@@ -66,13 +66,12 @@ export default function ChooseTestsolverTypePage({
           </div>
         </div>
         <p className="mb-6 text-slate-600">
-          If you're not sure, pick Serious. It's more challenging, but provides
-          accurate info on problem difficulty. You can always switch to Casual
-          later.
+          {`If you're not sure, pick Serious. It's more challenging, but provides accurate info on problem difficulty. You can always switch to Casual later.`}
         </p>
         <button
           onClick={confirmTestsolverType}
-          className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
+          className="bg-violet-500 hover:bg-violet-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded"
+          disabled={testsolverType === null}
         >
           Confirm
         </button>
