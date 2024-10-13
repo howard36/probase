@@ -74,12 +74,11 @@ export default function ProblemCard({
   if (
     permission === null ||
     (collection.requireTestsolve &&
-      permission.testsolverType === "Serious" &&
+      permission.testsolverType !== "Casual" &&
       permission.seriousTestsolverStartedAt !== null &&
       permission.seriousTestsolverStartedAt < problem.createdAt &&
       !canEditProblem(problem, permission, authors))
   ) {
-    // authors shouldn't testsolve their own problems
     if (!problem.solveAttempts.some((attempt) => attempt.userId === userId)) {
       // User hasn't started testsolving this problem
       locked = true;

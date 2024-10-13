@@ -41,8 +41,8 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
       throw new Error("null userId on non-demo problem page");
     }
     const permission = {
-      accessLevel: "TeamMember" as AccessLevel,
-      testsolverType: "Casual" as TestsolverType,
+      accessLevel: AccessLevel.TeamMember,
+      testsolverType: TestsolverType.Casual,
       seriousTestsolverStartedAt: null,
     };
     const authors: AuthorProps[] = [];
@@ -69,6 +69,10 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
   if (permission === null || !canViewCollection(permission)) {
     // No permission to view this page
     redirect("/need-permission");
+  }
+
+  if (collection.requireTestsolve && permission.testsolverType === null) {
+    redirect(`/c/${cid}/choose-testsolver-type`);
   }
 
   const authors = await prisma.author.findMany({

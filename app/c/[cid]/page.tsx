@@ -168,6 +168,10 @@ export default async function Page({
     }
   }
 
+  if (collection.requireTestsolve && permission!.testsolverType === null) {
+    redirect(`/c/${cid}/choose-testsolver-type`);
+  }
+
   return (
     <ProblemList
       collection={collection}
