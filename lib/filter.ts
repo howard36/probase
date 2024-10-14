@@ -12,6 +12,7 @@ export type Filter = {
   search: string;
   archived: boolean;
   page: number;
+  unsolvedOnly: boolean;
 };
 
 export function parseFilter(searchParams: {
@@ -29,7 +30,10 @@ export function parseFilter(searchParams: {
     searchParams.archived === "true";
   const page =
     typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
-  return { subjects, search, archived, page };
+  const unsolvedOnly =
+    typeof searchParams.unsolvedOnly === "string" &&
+    searchParams.unsolvedOnly === "true";
+  return { subjects, search, archived, page, unsolvedOnly };
 }
 
 // TODO: escape special characters
@@ -49,6 +53,9 @@ export function filterToString(filter: Filter): string {
   }
   if (filter.page !== undefined && filter.page !== 1) {
     queryParams.set("page", filter.page.toString());
+  }
+  if (filter.unsolvedOnly) {
+    queryParams.set("unsolvedOnly", "true");
   }
   const queryString = queryParams.toString();
   return queryString ? `?${queryString}` : "";

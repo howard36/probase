@@ -2,15 +2,18 @@ import Link from "next/link";
 import { ProblemListSearch } from "./ProblemListSearch";
 import { ProblemListFilter } from "./ProblemListFilter";
 import { Filter } from "@/lib/filter";
+import { Permission, Collection } from "@prisma/client";
 
 interface ProblemListSidebarProps {
-  collectionCid: string;
+  collection: Collection;
+  permission: Permission | null;
   filter: Filter;
   setFilter: React.Dispatch<React.SetStateAction<Filter>>;
 }
 
 export function ProblemListSidebar({
-  collectionCid,
+  collection,
+  permission,
   filter,
   setFilter,
 }: ProblemListSidebarProps) {
@@ -18,7 +21,7 @@ export function ProblemListSidebar({
     <>
       <div className="mb-2 flex flex-col sm:flex-row xl:flex-col gap-x-8 gap-y-6">
         <Link
-          href={`/c/${collectionCid}/add-problem`}
+          href={`/c/${collection.cid}/add-problem`}
           prefetch={true}
           className="w-full sm:max-w-56 xl:max-w-full inline-block py-3 px-10 text-center rounded-xl bg-violet-500 hover:bg-violet-600 text-slate-50 font-bold text-base soft-shadow-xl"
         >
@@ -26,7 +29,12 @@ export function ProblemListSidebar({
         </Link>
         <ProblemListSearch filter={filter} setFilter={setFilter} />
       </div>
-      <ProblemListFilter filter={filter} setFilter={setFilter} />
+      <ProblemListFilter
+        collection={collection}
+        permission={permission}
+        filter={filter}
+        setFilter={setFilter}
+      />
     </>
   );
 }
