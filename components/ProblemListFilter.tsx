@@ -1,5 +1,10 @@
 import React from "react";
-import { Subject } from "@prisma/client";
+import {
+  Collection,
+  Permission,
+  Subject,
+  TestsolverType,
+} from "@prisma/client";
 import { Filter, filterToString } from "@/lib/filter";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -11,9 +16,13 @@ const allSubjects: Subject[] = [
 ];
 
 export function ProblemListFilter({
+  collection,
+  permission,
   filter,
   setFilter,
 }: {
+  collection: Collection;
+  permission: Permission | null;
   filter: Filter;
   setFilter: React.Dispatch<React.SetStateAction<Filter>>;
 }) {
@@ -32,6 +41,13 @@ export function ProblemListFilter({
 
   const toggleArchived = () => {
     const newFilter = { ...filter, archived: !filter.archived };
+    setFilter(newFilter);
+    const newParams = filterToString(newFilter);
+    router.replace(`${pathname}${newParams}`, { scroll: false });
+  };
+
+  const toggleUnsolvedOnly = () => {
+    const newFilter = { ...filter, unsolvedOnly: !filter.unsolvedOnly };
     setFilter(newFilter);
     const newParams = filterToString(newFilter);
     router.replace(`${pathname}${newParams}`, { scroll: false });
@@ -63,10 +79,26 @@ export function ProblemListFilter({
             onChange={toggleArchived}
           />
           <span className="text-sm font-medium text-slate-600 whitespace-nowrap label-text">
-            Show archived
+            Archived
           </span>
         </label>
       </div>
+      {collection.requireTestsolve &&
+        permission?.testsolverType === TestsolverType.Serious && (
+          <div className="ml-auto xl:ml-0 form-control">
+            <label className="label cursor-pointer justify-start gap-x-2">
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={filter.unsolvedOnly}
+                onChange={toggleUnsolvedOnly}
+              />
+              <span className="text-sm font-medium text-slate-600 whitespace-nowrap label-text">
+                Unsolved only
+              </span>
+            </label>
+          </div>
+        )}
     </div>
   );
 }

@@ -16,6 +16,7 @@ export default function ProblemList({
   authors,
   permission,
   initialFilter,
+  solvedProblemIds,
 }: {
   collection: Collection;
   problems: ProblemProps[];
@@ -23,6 +24,7 @@ export default function ProblemList({
   authors: { id: number }[];
   permission: Permission | null;
   initialFilter: Filter;
+  solvedProblemIds: number[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -34,6 +36,11 @@ export default function ProblemList({
   if (filter.subjects.length > 0) {
     problems = problems.filter((problem) =>
       filter.subjects.includes(problem.subject),
+    );
+  }
+  if (filter.unsolvedOnly) {
+    problems = problems.filter(
+      (problem) => !solvedProblemIds.includes(problem.id),
     );
   }
   if (filter.search !== "") {
@@ -67,7 +74,8 @@ export default function ProblemList({
         <div className="xl:max-w-72 w-full xl:order-3">
           <div className="xl:sticky xl:top-24">
             <ProblemListSidebar
-              collectionCid={collection.cid}
+              collection={collection}
+              permission={permission}
               filter={filter}
               setFilter={setFilter}
             />

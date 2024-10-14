@@ -112,6 +112,7 @@ export default async function Page({
           authors={[]}
           permission={null}
           initialFilter={filter}
+          solvedProblemIds={[]}
         />
       );
     } else {
@@ -170,6 +171,20 @@ export default async function Page({
     redirect(`/c/${cid}/choose-testsolver-type`);
   }
 
+  const solvedAttempts = await prisma.solveAttempt.findMany({
+    where: {
+      userId,
+      problem: {
+        collectionId: collection.id,
+      },
+    },
+    select: {
+      problemId: true,
+    },
+  });
+
+  const solvedProblemIds = solvedAttempts.map((attempt) => attempt.problemId);
+
   return (
     <ProblemList
       collection={collection}
@@ -178,6 +193,7 @@ export default async function Page({
       permission={permission}
       authors={authors}
       initialFilter={filter}
+      solvedProblemIds={solvedProblemIds}
     />
   );
 }
