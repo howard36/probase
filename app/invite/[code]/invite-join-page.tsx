@@ -16,7 +16,7 @@ export default function InviteJoinPage({ invite }: { invite: InviteProps }) {
           {inviterName} invited you!
         </h1>
         <p className="text-xl mb-16">
-          You&apos;ve been invited to join{" "}
+          {`You've been invited to join `}
           <span className="font-bold">{collectionName}</span>.
         </p>
         <button

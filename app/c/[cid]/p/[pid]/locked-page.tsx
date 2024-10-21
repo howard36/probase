@@ -32,8 +32,8 @@ export default function LockedPage({
       </div>
       <div className="mb-8 space-y-6">
         <p>
-          Once you start testsolving, you&apos;ll have <strong>{time}</strong>.
-          Keep an eye on the clock!
+          {`Once you start testsolving, you'll have `}
+          <strong>{time}</strong>. Keep an eye on the clock!
         </p>
         <p>
           Speed and accuracy matter! A <strong>correct first submission</strong>{" "}
