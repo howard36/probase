@@ -7,7 +7,7 @@ export default function HomePage() {
       <div className="p-4 pt-8 sm:p-24 text-base sm:text-lg">
         <h1 className="text-3xl font-semibold mb-4">Welcome to Probase!</h1>
         <p className="mb-3">
-          There&apos;s not much here yet, but you can check out the{" "}
+          {`There's not much here yet, but you can check out the `}
           <Link
             href="/c/demo"
             prefetch={true}
