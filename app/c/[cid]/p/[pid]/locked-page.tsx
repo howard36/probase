@@ -26,9 +26,9 @@ export default function LockedPage({
 
   return (
     <div>
-      <div className="text-center text-lg sm:text-xl md:text-2xl mt-16 mb-24">
-        <FontAwesomeIcon icon={faLock} className="text-slate-400 mr-2.5" />
-        <span className="text-slate-500 font-semibold">Testsolve to view</span>
+      <div className="mb-24 mt-16 text-center text-lg sm:text-xl md:text-2xl">
+        <FontAwesomeIcon icon={faLock} className="mr-2.5 text-slate-400" />
+        <span className="font-semibold text-slate-500">Testsolve to view</span>
       </div>
       <div className="mb-8 space-y-6">
         <p>

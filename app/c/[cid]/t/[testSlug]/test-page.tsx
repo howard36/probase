@@ -30,15 +30,15 @@ export default function TestPage(props: Props) {
     props;
 
   return (
-    <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
-      <div className="mb-8 sm:mb-16 inline-block">
+    <div className="whitespace-pre-wrap break-words p-8 text-slate-800">
+      <div className="mb-8 inline-block sm:mb-16">
         <BackButton
           href={`/c/${collection.cid}`}
           label={`Back to ${collection.name}`}
         />
       </div>
-      <div className="w-128 sm:w-144 md:w-160 max-w-full mx-auto text-base sm:text-lg md:text-xl">
-        <div className="px-8 text-3xl sm:text-4xl text-slate-900 font-bold mb-12">
+      <div className="mx-auto w-128 max-w-full text-base sm:w-144 sm:text-lg md:w-160 md:text-xl">
+        <div className="mb-12 px-8 text-3xl font-bold text-slate-900 sm:text-4xl">
           {name}
         </div>
         <ol>

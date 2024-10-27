@@ -15,7 +15,7 @@ export default function GoogleLoginButton({
   return (
     <button
       onClick={handleClick}
-      className="border-2 rounded-md border-slate-300 py-3 w-full block flex flex-auto items-center justify-center hover:bg-slate-200"
+      className="block flex w-full flex-auto items-center justify-center rounded-md border-2 border-slate-300 py-3 hover:bg-slate-200"
     >
       <svg width="22" height="22" viewBox="0 0 18 18">
         <path

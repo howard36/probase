@@ -26,7 +26,7 @@ const AimeInput: React.FC<AimeInputProps> = ({
       value={value}
       onChange={handleChange}
       placeholder="Enter a number (0-999)"
-      className="bg-slate-50 w-full rounded-md"
+      className="w-full rounded-md bg-slate-50"
       required={required}
     />
   );

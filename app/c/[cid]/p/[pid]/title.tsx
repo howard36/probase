@@ -20,7 +20,7 @@ export default function Title(props: Props) {
       <span className={subjectToTextColor[problem.subject]}>
         {problem.pid}.
       </span>
-      <div className="text-slate-900 w-full">
+      <div className="w-full text-slate-900">
         {canEdit ? <EditableTitle problem={problem} /> : problem.title}
       </div>
     </h2>

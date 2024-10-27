@@ -63,7 +63,7 @@ export default function ProblemPage(props: PropsWithFilter) {
     (collection.showAuthors || permission.accessLevel === "Admin")
   ) {
     written_by = (
-      <p className="italic text-slate-700 text-base mb-8 text-right">
+      <p className="mb-8 text-right text-base italic text-slate-700">
         Written by {problem.authors[0].displayName}
       </p>
     );
@@ -184,23 +184,23 @@ export default function ProblemPage(props: PropsWithFilter) {
   };
 
   return (
-    <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
-      <div className="mb-8 sm:mb-16 inline-block">
+    <div className="whitespace-pre-wrap break-words p-8 text-slate-800">
+      <div className="mb-8 inline-block sm:mb-16">
         <BackButton
           href={`/c/${collection.cid}${filterStr}`}
           label={`Back to ${collection.name}`}
         />
       </div>
-      <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
+      <div className="mx-auto w-112 max-w-full text-base sm:w-128 sm:text-lg md:w-144 md:text-xl">
         <div className="flex gap-8">
           <div className="flex-grow">
-            <div className="text-xl md:text-2xl font-bold mb-4">
+            <div className="mb-4 text-xl font-bold md:text-2xl">
               <Title {...props} />
             </div>
-            <div className="mb-6 font-semibold text-sm flex flex-wrap gap-x-3 gap-y-2">
+            <div className="mb-6 flex flex-wrap gap-x-3 gap-y-2 text-sm font-semibold">
               <Link
                 href={`/c/${collection.cid}?subject=${subject.charAt(0).toLowerCase()}`}
-                className={`py-2 px-6 text-white text-center leading-none rounded-full whitespace-nowrap bg-gradient-to-br ${gradient}`}
+                className={`whitespace-nowrap rounded-full bg-gradient-to-br px-6 py-2 text-center leading-none text-white ${gradient}`}
               >
                 {subject}
               </Link>
@@ -210,7 +210,7 @@ export default function ProblemPage(props: PropsWithFilter) {
                     testProblem.test.name,
                   )}-${testProblem.test.id}`}
                   prefetch={true}
-                  className="py-2 px-6 bg-slate-200 hover:bg-slate-300 text-slate-700 hover:text-slate-800 text-center leading-none rounded-full whitespace-nowrap"
+                  className="whitespace-nowrap rounded-full bg-slate-200 px-6 py-2 text-center leading-none text-slate-700 hover:bg-slate-300 hover:text-slate-800"
                   key={testProblem.test.id}
                 >
                   {testProblem.test.name}
@@ -218,7 +218,7 @@ export default function ProblemPage(props: PropsWithFilter) {
               ))}
             </div>
           </div>
-          <div className="text-base space-y-3 mt-2">
+          <div className="mt-2 space-y-3 text-base">
             <Likes problem={problem} userId={userId} />
             {problem.difficulty !== null && problem.difficulty > 0 && (
               <Lightbulbs difficulty={problem.difficulty} />
@@ -234,23 +234,22 @@ export default function ProblemPage(props: PropsWithFilter) {
           </div>
         )}
 
-        <div className="mt-4 flex justify-between items-center">
+        <div className="mt-4 flex items-center justify-between">
           <button
             onClick={handlePrevProblem}
             disabled={!hasPrevProblem}
-            className={`py-2 px-4 rounded text-sm font-bold transition-colors flex items-center
-              ${
-                hasPrevProblem
-                  ? "text-slate-500 hover:text-slate-700"
-                  : "text-slate-300 cursor-not-allowed"
-              }`}
+            className={`flex items-center rounded px-4 py-2 text-sm font-bold transition-colors ${
+              hasPrevProblem
+                ? "text-slate-500 hover:text-slate-700"
+                : "cursor-not-allowed text-slate-300"
+            }`}
           >
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Previous
           </button>
           <button
             onClick={handleNextProblem}
-            className="py-2 px-4 rounded text-slate-500 hover:text-slate-700 text-sm font-bold transition-colors flex items-center"
+            className="flex items-center rounded px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:text-slate-700"
           >
             Next
             <FontAwesomeIcon icon={faArrowRight} className="ml-2" />

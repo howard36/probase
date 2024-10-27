@@ -19,11 +19,11 @@ export function ProblemListSidebar({
 }: ProblemListSidebarProps) {
   return (
     <>
-      <div className="mb-2 flex flex-col sm:flex-row xl:flex-col gap-x-8 gap-y-6">
+      <div className="mb-2 flex flex-col gap-x-8 gap-y-6 sm:flex-row xl:flex-col">
         <Link
           href={`/c/${collection.cid}/add-problem`}
           prefetch={true}
-          className="w-full sm:max-w-56 xl:max-w-full inline-block py-3 px-10 text-center rounded-xl bg-violet-500 hover:bg-violet-600 text-slate-50 font-bold text-base soft-shadow-xl"
+          className="soft-shadow-xl inline-block w-full rounded-xl bg-violet-500 px-10 py-3 text-center text-base font-bold text-slate-50 hover:bg-violet-600 sm:max-w-56 xl:max-w-full"
         >
           Add Problem
         </Link>

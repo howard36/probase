@@ -33,11 +33,11 @@ export default function Comments(props: Props) {
 
   return (
     <div>
-      <h2 className="mb-4 text-lg lg:text-2xl font-bold text-slate-900">
+      <h2 className="mb-4 text-lg font-bold text-slate-900 lg:text-2xl">
         Discussion
       </h2>
       <form className="mb-6" action={action}>
-        <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-slate-200">
+        <div className="mb-4 rounded-lg rounded-t-lg border border-slate-200 bg-white px-4 py-2">
           <label htmlFor="comment" className="sr-only">
             Your comment
           </label>
@@ -45,7 +45,7 @@ export default function Comments(props: Props) {
             id="comment"
             name="comment"
             rows={6}
-            className="px-0 w-full text-sm text-slate-900 border-0 focus:ring-0 focus:outline-none"
+            className="w-full border-0 px-0 text-sm text-slate-900 focus:outline-none focus:ring-0"
             placeholder="Write a comment..."
             required
             value={text}

@@ -5,10 +5,10 @@ export default function Comment({ comment }: { comment: CommentProps }) {
   const date = new Date(comment.createdAt);
 
   return (
-    <div className="py-8 px-6 text-base border-t border-slate-200">
-      <div className="flex justify-between items-center mb-2">
+    <div className="border-t border-slate-200 px-6 py-8 text-base">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center">
-          <p className="inline-flex items-center mr-3 text-sm text-slate-900 font-semibold">
+          <p className="mr-3 inline-flex items-center text-sm font-semibold text-slate-900">
             {/*<img
             className="mr-2 w-6 h-6 rounded-full"
             src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
