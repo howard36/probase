@@ -59,7 +59,7 @@ export async function addProblem(
       return error("You do not have permission to add a problem");
     }
 
-    const prefix = subjectPrefix[subject as Subject];
+    const prefix = subjectPrefix[subject];
 
     // The most recent problem in this subject
     const lastProblem = await prisma.problem.findFirst({
