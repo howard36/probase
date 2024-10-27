@@ -228,7 +228,7 @@ export default function ProblemPage(props: PropsWithFilter) {
 
         {/* Statement should also be hidden if they haven't clicked "Start testsolve" */}
         {testsolveOrAnswers}
-        {permission?.accessLevel === "Admin" && (
+        {canEditProblem(problem, permission, authors) && (
           <div className="mt-8">
             <ArchiveToggle {...props} />
           </div>
