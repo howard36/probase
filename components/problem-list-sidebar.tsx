@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ProblemListSearch } from "./ProblemListSearch";
-import { ProblemListFilter } from "./ProblemListFilter";
+import { ProblemListSearch } from "./problem-list-search";
+import { ProblemListFilter } from "./problem-list-filter";
 import { Filter } from "@/lib/filter";
 import { Permission, Collection } from "@prisma/client";
 
