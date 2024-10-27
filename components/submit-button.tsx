@@ -38,14 +38,11 @@ export default function SubmitButton({
       aria-disabled={pending}
       aria-busy={pending}
       className={cn(
-        "rounded-lg text-white font-semibold border-0 inline-flex items-center justify-center",
+        "inline-flex items-center justify-center rounded-lg border-0 bg-violet-500 font-semibold text-white shadow shadow-violet-500/20 transition-colors duration-150 ease-in-out hover:bg-violet-600 hover:shadow-md hover:shadow-violet-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 active:bg-violet-700 active:shadow active:shadow-violet-500/20 disabled:pointer-events-none disabled:bg-violet-300",
         {
-          "gap-x-1.5 py-2 px-2.5 text-base": size === "sm",
-          "gap-x-3 py-2 px-4 text-lg": size === "md",
+          "gap-x-1.5 px-2.5 py-2 text-base": size === "sm",
+          "gap-x-3 px-4 py-2 text-lg": size === "md",
         },
-        "shadow hover:shadow-md active:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 disabled:pointer-events-none",
-        "transition-colors ease-in-out duration-150",
-        "bg-violet-500 hover:bg-violet-600 active:bg-violet-700 shadow-violet-500/20 hover:shadow-violet-500/20  focus-visible:ring-violet-300 active:shadow-violet-500/20 disabled:bg-violet-300",
         className,
       )}
       {...props}

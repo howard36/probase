@@ -105,20 +105,20 @@ export default function ProblemForm({
   }
 
   return (
-    <div className="p-8 text-slate-800 whitespace-pre-wrap break-words">
-      <div className="mb-8 sm:mb-16 inline-block">
+    <div className="whitespace-pre-wrap break-words p-8 text-slate-800">
+      <div className="mb-8 inline-block sm:mb-16">
         <BackButton
           href={`/c/${collection.cid}`}
           label={`Back to ${collection.name}`}
         />
       </div>
-      <div className="mx-auto w-112 sm:w-128 md:w-144 max-w-full text-base sm:text-lg md:text-xl">
+      <div className="mx-auto w-112 max-w-full text-base sm:w-128 sm:text-lg md:w-144 md:text-xl">
         <form
           action={(formData: FormData) =>
             wrapAction(addProblem)(collection.id, formData)
           }
         >
-          <div className="text-2xl sm:text-3xl text-slate-900 font-bold mb-4">
+          <div className="mb-4 text-2xl font-bold text-slate-900 sm:text-3xl">
             <ClickToEdit
               name="title"
               type="input"
@@ -139,7 +139,7 @@ export default function ProblemForm({
               onChange={(e: React.ChangeEvent<SubjectSelectElement>) => {
                 setSubject(e.target.value);
               }}
-              className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+              className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-1 leading-8 text-slate-800 outline-none transition-colors duration-200 ease-in-out focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
             >
               <option value="" key="Empty" disabled></option>
               {subjects.map((s) => (
@@ -158,7 +158,7 @@ export default function ProblemForm({
               onChange={(e) => {
                 setDifficulty(e.target.value);
               }}
-              className="w-full bg-slate-50 rounded-md border border-slate-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none text-slate-800 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+              className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-1 leading-8 text-slate-800 outline-none transition-colors duration-200 ease-in-out focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
             >
               <option value="" disabled></option>
               {difficultyTiers.map((tier, idx) => (

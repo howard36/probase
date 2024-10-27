@@ -13,7 +13,7 @@ export default function BackButton({
     <Link
       href={href}
       prefetch={true}
-      className="text-slate-600 hover:text-slate-800 underline flex items-center"
+      className="flex items-center text-slate-600 underline hover:text-slate-800"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +21,7 @@ export default function BackButton({
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6"
+        className="h-6 w-6"
       >
         <path
           strokeLinecap="round"

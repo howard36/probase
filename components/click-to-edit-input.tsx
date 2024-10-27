@@ -50,7 +50,7 @@ export default function ClickToEditInput({
       onChange={(e) => setText(e.target.value)}
       onKeyDown={handleKeyDown}
       onBlur={() => text !== "" && onSave(text)}
-      className="bg-slate-50 w-full rounded-md"
+      className="w-full rounded-md bg-slate-50"
       required={required}
     />
   );

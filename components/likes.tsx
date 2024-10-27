@@ -38,7 +38,7 @@ export default function Likes({
   };
 
   return (
-    <div className="flex gap-x-1.5 items-center group" onClick={handleClick}>
+    <div className="group flex items-center gap-x-1.5" onClick={handleClick}>
       <FontAwesomeIcon
         icon={faHeart}
         className={cn("text-lg sm:text-xl md:text-2xl", {
@@ -46,7 +46,7 @@ export default function Likes({
           "text-slate-400 group-hover:text-slate-500": !liked,
         })}
       />
-      <span className="font-bold text-slate-500 group-hover:text-slate-600 text-lg md:text-xl leading-none">
+      <span className="text-lg font-bold leading-none text-slate-500 group-hover:text-slate-600 md:text-xl">
         {numLikes}
       </span>
     </div>

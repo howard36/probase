@@ -16,14 +16,14 @@ export default function ArchiveToggle(props: Props) {
   };
 
   return (
-    <label className="relative inline-flex items-center cursor-pointer">
+    <label className="relative inline-flex cursor-pointer items-center">
       <input
         type="checkbox"
         checked={isArchived}
         onChange={handleChange}
-        className="sr-only peer"
+        className="peer sr-only"
       />
-      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-500"></div>
+      <div className="peer h-6 w-11 rounded-full bg-slate-300 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-violet-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-200 rtl:peer-checked:after:-translate-x-full"></div>
       <span className="ms-3 text-sm font-medium text-slate-600">Archive</span>
     </label>
   );

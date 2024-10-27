@@ -92,15 +92,15 @@ export default function ProblemCard({
       href={`/c/${collection.cid}/p/${problem.pid}${searchParams}`}
       prefetch={true}
     >
-      <div className="bg-white p-6 pb-5 pr-[22px] md:p-8 md:pb-7 mb-4 sm:mb-6 rounded-2xl soft-shadow-xl flex flex-col gap-y-2.5 sm:gap-y-4">
+      <div className="soft-shadow-xl mb-4 flex flex-col gap-y-2.5 rounded-2xl bg-white p-6 pb-5 pr-[22px] sm:mb-6 sm:gap-y-4 md:p-8 md:pb-7">
         <div className="flex items-start">
-          <h2 className="grow text-xl leading-6 md:text-2xl md:leading-7 font-bold truncate">
+          <h2 className="grow truncate text-xl font-bold leading-6 md:text-2xl md:leading-7">
             <span className={`${subjectToTextColor[problem.subject]} mr-1.5`}>
               {problem.pid}.
             </span>
             <span className="text-slate-900">{problem.title}</span>
           </h2>
-          <div className="hidden sm:flex ml-4 h-6 md:h-7 gap-x-4 md:gap-x-6">
+          <div className="ml-4 hidden h-6 gap-x-4 sm:flex md:h-7 md:gap-x-6">
             {problem.difficulty !== null && problem.difficulty > 0 && (
               <Lightbulbs difficulty={problem.difficulty} />
             )}
@@ -108,18 +108,18 @@ export default function ProblemCard({
           </div>
         </div>
         {locked ? (
-          <div className="text-center text-lg md:text-xl pt-1 sm:pb-2">
-            <FontAwesomeIcon icon={faLock} className="text-slate-400 mr-2.5" />
-            <span className="text-slate-500 font-semibold">
+          <div className="pt-1 text-center text-lg sm:pb-2 md:text-xl">
+            <FontAwesomeIcon icon={faLock} className="mr-2.5 text-slate-400" />
+            <span className="font-semibold text-slate-500">
               Testsolve to view
             </span>
           </div>
         ) : (
-          <div className="text-base md:text-lg text-slate-800 whitespace-pre-wrap break-words">
+          <div className="whitespace-pre-wrap break-words text-base text-slate-800 md:text-lg">
             <Latex>{problem.statement}</Latex>
           </div>
         )}
-        <div className="h-6 flex sm:hidden items-center justify-between">
+        <div className="flex h-6 items-center justify-between sm:hidden">
           <Likes problem={problem} userId={userId} />
           {problem.difficulty !== null && problem.difficulty > 0 && (
             <Lightbulbs difficulty={problem.difficulty} />

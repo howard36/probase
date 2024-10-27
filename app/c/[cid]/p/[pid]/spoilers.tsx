@@ -47,7 +47,7 @@ export default function Spoilers(props: Props) {
         <div className="my-12">
           <button
             onClick={() => setHidden(false)}
-            className="w-44 py-4 rounded-md bg-violet-500 hover:bg-violet-600 text-base text-slate-50 font-semibold leading-none"
+            className="w-44 rounded-md bg-violet-500 py-4 text-base font-semibold leading-none text-slate-50 hover:bg-violet-600"
           >
             Show spoilers
           </button>
@@ -58,7 +58,7 @@ export default function Spoilers(props: Props) {
         <div className="my-12">
           <button
             onClick={() => setHidden(true)}
-            className="w-44 py-4 rounded-md bg-violet-500 hover:bg-violet-600 text-base text-slate-50 font-semibold leading-none"
+            className="w-44 rounded-md bg-violet-500 py-4 text-base font-semibold leading-none text-slate-50 hover:bg-violet-600"
           >
             Hide spoilers
           </button>

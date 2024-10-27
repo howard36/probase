@@ -28,11 +28,11 @@ export function ProblemListSearch({
             placeholder="Search"
             value={filter.search}
             onChange={handleSearchChange}
-            className="border-2 border-slate-300 bg-white h-12 w-full pl-4 pr-12 rounded-xl text-base focus:outline-none"
+            className="h-12 w-full rounded-xl border-2 border-slate-300 bg-white pl-4 pr-12 text-base focus:outline-none"
           />
-          <div className="absolute right-0 top-0 mt-4 mr-4">
+          <div className="absolute right-0 top-0 mr-4 mt-4">
             <svg
-              className="text-slate-600 h-4 w-4 fill-current"
+              className="h-4 w-4 fill-current text-slate-600"
               x="0px"
               y="0px"
               viewBox="0 0 56.966 56.966"

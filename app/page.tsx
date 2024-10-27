@@ -4,8 +4,8 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <Sidebar>
-      <div className="p-4 pt-8 sm:p-24 text-base sm:text-lg">
-        <h1 className="text-3xl font-semibold mb-4">Welcome to Probase!</h1>
+      <div className="p-4 pt-8 text-base sm:p-24 sm:text-lg">
+        <h1 className="mb-4 text-3xl font-semibold">Welcome to Probase!</h1>
         <p className="mb-3">
           {`There's not much here yet, but you can check out the `}
           <Link

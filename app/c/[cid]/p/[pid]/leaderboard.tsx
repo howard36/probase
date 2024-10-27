@@ -79,28 +79,28 @@ export default function Testsolve({
 
   return (
     <div className="my-12">
-      <h2 className="mb-4 text-lg lg:text-2xl font-bold text-slate-900">
+      <h2 className="mb-4 text-lg font-bold text-slate-900 lg:text-2xl">
         Leaderboard
       </h2>
       <table className="min-w-full">
         <tbody className="">
           {shownEntries.map((entry, idx) => (
             <tr key={idx} className={entry.highlight ? "bg-yellow-100" : ""}>
-              <td className="pr-3 py-3 whitespace-nowrap text-right w-12">
+              <td className="w-12 whitespace-nowrap py-3 pr-3 text-right">
                 {entry.rank}
                 {entry.rank && "."}
               </td>
-              <td className="py-3 whitespace-nowrap font-semibold">
+              <td className="whitespace-nowrap py-3 font-semibold">
                 {entry.name}
               </td>
-              <td className="py-3 whitespace-nowrap text-red-500">
+              <td className="whitespace-nowrap py-3 text-red-500">
                 {(entry.numFailed > 0 || entry.solveTimeMillis === null) && (
                   <span>
                     <FontAwesomeIcon icon={faTimes} /> {entry.numFailed}
                   </span>
                 )}
               </td>
-              <td className="py-3 whitespace-nowrap text-green-500">
+              <td className="whitespace-nowrap py-3 text-green-500">
                 {entry.solveTimeMillis && (
                   <span>
                     <FontAwesomeIcon icon={faCheck} />{" "}
@@ -112,7 +112,7 @@ export default function Testsolve({
           ))}
         </tbody>
       </table>
-      <p className="my-4 text-slate-700 text-base">
+      <p className="my-4 text-base text-slate-700">
         {numSolved} out of {numAttempts} testsolvers solved this problem
         {numShown < numSolved && ` (showing top ${numShown})`}
       </p>

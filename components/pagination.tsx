@@ -31,7 +31,7 @@ export function Pagination({
     <div className="mt-12 flex flex-row justify-center gap-0.5">
       {currentPage > 1 ? (
         <button
-          className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
+          className="btn btn-circle btn-ghost btn-sm sm:btn-md sm:text-base"
           onClick={() => onPageChange(currentPage - 1)}
         >
           <FontAwesomeIcon icon={faAngleLeft} />
@@ -45,7 +45,7 @@ export function Pagination({
           <button
             key={pageNum}
             className={cn(
-              "btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base",
+              "btn btn-circle btn-ghost btn-sm sm:btn-md sm:text-base",
               {
                 "btn-active": pageNum === currentPage,
               },
@@ -58,7 +58,7 @@ export function Pagination({
       })}
       {currentPage < totalPages ? (
         <button
-          className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
+          className="btn btn-circle btn-ghost btn-sm sm:btn-md sm:text-base"
           onClick={() => onPageChange(currentPage + 1)}
         >
           <FontAwesomeIcon icon={faAngleRight} />

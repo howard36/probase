@@ -38,17 +38,17 @@ export default function TestCard({
   }
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
-      <div className="bg-slate-50 p-8 my-8 rounded-2xl hover:shadow-lg hover:bg-white transition duration-300">
+      <div className="my-8 rounded-2xl bg-slate-50 p-8 transition duration-300 hover:bg-white hover:shadow-lg">
         <Label text={"PROBLEM " + position} />
         {locked ? (
-          <div className="text-center text-lg sm:text-xl md:text-2xl my-4">
-            <FontAwesomeIcon icon={faLock} className="text-slate-400 mr-2.5" />
-            <span className="text-slate-500 font-semibold">
+          <div className="my-4 text-center text-lg sm:text-xl md:text-2xl">
+            <FontAwesomeIcon icon={faLock} className="mr-2.5 text-slate-400" />
+            <span className="font-semibold text-slate-500">
               Testsolve to view
             </span>
           </div>
         ) : (
-          <div className="text-base sm:text-lg md:text-xl text-slate-800">
+          <div className="text-base text-slate-800 sm:text-lg md:text-xl">
             <Latex>{problem.statement}</Latex>
           </div>
         )}

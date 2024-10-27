@@ -74,19 +74,19 @@ export default function ClickToEditTextarea({
         onBlur={() => autosave && text !== "" && onSave(text)}
         required={required}
         style={{ resize: "none" }}
-        className="bg-slate-50 w-full rounded-md"
+        className="w-full rounded-md bg-slate-50"
       />
       {!autosave && (
         <div className="mt-4">
           <button
             onClick={() => text !== "" && onSave(text)}
-            className="w-40 py-3 rounded-md bg-green-200 text-green-800 font-semibold text-base leading-none"
+            className="w-40 rounded-md bg-green-200 py-3 text-base font-semibold leading-none text-green-800"
           >
             Save changes
           </button>
           <button
             onClick={onReset}
-            className="ml-2 px-8 py-3 rounded-md text-slate-600 font-semibold text-base leading-none"
+            className="ml-2 rounded-md px-8 py-3 text-base font-semibold leading-none text-slate-600"
           >
             Discard
           </button>

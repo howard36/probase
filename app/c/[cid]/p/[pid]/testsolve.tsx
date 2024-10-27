@@ -51,11 +51,11 @@ export default function Testsolve({
             required
           />
         </div>
-        <div className="flex gap-x-6 items-center my-4">
+        <div className="my-4 flex items-center gap-x-6">
           <SubmitButton className="flex-grow-0">Submit</SubmitButton>
           <SubmitButton
             onClick={() => tryGiveUpTestsolve(problem.id)}
-            className="flex-grow-0 bg-red-500 hover:bg-red-600 active:bg-red-700 shadow-red-500/20 hover:shadow-red-500/20 focus-visible:ring-red-300 active:shadow-red-500/20 disabled:bg-red-300"
+            className="flex-grow-0 bg-red-500 shadow-red-500/20 hover:bg-red-600 hover:shadow-red-500/20 focus-visible:ring-red-300 active:bg-red-700 active:shadow-red-500/20 disabled:bg-red-300"
           >
             Give Up
           </SubmitButton>

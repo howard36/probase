@@ -54,7 +54,7 @@ export function ProblemListFilter({
   };
 
   return (
-    <div className="mb-4 flex flex-row xl:flex-col justify-between">
+    <div className="mb-4 flex flex-row justify-between xl:flex-col">
       <div className="form-control">
         {allSubjects.map((subject) => (
           <label key={subject} className="label cursor-pointer justify-start">
@@ -62,7 +62,7 @@ export function ProblemListFilter({
               type="checkbox"
               checked={filter.subjects.includes(subject)}
               onChange={() => toggleSubject(subject)}
-              className="checkbox checkbox-primary [--chkfg:white]"
+              className="checkbox-primary checkbox [--chkfg:white]"
             />
             <span className="label-text ml-2 text-sm font-medium text-slate-600">
               {subject}
@@ -70,7 +70,7 @@ export function ProblemListFilter({
           </label>
         ))}
       </div>
-      <div className="ml-auto xl:ml-0 form-control">
+      <div className="form-control ml-auto xl:ml-0">
         <label className="label cursor-pointer justify-start gap-x-2">
           <input
             type="checkbox"
@@ -78,14 +78,14 @@ export function ProblemListFilter({
             checked={filter.archived}
             onChange={toggleArchived}
           />
-          <span className="text-sm font-medium text-slate-600 whitespace-nowrap label-text">
+          <span className="label-text whitespace-nowrap text-sm font-medium text-slate-600">
             Archived
           </span>
         </label>
       </div>
       {collection.requireTestsolve &&
         permission?.testsolverType === TestsolverType.Serious && (
-          <div className="ml-auto xl:ml-0 form-control">
+          <div className="form-control ml-auto xl:ml-0">
             <label className="label cursor-pointer justify-start gap-x-2">
               <input
                 type="checkbox"
@@ -93,7 +93,7 @@ export function ProblemListFilter({
                 checked={filter.unsolvedOnly}
                 onChange={toggleUnsolvedOnly}
               />
-              <span className="text-sm font-medium text-slate-600 whitespace-nowrap label-text">
+              <span className="label-text whitespace-nowrap text-sm font-medium text-slate-600">
                 Unsolved only
               </span>
             </label>
