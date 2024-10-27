@@ -5,7 +5,7 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { likeProblem } from "../app/c/[cid]/p/[pid]/actions";
 import { wrapAction } from "@/lib/server-actions";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 interface ProblemWithLikes {
   id: number;
@@ -41,12 +41,10 @@ export default function Likes({
     <div className="flex gap-x-1.5 items-center group" onClick={handleClick}>
       <FontAwesomeIcon
         icon={faHeart}
-        className={clsx(
-          "text-lg sm:text-xl md:text-2xl",
-          liked
-            ? "text-rose-400 group-hover:text-rose-500"
-            : "text-slate-400 group-hover:text-slate-500",
-        )}
+        className={cn("text-lg sm:text-xl md:text-2xl", {
+          "text-rose-400 group-hover:text-rose-500": liked,
+          "text-slate-400 group-hover:text-slate-500": !liked,
+        })}
       />
       <span className="font-bold text-slate-500 group-hover:text-slate-600 text-lg md:text-xl leading-none">
         {numLikes}
