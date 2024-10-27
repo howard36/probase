@@ -5,23 +5,24 @@ import { useFormStatus } from "react-dom";
 
 interface SpinnerProps {
   visible: boolean;
-  size?: "sm" | "md";
+  size: "sm" | "md";
 }
 
-const Spinner = ({ visible, size }: SpinnerProps) => (
+const Spinner = ({ visible, size = "md" }: SpinnerProps) => (
   <div
-    className={cn(
-      size === "sm" ? "h-5 w-5 border-2" : "h-6 w-6 border-[3px]",
-      visible
-        ? "animate-spin rounded-full border-solid border-white/80 border-t-transparent"
-        : "border-transparent",
-    )}
+    className={cn({
+      "h-5 w-5 border-2": size === "sm",
+      "h-6 w-6 border-[3px]": size === "md",
+      "animate-spin rounded-full border-solid border-white/80 border-t-transparent":
+        visible,
+      "border-transparent": !visible,
+    })}
   ></div>
 );
 
 interface SubmitButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  size?: "sm" | "md";
+  size: "sm" | "md";
 }
 
 export default function SubmitButton({

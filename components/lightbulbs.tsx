@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 export default function Lightbulbs({ difficulty }: { difficulty: number }) {
   return (
@@ -10,10 +10,10 @@ export default function Lightbulbs({ difficulty }: { difficulty: number }) {
           <FontAwesomeIcon
             key={value}
             icon={faLightbulb}
-            className={clsx(
-              "text-lg sm:text-xl md:text-2xl",
-              value <= difficulty ? "text-amber-400" : "text-slate-300",
-            )}
+            className={cn("text-lg sm:text-xl md:text-2xl", {
+              "text-amber-400": value <= difficulty,
+              "text-slate-300": value > difficulty,
+            })}
           />
         ))}
       </div>

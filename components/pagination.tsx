@@ -39,18 +39,23 @@ export function Pagination({
       ) : (
         <div className="min-w-8 sm:min-w-12"></div>
       )}
-      {Array.from({ length: maxPage - minPage + 1 }, (_, idx) => (
-        <button
-          key={idx + minPage}
-          className={cn(
-            "btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base",
-            idx + minPage === currentPage && "btn-active",
-          )}
-          onClick={() => onPageChange(idx + minPage)}
-        >
-          {idx + minPage}
-        </button>
-      ))}
+      {Array.from({ length: maxPage - minPage + 1 }, (_, idx) => {
+        const pageNum = idx + minPage;
+        return (
+          <button
+            key={pageNum}
+            className={cn(
+              "btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base",
+              {
+                "btn-active": pageNum === currentPage,
+              },
+            )}
+            onClick={() => onPageChange(pageNum)}
+          >
+            {pageNum}
+          </button>
+        );
+      })}
       {currentPage < totalPages ? (
         <button
           className="btn btn-ghost btn-circle btn-sm sm:btn-md sm:text-base"
