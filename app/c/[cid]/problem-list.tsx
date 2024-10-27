@@ -6,8 +6,8 @@ import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { usePathname, useRouter } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
-import { Pagination } from "@/components/Pagination";
-import { ProblemListSidebar } from "@/components/ProblemListSidebar";
+import { Pagination } from "@/components/pagination";
+import { ProblemListSidebar } from "@/components/problem-list-sidebar";
 
 export default function ProblemList({
   collection,
