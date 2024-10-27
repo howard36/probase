@@ -99,7 +99,7 @@ model Problem {
   isArchived    Boolean    @default(false)
   likes         ProblemLike[]
   solveAttempts SolveAttempt[]
-  
+
   @@unique([collectionId, pid])
 }
 
@@ -151,6 +151,7 @@ enum TestsolverType {
 }
 
 model Permission {
+  id                         Int              @id @default(autoincrement())
   user                       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId                     String
   collection                 Collection       @relation(fields: [collectionId], references: [id], onDelete: Cascade)
@@ -164,6 +165,7 @@ model Permission {
 }
 
 model Invite {
+  id           Int        @id @default(autoincrement())
   collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId Int
   accessLevel  AccessLevel
@@ -196,6 +198,7 @@ model Test {
 }
 
 model TestProblem {
+  id           Int     @id @default(autoincrement())
   test         Test    @relation(fields: [testId], references: [id], onDelete: Cascade)
   testId       Int
   problem      Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
