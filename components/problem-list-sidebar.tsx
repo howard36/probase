@@ -8,14 +8,12 @@ interface ProblemListSidebarProps {
   collection: Collection;
   permission: Permission | null;
   filter: Filter;
-  setFilter: React.Dispatch<React.SetStateAction<Filter>>;
 }
 
 export function ProblemListSidebar({
   collection,
   permission,
   filter,
-  setFilter,
 }: ProblemListSidebarProps) {
   return (
     <>
@@ -27,13 +25,12 @@ export function ProblemListSidebar({
         >
           Add Problem
         </Link>
-        <ProblemListSearch filter={filter} setFilter={setFilter} />
+        <ProblemListSearch filter={filter} />
       </div>
       <ProblemListFilter
         collection={collection}
         permission={permission}
         filter={filter}
-        setFilter={setFilter}
       />
     </>
   );
