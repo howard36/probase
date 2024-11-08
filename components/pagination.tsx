@@ -1,18 +1,28 @@
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { usePathname, useRouter } from "next/navigation";
+import { Filter, filterToString } from "@/lib/filter";
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  onPageChange: (newPage: number) => void;
+  filter: Filter;
 }
 
 export function Pagination({
   currentPage,
   totalPages,
-  onPageChange,
+  filter,
 }: PaginationProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const changePage = (newPage: number) => {
+    const newParams = filterToString({ ...filter, page: newPage });
+    router.replace(`${pathname}${newParams}`, { scroll: false });
+  };
+
   const halfInterval = 3;
   let minPage = currentPage - halfInterval;
   let maxPage = currentPage + halfInterval;
@@ -32,7 +42,7 @@ export function Pagination({
       {currentPage > 1 ? (
         <button
           className="btn btn-circle btn-ghost btn-sm sm:btn-md sm:text-base"
-          onClick={() => onPageChange(currentPage - 1)}
+          onClick={() => changePage(currentPage - 1)}
         >
           <FontAwesomeIcon icon={faAngleLeft} />
         </button>
@@ -50,7 +60,7 @@ export function Pagination({
                 "btn-active": pageNum === currentPage,
               },
             )}
-            onClick={() => onPageChange(pageNum)}
+            onClick={() => changePage(pageNum)}
           >
             {pageNum}
           </button>
@@ -59,7 +69,7 @@ export function Pagination({
       {currentPage < totalPages ? (
         <button
           className="btn btn-circle btn-ghost btn-sm sm:btn-md sm:text-base"
-          onClick={() => onPageChange(currentPage + 1)}
+          onClick={() => changePage(currentPage + 1)}
         >
           <FontAwesomeIcon icon={faAngleRight} />
         </button>

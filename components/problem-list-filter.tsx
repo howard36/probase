@@ -19,12 +19,10 @@ export function ProblemListFilter({
   collection,
   permission,
   filter,
-  setFilter,
 }: {
   collection: Collection;
   permission: Permission | null;
   filter: Filter;
-  setFilter: React.Dispatch<React.SetStateAction<Filter>>;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -34,21 +32,18 @@ export function ProblemListFilter({
       ? filter.subjects.filter((s) => s !== subject)
       : [...filter.subjects, subject].sort();
     const newFilter = { ...filter, subjects: newSubjects };
-    setFilter(newFilter);
     const newParams = filterToString(newFilter);
     router.replace(`${pathname}${newParams}`, { scroll: false });
   };
 
   const toggleArchived = () => {
     const newFilter = { ...filter, archived: !filter.archived };
-    setFilter(newFilter);
     const newParams = filterToString(newFilter);
     router.replace(`${pathname}${newParams}`, { scroll: false });
   };
 
   const toggleUnsolvedOnly = () => {
     const newFilter = { ...filter, unsolvedOnly: !filter.unsolvedOnly };
-    setFilter(newFilter);
     const newParams = filterToString(newFilter);
     router.replace(`${pathname}${newParams}`, { scroll: false });
   };

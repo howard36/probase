@@ -111,7 +111,7 @@ export default async function Page({
           userId=""
           authors={[]}
           permission={null}
-          initialFilter={filter}
+          filter={filter}
           solvedProblemIds={[]}
         />
       );
@@ -192,7 +192,7 @@ export default async function Page({
       userId={userId}
       permission={permission}
       authors={authors}
-      initialFilter={filter}
+      filter={filter}
       solvedProblemIds={solvedProblemIds}
     />
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import ProblemCard from "./problem-card";
-import { useEffect, useState } from "react";
 import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,7 +14,7 @@ export default function ProblemList({
   userId,
   authors,
   permission,
-  initialFilter,
+  filter,
   solvedProblemIds,
 }: {
   collection: Collection;
@@ -23,12 +22,11 @@ export default function ProblemList({
   userId: string;
   authors: { id: number }[];
   permission: Permission | null;
-  initialFilter: Filter;
+  filter: Filter;
   solvedProblemIds: number[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [filter, setFilter] = useState<Filter>(initialFilter);
 
   problems = problems.filter(
     (problem) => problem.isArchived === filter.archived,
@@ -56,16 +54,9 @@ export default function ProblemList({
   problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
 
   const changePage = (newPage: number) => {
-    setFilter((prev) => ({ ...prev, page: newPage }));
     const newParams = filterToString({ ...filter, page: newPage });
     router.replace(`${pathname}${newParams}`, { scroll: false });
   };
-
-  useEffect(() => {
-    if (filter.page > numPages) {
-      setFilter((prev) => ({ ...prev, page: numPages }));
-    }
-  }, [filter.page, numPages]);
 
   return (
     <div className="p-4 sm:p-8 xl:px-12 xl:py-24">
@@ -77,7 +68,6 @@ export default function ProblemList({
               collection={collection}
               permission={permission}
               filter={filter}
-              setFilter={setFilter}
             />
           </div>
         </div>
@@ -102,7 +92,7 @@ export default function ProblemList({
         <Pagination
           currentPage={filter.page}
           totalPages={numPages}
-          onPageChange={changePage}
+          filter={filter}
         />
       )}
     </div>

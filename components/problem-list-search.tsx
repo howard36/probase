@@ -2,19 +2,12 @@ import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
 
-export function ProblemListSearch({
-  filter,
-  setFilter,
-}: {
-  filter: Filter;
-  setFilter: React.Dispatch<React.SetStateAction<Filter>>;
-}) {
+export function ProblemListSearch({ filter }: { filter: Filter }) {
   const router = useRouter();
   const pathname = usePathname();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFilter = { ...filter, search: e.target.value };
-    setFilter(newFilter);
     const newParams = filterToString(newFilter);
     router.replace(`${pathname}${newParams}`, { scroll: false });
   };
