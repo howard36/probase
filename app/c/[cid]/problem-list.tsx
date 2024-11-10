@@ -53,11 +53,6 @@ export default function ProblemList({
   const numPages = Math.max(Math.ceil(problems.length / 20), 1);
   problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
 
-  const changePage = (newPage: number) => {
-    const newParams = filterToString({ ...filter, page: newPage });
-    router.replace(`${pathname}${newParams}`, { scroll: false });
-  };
-
   return (
     <div className="p-4 sm:p-8 xl:px-12 xl:py-24">
       <div className="flex flex-col xl:flex-row xl:justify-center xl:gap-x-12">
