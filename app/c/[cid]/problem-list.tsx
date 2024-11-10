@@ -5,7 +5,7 @@ import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { usePathname, useRouter } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
-import { Pagination } from "@/components/pagination";
+import { ProblemListPagination } from "@/components/problem-list-pagination";
 import { ProblemListSidebar } from "@/components/problem-list-sidebar";
 
 export default function ProblemList({
@@ -53,11 +53,6 @@ export default function ProblemList({
   const numPages = Math.max(Math.ceil(problems.length / 20), 1);
   problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
 
-  const changePage = (newPage: number) => {
-    const newParams = filterToString({ ...filter, page: newPage });
-    router.replace(`${pathname}${newParams}`, { scroll: false });
-  };
-
   return (
     <div className="p-4 sm:p-8 xl:px-12 xl:py-24">
       <div className="flex flex-col xl:flex-row xl:justify-center xl:gap-x-12">
@@ -89,7 +84,7 @@ export default function ProblemList({
         </div>
       </div>
       {numPages > 1 && (
-        <Pagination
+        <ProblemListPagination
           currentPage={filter.page}
           totalPages={numPages}
           filter={filter}
