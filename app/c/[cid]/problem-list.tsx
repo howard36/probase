@@ -5,7 +5,7 @@ import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { usePathname, useRouter } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
-import { Pagination } from "@/components/pagination";
+import { ProblemListPagination } from "@/components/problem-list-pagination";
 import { ProblemListSidebar } from "@/components/problem-list-sidebar";
 
 export default function ProblemList({
@@ -89,7 +89,7 @@ export default function ProblemList({
         </div>
       </div>
       {numPages > 1 && (
-        <Pagination
+        <ProblemListPagination
           currentPage={filter.page}
           totalPages={numPages}
           filter={filter}
