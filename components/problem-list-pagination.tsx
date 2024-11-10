@@ -43,25 +43,30 @@ export function ProblemListPagination({
   maxPage = Math.min(maxPage, totalPages);
 
   return (
-    <Pagination className="mt-12">
+    <Pagination className="mt-12 text-slate-900">
       <PaginationContent>
         {currentPage > 1 ? (
           <PaginationItem>
-            <PaginationPrevious href={getPageHref(currentPage - 1)} />
+            <PaginationPrevious
+              href={getPageHref(currentPage - 1)}
+              className="hover:bg-slate-200/70"
+            />
           </PaginationItem>
         ) : null}
 
         {Array.from({ length: maxPage - minPage + 1 }, (_, idx) => {
           const pageNum = idx + minPage;
+          const isActive = pageNum === currentPage;
           return (
             <PaginationItem key={pageNum}>
               <PaginationLink
                 href={getPageHref(pageNum)}
-                isActive={pageNum === currentPage}
-                className={cn(
-                  "hover:bg-slate-200",
-                  pageNum === currentPage && "bg-slate-200",
-                )}
+                isActive={isActive}
+                className={cn({
+                  "bg-violet-200 text-violet-950 shadow-violet-200/50 hover:bg-violet-200":
+                    isActive,
+                  "hover:bg-slate-200/70": !isActive,
+                })}
               >
                 {pageNum}
               </PaginationLink>
@@ -71,7 +76,10 @@ export function ProblemListPagination({
 
         {currentPage < totalPages ? (
           <PaginationItem>
-            <PaginationNext href={getPageHref(currentPage + 1)} />
+            <PaginationNext
+              href={getPageHref(currentPage + 1)}
+              className="hover:bg-slate-200/70"
+            />
           </PaginationItem>
         ) : null}
       </PaginationContent>
