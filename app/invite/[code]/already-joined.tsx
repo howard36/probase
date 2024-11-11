@@ -17,6 +17,7 @@ export default function AlreadyJoined({ invite }: { invite: InviteProps }) {
         <Link
           href={`/c/${invite.collection.cid}`}
           className="rounded bg-violet-500 px-4 py-2 font-bold text-white hover:bg-violet-600"
+          prefetch={true}
         >
           Continue to {collectionName}
         </Link>

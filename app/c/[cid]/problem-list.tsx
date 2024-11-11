@@ -3,8 +3,7 @@
 import ProblemCard from "./problem-card";
 import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
-import { usePathname, useRouter } from "next/navigation";
-import { Filter, filterToString } from "@/lib/filter";
+import { Filter } from "@/lib/filter";
 import { ProblemListPagination } from "@/components/problem-list-pagination";
 import { ProblemListSidebar } from "@/components/problem-list-sidebar";
 
@@ -25,9 +24,6 @@ export default function ProblemList({
   filter: Filter;
   solvedProblemIds: number[];
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-
   problems = problems.filter(
     (problem) => problem.isArchived === filter.archived,
   );
@@ -51,7 +47,9 @@ export default function ProblemList({
   }
 
   const numPages = Math.max(Math.ceil(problems.length / 20), 1);
-  problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
+  const currentPage = Math.min(Math.max(filter.page, 1), numPages);
+  TODO;
+  problems = problems.slice(20 * (currentPage - 1), 20 * currentPage);
 
   return (
     <div className="p-4 sm:p-8 xl:px-12 xl:py-24">
@@ -85,7 +83,7 @@ export default function ProblemList({
       </div>
       {numPages > 1 && (
         <ProblemListPagination
-          currentPage={filter.page}
+          currentPage={currentPage}
           totalPages={numPages}
           filter={filter}
         />

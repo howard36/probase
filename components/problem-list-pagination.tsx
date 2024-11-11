@@ -9,6 +9,7 @@ import {
 import { usePathname } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "./ui/button";
 
 interface PaginationProps {
   currentPage: number;
@@ -59,17 +60,29 @@ export function ProblemListPagination({
           const isActive = pageNum === currentPage;
           return (
             <PaginationItem key={pageNum}>
-              <PaginationLink
-                href={getPageHref(pageNum)}
-                isActive={isActive}
-                className={cn({
-                  "bg-violet-200 text-violet-950 shadow-violet-200/50 hover:bg-violet-200":
-                    isActive,
-                  "hover:bg-slate-200/70": !isActive,
-                })}
-              >
-                {pageNum}
-              </PaginationLink>
+              {isActive ? (
+                <span
+                  className={cn(
+                    buttonVariants({
+                      variant: "secondary",
+                      size: "icon",
+                    }),
+                    "pointer-events-none bg-violet-200 text-violet-950 shadow-violet-200/50 hover:bg-violet-200",
+                  )}
+                  aria-current="page"
+                >
+                  {pageNum}
+                </span>
+              ) : (
+                <PaginationLink
+                  href={getPageHref(pageNum)}
+                  prefetch={true}
+                  className="hover:bg-slate-200/70"
+                  aria-label={`Page ${pageNum}`}
+                >
+                  {pageNum}
+                </PaginationLink>
+              )}
             </PaginationItem>
           );
         })}
