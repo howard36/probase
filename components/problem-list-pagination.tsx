@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Pagination,
   PaginationContent,
@@ -12,22 +14,19 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 
 interface PaginationProps {
-  currentPage: number;
   totalPages: number;
   filter: Filter;
 }
 
-export function ProblemListPagination({
-  currentPage,
-  totalPages,
-  filter,
-}: PaginationProps) {
+export function ProblemListPagination({ totalPages, filter }: PaginationProps) {
   const pathname = usePathname();
 
   const getPageHref = (page: number) => {
     const newParams = filterToString({ ...filter, page });
     return `${pathname}${newParams}`;
   };
+
+  const currentPage = filter.page;
 
   const halfInterval = 2;
   let minPage = currentPage - halfInterval;
