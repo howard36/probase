@@ -3,10 +3,11 @@
 import ProblemCard from "./problem-card";
 import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
-import { usePathname, useRouter } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
 import { ProblemListPagination } from "@/components/problem-list-pagination";
 import { ProblemListSidebar } from "@/components/problem-list-sidebar";
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function ProblemList({
   collection,
@@ -51,6 +52,14 @@ export default function ProblemList({
   }
 
   const numPages = Math.max(Math.ceil(problems.length / 20), 1);
+
+  useEffect(() => {
+    if (filter.page > numPages) {
+      const newParams = filterToString({ ...filter, page: numPages });
+      router.replace(`${pathname}${newParams}`);
+    }
+  }, [filter.page, numPages, router, pathname]);
+
   problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
 
   return (
@@ -84,11 +93,7 @@ export default function ProblemList({
         </div>
       </div>
       {numPages > 1 && (
-        <ProblemListPagination
-          currentPage={filter.page}
-          totalPages={numPages}
-          filter={filter}
-        />
+        <ProblemListPagination totalPages={numPages} filter={filter} />
       )}
     </div>
   );

@@ -201,6 +201,7 @@ export default function ProblemPage(props: PropsWithFilter) {
               <Link
                 href={`/c/${collection.cid}?subject=${subject.charAt(0).toLowerCase()}`}
                 className={`whitespace-nowrap rounded-full bg-gradient-to-br px-6 py-2 text-center leading-none text-white ${gradient}`}
+                prefetch={true}
               >
                 {subject}
               </Link>
