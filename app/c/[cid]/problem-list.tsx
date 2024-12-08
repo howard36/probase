@@ -58,7 +58,7 @@ export default function ProblemList({
       const newParams = filterToString({ ...filter, page: numPages });
       router.replace(`${pathname}${newParams}`);
     }
-  }, [filter.page, numPages, router, pathname]);
+  }, [filter, numPages, router, pathname]);
 
   problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
 

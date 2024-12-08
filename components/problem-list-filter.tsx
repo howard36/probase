@@ -52,7 +52,7 @@ export function ProblemListFilter({
   };
 
   return (
-    <div className="my-4 flex flex-row justify-between xl:flex-col xl:gap-y-4">
+    <div className="my-6 flex flex-col justify-between gap-y-4">
       <div className="flex flex-col gap-y-2">
         {allSubjects.map((subject) => (
           <div key={subject} className="flex items-center">
@@ -61,7 +61,9 @@ export function ProblemListFilter({
               checked={filter.subjects.includes(subject)}
               onCheckedChange={() => toggleSubject(subject)}
             />
-            <Label htmlFor={`filter-subject-${subject}`}>{subject}</Label>
+            <Label htmlFor={`filter-subject-${subject}`}>
+              {subject === "NumberTheory" ? "Number Theory" : subject}
+            </Label>
           </div>
         ))}
       </div>
