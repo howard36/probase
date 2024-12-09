@@ -59,19 +59,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui"), require("tailwindcss-animate")],
-  daisyui: {
-    themes: [
-      {
-        light: {
-          ...require("daisyui/src/theming/themes")["light"],
-          primary: "#8b5cf6", // violet-500
-          "base-100": "#f8fafc", // slate-50
-          neutral: "#1e293b", // slate-800
-        },
-      },
-    ],
-    darkTheme: "light",
-    logs: false,
-  },
+  plugins: [require("tailwindcss-animate")],
 };
