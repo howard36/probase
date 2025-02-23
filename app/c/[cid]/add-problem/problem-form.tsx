@@ -4,11 +4,12 @@ import { useState } from "react";
 import type { Collection, Subject } from "@prisma/client";
 import ClickToEdit from "@/components/click-to-edit";
 import Label from "@/components/label";
-import AimeInput from "./aime-input";
+import AimeInput from "@/components/aime-input";
 import SubmitButton from "@/components/submit-button";
 import { addProblem } from "./actions";
 import BackButton from "@/components/back-button";
 import { wrapAction } from "@/lib/server-actions";
+import IntegerInput from "@/components/integer-input";
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -80,7 +81,16 @@ export default function ProblemForm({
       </div>
     );
   } else if (collection.answerFormat === "Integer") {
-    // TODO
+    answerInput = (
+      <div>
+        {answerLabel}
+        <IntegerInput
+          value={answer}
+          onValueChange={setAnswer}
+          required={collection.requireAnswer}
+        />
+      </div>
+    );
   } else if (collection.answerFormat === "AIME") {
     answerInput = (
       <div>

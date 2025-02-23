@@ -6,11 +6,7 @@ interface AimeInputProps {
   required: boolean;
 }
 
-const AimeInput: React.FC<AimeInputProps> = ({
-  value,
-  onValueChange,
-  required,
-}) => {
+const AimeInput = ({ value, onValueChange, required }: AimeInputProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
     if (/^\d{1,3}$/.test(newValue) || newValue === "") {
