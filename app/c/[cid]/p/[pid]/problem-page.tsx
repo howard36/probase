@@ -141,8 +141,8 @@ export default function ProblemPage(props: PropsWithFilter) {
             <hr className="my-8" />
             <Testsolve
               problem={problem}
-              solveAttempt={solveAttempt}
               deadline={deadline}
+              answerFormat={collection.answerFormat}
             />
           </div>
         );

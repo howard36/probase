@@ -2,23 +2,25 @@
 
 import { useRouter } from "next/navigation";
 import CountdownTimer from "./countdown-timer";
-import AimeInput from "../../add-problem/aime-input";
+import AimeInput from "@/components/aime-input";
 import { useState } from "react";
 import Label from "@/components/label";
-import { SolveAttempt } from "@prisma/client";
+import { AnswerFormat } from "@prisma/client";
 import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { giveUpTestsolve, submitTestsolve } from "./actions";
 import { wrapAction } from "@/lib/server-actions";
+import IntegerInput from "@/components/integer-input";
 
 // TODO: fix loading spinners for the two submit buttons. Probably need to show a single loading spinner outside of the buttons. That also lets us keep the same button text and width
 export default function Testsolve({
   problem,
   deadline,
+  answerFormat,
 }: {
   problem: ProblemProps;
-  solveAttempt: SolveAttempt;
   deadline: Date;
+  answerFormat: AnswerFormat;
 }) {
   const router = useRouter();
   const [answer, setAnswer] = useState("");
@@ -45,11 +47,19 @@ export default function Testsolve({
       >
         <Label text="ANSWER" />
         <div className="mb-3">
-          <AimeInput
-            value={answer}
-            onValueChange={(newValue: string) => setAnswer(newValue)}
-            required
-          />
+          {answerFormat === "AIME" ? (
+            <AimeInput
+              value={answer}
+              onValueChange={(newValue: string) => setAnswer(newValue)}
+              required={true}
+            />
+          ) : (
+            <IntegerInput
+              value={answer}
+              onValueChange={(newValue: string) => setAnswer(newValue)}
+              required={true}
+            />
+          )}
         </div>
         <div className="my-4 flex items-center gap-x-6">
           <SubmitButton className="flex-grow-0">Submit</SubmitButton>
