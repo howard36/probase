@@ -27,7 +27,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     },
     {
       href: "/c/topsoj",
-      label: "TopSOJ",
+      label: "TopsOJ",
       active: pathname !== null && pathname.startsWith("/c/topsoj"),
     },
   ];
