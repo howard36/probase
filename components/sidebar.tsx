@@ -25,6 +25,11 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       label: "OTIS Mock AIME",
       active: pathname !== null && pathname.startsWith("/c/otis-mock-aime"),
     },
+    {
+      href: "/c/topsoj",
+      label: "TopSOJ",
+      active: pathname !== null && pathname.startsWith("/c/topsoj"),
+    },
   ];
 
   return (

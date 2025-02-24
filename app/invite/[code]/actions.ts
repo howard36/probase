@@ -58,6 +58,11 @@ export async function acceptInvite(
       userId,
       collectionId: invite.collectionId,
       accessLevel: invite.accessLevel,
+      // TODO: find a better way to enforce a specific testsolver type
+      ...(invite.collection.cid === "topsoj" && {
+        testsolverType: "Serious",
+        seriousTestsolverStartedAt: invite.collection.createdAt,
+      }),
     },
   });
 
