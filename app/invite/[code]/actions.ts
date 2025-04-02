@@ -59,7 +59,7 @@ export async function acceptInvite(
       collectionId: invite.collectionId,
       accessLevel: invite.accessLevel,
       // TODO: find a better way to enforce a specific testsolver type
-      ...(invite.collection.cid === "topsoj" && {
+      ...(["topsoj", "mgci"].includes(invite.collection.cid) && {
         testsolverType: "Serious",
         seriousTestsolverStartedAt: invite.collection.createdAt,
       }),
