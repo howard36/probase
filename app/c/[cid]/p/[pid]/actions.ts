@@ -315,11 +315,12 @@ export async function startTestsolve(
 }
 
 const BUFFER_TIME_MILLIS = 10_000;
+const SUBMISSION_LIMIT = 5;
 
 export async function submitTestsolve(
   problemId: number,
   answer: string,
-): Promise<ActionResponse<{ correct: boolean }>> {
+): Promise<ActionResponse<{ correct: boolean; remaining: number }>> {
   const submittedAt = new Date();
 
   const session = await auth();
@@ -385,6 +386,12 @@ export async function submitTestsolve(
       return error("Tried to submit before starting testsolve");
     }
 
+    if (solveAttempt.numSubmissions >= SUBMISSION_LIMIT) {
+      return error(
+        `Reached maximum number of submissions (${SUBMISSION_LIMIT})`,
+      );
+    }
+
     const deadline = new Date(
       solveAttempt.startedAt.getTime() + testsolveTimeMillis,
     );
@@ -393,6 +400,10 @@ export async function submitTestsolve(
     }
 
     const correct = answer === problem.answer;
+    const remaining = Math.max(
+      0,
+      SUBMISSION_LIMIT - (solveAttempt.numSubmissions + 1),
+    );
 
     await prisma.solveAttempt.update({
       where: {
@@ -409,7 +420,7 @@ export async function submitTestsolve(
       },
     });
 
-    return { ok: true, data: { correct } };
+    return { ok: true, data: { correct, remaining } };
   } catch (err) {
     return error(String(err));
   }

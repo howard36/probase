@@ -25,12 +25,14 @@ export default function Testsolve({
   const router = useRouter();
   const [answer, setAnswer] = useState("");
   const [wrongAnswer, setWrongAnswer] = useState("");
+  const [remaining, setRemaining] = useState<number | null>(null);
 
   const trySubmitTestsolve = wrapAction(submitTestsolve, (resp) => {
     if (resp.data.correct) {
       router.refresh();
     } else {
       setWrongAnswer(answer);
+      setRemaining(resp.data.remaining);
       setAnswer("");
     }
   });
@@ -73,7 +75,8 @@ export default function Testsolve({
         <div className="mb-3">
           {wrongAnswer && (
             <span>
-              <strong>{wrongAnswer}</strong> is incorrect!
+              <strong>{wrongAnswer}</strong> is incorrect!{" "}
+              {remaining !== null && <span> ({remaining}/5)</span>}
             </span>
           )}
         </div>
