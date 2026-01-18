@@ -21,7 +21,9 @@ function generateToken(): string {
 async function main() {
   const userId = await prompt("Enter your User ID: ");
   const cid = await prompt("Enter the Collection CID: ");
-  const name = await prompt("Enter a name for this token (e.g., 'LaTeX export'): ");
+  const name = await prompt(
+    "Enter a name for this token (e.g., 'LaTeX export'): ",
+  );
 
   const collection = await prisma.collection.findUnique({
     where: { cid },
@@ -56,7 +58,9 @@ async function main() {
   console.log(`Token: ${token}`);
   console.log(`Collection: ${cid}`);
   console.log(`Name: ${name}`);
-  console.log(`\nUsage: curl -H "Authorization: Bearer ${token}" http://localhost:3000/api/collections/${cid}/problems`);
+  console.log(
+    `\nUsage: curl -H "Authorization: Bearer ${token}" http://localhost:3000/api/collections/${cid}/problems`,
+  );
 
   rl.close();
 }

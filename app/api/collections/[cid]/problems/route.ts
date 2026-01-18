@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ cid: string }> }
+  { params }: { params: Promise<{ cid: string }> },
 ) {
   const { cid } = await params;
 
@@ -12,7 +12,7 @@ export async function GET(
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return Response.json(
       { error: "Missing or invalid Authorization header. Use: Bearer <token>" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -42,7 +42,7 @@ export async function GET(
   if (apiToken.collection.cid !== cid) {
     return Response.json(
       { error: "Token not authorized for this collection" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
