@@ -22,6 +22,7 @@ model User {
   comments      Comment[]
   problemLikes  ProblemLike[]
   solveAttempts SolveAttempt[]
+  apiTokens     ApiToken[]
 }
 
 model Account {
@@ -136,6 +137,7 @@ model Collection {
   requireDifficulty  Boolean       @default(true)
   requireTestsolve   Boolean       @default(false)  // whether users must testsolve a problem to view it
   createdAt          DateTime      @default(now())
+  apiTokens          ApiToken[]
 }
 
 enum AccessLevel {
@@ -229,4 +231,17 @@ model SolveAttempt {
   gaveUp         Boolean   @default(false)
 
   @@id([userId, problemId])
+}
+
+model ApiToken {
+  id              Int        @id @default(autoincrement())
+  token           String     @unique
+  name            String
+  collection      Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId    Int
+  createdBy       User       @relation(fields: [createdByUserId], references: [id])
+  createdByUserId String
+  createdAt       DateTime   @default(now())
+
+  @@index([token])
 }
