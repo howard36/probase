@@ -10,6 +10,7 @@
     "launch": "next build && next start",
     "lint": "next lint",
     "local": "dotenv -e .env.local --",
+    "prod": "tsx scripts/prod.ts",
     "postinstall": "prisma generate"
   },
   "prisma": {
