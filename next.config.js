@@ -11,6 +11,7 @@ const nextConfig = {
       "scripts",
       "types",
       "prisma",
+      "test",
       "auth.ts",
     ],
   },
