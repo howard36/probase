@@ -6,8 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Env files are never loaded implicitly. Prefix DB/Prisma commands with the env wrapper:
   `npm run local -- prisma migrate dev`, `npm run local -- prisma db seed`.
-- Verification before calling a change done (there are no tests): `npm run lint`, `npx prettier . --check`, `npm run build`. CI only runs the Prettier check.
+- Verification before calling a change done: `npm run lint`, `npx prettier . --check`, `npm test`, `npm run test:integration` (needs `npm run test:db` first), `npm run build`. CI runs the Prettier check plus both test suites.
 - Seed script is `prisma/seed.mjs` (plain JS, run by `prisma db seed`).
+
+## Tests
+
+- Vitest, configured in `vitest.config.mts` (must stay `.mts`: the package is CommonJS and Vitest's CJS entry can't load on Node 22.8). Three projects: `unit` (`test/unit/**/*.test.ts`), `components` (`test/unit/**/*.test.tsx`, happy-dom + Testing Library), `integration` (`test/integration/**/*.test.ts`).
+- Integration tests hit a real Postgres (`docker-compose.test.yml`, port 5433, `.env.test`). They mock only `auth()` and `next/cache`; use `signInAs()` from `test/integration/session.ts` and the row builders in `test/integration/factories.ts`. Every table is truncated before each test, so the global setup refuses any database whose name doesn't end in `_test`. Never point `.env.test` at the dev or prod database.
+- `redirect()` / `notFound()` throw; assert them with `expectRedirect()` / `expectNotFound()` from `test/integration/navigation.ts`.
+- When adding a server action, add an integration test for its auth and permission failures as well as its happy path.
 
 ## Production safety
 

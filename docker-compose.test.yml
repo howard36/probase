@@ -1,0 +1,20 @@
+# Throwaway Postgres for the integration tests (`npm run test:db`).
+# Runs on port 5433 so it never collides with the local dev database on 5432.
+# Data lives in tmpfs: stopping the container wipes it.
+services:
+  db:
+    image: postgres:16
+    container_name: probase-test-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: probase_test
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d probase_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 15

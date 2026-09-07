@@ -63,6 +63,18 @@ npm run dev
 
 The website should now be running at <http://localhost:3000>
 
+## Testing
+
+Tests use [Vitest](https://vitest.dev) and live under `test/`.
+
+- `npm test` runs the unit tests (`test/unit/**/*.test.ts`, pure functions in `lib/`) and the component tests (`test/unit/**/*.test.tsx`, React components rendered with Testing Library). No database needed.
+- `npm run test:integration` runs the server actions and API routes against a real Postgres database (`test/integration/`). Start the throwaway database first with `npm run test:db` (Docker, port 5433, separate from your dev database). Migrations are applied automatically, and every table is truncated before each test. Stop it with `npm run test:db:down`.
+- `npm run test:all` runs everything. `npm run test:watch` watches the unit and component tests.
+
+Integration tests mock only `auth()` (see `test/integration/session.ts`) and `next/cache`; everything else, including Prisma, is real. Row builders live in `test/integration/factories.ts`. As a safety net, the integration setup refuses to run against any database whose name does not end in `_test`.
+
+Both suites run in GitHub Actions on every pull request.
+
 ## Contributing
 
 Anyone is welcome to contribute!
