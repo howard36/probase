@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SIDEBAR_COLLECTIONS } from "@/lib/collection-config";
 
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -9,23 +10,11 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   // TODO: automate links based on permissions
   // TODO: collection name might be too long, needs cutoff
   // TODO: collection list might be too long, needs vertical scroll
-  const links = [
-    {
-      href: "/c/cmimc",
-      label: "CMIMC",
-      active: pathname !== null && pathname.startsWith("/c/cmimc"),
-    },
-    {
-      href: "/c/otis-mock-aime",
-      label: "OTIS Mock AIME",
-      active: pathname !== null && pathname.startsWith("/c/otis-mock-aime"),
-    },
-    {
-      href: "/c/topsoj",
-      label: "TopsOJ",
-      active: pathname !== null && pathname.startsWith("/c/topsoj"),
-    },
-  ];
+  const links = SIDEBAR_COLLECTIONS.map(({ cid, name }) => ({
+    href: `/c/${cid}`,
+    label: name,
+    active: pathname !== null && pathname.startsWith(`/c/${cid}`),
+  }));
 
   return (
     <>
