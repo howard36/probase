@@ -7,6 +7,7 @@ import {
   canEditProblem,
   canEditSolution,
   canViewCollection,
+  hasJoinedCollection,
   isAdmin,
 } from "@/lib/permissions";
 
@@ -48,6 +49,11 @@ describe("role-only checks", () => {
       name: "canViewCollection",
       fn: canViewCollection,
       allowed: ["Admin", "TeamMember", "ViewOnly"],
+    },
+    {
+      name: "hasJoinedCollection",
+      fn: hasJoinedCollection,
+      allowed: ["Admin", "TeamMember"],
     },
   ];
 

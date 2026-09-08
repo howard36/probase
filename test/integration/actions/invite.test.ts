@@ -1,3 +1,4 @@
+import { isRedirectError } from "next/dist/client/components/redirect";
 import { describe, expect, it } from "vitest";
 import { acceptInvite } from "@/app/invite/[code]/actions";
 import prisma from "@/lib/prisma";
@@ -57,6 +58,46 @@ describe("acceptInvite", () => {
     );
     expect(await permissionFor(user, collection)).toBeNull();
   });
+
+  it("accepts an invite whose expiry is still in the future", async () => {
+    const collection = await createCollection();
+    const inviter = await createUser();
+    const invite = await createInvite(collection, inviter, {
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+    });
+    const user = await createUser();
+    signInAs(user);
+
+    await expectRedirect(acceptInvite(invite.code), `/c/${collection.cid}`);
+    expect((await permissionFor(user, collection))?.accessLevel).toBe(
+      "TeamMember",
+    );
+  });
+
+  it.each(["Admin", "TeamMember"] as const)(
+    "never lowers an existing %s and does not use up the invite",
+    async (level) => {
+      const collection = await createCollection();
+      const inviter = await createUser();
+      const invite = await createInvite(collection, inviter, {
+        accessLevel: "ViewOnly",
+        oneTimeUse: true,
+      });
+      const member = await createUser();
+      await createPermission(member, collection, level);
+      signInAs(member);
+
+      await expectRedirect(acceptInvite(invite.code), `/c/${collection.cid}`);
+
+      expect((await permissionFor(member, collection))?.accessLevel).toBe(
+        level,
+      );
+      const untouched = await prisma.invite.findUniqueOrThrow({
+        where: { code: invite.code },
+      });
+      expect(untouched.expiresAt).toBeNull();
+    },
+  );
 
   it("grants the invite's access level and redirects to the collection", async () => {
     const collection = await createCollection();
@@ -157,6 +198,38 @@ describe("acceptInvite", () => {
         error("Invite has expired"),
       );
       expect(await permissionFor(second, collection)).toBeNull();
+    });
+
+    it("admits exactly one of two users who accept at the same time", async () => {
+      const collection = await createCollection();
+      const inviter = await createUser();
+      const invite = await createInvite(collection, inviter, {
+        oneTimeUse: true,
+      });
+      const first = await createUser();
+      const second = await createUser();
+
+      // A redirect is a throw; a refusal is a resolved error response.
+      const outcome = (promise: Promise<unknown>) =>
+        promise.then(
+          (resp) => `response:${JSON.stringify(resp)}`,
+          (err: unknown) =>
+            isRedirectError(err) ? "redirect" : `threw:${String(err)}`,
+        );
+
+      // auth() is read synchronously at the start of each call, so the
+      // sign-in can be switched between starting the two accepts.
+      signInAs(first);
+      const firstAccept = outcome(acceptInvite(invite.code));
+      signInAs(second);
+      const secondAccept = outcome(acceptInvite(invite.code));
+      const outcomes = await Promise.all([firstAccept, secondAccept]);
+
+      expect(outcomes.sort()).toEqual([
+        "redirect",
+        `response:${JSON.stringify(error("Invite has expired"))}`,
+      ]);
+      expect(await prisma.permission.count()).toBe(1);
     });
 
     it("a reusable invite keeps working", async () => {

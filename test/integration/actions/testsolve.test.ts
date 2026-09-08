@@ -188,6 +188,24 @@ describe("submitTestsolve", () => {
     );
   });
 
+  it("lets only one of several overlapping submissions through at the limit", async () => {
+    const { problem, user } = await setup({ answer: "42" });
+    await startTestsolve(problem.id);
+    await prisma.solveAttempt.update({
+      where: { userId_problemId: { userId: user.id, problemId: problem.id } },
+      data: { numSubmissions: SUBMISSION_LIMIT - 1 },
+    });
+
+    const results = await Promise.all(
+      Array.from({ length: 4 }, () => submitTestsolve(problem.id, "42")),
+    );
+
+    expect(results.filter((r) => r.ok)).toHaveLength(1);
+    const row = await attempt(user, problem);
+    expect(row.numSubmissions).toBe(SUBMISSION_LIMIT);
+    expect(row.solvedAt).not.toBeNull();
+  });
+
   it("accepts a submission inside the grace buffer after the time limit", async () => {
     const { problem, user } = await setup({ difficulty: 1 });
     await startTestsolve(problem.id);
@@ -255,6 +273,18 @@ describe("giveUpTestsolve", () => {
 
     expect(await giveUpTestsolve(problem.id)).toEqual({ ok: true });
     expect((await attempt(user, problem)).gaveUp).toBe(true);
+  });
+
+  it("lets only one of two overlapping give-ups through", async () => {
+    const { problem } = await setup();
+    await startTestsolve(problem.id);
+
+    const results = await Promise.all([
+      giveUpTestsolve(problem.id),
+      giveUpTestsolve(problem.id),
+    ]);
+
+    expect(results.filter((r) => r.ok)).toHaveLength(1);
   });
 
   it("cannot give up twice", async () => {

@@ -71,6 +71,20 @@ export function canAddComment(permission: PermissionPerm | null): boolean {
   );
 }
 
+/**
+ * Whether the user is a full member. Used by the invite flow: members do not
+ * need an invite, and accepting one must never lower their access.
+ */
+export function hasJoinedCollection(
+  permission: PermissionPerm | null,
+): boolean {
+  if (permission === null) {
+    return false;
+  }
+  const role = permission.accessLevel;
+  return role === "Admin" || role === "TeamMember";
+}
+
 export function canViewCollection(permission: PermissionPerm | null): boolean {
   if (permission === null) {
     return false;
