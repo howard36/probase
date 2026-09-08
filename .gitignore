@@ -48,3 +48,5 @@ next-env.d.ts
 
 # cursor
 .cursor
+# claude code worktrees
+.claude/worktrees/
