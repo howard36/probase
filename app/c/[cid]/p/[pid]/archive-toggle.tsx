@@ -12,7 +12,10 @@ export default function ArchiveToggle(props: Props) {
   const handleChange = () => {
     const newIsArchived = !isArchived;
     setArchived(newIsArchived);
-    wrapAction(editProblem)(problem.id, { isArchived: newIsArchived });
+    wrapAction(editProblem, undefined, () => setArchived(!newIsArchived))(
+      problem.id,
+      { isArchived: newIsArchived },
+    );
   };
 
   return (

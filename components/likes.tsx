@@ -24,17 +24,18 @@ export default function Likes({
     problem.likes.some((like) => like.userId === userId),
   );
 
-  const action = wrapAction(likeProblem);
-
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (liked) {
-      setNumLikes(numLikes - 1);
-    } else {
-      setNumLikes(numLikes + 1);
-    }
-    setLiked(!liked);
-    action(problem.id, !liked);
+    const wasLiked = liked;
+    const previousNumLikes = numLikes;
+    setNumLikes(wasLiked ? numLikes - 1 : numLikes + 1);
+    setLiked(!wasLiked);
+    // Undo the optimistic update if the server rejects it.
+    const revert = () => {
+      setLiked(wasLiked);
+      setNumLikes(previousNumLikes);
+    };
+    wrapAction(likeProblem, undefined, revert)(problem.id, !wasLiked);
   };
 
   return (
