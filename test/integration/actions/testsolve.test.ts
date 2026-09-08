@@ -1,12 +1,12 @@
 import type { AccessLevel } from "@prisma/client";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   giveUpTestsolve,
   startTestsolve,
   submitTestsolve,
 } from "@/app/c/[cid]/p/[pid]/actions";
 import prisma from "@/lib/prisma";
-import { error } from "@/lib/server-actions";
+import { UNEXPECTED_ERROR_MESSAGE, error } from "@/lib/server-actions";
 import {
   createCollection,
   createPermission,
@@ -95,7 +95,15 @@ describe("startTestsolve", () => {
     await startTestsolve(problem.id);
     await startedAgo(user, problem, 5 * MINUTE);
 
-    expect((await startTestsolve(problem.id)).ok).toBe(false);
+    // The unique-key violation is logged server-side and reported generically.
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    expect(await startTestsolve(problem.id)).toEqual(
+      error(UNEXPECTED_ERROR_MESSAGE),
+    );
+    expect(consoleError).toHaveBeenCalledTimes(1);
+    consoleError.mockRestore();
     // The original attempt (and its start time) is untouched.
     const row = await attempt(user, problem);
     expect(Date.now() - row.startedAt.getTime()).toBeGreaterThan(4 * MINUTE);

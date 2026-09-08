@@ -15,6 +15,22 @@ export function error(message: string): ActionResponseError {
   };
 }
 
+export const UNEXPECTED_ERROR_MESSAGE =
+  "Something went wrong. Please try again.";
+
+/**
+ * For the catch block of a server action. Logs the real error on the server
+ * (Vercel captures console output) and returns a generic message that is safe
+ * to show to the user. Raw errors can contain query text and constraint names.
+ */
+export function unexpectedError(
+  action: string,
+  err: unknown,
+): ActionResponseError {
+  console.error(`Unexpected error in ${action}:`, err);
+  return error(UNEXPECTED_ERROR_MESSAGE);
+}
+
 // Takes in an async server action, and returns a synchronous version of that action (with extra error logging). The resulting function is called from the client.
 export function wrapAction<T extends unknown[], U>(
   asyncAction: (...args: T) => Promise<ActionResponse<U>>,

@@ -2,7 +2,7 @@
 
 import { canAddProblem } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { ActionResponse, error } from "@/lib/server-actions";
+import { ActionResponse, error, unexpectedError } from "@/lib/server-actions";
 import { Subject } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
@@ -127,7 +127,7 @@ export async function addProblem(
     if (isRedirectError(err)) {
       throw err;
     } else {
-      return error(String(err));
+      return unexpectedError("addProblem", err);
     }
   }
 }
