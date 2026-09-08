@@ -1,7 +1,6 @@
 "use client";
 
 import ClickToEdit from "@/components/click-to-edit";
-import type { Problem } from "@prisma/client";
 import { editProblem } from "./actions";
 import { runAction } from "@/lib/server-actions";
 
@@ -9,7 +8,7 @@ export default function EditableAnswer({
   problem,
   label,
 }: {
-  problem: Problem;
+  problem: { id: number; answer: string | null };
   label: React.ReactNode;
 }) {
   const saveAnswer = async (text: string) => {

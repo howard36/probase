@@ -2,15 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { KeyboardEvent } from "react";
-import { ProblemProps } from "./types";
 import { addSolution } from "./actions";
 import { wrapAction } from "@/lib/server-actions";
 
 export default function AddSolution({
-  problem,
+  problemId,
   authorId,
 }: {
-  problem: ProblemProps;
+  problemId: number;
   authorId: number;
 }) {
   const [isEditing, setEditing] = useState(false);
@@ -42,7 +41,7 @@ export default function AddSolution({
   }, [text]);
 
   const handleSubmit = () => {
-    wrapAction(addSolution)(problem.id, text, authorId);
+    wrapAction(addSolution)(problemId, text, authorId);
   };
 
   const handleDiscard = () => {

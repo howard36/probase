@@ -10,7 +10,12 @@ export default function Answer(props: Props) {
   const label = <Label text="ANSWER" />;
 
   if (canEdit) {
-    return <EditableAnswer problem={problem} label={label} />;
+    return (
+      <EditableAnswer
+        problem={{ id: problem.id, answer: problem.answer }}
+        label={label}
+      />
+    );
   } else {
     return (
       <>

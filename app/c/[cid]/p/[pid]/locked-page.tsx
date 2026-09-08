@@ -3,17 +3,16 @@
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { startTestsolve } from "./actions";
 import { wrapAction } from "@/lib/server-actions";
 
 export default function LockedPage({
-  problem,
+  problemId,
   time,
   unsolved,
 }: {
-  problem: ProblemProps;
+  problemId: number;
   time: string;
   unsolved: boolean;
 }) {
@@ -47,7 +46,7 @@ export default function LockedPage({
         )}
         <p>Best of luck!</p>
       </div>
-      <form action={() => tryStartTestsolving(problem.id)}>
+      <form action={() => tryStartTestsolving(problemId)}>
         <SubmitButton className="w-full">Start testsolving</SubmitButton>
       </form>
     </div>

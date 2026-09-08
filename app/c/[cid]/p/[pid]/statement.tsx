@@ -8,7 +8,11 @@ export default function Statement(props: Props) {
   const canEdit = canEditProblem(problem, permission, authors);
 
   if (canEdit) {
-    return <EditableStatement problem={problem} />;
+    return (
+      <EditableStatement
+        problem={{ id: problem.id, statement: problem.statement }}
+      />
+    );
   } else {
     return <Latex>{`${problem.statement}`}</Latex>;
   }

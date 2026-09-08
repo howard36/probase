@@ -19,7 +19,11 @@ export default function Title(props: Props) {
         {problem.pid}.
       </span>
       <div className="w-full text-slate-900">
-        {canEdit ? <EditableTitle problem={problem} /> : problem.title}
+        {canEdit ? (
+          <EditableTitle problem={{ id: problem.id, title: problem.title }} />
+        ) : (
+          problem.title
+        )}
       </div>
     </h2>
   );
