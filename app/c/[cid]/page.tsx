@@ -56,25 +56,6 @@ async function getProblems(collection: Collection): Promise<ProblemProps[]> {
     },
   });
 
-  if (collection.cid === "demo") {
-    problems.forEach((problem) => {
-      const date = new Date();
-      if (problem.pid === "A1") {
-        // Quadratic Equation
-        date.setHours(date.getHours() - 24);
-        problem.createdAt = date;
-      } else if (problem.pid === "N1") {
-        // Fermat's Last Theorem
-        date.setHours(date.getHours() - 25);
-        problem.createdAt = date;
-      } else if (problem.pid === "G1") {
-        // Edit me!
-        date.setHours(date.getHours() - 26);
-        problem.createdAt = date;
-      }
-    });
-  }
-
   problems.sort(sortByNew);
 
   return problems;
@@ -103,21 +84,7 @@ export default async function Page({
 
   if (session === null) {
     // Not logged in
-    if (cid === "demo") {
-      return (
-        <ProblemList
-          collection={collection}
-          problems={problems}
-          userId=""
-          authors={[]}
-          permission={null}
-          filter={filter}
-          solvedProblemIds={[]}
-        />
-      );
-    } else {
-      redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
-    }
+    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
   }
 
   const userId = session.userId;
@@ -133,7 +100,7 @@ export default async function Page({
     select: { id: true },
   });
 
-  let permission = await prisma.permission.findUnique({
+  const permission = await prisma.permission.findUnique({
     where: {
       userId_collectionId: {
         userId,
@@ -142,32 +109,13 @@ export default async function Page({
     },
   });
 
-  if (!canViewCollection(permission)) {
+  // canViewCollection already checks for null, but we include it here so TypeScript knows that permission is non-null later in the program
+  if (permission === null || !canViewCollection(permission)) {
     // No permission
-    if (cid === "demo") {
-      // create permission if it doesn't already exist
-      permission = await prisma.permission.upsert({
-        where: {
-          userId_collectionId: {
-            userId,
-            collectionId: collection.id,
-          },
-        },
-        update: {
-          accessLevel: "TeamMember",
-        },
-        create: {
-          userId,
-          collectionId: collection.id,
-          accessLevel: "TeamMember",
-        },
-      });
-    } else {
-      redirect("/need-permission");
-    }
+    redirect("/need-permission");
   }
 
-  if (collection.requireTestsolve && permission!.testsolverType === null) {
+  if (collection.requireTestsolve && permission.testsolverType === null) {
     redirect(`/c/${cid}/choose-testsolver-type`);
   }
 

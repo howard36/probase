@@ -2,7 +2,6 @@ import ProblemForm from "./problem-form";
 import prisma from "@/lib/prisma";
 import { Session } from "next-auth";
 import { notFound, redirect } from "next/navigation";
-import LoginRequired from "@/components/login-required";
 import { auth } from "auth";
 
 interface Params {
@@ -72,47 +71,13 @@ export default async function AddProblemPage({ params }: { params: Params }) {
   const session = await auth();
   if (session === null) {
     // Not logged in
-    if (cid === "demo") {
-      return (
-        <LoginRequired
-          message="Log in to Probase to add a problem"
-          callbackUrl="/c/demo/add-problem"
-        />
-      );
-    } else {
-      redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
-    }
+    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
   }
 
   // TODO: select only needed fields of collection
   const collection = await getCollection(cid);
   // TODO: ViewOnly should see a different page explaining why they can't submit
   const authorId = await getOrCreateAuthor(session, collection.id);
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    throw new Error("userId is undefined despite being logged in");
-  }
-
-  if (cid === "demo") {
-    // create permission if it doesn't already exist
-    await prisma.permission.upsert({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: collection.id,
-        },
-      },
-      update: {
-        accessLevel: "TeamMember",
-      },
-      create: {
-        userId,
-        collectionId: collection.id,
-        accessLevel: "TeamMember",
-      },
-    });
-  }
 
   return <ProblemForm collection={collection} authorId={authorId} />;
 }

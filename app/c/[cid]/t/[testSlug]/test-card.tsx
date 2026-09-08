@@ -22,7 +22,7 @@ export default function TestCard({
   problem: ProblemWithAuthors;
   collection: Collection;
   solveAttempts: SolveAttempt[];
-  permission: { accessLevel: AccessLevel } | null;
+  permission: { accessLevel: AccessLevel };
   authors: { id: number }[];
 }) {
   let locked = false;

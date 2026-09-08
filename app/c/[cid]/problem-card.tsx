@@ -64,7 +64,7 @@ export default function ProblemCard({
 }: {
   collection: Collection;
   problem: ProblemProps;
-  permission: Permission | null;
+  permission: Permission;
   userId: string;
   authors: { id: number }[];
   filter: Filter;
@@ -72,12 +72,11 @@ export default function ProblemCard({
   let locked = false;
   // TODO: use locked = !canViewProblem(), which should also check solveAttempts
   if (
-    permission === null ||
-    (collection.requireTestsolve &&
-      permission.testsolverType !== "Casual" &&
-      permission.seriousTestsolverStartedAt !== null &&
-      permission.seriousTestsolverStartedAt < problem.createdAt &&
-      !canEditProblem(problem, permission, authors))
+    collection.requireTestsolve &&
+    permission.testsolverType !== "Casual" &&
+    permission.seriousTestsolverStartedAt !== null &&
+    permission.seriousTestsolverStartedAt < problem.createdAt &&
+    !canEditProblem(problem, permission, authors)
   ) {
     if (!problem.solveAttempts.some((attempt) => attempt.userId === userId)) {
       // User hasn't started testsolving this problem

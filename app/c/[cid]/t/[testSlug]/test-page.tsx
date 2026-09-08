@@ -21,7 +21,7 @@ interface Props {
   testProblems: TestProblemWithProblem[];
   collection: Collection;
   solveAttempts: SolveAttempt[];
-  permission: { accessLevel: AccessLevel } | null;
+  permission: { accessLevel: AccessLevel };
   authors: { id: number }[];
 }
 

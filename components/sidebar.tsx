@@ -11,11 +11,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   // TODO: collection list might be too long, needs vertical scroll
   const links = [
     {
-      href: "/c/demo",
-      label: "Demo",
-      active: pathname !== null && pathname.startsWith("/c/demo"),
-    },
-    {
       href: "/c/cmimc",
       label: "CMIMC",
       active: pathname !== null && pathname.startsWith("/c/cmimc"),

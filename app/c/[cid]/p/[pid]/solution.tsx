@@ -20,8 +20,7 @@ export default function Solution({
   permission: PermissionProps;
   authors: AuthorProps[];
 }) {
-  const canEdit =
-    collection.cid === "demo" || canEditSolution(solution, permission, authors);
+  const canEdit = canEditSolution(solution, permission, authors);
   const label = <Label text="SOLUTION" />;
 
   if (canEdit) {

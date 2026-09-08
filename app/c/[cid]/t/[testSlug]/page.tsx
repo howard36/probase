@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import TestPage from "./test-page";
 import { auth } from "auth";
-import { AccessLevel, SolveAttempt } from "@prisma/client";
 import { canViewCollection } from "@/lib/permissions";
 
 interface Params {
@@ -28,55 +27,40 @@ export default async function Page({ params }: { params: Params }) {
     notFound();
   }
 
-  let userId = null;
   const session = await auth();
   if (session === null) {
-    if (cid !== "demo") {
-      redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Ft%2F${testSlug}`);
-    }
-  } else {
-    userId = session.userId;
-    if (userId === undefined) {
-      throw new Error("userId is undefined despite being logged in");
-    }
+    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Ft%2F${testSlug}`);
+  }
+  const userId = session.userId;
+  if (userId === undefined) {
+    throw new Error("userId is undefined despite being logged in");
   }
 
-  let permission = null;
-  if (userId !== null) {
-    permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: test.collectionId,
-        },
-      },
-      select: {
-        accessLevel: true,
-      },
-    });
-  } else if (cid === "demo") {
-    permission = {
-      accessLevel: "TeamMember" as AccessLevel,
-    };
-  }
-
-  let solveAttempts: SolveAttempt[] = [];
-  let authors: { id: number }[] = [];
-  if (userId !== null) {
-    if (!canViewCollection(permission)) {
-      redirect("/need-permission");
-    }
-    solveAttempts = await prisma.solveAttempt.findMany({
-      where: { userId },
-    });
-    authors = await prisma.author.findMany({
-      where: {
+  const permission = await prisma.permission.findUnique({
+    where: {
+      userId_collectionId: {
         userId,
         collectionId: test.collectionId,
       },
-      select: { id: true },
-    });
+    },
+    select: {
+      accessLevel: true,
+    },
+  });
+  if (permission === null || !canViewCollection(permission)) {
+    redirect("/need-permission");
   }
+
+  const solveAttempts = await prisma.solveAttempt.findMany({
+    where: { userId },
+  });
+  const authors = await prisma.author.findMany({
+    where: {
+      userId,
+      collectionId: test.collectionId,
+    },
+    select: { id: true },
+  });
 
   const testProblems = await prisma.testProblem.findMany({
     where: {

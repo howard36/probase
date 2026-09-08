@@ -24,7 +24,7 @@ export function ProblemListFilter({
   filter,
 }: {
   collection: Collection;
-  permission: Permission | null;
+  permission: Permission;
   filter: Filter;
 }) {
   const router = useRouter();
@@ -76,7 +76,7 @@ export function ProblemListFilter({
         <Label htmlFor="filter-archived">Archived</Label>
       </div>
       {collection.requireTestsolve &&
-        permission?.testsolverType === TestsolverType.Serious && (
+        permission.testsolverType === TestsolverType.Serious && (
           <div className="flex items-center">
             <Switch
               id="filter-unsolved"

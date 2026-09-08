@@ -22,7 +22,7 @@ export default function ProblemList({
   problems: ProblemProps[];
   userId: string;
   authors: { id: number }[];
-  permission: Permission | null;
+  permission: Permission;
   filter: Filter;
   solvedProblemIds: number[];
 }) {

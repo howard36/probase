@@ -1,19 +1,13 @@
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import ProblemPage from "./problem-page";
-import {
-  problemInclude,
-  type AuthorProps,
-  type Params,
-  type Props,
-} from "./types";
+import { problemInclude, type Params, type Props } from "./types";
 import { canViewCollection } from "@/lib/permissions";
-import { AccessLevel, TestsolverType } from "@prisma/client";
 import { auth } from "auth";
 import { parseFilter } from "@/lib/filter";
 
 // TODO: params can be null, but the type does not reflect that
-async function getProps(params: Params, userId: string | null): Promise<Props> {
+async function getProps(params: Params, userId: string): Promise<Props> {
   const { cid, pid } = params;
 
   const collection = await prisma.collection.findUnique({
@@ -34,26 +28,6 @@ async function getProps(params: Params, userId: string | null): Promise<Props> {
   });
   if (problem === null) {
     notFound();
-  }
-
-  if (userId === null) {
-    if (collection.cid !== "demo") {
-      throw new Error("null userId on non-demo problem page");
-    }
-    const permission = {
-      accessLevel: AccessLevel.TeamMember,
-      testsolverType: TestsolverType.Casual,
-      seriousTestsolverStartedAt: null,
-    };
-    const authors: AuthorProps[] = [];
-    const props: Props = {
-      problem,
-      collection,
-      permission,
-      authors,
-      userId: "",
-    };
-    return props;
   }
 
   const permission = await prisma.permission.findUnique({
@@ -106,12 +80,7 @@ export default async function Page({
   const session = await auth();
   if (session === null) {
     // Not logged in
-    if (cid === "demo") {
-      const props: Props = await getProps(params, null);
-      return <ProblemPage {...props} filter={filter} />;
-    } else {
-      redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fp%2F${pid}`);
-    }
+    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fp%2F${pid}`);
   }
 
   const userId = session.userId;

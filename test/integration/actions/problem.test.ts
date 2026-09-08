@@ -108,7 +108,7 @@ describe("likeProblem", () => {
 });
 
 describe("editProblem", () => {
-  it("rejects a signed-out user on a normal collection", async () => {
+  it("rejects a signed-out user", async () => {
     const collection = await createCollection();
     const problem = await createProblem(collection, { title: "Before" });
     signOut();
@@ -120,21 +120,6 @@ describe("editProblem", () => {
       where: { id: problem.id },
     });
     expect(after.title).toBe("Before");
-  });
-
-  it("lets anyone, even signed out, edit problems in the demo collection", async () => {
-    // Intentional: see the `demo` gotcha in CLAUDE.md.
-    const collection = await createCollection({ cid: "demo" });
-    const problem = await createProblem(collection, { title: "Before" });
-    signOut();
-
-    expect(await editProblem(problem.id, { title: "After" })).toEqual({
-      ok: true,
-    });
-    const after = await prisma.problem.findUniqueOrThrow({
-      where: { id: problem.id },
-    });
-    expect(after.title).toBe("After");
   });
 
   it("rejects an unknown problem", async () => {

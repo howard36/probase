@@ -6,8 +6,7 @@ import Label from "@/components/label";
 
 export default function Answer(props: Props) {
   const { problem, collection, permission, authors } = props;
-  const canEdit =
-    collection.cid === "demo" || canEditProblem(problem, permission, authors);
+  const canEdit = canEditProblem(problem, permission, authors);
   const label = <Label text="ANSWER" />;
 
   if (canEdit) {

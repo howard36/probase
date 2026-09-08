@@ -12,8 +12,7 @@ const subjectToTextColor = {
 
 export default function Title(props: Props) {
   const { problem, collection, permission, authors } = props;
-  const canEdit =
-    collection.cid === "demo" || canEditProblem(problem, permission, authors);
+  const canEdit = canEditProblem(problem, permission, authors);
 
   return (
     <h2 className="flex gap-x-1.5">
