@@ -3,15 +3,25 @@
 import { notFound, redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { ActionResponse, error } from "@/lib/server-actions";
+import { idSchema, parseInput } from "@/lib/validation";
 import { getCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
 import { TestsolverType } from "@prisma/client";
+import { z } from "zod";
+
+const inputSchema = z.object({
+  collectionId: idSchema,
+  testsolverType: z.nativeEnum(TestsolverType),
+});
 
 export async function setTestsolverType(
   collectionId: number,
   testsolverType: TestsolverType,
 ): Promise<ActionResponse> {
-  // TODO: zod
+  const input = parseInput(inputSchema, { collectionId, testsolverType });
+  if (!input.ok) {
+    return input;
+  }
 
   const user = await getCurrentUser();
   if (user === null) {

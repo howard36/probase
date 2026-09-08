@@ -16,6 +16,8 @@ import {
 import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
 import { getAuthorIds, getPermission } from "@/lib/collection-access";
+import { idSchema, parseInput } from "@/lib/validation";
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import {
   BUFFER_TIME_MILLIS,
@@ -23,11 +25,37 @@ import {
   testsolveDeadline,
 } from "@/lib/testsolve";
 
+const likeSchema = z.object({ problemId: idSchema, like: z.boolean() });
+const editProblemSchema = z.object({
+  problemId: idSchema,
+  data: z.object({
+    title: z.string().min(1).optional(),
+    statement: z.string().min(1).optional(),
+    answer: z.string().optional(),
+    isArchived: z.boolean().optional(),
+  }),
+});
+const commentSchema = z.object({ problemId: idSchema, text: z.string() });
+const testsolveSchema = z.object({ problemId: idSchema });
+const submitSchema = z.object({ problemId: idSchema, answer: z.string() });
+const addSolutionSchema = z.object({
+  problemId: idSchema,
+  text: z.string().min(1),
+  authorId: idSchema,
+});
+const editSolutionSchema = z.object({
+  solutionId: idSchema,
+  text: z.string().min(1),
+});
+
 export async function likeProblem(
   problemId: number,
   like: boolean,
 ): Promise<ActionResponse> {
-  // TODO: zod
+  const input = parseInput(likeSchema, { problemId, like });
+  if (!input.ok) {
+    return input;
+  }
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
@@ -115,6 +143,10 @@ export async function editProblem(
   problemId: number,
   data: Data,
 ): Promise<ActionResponse> {
+  const input = parseInput(editProblemSchema, { problemId, data });
+  if (!input.ok) {
+    return input;
+  }
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
@@ -150,8 +182,7 @@ export async function editProblem(
       return error("You do not have permission to edit this problem");
     }
 
-    // TODO: validate input
-    const { title, statement, answer, isArchived } = data;
+    const { title, statement, answer, isArchived } = input.data.data;
 
     await prisma.problem.update({
       where: { id: problemId },
@@ -174,10 +205,13 @@ export async function addComment(
   problemId: number,
   formData: FormData,
 ): Promise<ActionResponse> {
-  const text = formData.get("comment") as string;
-  // TODO: replace with zod
+  const text = formData.get("comment");
   if (text === null) {
     return error("Text is null");
+  }
+  const input = parseInput(commentSchema, { problemId, text });
+  if (!input.ok) {
+    return input;
   }
 
   const user = await getCurrentUser();
@@ -210,7 +244,7 @@ export async function addComment(
 
     await prisma.comment.create({
       data: {
-        text,
+        text: input.data.text,
         problem: {
           connect: { id: problemId },
         },
@@ -230,6 +264,10 @@ export async function addComment(
 export async function startTestsolve(
   problemId: number,
 ): Promise<ActionResponse> {
+  const input = parseInput(testsolveSchema, { problemId });
+  if (!input.ok) {
+    return input;
+  }
   const user = await getCurrentUser();
   if (user === null) {
     return error("Not signed in");
@@ -278,6 +316,10 @@ export async function submitTestsolve(
   answer: string,
 ): Promise<ActionResponse<{ correct: boolean; remaining: number }>> {
   const submittedAt = new Date();
+  const input = parseInput(submitSchema, { problemId, answer });
+  if (!input.ok) {
+    return input;
+  }
 
   const user = await getCurrentUser();
   if (user === null) {
@@ -379,6 +421,10 @@ export async function giveUpTestsolve(
   problemId: number,
 ): Promise<ActionResponse> {
   const submittedAt = new Date();
+  const input = parseInput(testsolveSchema, { problemId });
+  if (!input.ok) {
+    return input;
+  }
 
   const user = await getCurrentUser();
   if (user === null) {
@@ -455,6 +501,10 @@ export async function addSolution(
   text: string,
   authorId: number,
 ): Promise<ActionResponse> {
+  const input = parseInput(addSolutionSchema, { problemId, text, authorId });
+  if (!input.ok) {
+    return input;
+  }
   const user = await getCurrentUser();
   if (user === null) {
     return error("Not signed in");
@@ -483,6 +533,13 @@ export async function addSolution(
       return error("You do not have permission to edit this collection");
     }
 
+    // The page submits the user's own Author; do not let a crafted request
+    // attribute a solution to someone else.
+    const authors = await getAuthorIds(userId, problem.collection.id);
+    if (!authors.some((author) => author.id === authorId)) {
+      return error("Invalid input (authorId): not one of your authors");
+    }
+
     await prisma.solution.create({
       data: {
         problem: {
@@ -506,6 +563,10 @@ export async function editSolution(
   solutionId: number,
   text: string,
 ): Promise<ActionResponse> {
+  const input = parseInput(editSolutionSchema, { solutionId, text });
+  if (!input.ok) {
+    return input;
+  }
   const user = await getCurrentUser();
   if (user === null) {
     return error("Not signed in");

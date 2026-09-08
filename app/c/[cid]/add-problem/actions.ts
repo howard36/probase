@@ -3,12 +3,14 @@
 import { canAddProblem } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { ActionResponse, error, unexpectedError } from "@/lib/server-actions";
+import { formDataToObject, idSchema, parseInput } from "@/lib/validation";
 import { Subject } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
-import { getPermission } from "@/lib/collection-access";
+import { getAuthorIds, getPermission } from "@/lib/collection-access";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 const subjectPrefix = {
   Algebra: "A",
@@ -16,6 +18,21 @@ const subjectPrefix = {
   Geometry: "G",
   NumberTheory: "N",
 };
+
+const problemFormSchema = z.object({
+  title: z.string().min(1),
+  subject: z.nativeEnum(Subject),
+  statement: z.string().min(1),
+  // Collections may make the answer optional; an empty answer is stored as "".
+  answer: z.string().default(""),
+  solution: z.string().default(""),
+  authorId: z.coerce.number().int().positive(),
+  // Collections may make difficulty optional; an empty choice is stored as null.
+  difficulty: z.preprocess(
+    (value) => (value === "" || value === undefined ? null : Number(value)),
+    z.number().int().min(1).max(5).nullable(),
+  ),
+});
 
 export async function addProblem(
   collectionId: number,
@@ -27,14 +44,16 @@ export async function addProblem(
   }
   const { userId } = user;
 
-  const title = formData.get("title") as string;
-  const subject = formData.get("subject") as Subject;
-  const statement = formData.get("statement") as string;
-  const answer = formData.get("answer") as string;
-  const solution = formData.get("solution") as string;
-  const authorId = parseInt(formData.get("authorId") as string);
-  const difficulty = parseInt(formData.get("difficulty") as string);
-  // TODO: validate input
+  const collectionIdInput = parseInput(idSchema, collectionId);
+  if (!collectionIdInput.ok) {
+    return collectionIdInput;
+  }
+  const input = parseInput(problemFormSchema, formDataToObject(formData));
+  if (!input.ok) {
+    return input;
+  }
+  const { title, subject, statement, answer, solution, authorId, difficulty } =
+    input.data;
 
   try {
     const collection = await prisma.collection.findUnique({
@@ -47,6 +66,13 @@ export async function addProblem(
     const permission = await getPermission(userId, collectionId);
     if (!canAddProblem(permission)) {
       return error("You do not have permission to add a problem");
+    }
+
+    // The form submits the user's own Author; do not let a crafted request
+    // attribute a problem to someone else.
+    const authors = await getAuthorIds(userId, collectionId);
+    if (!authors.some((author) => author.id === authorId)) {
+      return error("Invalid input (authorId): not one of your authors");
     }
 
     const prefix = subjectPrefix[subject];

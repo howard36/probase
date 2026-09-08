@@ -7,15 +7,23 @@ import { getCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
 import { hasJoinedCollection } from "@/lib/permissions";
 import { isInviteExpired } from "./expiry";
+import { parseInput } from "@/lib/validation";
+import { z } from "zod";
 
 // Thrown inside the transaction when a one-time invite was used up by a
 // concurrent accept between our check and our write.
 class InviteAlreadyUsed extends Error {}
 
+const inviteCodeSchema = z.string().min(1);
+
 export async function acceptInvite(
   inviteCode: string,
 ): Promise<ActionResponse> {
-  // TODO: zod
+  const input = parseInput(inviteCodeSchema, inviteCode);
+  if (!input.ok) {
+    return input;
+  }
+
   const user = await getCurrentUser();
   if (user === null) {
     return error("Not signed in");
