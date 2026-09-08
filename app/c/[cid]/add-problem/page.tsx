@@ -1,9 +1,10 @@
 import ProblemForm from "./problem-form";
 import prisma from "@/lib/prisma";
 import { Session } from "next-auth";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requireCurrentUser, type CurrentUser } from "@/lib/current-user";
-import { getAuthorIds } from "@/lib/collection-access";
+import { getAuthorIds, getPermission } from "@/lib/collection-access";
+import { canAddProblem } from "@/lib/permissions";
 
 interface Params {
   cid: string;
@@ -59,7 +60,16 @@ export default async function AddProblemPage({ params }: { params: Params }) {
 
   // TODO: select only needed fields of collection
   const collection = await getCollection(cid);
-  // TODO: ViewOnly should see a different page explaining why they can't submit
+
+  // Check before creating an Author row, so visiting the URL without the
+  // right to submit leaves no trace. SubmitOnly members may add problems
+  // even though they cannot view the collection, so this is deliberately
+  // not requireCollectionAccess().
+  const permission = await getPermission(user.userId, collection.id);
+  if (!canAddProblem(permission)) {
+    redirect("/need-permission");
+  }
+
   const authorId = await getOrCreateAuthor(user, collection.id);
 
   return <ProblemForm collection={collection} authorId={authorId} />;
