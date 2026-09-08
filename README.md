@@ -14,7 +14,7 @@ It's especially tough for newcomers trying to start their own contest. That's wh
 
 Probase will be a set of tools and resources for organizers to run top-notch math contests:
 
-- A collaborative space for problem writers and testsolvers to brainstorm, create, and refine their problem proposals. You can see a sneak peek at <https://probase.app/c/demo>.
+- A collaborative space for problem writers and testsolvers to brainstorm, create, and refine their problem proposals.
 - An online contest platform where anyone can host their own contest and participate in others. The goal is to eventually have a steady stream of high-quality problems, like Codeforces but for math.
 - Guides and tutorials for contest creators. There are plenty of resources on solving problems, but far fewer on how to come up with them.
 - A community hub where problem-writers can collaborate, find testsolvers, and share ideas with each other.

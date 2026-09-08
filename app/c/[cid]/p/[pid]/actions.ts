@@ -137,37 +137,35 @@ export async function editProblem(
       return error(`No problem with id ${problemId}`);
     }
 
-    if (problem.collection.cid !== "demo") {
-      const session = await auth();
-      if (session === null) {
-        return error("Not signed in");
-      }
+    const session = await auth();
+    if (session === null) {
+      return error("Not signed in");
+    }
 
-      const userId = session.userId;
-      if (userId === undefined) {
-        return error("userId is undefined despite being logged in");
-      }
+    const userId = session.userId;
+    if (userId === undefined) {
+      return error("userId is undefined despite being logged in");
+    }
 
-      const collectionId = problem.collection.id;
-      const permission = await prisma.permission.findUnique({
-        where: {
-          userId_collectionId: {
-            userId,
-            collectionId,
-          },
-        },
-      });
-      const authors = await prisma.author.findMany({
-        where: {
+    const collectionId = problem.collection.id;
+    const permission = await prisma.permission.findUnique({
+      where: {
+        userId_collectionId: {
           userId,
           collectionId,
         },
-        select: { id: true },
-      });
-      if (!canEditProblem(problem, permission, authors)) {
-        // No permission
-        return error("You do not have permission to edit this problem");
-      }
+      },
+    });
+    const authors = await prisma.author.findMany({
+      where: {
+        userId,
+        collectionId,
+      },
+      select: { id: true },
+    });
+    if (!canEditProblem(problem, permission, authors)) {
+      // No permission
+      return error("You do not have permission to edit this problem");
     }
 
     // TODO: validate input

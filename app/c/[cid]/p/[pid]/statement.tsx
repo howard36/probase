@@ -5,8 +5,7 @@ import { canEditProblem } from "@/lib/permissions";
 
 export default function Statement(props: Props) {
   const { problem, collection, permission, authors } = props;
-  const canEdit =
-    collection.cid === "demo" || canEditProblem(problem, permission, authors);
+  const canEdit = canEditProblem(problem, permission, authors);
 
   if (canEdit) {
     return <EditableStatement problem={problem} />;

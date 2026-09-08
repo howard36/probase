@@ -6,7 +6,7 @@ import { Permission, Collection } from "@prisma/client";
 
 interface ProblemListSidebarProps {
   collection: Collection;
-  permission: Permission | null;
+  permission: Permission;
   filter: Filter;
 }
 

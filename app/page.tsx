@@ -9,14 +9,6 @@ export default function HomePage() {
         <p className="mb-3">
           {`There's not much here yet, but you can check out the `}
           <Link
-            href="/c/demo"
-            prefetch={true}
-            className="text-violet-600 hover:underline"
-          >
-            demo
-          </Link>{" "}
-          or the{" "}
-          <Link
             href="https://github.com/howard36/probase"
             prefetch={true}
             className="text-violet-600 hover:underline"
@@ -26,8 +18,8 @@ export default function HomePage() {
           .
         </p>
         <p>
-          There are also links to private collections on the left, if you have
-          access to them.
+          There are links to private collections on the left, if you have access
+          to them.
         </p>
       </div>
     </Sidebar>
