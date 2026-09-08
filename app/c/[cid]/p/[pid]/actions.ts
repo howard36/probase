@@ -16,7 +16,7 @@ import {
 import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
 import { getAuthorIds, getPermission } from "@/lib/collection-access";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import {
   BUFFER_TIME_MILLIS,
   SUBMISSION_LIMIT,
@@ -97,7 +97,7 @@ export async function likeProblem(
       }
     }
 
-    revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
+    revalidatePath(`/c/${problem.collection.cid}/p/${problem.pid}`);
     return { ok: true };
   } catch (err) {
     return unexpectedError("likeProblem", err);
@@ -163,7 +163,7 @@ export async function editProblem(
       },
     });
 
-    revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
+    revalidatePath(`/c/${problem.collection.cid}/p/${problem.pid}`);
     return { ok: true };
   } catch (err) {
     return unexpectedError("editProblem", err);
@@ -194,6 +194,7 @@ export async function addComment(
         collection: {
           select: {
             id: true,
+            cid: true,
           },
         },
       },
@@ -219,7 +220,7 @@ export async function addComment(
       },
     });
 
-    revalidateTag(`problem/${problemId}/comments`);
+    revalidatePath(`/c/${problem.collection.cid}/p/${problem.pid}`);
     return { ok: true };
   } catch (err) {
     return unexpectedError("addComment", err);
@@ -460,12 +461,21 @@ export async function addSolution(
   try {
     const problem = await prisma.problem.findUnique({
       where: { id: problemId },
+      select: {
+        pid: true,
+        collection: {
+          select: {
+            id: true,
+            cid: true,
+          },
+        },
+      },
     });
     if (problem === null) {
       return error("Problem not found");
     }
 
-    const permission = await getPermission(userId, problem.collectionId);
+    const permission = await getPermission(userId, problem.collection.id);
     if (!canAddSolution(permission)) {
       return error("You do not have permission to edit this collection");
     }
@@ -482,7 +492,7 @@ export async function addSolution(
       },
     });
 
-    // TODO: revalidateTag problem.id/solutions
+    revalidatePath(`/c/${problem.collection.cid}/p/${problem.pid}`);
     return { ok: true };
   } catch (err) {
     return unexpectedError("addSolution", err);
@@ -538,7 +548,9 @@ export async function editSolution(
       },
     });
 
-    // TODO: revalidateTag problem.id/solutions
+    revalidatePath(
+      `/c/${solution.problem.collection.cid}/p/${solution.problem.pid}`,
+    );
     return { ok: true };
   } catch (err) {
     return unexpectedError("editSolution", err);
