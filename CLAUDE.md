@@ -29,7 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Code conventions
 
-- Next.js 14 App Router with server actions. Server actions return `ActionResponse` (`{ ok: true }` / `{ ok: false, error }`) instead of throwing; build errors with `error()` from `lib/server-actions.ts`. Client components call actions through `wrapAction()` from the same file.
+- Next.js 14 App Router with server actions. Server actions return `ActionResponse` (`{ ok: true }` / `{ ok: false, error }`) instead of throwing; build errors with `error()` from `lib/server-actions.ts`. Client components call actions through `wrapAction()` from the same file (or `runAction()` when they need the result). An action that changes what a page shows calls `revalidatePath()` on that page before returning; the client then re-renders on its own, so components should not call `router.refresh()` after such an action.
 - ESLint enforces `@typescript-eslint/no-floating-promises` as an error: every un-awaited promise needs `.catch(...)` or `void`.
 - Component filenames are kebab-case. Use `cn()` from `lib/utils.ts` for class merging, not raw `clsx`.
 - shadcn/ui components live in `components/ui/`; design tokens are HSL CSS variables in `styles/globals.css`. Prettier sorts Tailwind classes via `prettier-plugin-tailwindcss`.

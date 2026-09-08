@@ -6,7 +6,7 @@ import { ActionResponse, error, unexpectedError } from "@/lib/server-actions";
 import { Subject } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 
@@ -121,7 +121,7 @@ export async function addProblem(
       },
     });
 
-    revalidateTag(`collection/${collection.cid}/problems`);
+    revalidatePath(`/c/${collection.cid}`);
     redirect(`/c/${collection.cid}/p/${newProblem.pid}`);
   } catch (err) {
     if (isRedirectError(err)) {

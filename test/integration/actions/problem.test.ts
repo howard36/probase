@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { describe, expect, it, vi } from "vitest";
 import {
   addComment,
@@ -70,8 +70,8 @@ describe("likeProblem", () => {
     expect(await prisma.problemLike.findMany()).toEqual([
       { userId: user.id, problemId: problem.id },
     ]);
-    expect(revalidateTag).toHaveBeenCalledWith(
-      `problem/${collection.cid}_${problem.pid}`,
+    expect(revalidatePath).toHaveBeenCalledWith(
+      `/c/${collection.cid}/p/${problem.pid}`,
     );
 
     expect(await likeProblem(problem.id, false)).toEqual({ ok: true });
@@ -154,8 +154,8 @@ describe("editProblem", () => {
       answer: "Old answer",
       isArchived: false,
     });
-    expect(revalidateTag).toHaveBeenCalledWith(
-      `problem/${collection.cid}_${problem.pid}`,
+    expect(revalidatePath).toHaveBeenCalledWith(
+      `/c/${collection.cid}/p/${problem.pid}`,
     );
   });
 
@@ -278,8 +278,8 @@ describe("addComment", () => {
       { text: "first", userId: viewer.id, problemId: problem.id },
       { text: "second", userId: submitter.id, problemId: problem.id },
     ]);
-    expect(revalidateTag).toHaveBeenCalledWith(
-      `problem/${problem.id}/comments`,
+    expect(revalidatePath).toHaveBeenCalledWith(
+      `/c/${collection.cid}/p/${problem.pid}`,
     );
   });
 });
@@ -337,6 +337,9 @@ describe("addSolution", () => {
       text: "Proof by intimidation",
     });
     expect(solutions[0].authors.map((a) => a.id)).toEqual([author.id]);
+    expect(revalidatePath).toHaveBeenCalledWith(
+      `/c/${collection.cid}/p/${problem.pid}`,
+    );
   });
 });
 
@@ -369,6 +372,9 @@ describe("editSolution", () => {
         })
       ).text,
     ).toBe("After");
+    expect(revalidatePath).toHaveBeenCalledWith(
+      `/c/${collection.cid}/p/${problem.pid}`,
+    );
   });
 
   it("lets a TeamMember edit only solutions they authored", async () => {

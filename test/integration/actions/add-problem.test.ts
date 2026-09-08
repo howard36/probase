@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { describe, expect, it } from "vitest";
 import { addProblem } from "@/app/c/[cid]/add-problem/actions";
 import prisma from "@/lib/prisma";
@@ -116,9 +116,7 @@ describe("addProblem", () => {
     expect(problem.authors.map((a) => a.id)).toEqual([author.id]);
     expect(problem.solutions).toEqual([]);
     expect(problem.likes).toEqual([{ userId: user.id, problemId: problem.id }]);
-    expect(revalidateTag).toHaveBeenCalledWith(
-      `collection/${collection.cid}/problems`,
-    );
+    expect(revalidatePath).toHaveBeenCalledWith(`/c/${collection.cid}`);
   });
 
   it("creates a solution by the same author when one is given", async () => {
