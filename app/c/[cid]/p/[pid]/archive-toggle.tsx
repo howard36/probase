@@ -1,19 +1,23 @@
 "use client";
 
-import type { Props } from "./types";
 import { useState } from "react";
 import { editProblem } from "./actions";
 import { wrapAction } from "@/lib/server-actions";
 
-export default function ArchiveToggle(props: Props) {
-  const { problem } = props;
-  const [isArchived, setArchived] = useState(problem.isArchived);
+export default function ArchiveToggle({
+  problemId,
+  isArchived: initialIsArchived,
+}: {
+  problemId: number;
+  isArchived: boolean;
+}) {
+  const [isArchived, setArchived] = useState(initialIsArchived);
 
   const handleChange = () => {
     const newIsArchived = !isArchived;
     setArchived(newIsArchived);
     wrapAction(editProblem, undefined, () => setArchived(!newIsArchived))(
-      problem.id,
+      problemId,
       { isArchived: newIsArchived },
     );
   };

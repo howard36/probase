@@ -1,9 +1,10 @@
-"use client";
-
 import Link from "next/link";
 import Title from "./title";
 import Statement from "./statement";
 import Spoilers from "./spoilers";
+import Answer from "./answer";
+import Solution from "./solution";
+import AddSolution from "./add-solution";
 import type { Props } from "./types";
 import Comments from "./comments";
 import ArchiveToggle from "./archive-toggle";
@@ -12,10 +13,9 @@ import Likes from "@/components/likes";
 import LockedPage from "./locked-page";
 import Testsolve from "./testsolve";
 import Leaderboard from "./leaderboard";
-import { canEditProblem, needsTestsolveToView } from "@/lib/permissions";
-import { testsolveDeadline, testsolveTimeMinutes } from "@/lib/testsolve";
+import { canEditProblem } from "@/lib/permissions";
+import { problemView } from "./view";
 import BackButton from "@/components/back-button";
-import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { Filter, filterToString } from "@/lib/filter";
@@ -53,10 +53,11 @@ interface PropsWithFilter extends Props {
 }
 
 export default function ProblemPage(props: PropsWithFilter) {
-  const router = useRouter();
   const { problem, collection, permission, userId, authors, filter } = props;
 
   const filterStr = filterToString(filter);
+  const canEdit = canEditProblem(problem, permission, authors);
+  const view = problemView(props);
 
   let written_by;
   if (
@@ -72,89 +73,78 @@ export default function ProblemPage(props: PropsWithFilter) {
 
   const { subject, gradient } = subjectToGradient[problem.subject];
 
-  // TODO: make this a separate Testsolving component
   let testsolveOrAnswers;
-  if (needsTestsolveToView(collection, problem, permission, authors)) {
-    const difficulty = problem.difficulty;
-    if (difficulty === null || difficulty === 0) {
-      throw new Error(
-        "Difficulty is null or zero, cannot determine testsolve time",
-      );
-    }
-
-    const solveAttempt = problem.solveAttempts.find(
-      (attempt) => attempt.userId === userId,
+  if (view.kind === "locked") {
+    testsolveOrAnswers = (
+      <LockedPage
+        problemId={problem.id}
+        time={`${view.timeMinutes} minutes`}
+        unsolved={view.unsolved}
+      />
     );
-    if (solveAttempt === undefined) {
-      testsolveOrAnswers = (
-        <LockedPage
-          problem={problem}
-          time={`${testsolveTimeMinutes(difficulty)} minutes`}
-          unsolved={problem.solveAttempts.every(
-            (attempt) => attempt.solvedAt === null,
-          )}
+  } else if (view.kind === "testsolving") {
+    testsolveOrAnswers = (
+      <div>
+        <div className="mb-8">
+          <Statement {...props} />
+        </div>
+        <hr className="my-8" />
+        <Testsolve
+          problemId={problem.id}
+          deadline={view.deadline}
+          answerFormat={collection.answerFormat}
         />
-      );
-    } else {
-      const deadline = testsolveDeadline(solveAttempt.startedAt, difficulty);
-      const finished =
-        new Date() >= deadline ||
-        solveAttempt.gaveUp ||
-        solveAttempt.solvedAt !== null;
-
-      if (finished) {
-        // TODO: move this into a component
-        testsolveOrAnswers = (
-          <div>
-            <div className="mb-4">
-              <Statement {...props} />
-            </div>
-            {written_by}
-            <Spoilers {...props} />
-            {collection.requireTestsolve && (
-              <Leaderboard
-                solveAttempts={problem.solveAttempts}
-                userId={userId}
-                canViewAll={canEditProblem(problem, permission, authors)}
-              />
-            )}
-            <Comments {...props} />
-          </div>
-        );
-      } else {
-        // Currently testsolving
-        // TODO: show timer, input box, give up button
-        testsolveOrAnswers = (
-          <div>
-            <div className="mb-8">
-              <Statement {...props} />
-            </div>
-            <hr className="my-8" />
-            <Testsolve
-              problem={problem}
-              deadline={deadline}
-              answerFormat={collection.answerFormat}
-            />
-          </div>
-        );
-      }
-    }
+      </div>
+    );
   } else {
+    let answer = null;
+    if (problem.answer !== null) {
+      answer = (
+        <div className="my-8">
+          <Answer {...props} />
+        </div>
+      );
+    }
+
+    let solution = null;
+    if (problem.solutions.length > 0) {
+      solution = (
+        <div className="my-8">
+          <Solution
+            solution={problem.solutions[0]}
+            permission={permission}
+            authors={authors}
+          />
+        </div>
+      );
+    } else if (authors.length > 0) {
+      solution = (
+        <AddSolution problemId={problem.id} authorId={authors[0].id} />
+      );
+    }
+
     testsolveOrAnswers = (
       <div>
         <div className="mb-4">
           <Statement {...props} />
         </div>
         {written_by}
-        <Spoilers {...props} />
+        {answer === null && solution === null ? (
+          <div className="py-8"></div>
+        ) : (
+          <Spoilers>
+            {answer}
+            {solution}
+          </Spoilers>
+        )}
         {collection.requireTestsolve && (
           <Leaderboard
             solveAttempts={problem.solveAttempts}
             userId={userId}
-            canViewAll={canEditProblem(problem, permission, authors)}
+            canViewAll={canEdit}
           />
         )}
-        <Comments {...props} />
+        <Comments problemId={problem.id} comments={problem.comments} />
       </div>
     );
   }
@@ -162,17 +152,6 @@ export default function ProblemPage(props: PropsWithFilter) {
   const currentPid = problem.pid;
   const nextPid = incrementPid(currentPid);
   const prevPid = decrementPid(currentPid);
-  const hasPrevProblem = prevPid !== null;
-
-  const handleNextProblem = () => {
-    router.push(`/c/${collection.cid}/p/${nextPid}${filterStr}`);
-  };
-
-  const handlePrevProblem = () => {
-    if (hasPrevProblem) {
-      router.push(`/c/${collection.cid}/p/${prevPid}${filterStr}`);
-    }
-  };
 
   return (
     <div className="whitespace-pre-wrap break-words p-8 text-slate-800">
@@ -211,41 +190,51 @@ export default function ProblemPage(props: PropsWithFilter) {
             </div>
           </div>
           <div className="mt-2 space-y-3 text-base">
-            <Likes problem={problem} userId={userId} />
+            <Likes
+              problem={{ id: problem.id, likes: problem.likes }}
+              userId={userId}
+            />
             {problem.difficulty !== null && problem.difficulty > 0 && (
               <Lightbulbs difficulty={problem.difficulty} />
             )}
           </div>
         </div>
 
-        {/* Statement should also be hidden if they haven't clicked "Start testsolve" */}
         {testsolveOrAnswers}
-        {canEditProblem(problem, permission, authors) && (
+        {canEdit && (
           <div className="mt-8">
-            <ArchiveToggle {...props} />
+            <ArchiveToggle
+              problemId={problem.id}
+              isArchived={problem.isArchived}
+            />
           </div>
         )}
 
         <div className="mt-4 flex items-center justify-between">
-          <button
-            onClick={handlePrevProblem}
-            disabled={!hasPrevProblem}
-            className={`flex items-center rounded px-4 py-2 text-sm font-bold transition-colors ${
-              hasPrevProblem
-                ? "text-slate-500 hover:text-slate-700"
-                : "cursor-not-allowed text-slate-300"
-            }`}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-            Previous
-          </button>
-          <button
-            onClick={handleNextProblem}
+          {prevPid === null ? (
+            <button
+              disabled
+              className="flex cursor-not-allowed items-center rounded px-4 py-2 text-sm font-bold text-slate-300 transition-colors"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+              Previous
+            </button>
+          ) : (
+            <Link
+              href={`/c/${collection.cid}/p/${prevPid}${filterStr}`}
+              className="flex items-center rounded px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:text-slate-700"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+              Previous
+            </Link>
+          )}
+          <Link
+            href={`/c/${collection.cid}/p/${nextPid}${filterStr}`}
             className="flex items-center rounded px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:text-slate-700"
           >
             Next
             <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-          </button>
+          </Link>
         </div>
       </div>
     </div>

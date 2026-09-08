@@ -6,7 +6,6 @@ import AimeInput from "@/components/aime-input";
 import { useState } from "react";
 import Label from "@/components/label";
 import { AnswerFormat } from "@prisma/client";
-import { ProblemProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { giveUpTestsolve, submitTestsolve } from "./actions";
 import { wrapAction } from "@/lib/server-actions";
@@ -14,11 +13,11 @@ import IntegerInput from "@/components/integer-input";
 
 // TODO: fix loading spinners for the two submit buttons. Probably need to show a single loading spinner outside of the buttons. That also lets us keep the same button text and width
 export default function Testsolve({
-  problem,
+  problemId,
   deadline,
   answerFormat,
 }: {
-  problem: ProblemProps;
+  problemId: number;
   deadline: Date;
   answerFormat: AnswerFormat;
 }) {
@@ -44,7 +43,7 @@ export default function Testsolve({
   return (
     <div>
       <form
-        action={() => trySubmitTestsolve(problem.id, answer)}
+        action={() => trySubmitTestsolve(problemId, answer)}
         className="mb-8"
       >
         <Label text="ANSWER" />
@@ -66,7 +65,7 @@ export default function Testsolve({
         <div className="my-4 flex items-center gap-x-6">
           <SubmitButton className="flex-grow-0">Submit</SubmitButton>
           <SubmitButton
-            onClick={() => tryGiveUpTestsolve(problem.id)}
+            onClick={() => tryGiveUpTestsolve(problemId)}
             className="flex-grow-0 bg-red-500 shadow-red-500/20 hover:bg-red-600 hover:shadow-red-500/20 focus-visible:ring-red-300 active:bg-red-700 active:shadow-red-500/20 disabled:bg-red-300"
           >
             Give Up

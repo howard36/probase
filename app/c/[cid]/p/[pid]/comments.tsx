@@ -2,34 +2,25 @@
 
 import { useState } from "react";
 import Comment from "./comment";
-import type { Props } from "./types";
+import type { CommentProps } from "./types";
 import SubmitButton from "@/components/submit-button";
 import { addComment } from "./actions";
 import { wrapAction } from "@/lib/server-actions";
 
-export default function Comments(props: Props) {
+export default function Comments({
+  problemId,
+  comments,
+}: {
+  problemId: number;
+  comments: CommentProps[];
+}) {
   const [text, setText] = useState("");
-
-  const { problem } = props;
-  const allComments = problem.comments;
 
   const tryAddComment = wrapAction(addComment, () => setText(""));
 
   const action = (formData: FormData) => {
-    tryAddComment(problem.id, formData);
+    tryAddComment(problemId, formData);
   };
-
-  const comments = (
-    <div>
-      <ul>
-        {allComments.map((comment) => (
-          <li key={comment.id}>
-            <Comment comment={comment} />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 
   return (
     <div>
@@ -56,7 +47,15 @@ export default function Comments(props: Props) {
         </div>
         <SubmitButton size="sm">Post comment</SubmitButton>
       </form>
-      {comments}
+      <div>
+        <ul>
+          {comments.map((comment) => (
+            <li key={comment.id}>
+              <Comment comment={comment} />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
