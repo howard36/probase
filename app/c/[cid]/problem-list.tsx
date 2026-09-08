@@ -1,67 +1,28 @@
-"use client";
-
 import ProblemCard from "./problem-card";
 import { Collection, Permission } from "@prisma/client";
 import { ProblemProps } from "./types";
-import { Filter, filterToString } from "@/lib/filter";
+import { Filter } from "@/lib/filter";
 import { ProblemListPagination } from "@/components/problem-list-pagination";
 import { ProblemListSidebar } from "@/components/problem-list-sidebar";
-import { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
 
 export default function ProblemList({
   collection,
   problems,
+  numPages,
   userId,
   authors,
   permission,
   filter,
-  solvedProblemIds,
 }: {
   collection: Collection;
+  /** The current page of problems, already filtered. */
   problems: ProblemProps[];
+  numPages: number;
   userId: string;
   authors: { id: number }[];
   permission: Permission;
   filter: Filter;
-  solvedProblemIds: number[];
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  problems = problems.filter(
-    (problem) => problem.isArchived === filter.archived,
-  );
-  if (filter.subjects.length > 0) {
-    problems = problems.filter((problem) =>
-      filter.subjects.includes(problem.subject),
-    );
-  }
-  if (filter.unsolvedOnly) {
-    problems = problems.filter(
-      (problem) => !solvedProblemIds.includes(problem.id),
-    );
-  }
-  if (filter.search !== "") {
-    const lowerQuery = filter.search.toLowerCase();
-    problems = problems.filter(
-      (problem) =>
-        problem.title.toLowerCase().includes(lowerQuery) ||
-        problem.statement.toLowerCase().includes(lowerQuery),
-    );
-  }
-
-  const numPages = Math.max(Math.ceil(problems.length / 20), 1);
-
-  useEffect(() => {
-    if (filter.page > numPages) {
-      const newParams = filterToString({ ...filter, page: numPages });
-      router.replace(`${pathname}${newParams}`);
-    }
-  }, [filter, numPages, router, pathname]);
-
-  problems = problems.slice(20 * (filter.page - 1), 20 * filter.page);
-
   return (
     <div className="p-4 sm:p-8 xl:px-12 xl:py-24">
       <div className="flex flex-col xl:flex-row xl:justify-center xl:gap-x-12">
