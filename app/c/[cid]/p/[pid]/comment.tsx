@@ -16,7 +16,7 @@ export default function Comment({ comment }: { comment: CommentProps }) {
             {comment.user.name}
           </p>
           <p className="text-sm text-slate-600">
-            <time dateTime="2022-03-12" title="March 12th, 2022">
+            <time dateTime={date.toISOString()} title={date.toLocaleString()}>
               {date.toLocaleDateString()}
             </time>
           </p>

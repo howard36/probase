@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Providers from "./providers";
 import { Inter } from "next/font/google";
 
 import "../styles/globals.css";
@@ -29,9 +28,7 @@ export default function RootLayout({
       <link rel="icon" href="/favicon.ico" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" />
       */}
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

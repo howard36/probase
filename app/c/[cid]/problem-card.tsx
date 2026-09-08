@@ -9,49 +9,13 @@ import { Collection, Permission } from "@prisma/client";
 import { canEditProblem } from "@/lib/permissions";
 import { Filter, filterToString } from "@/lib/filter";
 
-const titleLineColors = [
-  "bg-red-400", // 0
-  "bg-orange-400",
-  "bg-amber-400",
-  "bg-yellow-400",
-  "bg-lime-400",
-  "bg-green-400", // 5
-  "bg-emerald-400",
-  "bg-teal-400",
-  "bg-cyan-400",
-  "bg-sky-400",
-  "bg-blue-400", // 10
-  "bg-indigo-400",
-  "bg-violet-400",
-  "bg-purple-400",
-  "bg-fuchsia-400",
-  "bg-pink-400", // 15
-  "bg-rose-400",
-];
-
-// Gradients:
-// alg: cyan-sky (8-9)
-// combo: yellow-amber (2-3)
-// geo: green-emerald (5-6)
-// nt: purple-violet (13-12)
-// cs?: rose-red (16-0)
-
 // TODO: allow each collection to define new subjects and
 // customize its own mapping
-const subjectToColor = {
-  Algebra: 10,
-  Combinatorics: 1,
-  Geometry: 6,
-  NumberTheory: 13,
-  ComputerScience: 16,
-};
-
 const subjectToTextColor = {
   Algebra: "text-blue-500",
   Combinatorics: "text-amber-500",
   Geometry: "text-green-500",
   NumberTheory: "text-red-500",
-  ComputerScience: "text-cyan-500",
 };
 
 export default function ProblemCard({
