@@ -349,12 +349,14 @@ export async function submitTestsolve(
       SUBMISSION_LIMIT - (solveAttempt.numSubmissions + 1),
     );
 
-    await prisma.solveAttempt.update({
+    // Re-check the limits inside the write so two overlapping submissions
+    // cannot both get through.
+    const { count } = await prisma.solveAttempt.updateMany({
       where: {
-        userId_problemId: {
-          userId,
-          problemId,
-        },
+        userId,
+        problemId,
+        numSubmissions: { lt: SUBMISSION_LIMIT },
+        gaveUp: false,
       },
       data: {
         numSubmissions: {
@@ -363,6 +365,9 @@ export async function submitTestsolve(
         solvedAt: correct ? submittedAt : undefined,
       },
     });
+    if (count === 0) {
+      return error("Tried to submit after testsolve finished");
+    }
 
     return { ok: true, data: { correct, remaining } };
   } catch (err) {
@@ -429,17 +434,15 @@ export async function giveUpTestsolve(
       return error("Tried to submit after testsolve finished");
     }
 
-    await prisma.solveAttempt.update({
-      where: {
-        userId_problemId: {
-          userId,
-          problemId,
-        },
-      },
+    const { count } = await prisma.solveAttempt.updateMany({
+      where: { userId, problemId, gaveUp: false },
       data: {
         gaveUp: true,
       },
     });
+    if (count === 0) {
+      return error("Tried to submit after testsolve finished");
+    }
 
     return { ok: true };
   } catch (err) {

@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import readline from "readline";
+import crypto from "crypto";
 
 const prisma = new PrismaClient();
 const rl = readline.createInterface({
@@ -17,9 +18,8 @@ function generateRandomCode(length: number): string {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let result = "";
-  const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    result += characters.charAt(crypto.randomInt(characters.length));
   }
   return result;
 }
