@@ -3,11 +3,12 @@
 import ClickToEdit from "@/components/click-to-edit";
 import type { Problem } from "@prisma/client";
 import { editProblem } from "./actions";
-import { wrapAction } from "@/lib/server-actions";
+import { runAction } from "@/lib/server-actions";
 
 export default function EditableStatement({ problem }: { problem: Problem }) {
-  const saveStatement = (text: string) => {
-    wrapAction(editProblem)(problem.id, { statement: text });
+  const saveStatement = async (text: string) => {
+    const resp = await runAction(editProblem)(problem.id, { statement: text });
+    return resp?.ok ?? false;
   };
 
   return (

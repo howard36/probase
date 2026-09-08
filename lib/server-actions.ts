@@ -1,3 +1,5 @@
+import { notifyError } from "@/lib/toast";
+
 export type ActionResponseOk<T = undefined> = T extends undefined
   ? { ok: true }
   : { ok: true; data: T };
@@ -31,29 +33,58 @@ export function unexpectedError(
   return error(UNEXPECTED_ERROR_MESSAGE);
 }
 
-// Takes in an async server action, and returns a synchronous version of that action (with extra error logging). The resulting function is called from the client.
+/**
+ * Calls a server action from the client and shows its error, if any, as a
+ * toast. Resolves with the response so the caller can react to failure (for
+ * example by reopening an editor). Resolves with `undefined` after a redirect:
+ * Next.js resolves redirecting actions with no value on the client
+ * (https://github.com/vercel/next.js/issues/50659), and the redirect still
+ * happens.
+ */
+export function runAction<T extends unknown[], U>(
+  asyncAction: (...args: T) => Promise<ActionResponse<U>>,
+): (...args: T) => Promise<ActionResponse<U> | undefined> {
+  return async (...args: T) => {
+    let resp: ActionResponse<U> | undefined;
+    try {
+      resp = await asyncAction(...args);
+    } catch (err) {
+      console.error(err);
+      notifyError(UNEXPECTED_ERROR_MESSAGE);
+      return error(UNEXPECTED_ERROR_MESSAGE);
+    }
+    if (resp === undefined) {
+      console.warn("Response is undefined after a redirect");
+      return undefined;
+    }
+    if (!resp.ok) {
+      console.error("Server action returned error: ", resp.error.message);
+      notifyError(resp.error.message);
+    }
+    return resp;
+  };
+}
+
+// Takes in an async server action, and returns a synchronous version of that action. The resulting function is called from the client. Errors are shown as a toast; pass onError to also undo optimistic UI.
 export function wrapAction<T extends unknown[], U>(
   asyncAction: (...args: T) => Promise<ActionResponse<U>>,
   onSuccess?: (resp: ActionResponseOk<U>) => void,
+  onError?: (resp: ActionResponseError) => void,
 ): (...args: T) => void {
+  const run = runAction(asyncAction);
   const syncAction = (...args: T) => {
-    (async () => {
-      const resp = await asyncAction(...args);
-      if (resp === undefined) {
-        console.warn("Response is undefined after a redirect");
-        // This is a bug in Next.js
-        // See https://github.com/vercel/next.js/issues/50659
-        // The redirect still works, so there's no need to do anything else
-        return;
-      }
-      if (resp.ok) {
-        if (onSuccess) {
-          onSuccess(resp);
+    run(...args)
+      .then((resp) => {
+        if (resp === undefined) {
+          return;
         }
-      } else {
-        console.error("Server action returned error: ", resp.error.message);
-      }
-    })().catch((err) => console.error(err));
+        if (resp.ok) {
+          onSuccess?.(resp);
+        } else {
+          onError?.(resp);
+        }
+      })
+      .catch((err) => console.error(err));
   };
   return syncAction;
 }

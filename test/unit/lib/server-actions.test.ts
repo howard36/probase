@@ -4,9 +4,66 @@ import {
   type ActionResponseOk,
   UNEXPECTED_ERROR_MESSAGE,
   error,
+  runAction,
   unexpectedError,
   wrapAction,
 } from "@/lib/server-actions";
+import { subscribeToErrors } from "@/lib/toast";
+
+function captureToasts() {
+  const toasts: string[] = [];
+  const unsubscribe = subscribeToErrors((message) => toasts.push(message));
+  return { toasts, unsubscribe };
+}
+
+describe("runAction", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("resolves with the response and shows nothing on success", async () => {
+    const { toasts, unsubscribe } = captureToasts();
+    const action = (): Promise<ActionResponse<{ n: number }>> =>
+      Promise.resolve({ ok: true, data: { n: 7 } });
+
+    expect(await runAction(action)()).toEqual({ ok: true, data: { n: 7 } });
+    expect(toasts).toEqual([]);
+    unsubscribe();
+  });
+
+  it("shows the error message as a toast and still resolves with the response", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { toasts, unsubscribe } = captureToasts();
+    const action = (): Promise<ActionResponse> =>
+      Promise.resolve(error("Not signed in"));
+
+    expect(await runAction(action)()).toEqual(error("Not signed in"));
+    expect(toasts).toEqual(["Not signed in"]);
+    unsubscribe();
+  });
+
+  it("turns a rejected action into the generic error and toasts it", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { toasts, unsubscribe } = captureToasts();
+    const action = (): Promise<ActionResponse> =>
+      Promise.reject(new Error("boom"));
+
+    expect(await runAction(action)()).toEqual(error(UNEXPECTED_ERROR_MESSAGE));
+    expect(toasts).toEqual([UNEXPECTED_ERROR_MESSAGE]);
+    unsubscribe();
+  });
+
+  it("resolves with undefined after a redirect without toasting", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { toasts, unsubscribe } = captureToasts();
+    const action = () =>
+      Promise.resolve(undefined) as unknown as Promise<ActionResponse>;
+
+    expect(await runAction(action)()).toBeUndefined();
+    expect(toasts).toEqual([]);
+    unsubscribe();
+  });
+});
 
 describe("error", () => {
   it("builds a failed ActionResponse carrying the message", () => {
@@ -67,22 +124,27 @@ describe("wrapAction", () => {
     expect(onSuccess).toHaveBeenCalledWith({ ok: true, data: { n: 7 } });
   });
 
-  it("logs an error response and does not call onSuccess", async () => {
+  it("logs an error response, toasts it, calls onError and not onSuccess", async () => {
     const consoleError = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
+    const { toasts, unsubscribe } = captureToasts();
     const action = (): Promise<ActionResponse> =>
       Promise.resolve(error("Not signed in"));
     const onSuccess = vi.fn();
+    const onError = vi.fn();
 
-    wrapAction(action, onSuccess)();
+    wrapAction(action, onSuccess, onError)();
     await flush();
 
     expect(onSuccess).not.toHaveBeenCalled();
+    expect(onError).toHaveBeenCalledWith(error("Not signed in"));
+    expect(toasts).toEqual(["Not signed in"]);
     expect(consoleError).toHaveBeenCalledWith(
       "Server action returned error: ",
       "Not signed in",
     );
+    unsubscribe();
   });
 
   it("catches a rejected action instead of leaving an unhandled rejection", async () => {

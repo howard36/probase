@@ -4,7 +4,7 @@ import ClickToEdit from "@/components/click-to-edit";
 import type { SolutionProps } from "./types";
 import { useRouter } from "next/navigation";
 import { editSolution } from "./actions";
-import { wrapAction } from "@/lib/server-actions";
+import { runAction } from "@/lib/server-actions";
 
 export default function EditableSolution({
   solution,
@@ -16,11 +16,13 @@ export default function EditableSolution({
   const router = useRouter();
 
   // TODO: useOptimistic instead of refreshing
-  const tryEditSolution = wrapAction(editSolution, () => router.refresh());
-
-  // const authorName = solution.authors[0].displayName;
-  const saveSolution = (text: string) => {
-    tryEditSolution(solution.id, text);
+  const saveSolution = async (text: string) => {
+    const resp = await runAction(editSolution)(solution.id, text);
+    const saved = resp?.ok ?? false;
+    if (saved) {
+      router.refresh();
+    }
+    return saved;
   };
 
   return (
