@@ -8,6 +8,11 @@ import {
 import prisma from "@/lib/prisma";
 import { UNEXPECTED_ERROR_MESSAGE, error } from "@/lib/server-actions";
 import {
+  BUFFER_TIME_MILLIS as BUFFER_MILLIS,
+  SUBMISSION_LIMIT,
+  testsolveTimeMinutes,
+} from "@/lib/testsolve";
+import {
   createCollection,
   createPermission,
   createProblem,
@@ -15,13 +20,10 @@ import {
 } from "../factories";
 import { signInAs, signOut } from "../session";
 
-// Mirrors the constants in app/c/[cid]/p/[pid]/actions.ts.
-const SUBMISSION_LIMIT = 5;
-const BUFFER_MILLIS = 10_000;
 const MINUTE = 60_000;
 const SECOND = 1_000;
 function timeLimitMillis(difficulty: number): number {
-  return (difficulty * 5 + 5) * MINUTE;
+  return testsolveTimeMinutes(difficulty) * MINUTE;
 }
 
 async function setup({

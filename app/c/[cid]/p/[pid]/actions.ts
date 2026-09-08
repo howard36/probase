@@ -17,6 +17,11 @@ import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
 import { getAuthorIds, getPermission } from "@/lib/collection-access";
 import { revalidateTag } from "next/cache";
+import {
+  BUFFER_TIME_MILLIS,
+  SUBMISSION_LIMIT,
+  testsolveDeadline,
+} from "@/lib/testsolve";
 
 export async function likeProblem(
   problemId: number,
@@ -267,9 +272,6 @@ export async function startTestsolve(
   }
 }
 
-const BUFFER_TIME_MILLIS = 10_000;
-const SUBMISSION_LIMIT = 5;
-
 export async function submitTestsolve(
   problemId: number,
   answer: string,
@@ -312,9 +314,6 @@ export async function submitTestsolve(
     if (difficulty === null) {
       return error("Problem difficulty should not be null");
     }
-    const testsolveTimeMinutes = difficulty * 5 + 5; // 10, 15, 20, 25, 30
-    const testsolveTimeMillis =
-      testsolveTimeMinutes * 60 * 1000 + BUFFER_TIME_MILLIS;
 
     const solveAttempt = await prisma.solveAttempt.findUnique({
       where: {
@@ -334,8 +333,10 @@ export async function submitTestsolve(
       );
     }
 
+    // Submissions get a grace buffer past the deadline for network latency.
     const deadline = new Date(
-      solveAttempt.startedAt.getTime() + testsolveTimeMillis,
+      testsolveDeadline(solveAttempt.startedAt, difficulty).getTime() +
+        BUFFER_TIME_MILLIS,
     );
     if (submittedAt >= deadline || solveAttempt.gaveUp) {
       return error("Tried to submit after testsolve finished");
@@ -409,8 +410,6 @@ export async function giveUpTestsolve(
     if (difficulty === null) {
       return error("Problem difficulty should not be null");
     }
-    const testsolveTimeMinutes = difficulty * 5 + 5; // 10, 15, 20, 25, 30
-    const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000;
 
     const solveAttempt = await prisma.solveAttempt.findUnique({
       where: {
@@ -424,9 +423,7 @@ export async function giveUpTestsolve(
       return error("Tried to submit before starting testsolve");
     }
 
-    const deadline = new Date(
-      solveAttempt.startedAt.getTime() + testsolveTimeMillis,
-    );
+    const deadline = testsolveDeadline(solveAttempt.startedAt, difficulty);
     if (submittedAt >= deadline || solveAttempt.gaveUp) {
       return error("Tried to submit after testsolve finished");
     }

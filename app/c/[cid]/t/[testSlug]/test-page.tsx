@@ -1,6 +1,6 @@
 import {
-  AccessLevel,
   Collection,
+  Permission,
   Problem,
   SolveAttempt,
   TestProblem,
@@ -21,7 +21,7 @@ interface Props {
   testProblems: TestProblemWithProblem[];
   collection: Collection;
   solveAttempts: SolveAttempt[];
-  permission: { accessLevel: AccessLevel };
+  permission: Permission;
   authors: { id: number }[];
 }
 
