@@ -8,7 +8,11 @@ import {
   canViewCollection,
 } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { type ActionResponse, error } from "@/lib/server-actions";
+import {
+  type ActionResponse,
+  error,
+  unexpectedError,
+} from "@/lib/server-actions";
 import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
 import { getAuthorIds, getPermission } from "@/lib/collection-access";
@@ -83,7 +87,7 @@ export async function likeProblem(
           // But it's still unexpected, because it shouldn't happen under normal use. So we log it
           console.error(err);
         } else {
-          return error(String(err));
+          return unexpectedError("likeProblem", err);
         }
       }
     }
@@ -91,7 +95,7 @@ export async function likeProblem(
     revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
     return { ok: true };
   } catch (err) {
-    return error(String(err));
+    return unexpectedError("likeProblem", err);
   }
 }
 
@@ -157,7 +161,7 @@ export async function editProblem(
     revalidateTag(`problem/${problem.collection.cid}_${problem.pid}`);
     return { ok: true };
   } catch (err) {
-    return error(String(err));
+    return unexpectedError("editProblem", err);
   }
 }
 
@@ -213,7 +217,7 @@ export async function addComment(
     revalidateTag(`problem/${problemId}/comments`);
     return { ok: true };
   } catch (err) {
-    return error(String(err));
+    return unexpectedError("addComment", err);
   }
 }
 
@@ -259,7 +263,7 @@ export async function startTestsolve(
 
     return { ok: true };
   } catch (err) {
-    return error(String(err));
+    return unexpectedError("startTestsolve", err);
   }
 }
 
@@ -360,7 +364,7 @@ export async function submitTestsolve(
 
     return { ok: true, data: { correct, remaining } };
   } catch (err) {
-    return error(String(err));
+    return unexpectedError("submitTestsolve", err);
   }
 }
 
@@ -441,7 +445,7 @@ export async function giveUpTestsolve(
 
     return { ok: true };
   } catch (err) {
-    return error(String(err));
+    return unexpectedError("giveUpTestsolve", err);
   }
 }
 
@@ -484,7 +488,7 @@ export async function addSolution(
     // TODO: revalidateTag problem.id/solutions
     return { ok: true };
   } catch (err) {
-    return error(String(err));
+    return unexpectedError("addSolution", err);
   }
 }
 
@@ -540,6 +544,6 @@ export async function editSolution(
     // TODO: revalidateTag problem.id/solutions
     return { ok: true };
   } catch (err) {
-    return error(String(err));
+    return unexpectedError("editSolution", err);
   }
 }

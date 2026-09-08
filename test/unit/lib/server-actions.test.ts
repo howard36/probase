@@ -2,13 +2,36 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   type ActionResponse,
   type ActionResponseOk,
+  UNEXPECTED_ERROR_MESSAGE,
   error,
+  unexpectedError,
   wrapAction,
 } from "@/lib/server-actions";
 
 describe("error", () => {
   it("builds a failed ActionResponse carrying the message", () => {
     expect(error("nope")).toEqual({ ok: false, error: { message: "nope" } });
+  });
+});
+
+describe("unexpectedError", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("logs the real error with the action name and returns the generic message", () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const boom = new Error("Unique constraint failed on the fields: (`pid`)");
+
+    expect(unexpectedError("addProblem", boom)).toEqual(
+      error(UNEXPECTED_ERROR_MESSAGE),
+    );
+    expect(consoleError).toHaveBeenCalledWith(
+      "Unexpected error in addProblem:",
+      boom,
+    );
   });
 });
 
