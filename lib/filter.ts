@@ -60,3 +60,53 @@ export function filterToString(filter: Filter): string {
   const queryString = queryParams.toString();
   return queryString ? `?${queryString}` : "";
 }
+
+export const PAGE_SIZE = 20;
+
+interface FilterableProblem {
+  id: number;
+  title: string;
+  statement: string;
+  subject: Subject;
+  isArchived: boolean;
+}
+
+/**
+ * Applies a Filter to a collection's problems and picks the requested page.
+ * `attemptedProblemIds` are the problems the user has started testsolving;
+ * "unsolved only" hides those.
+ */
+export function applyFilter<T extends FilterableProblem>(
+  problems: T[],
+  filter: Filter,
+  attemptedProblemIds: number[],
+): { page: T[]; numPages: number } {
+  let matching = problems.filter(
+    (problem) => problem.isArchived === filter.archived,
+  );
+  if (filter.subjects.length > 0) {
+    matching = matching.filter((problem) =>
+      filter.subjects.includes(problem.subject),
+    );
+  }
+  if (filter.unsolvedOnly) {
+    matching = matching.filter(
+      (problem) => !attemptedProblemIds.includes(problem.id),
+    );
+  }
+  if (filter.search !== "") {
+    const lowerQuery = filter.search.toLowerCase();
+    matching = matching.filter(
+      (problem) =>
+        problem.title.toLowerCase().includes(lowerQuery) ||
+        problem.statement.toLowerCase().includes(lowerQuery),
+    );
+  }
+
+  const numPages = Math.max(Math.ceil(matching.length / PAGE_SIZE), 1);
+  const page = matching.slice(
+    PAGE_SIZE * (filter.page - 1),
+    PAGE_SIZE * filter.page,
+  );
+  return { page, numPages };
+}

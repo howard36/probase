@@ -1,13 +1,14 @@
 import prisma from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import ProblemList from "./problem-list";
 import { Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { requireCollectionAccess } from "@/lib/collection-access";
-import { parseFilter } from "@/lib/filter";
+import { applyFilter, filterToString, parseFilter } from "@/lib/filter";
 
 function sortByNew(p1: Problem, p2: Problem): number {
-  const t1 = p1.createdAt;
-  const t2 = p2.createdAt;
+  const t1 = p1.createdAt.getTime();
+  const t2 = p2.createdAt.getTime();
   if (t1 !== t2) {
     return t1 > t2 ? -1 : 1;
   } else {
@@ -18,16 +19,6 @@ function sortByNew(p1: Problem, p2: Problem): number {
 async function getProblems(collection: Collection): Promise<ProblemProps[]> {
   const problems = await prisma.problem.findMany({
     where: { collectionId: collection.id },
-    orderBy: [
-      {
-        solveAttempts: {
-          _count: "asc",
-        },
-      },
-      {
-        createdAt: "desc",
-      },
-    ],
     include: {
       // TODO: match ProblemProps in [cid]/types
       authors: {
@@ -58,7 +49,7 @@ export default async function Page({
   searchParams,
 }: {
   params: Params;
-  searchParams: { page?: string; subject?: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { cid } = params;
   const filter = parseFilter(searchParams);
@@ -66,7 +57,7 @@ export default async function Page({
     await requireCollectionAccess(cid, `/c/${cid}`);
   const problems = await getProblems(collection);
 
-  const solvedAttempts = await prisma.solveAttempt.findMany({
+  const attempts = await prisma.solveAttempt.findMany({
     where: {
       userId,
       problem: {
@@ -77,18 +68,22 @@ export default async function Page({
       problemId: true,
     },
   });
+  const attemptedProblemIds = attempts.map((attempt) => attempt.problemId);
 
-  const solvedProblemIds = solvedAttempts.map((attempt) => attempt.problemId);
+  const { page, numPages } = applyFilter(problems, filter, attemptedProblemIds);
+  if (filter.page > numPages) {
+    redirect(`/c/${cid}${filterToString({ ...filter, page: numPages })}`);
+  }
 
   return (
     <ProblemList
       collection={collection}
-      problems={problems}
+      problems={page}
+      numPages={numPages}
       userId={userId}
       permission={permission}
       authors={authors}
       filter={filter}
-      solvedProblemIds={solvedProblemIds}
     />
   );
 }

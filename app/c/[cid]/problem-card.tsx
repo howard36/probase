@@ -60,7 +60,10 @@ export default function ProblemCard({
             {problem.difficulty !== null && problem.difficulty > 0 && (
               <Lightbulbs difficulty={problem.difficulty} />
             )}
-            <Likes problem={problem} userId={userId} />
+            <Likes
+              problem={{ id: problem.id, likes: problem.likes }}
+              userId={userId}
+            />
           </div>
         </div>
         {locked ? (
@@ -76,7 +79,10 @@ export default function ProblemCard({
           </div>
         )}
         <div className="flex h-6 items-center justify-between sm:hidden">
-          <Likes problem={problem} userId={userId} />
+          <Likes
+            problem={{ id: problem.id, likes: problem.likes }}
+            userId={userId}
+          />
           {problem.difficulty !== null && problem.difficulty > 0 && (
             <Lightbulbs difficulty={problem.difficulty} />
           )}

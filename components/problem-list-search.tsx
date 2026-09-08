@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
