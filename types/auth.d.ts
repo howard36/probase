@@ -2,10 +2,9 @@ import "next-auth";
 
 declare module "next-auth" {
   /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+   * Returned by `auth()` on the server.
    */
   interface Session {
-    accessToken?: string;
     email?: string | null;
     emailVerified: bool;
     currentEmail?: string | null;
@@ -27,7 +26,6 @@ declare module "next-auth" {
 declare module "@auth/core/jwt" {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
-    accessToken?: string;
     provider?: string;
     type?: string;
 
@@ -36,7 +34,5 @@ declare module "@auth/core/jwt" {
     familyName?: string;
     locale?: string | null;
     currentEmail?: string | null;
-    accessTokenExpires?: number;
-    refreshToken?: string;
   }
 }

@@ -7,7 +7,6 @@ const subjectToTextColor = {
   Combinatorics: "text-amber-500",
   Geometry: "text-green-500",
   NumberTheory: "text-red-500",
-  ComputerScience: "text-cyan-500",
 };
 
 export default function Title(props: Props) {

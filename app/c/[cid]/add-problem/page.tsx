@@ -54,9 +54,6 @@ async function getCollection(cid: string) {
   // TODO: filter only needed fields of collection
   const collection = await prisma.collection.findUnique({
     where: { cid },
-    include: {
-      problems: true,
-    },
   });
 
   if (collection === null) {

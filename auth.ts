@@ -20,7 +20,6 @@ const GOOGLE_AUTHORIZATION_URL: string =
     response_type: "code",
   }).toString();
 
-// TODO: https://next-auth.js.org/tutorials/refresh-token-rotation
 const authOptions: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -37,7 +36,6 @@ const authOptions: NextAuthConfig = {
         // Initial sign in
         // when trigger is "signIn" or "signUp", token contains a subset of JWT.
         // `name`, `email` and `picture` will be included.
-        token.accessToken = account.access_token;
         token.provider = account.provider;
         token.type = account.type;
         token.emailVerified = profile.email_verified ?? false;
@@ -48,15 +46,12 @@ const authOptions: NextAuthConfig = {
           token.familyName = profile.family_name ?? "";
           token.locale = profile.locale;
           token.currentEmail = profile.email;
-          token.accessTokenExpires = account.expires_at;
-          token.refreshToken = account.refresh_token;
         }
       }
       return token;
     },
     session({ session, token }: sessionCallbackParams) {
-      // Send properties to the client, like an access_token and user id from a provider.
-      session.accessToken = token.accessToken;
+      // Send properties to the client, like the user id from a provider.
       session.currentEmail = token.currentEmail;
       session.emailVerified = token.emailVerified;
       session.fullName = token.name;

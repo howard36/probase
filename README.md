@@ -48,7 +48,7 @@ cp .env.example .env.local
 You'll want to manually edit some of the variables in `.env.local`:
 
 - Set `DATABASE_URL` to your Postgres connection string. It should use the same `<db-password>` as step 2.3.
-- Set `NEXTAUTH_SECRET` to another [random password](https://www.random.org/passwords/?num=1&len=22&format=html&rnd=new).
+- Set `AUTH_SECRET` to another [random password](https://www.random.org/passwords/?num=1&len=22&format=html&rnd=new).
 
 ### 4. Initialize the database
 
