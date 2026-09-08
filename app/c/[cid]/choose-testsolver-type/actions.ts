@@ -3,7 +3,8 @@
 import { notFound, redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { ActionResponse, error } from "@/lib/server-actions";
-import { auth } from "auth";
+import { getCurrentUser } from "@/lib/current-user";
+import { getPermission } from "@/lib/collection-access";
 import { TestsolverType } from "@prisma/client";
 
 export async function setTestsolverType(
@@ -12,15 +13,11 @@ export async function setTestsolverType(
 ): Promise<ActionResponse> {
   // TODO: zod
 
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
+  const { userId } = user;
 
   const collection = await prisma.collection.findUnique({
     where: { id: collectionId },
@@ -29,14 +26,7 @@ export async function setTestsolverType(
     notFound();
   }
 
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId,
-        collectionId,
-      },
-    },
-  });
+  const permission = await getPermission(userId, collectionId);
 
   if (permission === null) {
     return error("You do not have access to this collection");

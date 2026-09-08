@@ -7,7 +7,7 @@ import AddSolution from "./add-solution";
 import type { Props } from "./types";
 
 export default function Spoilers(props: Props) {
-  const { problem, collection, permission, authors } = props;
+  const { problem, permission, authors } = props;
   const [hidden, setHidden] = useState(true);
 
   let answer, solution;
@@ -25,12 +25,7 @@ export default function Spoilers(props: Props) {
     const sol = problem.solutions[0];
     solution = (
       <div className="my-8">
-        <Solution
-          solution={sol}
-          collection={collection}
-          permission={permission}
-          authors={authors}
-        />
+        <Solution solution={sol} permission={permission} authors={authors} />
       </div>
     );
   } else if (authors.length > 0) {

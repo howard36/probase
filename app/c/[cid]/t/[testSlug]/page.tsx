@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import TestPage from "./test-page";
-import { auth } from "auth";
+import { requireCurrentUser } from "@/lib/current-user";
+import { getAuthorIds, getPermission } from "@/lib/collection-access";
 import { canViewCollection } from "@/lib/permissions";
 
 interface Params {
@@ -27,26 +28,9 @@ export default async function Page({ params }: { params: Params }) {
     notFound();
   }
 
-  const session = await auth();
-  if (session === null) {
-    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Ft%2F${testSlug}`);
-  }
-  const userId = session.userId;
-  if (userId === undefined) {
-    throw new Error("userId is undefined despite being logged in");
-  }
+  const { userId } = await requireCurrentUser(`/c/${cid}/t/${testSlug}`);
 
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId,
-        collectionId: test.collectionId,
-      },
-    },
-    select: {
-      accessLevel: true,
-    },
-  });
+  const permission = await getPermission(userId, test.collectionId);
   if (permission === null || !canViewCollection(permission)) {
     redirect("/need-permission");
   }
@@ -54,13 +38,7 @@ export default async function Page({ params }: { params: Params }) {
   const solveAttempts = await prisma.solveAttempt.findMany({
     where: { userId },
   });
-  const authors = await prisma.author.findMany({
-    where: {
-      userId,
-      collectionId: test.collectionId,
-    },
-    select: { id: true },
-  });
+  const authors = await getAuthorIds(userId, test.collectionId);
 
   const testProblems = await prisma.testProblem.findMany({
     where: {

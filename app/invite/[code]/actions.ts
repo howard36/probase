@@ -3,23 +3,19 @@
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { ActionResponse, error } from "@/lib/server-actions";
-import { auth } from "auth";
+import { getCurrentUser } from "@/lib/current-user";
 
 export async function acceptInvite(
   inviteCode: string,
 ): Promise<ActionResponse> {
   // TODO: zod
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
+  const { userId } = user;
 
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
-
-  const email = session.currentEmail;
+  const email = user.session.currentEmail;
   if (email === null || email === undefined) {
     return error("session.email is null or undefined");
   }

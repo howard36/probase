@@ -10,7 +10,8 @@ import {
 import prisma from "@/lib/prisma";
 import { type ActionResponse, error } from "@/lib/server-actions";
 import { Prisma } from "@prisma/client";
-import { auth } from "auth";
+import { getCurrentUser } from "@/lib/current-user";
+import { getAuthorIds, getPermission } from "@/lib/collection-access";
 import { revalidateTag } from "next/cache";
 
 export async function likeProblem(
@@ -36,25 +37,14 @@ export async function likeProblem(
       return error(`No problem with id ${problemId}`);
     }
 
-    const session = await auth();
-    if (session === null) {
+    const user = await getCurrentUser();
+    if (user === null) {
       return error("Not signed in");
     }
-
-    const userId = session.userId;
-    if (userId === undefined) {
-      return error("userId is undefined despite being logged in");
-    }
+    const { userId } = user;
 
     const collectionId = problem.collection.id;
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId,
-        },
-      },
-    });
+    const permission = await getPermission(userId, collectionId);
     if (!canViewCollection(permission)) {
       // No permission
       return error("You do not have permission to like this problem");
@@ -137,32 +127,15 @@ export async function editProblem(
       return error(`No problem with id ${problemId}`);
     }
 
-    const session = await auth();
-    if (session === null) {
+    const user = await getCurrentUser();
+    if (user === null) {
       return error("Not signed in");
     }
-
-    const userId = session.userId;
-    if (userId === undefined) {
-      return error("userId is undefined despite being logged in");
-    }
+    const { userId } = user;
 
     const collectionId = problem.collection.id;
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId,
-        },
-      },
-    });
-    const authors = await prisma.author.findMany({
-      where: {
-        userId,
-        collectionId,
-      },
-      select: { id: true },
-    });
+    const permission = await getPermission(userId, collectionId);
+    const authors = await getAuthorIds(userId, collectionId);
     if (!canEditProblem(problem, permission, authors)) {
       // No permission
       return error("You do not have permission to edit this problem");
@@ -198,15 +171,11 @@ export async function addComment(
     return error("Text is null");
   }
 
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
+  const { userId } = user;
 
   try {
     const problem = await prisma.problem.findUnique({
@@ -224,14 +193,7 @@ export async function addComment(
       return error("Problem not found");
     }
 
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: problem.collection.id,
-        },
-      },
-    });
+    const permission = await getPermission(userId, problem.collection.id);
     if (!canAddComment(permission)) {
       return error("You do not have permission to comment on this problem");
     }
@@ -258,15 +220,11 @@ export async function addComment(
 export async function startTestsolve(
   problemId: number,
 ): Promise<ActionResponse> {
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
+  const { userId } = user;
 
   try {
     const problem = await prisma.problem.findUnique({
@@ -286,14 +244,7 @@ export async function startTestsolve(
       return error("Problem not found");
     }
 
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: problem.collection.id,
-        },
-      },
-    });
+    const permission = await getPermission(userId, problem.collection.id);
     // TODO: use canTestsolveProblem
     if (!canViewCollection(permission)) {
       return error("You do not have permission to edit this collection");
@@ -321,15 +272,11 @@ export async function submitTestsolve(
 ): Promise<ActionResponse<{ correct: boolean; remaining: number }>> {
   const submittedAt = new Date();
 
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
+  const { userId } = user;
 
   try {
     const problem = await prisma.problem.findUnique({
@@ -351,14 +298,7 @@ export async function submitTestsolve(
       return error("Problem not found");
     }
 
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: problem.collection.id,
-        },
-      },
-    });
+    const permission = await getPermission(userId, problem.collection.id);
     // TODO: use canTestsolveProblem
     if (!canViewCollection(permission)) {
       return error("You do not have permission to edit this collection");
@@ -429,15 +369,11 @@ export async function giveUpTestsolve(
 ): Promise<ActionResponse> {
   const submittedAt = new Date();
 
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
+  const { userId } = user;
 
   try {
     const problem = await prisma.problem.findUnique({
@@ -459,14 +395,7 @@ export async function giveUpTestsolve(
       return error("Problem not found");
     }
 
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: problem.collection.id,
-        },
-      },
-    });
+    const permission = await getPermission(userId, problem.collection.id);
     // TODO: use canTestsolveProblem
     if (!canViewCollection(permission)) {
       return error("You do not have permission to edit this collection");
@@ -521,15 +450,11 @@ export async function addSolution(
   text: string,
   authorId: number,
 ): Promise<ActionResponse> {
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
+  const { userId } = user;
 
   try {
     const problem = await prisma.problem.findUnique({
@@ -539,14 +464,7 @@ export async function addSolution(
       return error("Problem not found");
     }
 
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId: problem.collectionId,
-        },
-      },
-    });
+    const permission = await getPermission(userId, problem.collectionId);
     if (!canAddSolution(permission)) {
       return error("You do not have permission to edit this collection");
     }
@@ -574,15 +492,11 @@ export async function editSolution(
   solutionId: number,
   text: string,
 ): Promise<ActionResponse> {
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
+  const { userId } = user;
 
   try {
     const solution = await prisma.solution.findUnique({
@@ -610,21 +524,8 @@ export async function editSolution(
     }
 
     const collectionId = solution.problem.collection.id;
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId,
-        },
-      },
-    });
-    const authors = await prisma.author.findMany({
-      where: {
-        userId,
-        collectionId,
-      },
-      select: { id: true },
-    });
+    const permission = await getPermission(userId, collectionId);
+    const authors = await getAuthorIds(userId, collectionId);
     if (!canEditSolution(solution, permission, authors)) {
       return error("You do not have permission to edit this collection");
     }

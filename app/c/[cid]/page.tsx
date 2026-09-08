@@ -1,21 +1,9 @@
 import prisma from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
-import { canViewCollection } from "@/lib/permissions";
 import ProblemList from "./problem-list";
 import { Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";
-import { auth } from "auth";
+import { requireCollectionAccess } from "@/lib/collection-access";
 import { parseFilter } from "@/lib/filter";
-
-async function getCollection(cid: string): Promise<Collection> {
-  const collection = await prisma.collection.findUnique({
-    where: { cid },
-  });
-  if (collection === null) {
-    notFound();
-  }
-  return collection;
-}
 
 function sortByNew(p1: Problem, p2: Problem): number {
   const t1 = p1.createdAt;
@@ -74,50 +62,9 @@ export default async function Page({
 }) {
   const { cid } = params;
   const filter = parseFilter(searchParams);
-  const collection = await getCollection(cid);
+  const { userId, collection, permission, authors } =
+    await requireCollectionAccess(cid, `/c/${cid}`);
   const problems = await getProblems(collection);
-
-  // This call is still slow.
-  // Private pages must wait for security check
-  // Public pages can show the problems immediately, and stream personalized data as the page loads
-  const session = await auth();
-
-  if (session === null) {
-    // Not logged in
-    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}`);
-  }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    throw new Error("userId is undefined despite being logged in");
-  }
-
-  const authors = await prisma.author.findMany({
-    where: {
-      userId,
-      collectionId: collection.id,
-    },
-    select: { id: true },
-  });
-
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId,
-        collectionId: collection.id,
-      },
-    },
-  });
-
-  // canViewCollection already checks for null, but we include it here so TypeScript knows that permission is non-null later in the program
-  if (permission === null || !canViewCollection(permission)) {
-    // No permission
-    redirect("/need-permission");
-  }
-
-  if (collection.requireTestsolve && permission.testsolverType === null) {
-    redirect(`/c/${cid}/choose-testsolver-type`);
-  }
 
   const solvedAttempts = await prisma.solveAttempt.findMany({
     where: {
