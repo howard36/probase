@@ -10,7 +10,7 @@ const subjectToTextColor = {
 };
 
 export default function Title(props: Props) {
-  const { problem, collection, permission, authors } = props;
+  const { problem, permission, authors } = props;
   const canEdit = canEditProblem(problem, permission, authors);
 
   return (

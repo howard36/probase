@@ -1,8 +1,9 @@
 import ProblemForm from "./problem-form";
 import prisma from "@/lib/prisma";
 import { Session } from "next-auth";
-import { notFound, redirect } from "next/navigation";
-import { auth } from "auth";
+import { notFound } from "next/navigation";
+import { requireCurrentUser, type CurrentUser } from "@/lib/current-user";
+import { getAuthorIds } from "@/lib/collection-access";
 
 interface Params {
   cid: string;
@@ -17,22 +18,11 @@ function getFullName(session: Session): string {
 }
 
 async function getOrCreateAuthor(
-  session: Session,
+  { userId, session }: CurrentUser,
   collectionId: number,
 ): Promise<number> {
-  const userId = session.userId;
-  if (userId === undefined) {
-    throw new Error("userId is undefined despite being logged in");
-  }
-
   // Check if user already has author
-  const authors = await prisma.author.findMany({
-    where: {
-      userId,
-      collectionId,
-    },
-    select: { id: true },
-  });
+  const authors = await getAuthorIds(userId, collectionId);
   if (authors.length > 0) {
     return authors[0].id;
   }
@@ -65,16 +55,12 @@ async function getCollection(cid: string) {
 
 export default async function AddProblemPage({ params }: { params: Params }) {
   const { cid } = params;
-  const session = await auth();
-  if (session === null) {
-    // Not logged in
-    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fadd-problem`);
-  }
+  const user = await requireCurrentUser(`/c/${cid}/add-problem`);
 
   // TODO: select only needed fields of collection
   const collection = await getCollection(cid);
   // TODO: ViewOnly should see a different page explaining why they can't submit
-  const authorId = await getOrCreateAuthor(session, collection.id);
+  const authorId = await getOrCreateAuthor(user, collection.id);
 
   return <ProblemForm collection={collection} authorId={authorId} />;
 }

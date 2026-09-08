@@ -4,7 +4,8 @@ import { canAddProblem } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { ActionResponse, error } from "@/lib/server-actions";
 import { Subject } from "@prisma/client";
-import { auth } from "auth";
+import { getCurrentUser } from "@/lib/current-user";
+import { getPermission } from "@/lib/collection-access";
 import { revalidateTag } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
@@ -20,15 +21,11 @@ export async function addProblem(
   collectionId: number,
   formData: FormData,
 ): Promise<ActionResponse> {
-  const session = await auth();
-  if (session === null) {
+  const user = await getCurrentUser();
+  if (user === null) {
     return error("Not signed in");
   }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    return error("userId is undefined despite being logged in");
-  }
+  const { userId } = user;
 
   const title = formData.get("title") as string;
   const subject = formData.get("subject") as Subject;
@@ -47,14 +44,7 @@ export async function addProblem(
       return error("Collection not found");
     }
 
-    const permission = await prisma.permission.findUnique({
-      where: {
-        userId_collectionId: {
-          userId,
-          collectionId,
-        },
-      },
-    });
+    const permission = await getPermission(userId, collectionId);
     if (!canAddProblem(permission)) {
       return error("You do not have permission to add a problem");
     }
@@ -123,7 +113,7 @@ export async function addProblem(
           create: {
             user: {
               connect: {
-                id: session.userId,
+                id: userId,
               },
             },
           },

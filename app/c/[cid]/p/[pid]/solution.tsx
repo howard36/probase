@@ -1,22 +1,15 @@
 import EditableSolution from "./editable-solution";
 import Latex from "@/components/latex";
-import type {
-  AuthorProps,
-  CollectionProps,
-  PermissionProps,
-  SolutionProps,
-} from "./types";
+import type { AuthorProps, PermissionProps, SolutionProps } from "./types";
 import { canEditSolution } from "@/lib/permissions";
 import Label from "@/components/label";
 
 export default function Solution({
   solution,
-  collection,
   permission,
   authors,
 }: {
   solution: SolutionProps;
-  collection: CollectionProps;
   permission: PermissionProps;
   authors: AuthorProps[];
 }) {

@@ -5,7 +5,8 @@ import Expired from "./expired";
 import InvalidEmail from "./invalid-email";
 import type { InviteProps } from "./types";
 import { inviteInclude } from "./types";
-import { auth } from "auth";
+import { getCurrentUser } from "@/lib/current-user";
+import { getPermission } from "@/lib/collection-access";
 import InviteJoinPage from "./invite-join-page";
 import AlreadyJoined from "./already-joined";
 
@@ -27,33 +28,21 @@ async function getInvite(code: string): Promise<InviteProps> {
 }
 
 export default async function InvitePage({ params }: { params: Params }) {
-  const session = await auth();
+  const user = await getCurrentUser();
 
   const { code } = params;
   const invite = await getInvite(code);
 
-  if (session === null) {
+  if (user === null) {
     return <NotLoggedIn invite={invite} />;
   }
 
-  const email = session.currentEmail;
+  const email = user.session.currentEmail;
   if (email === null || email === undefined) {
     throw new Error("session.email is null or undefined");
   }
 
-  const userId = session.userId;
-  if (userId === undefined) {
-    throw new Error("session.userId is undefined");
-  }
-
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId,
-        collectionId: invite.collectionId,
-      },
-    },
-  });
+  const permission = await getPermission(user.userId, invite.collectionId);
 
   if (
     permission !== null &&

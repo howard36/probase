@@ -1,21 +1,16 @@
 import prisma from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import ProblemPage from "./problem-page";
 import { problemInclude, type Params, type Props } from "./types";
-import { canViewCollection } from "@/lib/permissions";
-import { auth } from "auth";
+import { requireCollectionAccess } from "@/lib/collection-access";
 import { parseFilter } from "@/lib/filter";
 
 // TODO: params can be null, but the type does not reflect that
-async function getProps(params: Params, userId: string): Promise<Props> {
+async function getProps(params: Params): Promise<Props> {
   const { cid, pid } = params;
 
-  const collection = await prisma.collection.findUnique({
-    where: { cid },
-  });
-  if (collection === null) {
-    notFound();
-  }
+  const { userId, collection, permission, authors } =
+    await requireCollectionAccess(cid, `/c/${cid}/p/${pid}`);
 
   const problem = await prisma.problem.findUnique({
     where: {
@@ -29,33 +24,6 @@ async function getProps(params: Params, userId: string): Promise<Props> {
   if (problem === null) {
     notFound();
   }
-
-  const permission = await prisma.permission.findUnique({
-    where: {
-      userId_collectionId: {
-        userId,
-        collectionId: collection.id,
-      },
-    },
-  });
-
-  // canViewCollection already checks for null, but we include it here so TypeScript knows that permission is non-null later in the program
-  if (permission === null || !canViewCollection(permission)) {
-    // No permission to view this page
-    redirect("/need-permission");
-  }
-
-  if (collection.requireTestsolve && permission.testsolverType === null) {
-    redirect(`/c/${cid}/choose-testsolver-type`);
-  }
-
-  const authors = await prisma.author.findMany({
-    where: {
-      userId,
-      collectionId: collection.id,
-    },
-    select: { id: true },
-  });
 
   const props: Props = {
     problem,
@@ -75,20 +43,8 @@ export default async function Page({
   params: Params;
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { cid, pid } = params;
   const filter = parseFilter(searchParams);
-  const session = await auth();
-  if (session === null) {
-    // Not logged in
-    redirect(`/api/auth/signin?callbackUrl=%2Fc%2F${cid}%2Fp%2F${pid}`);
-  }
-
-  const userId = session.userId;
-  if (userId === undefined) {
-    throw new Error("userId is undefined despite being logged in");
-  }
-
-  const props: Props = await getProps(params, userId);
+  const props: Props = await getProps(params);
 
   return <ProblemPage {...props} filter={filter} />;
 }
