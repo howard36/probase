@@ -12,7 +12,8 @@ import Likes from "@/components/likes";
 import LockedPage from "./locked-page";
 import Testsolve from "./testsolve";
 import Leaderboard from "./leaderboard";
-import { canEditProblem } from "@/lib/permissions";
+import { canEditProblem, needsTestsolveToView } from "@/lib/permissions";
+import { testsolveDeadline, testsolveTimeMinutes } from "@/lib/testsolve";
 import BackButton from "@/components/back-button";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -73,20 +74,13 @@ export default function ProblemPage(props: PropsWithFilter) {
 
   // TODO: make this a separate Testsolving component
   let testsolveOrAnswers;
-  if (
-    collection.requireTestsolve &&
-    permission.testsolverType !== "Casual" &&
-    permission.seriousTestsolverStartedAt !== null &&
-    permission.seriousTestsolverStartedAt < problem.createdAt &&
-    !canEditProblem(problem, permission, authors)
-  ) {
+  if (needsTestsolveToView(collection, problem, permission, authors)) {
     const difficulty = problem.difficulty;
     if (difficulty === null || difficulty === 0) {
       throw new Error(
         "Difficulty is null or zero, cannot determine testsolve time",
       );
     }
-    const testsolveTimeMinutes = difficulty * 5 + 5; // 10, 15, 20, 25, 30
 
     const solveAttempt = problem.solveAttempts.find(
       (attempt) => attempt.userId === userId,
@@ -95,17 +89,14 @@ export default function ProblemPage(props: PropsWithFilter) {
       testsolveOrAnswers = (
         <LockedPage
           problem={problem}
-          time={`${testsolveTimeMinutes} minutes`}
+          time={`${testsolveTimeMinutes(difficulty)} minutes`}
           unsolved={problem.solveAttempts.every(
             (attempt) => attempt.solvedAt === null,
           )}
         />
       );
     } else {
-      const testsolveTimeMillis = testsolveTimeMinutes * 60 * 1000;
-      const deadline = new Date(
-        solveAttempt.startedAt.getTime() + testsolveTimeMillis,
-      );
+      const deadline = testsolveDeadline(solveAttempt.startedAt, difficulty);
       const finished =
         new Date() >= deadline ||
         solveAttempt.gaveUp ||

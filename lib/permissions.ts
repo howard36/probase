@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, type TestsolverType } from "@prisma/client";
 
 const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
   select: {
@@ -98,6 +98,51 @@ export function canEditProblem(
     return authorIds1?.some((id) => authorIds2?.includes(id));
   }
   return false;
+}
+
+interface TestsolvePermission extends PermissionPerm {
+  testsolverType: TestsolverType | null;
+  seriousTestsolverStartedAt: Date | null;
+}
+
+interface TestsolveProblem extends ProblemPerm {
+  createdAt: Date;
+}
+
+/**
+ * Whether this user must testsolve the problem before they can read it.
+ * True only for serious testsolvers in collections that require testsolving,
+ * for problems created after their serious period began, and never for
+ * someone who can edit the problem (authors and admins do not testsolve
+ * their own problems).
+ */
+export function needsTestsolveToView(
+  collection: { requireTestsolve: boolean },
+  problem: TestsolveProblem,
+  permission: TestsolvePermission,
+  authors: AuthorPerm[],
+): boolean {
+  return (
+    collection.requireTestsolve &&
+    permission.testsolverType !== "Casual" &&
+    permission.seriousTestsolverStartedAt !== null &&
+    permission.seriousTestsolverStartedAt < problem.createdAt &&
+    !canEditProblem(problem, permission, authors)
+  );
+}
+
+/** A problem is locked until a user who needs to testsolve it starts an attempt. */
+export function isProblemLocked(
+  collection: { requireTestsolve: boolean },
+  problem: TestsolveProblem,
+  permission: TestsolvePermission,
+  authors: AuthorPerm[],
+  hasStartedTestsolve: boolean,
+): boolean {
+  return (
+    needsTestsolveToView(collection, problem, permission, authors) &&
+    !hasStartedTestsolve
+  );
 }
 
 export function canEditSolution(

@@ -1,7 +1,7 @@
-import { AccessLevel, Collection, Problem, SolveAttempt } from "@prisma/client";
+import { Collection, Permission, Problem, SolveAttempt } from "@prisma/client";
 import Label from "@/components/label";
 import Latex from "@/components/latex";
-import { canEditProblem } from "@/lib/permissions";
+import { isProblemLocked } from "@/lib/permissions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -22,20 +22,16 @@ export default function TestCard({
   problem: ProblemWithAuthors;
   collection: Collection;
   solveAttempts: SolveAttempt[];
-  permission: { accessLevel: AccessLevel };
+  permission: Permission;
   authors: { id: number }[];
 }) {
-  let locked = false;
-  if (collection.requireTestsolve) {
-    // TODO: use locked = !canViewProblem(), which should also check solveAttempts
-    if (!canEditProblem(problem, permission, authors)) {
-      // authors shouldn't testsolve their own problems
-      if (!solveAttempts.some((attempt) => attempt.problemId === problem.id)) {
-        // User hasn't started testsolving this problem
-        locked = true;
-      }
-    }
-  }
+  const locked = isProblemLocked(
+    collection,
+    problem,
+    permission,
+    authors,
+    solveAttempts.some((attempt) => attempt.problemId === problem.id),
+  );
   return (
     <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
       <div className="my-8 rounded-2xl bg-slate-50 p-8 transition duration-300 hover:bg-white hover:shadow-lg">

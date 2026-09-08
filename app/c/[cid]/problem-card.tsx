@@ -6,7 +6,7 @@ import Likes from "@/components/likes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { Collection, Permission } from "@prisma/client";
-import { canEditProblem } from "@/lib/permissions";
+import { isProblemLocked } from "@/lib/permissions";
 import { Filter, filterToString } from "@/lib/filter";
 
 // TODO: allow each collection to define new subjects and
@@ -33,20 +33,13 @@ export default function ProblemCard({
   authors: { id: number }[];
   filter: Filter;
 }) {
-  let locked = false;
-  // TODO: use locked = !canViewProblem(), which should also check solveAttempts
-  if (
-    collection.requireTestsolve &&
-    permission.testsolverType !== "Casual" &&
-    permission.seriousTestsolverStartedAt !== null &&
-    permission.seriousTestsolverStartedAt < problem.createdAt &&
-    !canEditProblem(problem, permission, authors)
-  ) {
-    if (!problem.solveAttempts.some((attempt) => attempt.userId === userId)) {
-      // User hasn't started testsolving this problem
-      locked = true;
-    }
-  }
+  const locked = isProblemLocked(
+    collection,
+    problem,
+    permission,
+    authors,
+    problem.solveAttempts.some((attempt) => attempt.userId === userId),
+  );
 
   const searchParams = filterToString(filter);
 
