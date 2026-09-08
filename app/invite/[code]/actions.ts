@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
 import { hasJoinedCollection } from "@/lib/permissions";
 import { isInviteExpired } from "./expiry";
+import { forcedTestsolverType } from "@/lib/collection-config";
 import { parseInput } from "@/lib/validation";
 import { z } from "zod";
 
@@ -89,9 +90,8 @@ export async function acceptInvite(
           userId,
           collectionId: invite.collectionId,
           accessLevel: invite.accessLevel,
-          // TODO: find a better way to enforce a specific testsolver type
-          ...(["topsoj", "mgci"].includes(invite.collection.cid) && {
-            testsolverType: "Serious",
+          ...(forcedTestsolverType(invite.collection.cid) !== null && {
+            testsolverType: forcedTestsolverType(invite.collection.cid),
             seriousTestsolverStartedAt: invite.collection.createdAt,
           }),
         },

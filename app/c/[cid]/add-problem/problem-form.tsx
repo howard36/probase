@@ -10,6 +10,7 @@ import { addProblem } from "./actions";
 import BackButton from "@/components/back-button";
 import { wrapAction } from "@/lib/server-actions";
 import IntegerInput from "@/components/integer-input";
+import { difficultyLabels } from "@/lib/collection-config";
 
 interface SubjectSelectElement extends HTMLSelectElement {
   value: Subject;
@@ -41,8 +42,6 @@ const subjects = [
     letter: "N",
   },
 ];
-
-let difficultyTiers = ["Very easy", "Easy", "Medium", "Hard", "Very hard"];
 
 // TODO: types?
 export default function ProblemForm({
@@ -104,15 +103,7 @@ export default function ProblemForm({
     );
   }
 
-  if (collection.cid === "otis-mock-aime") {
-    difficultyTiers = [
-      "AIME 1-3",
-      "AIME 4-6",
-      "AIME 7-9",
-      "AIME 10-12",
-      "AIME 13-15",
-    ];
-  }
+  const difficultyTiers = difficultyLabels(collection.cid);
 
   return (
     <div className="whitespace-pre-wrap break-words p-8 text-slate-800">
