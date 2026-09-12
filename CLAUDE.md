@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Tests
 
-- Vitest, configured in `vitest.config.mts` (must stay `.mts`: the package is CommonJS and Vitest's CJS entry can't load on Node 22.8). Three projects: `unit` (`test/unit/**/*.test.ts`), `components` (`test/unit/**/*.test.tsx`, happy-dom + Testing Library), `integration` (`test/integration/**/*.test.ts`).
+- Vitest, configured in `vitest.config.mts` (must stay `.mts`: the package is CommonJS, so a plain `.ts` config would not be loaded as ESM). Three projects: `unit` (`test/unit/**/*.test.ts`), `components` (`test/unit/**/*.test.tsx`, happy-dom + Testing Library), `integration` (`test/integration/**/*.test.ts`).
 - Integration tests hit a real Postgres (`docker-compose.test.yml`, port 5433, `.env.test`). They mock only `auth()` and `next/cache`; use `signInAs()` from `test/integration/session.ts` and the row builders in `test/integration/factories.ts`. Every table is truncated before each test, so the global setup refuses any database whose name doesn't end in `_test`. Never point `.env.test` at the dev or prod database.
 - `redirect()` / `notFound()` throw; assert them with `expectRedirect()` / `expectNotFound()` from `test/integration/navigation.ts`.
 - Pages are tested by calling the page function directly (`test/integration/pages/`). `clientPayload()` in `test/integration/pages/client-payload.ts` expands the server tree and returns everything that would be serialized to the browser, which is how the "locked problems never send their answer" invariant is tested. Keep its list of client components in each test current when adding a `"use client"` file under that page.

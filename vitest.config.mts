@@ -1,5 +1,5 @@
 // `.mts` so Vite loads this as ESM: package.json has no `"type": "module"`,
-// and Vitest's CommonJS entry cannot require its ESM dependencies on Node 22.
+// so a plain `.ts` config would be loaded as CommonJS.
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
@@ -29,7 +29,7 @@ export default defineConfig({
       },
       {
         // React components rendered with Testing Library in happy-dom.
-        // (jsdom 27 needs require(esm), which Node 22.8 in .nvmrc lacks.)
+        // (happy-dom rather than jsdom: jsdom 27 could not load on the Node 22.8 this repo used to pin.)
         extends: true,
         test: {
           name: "components",

@@ -20,8 +20,7 @@ const Spinner: FC<SpinnerProps> = ({ visible, size = "md" }) => (
   ></div>
 );
 
-interface SubmitButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface SubmitButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md";
 }
 
