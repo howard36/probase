@@ -21,7 +21,7 @@ const subjectPrefix = {
 
 const problemFormSchema = z.object({
   title: z.string().min(1),
-  subject: z.nativeEnum(Subject),
+  subject: z.enum(Subject),
   statement: z.string().min(1),
   // Collections may make the answer optional; an empty answer is stored as "".
   answer: z.string().default(""),

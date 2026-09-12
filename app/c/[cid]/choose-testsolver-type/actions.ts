@@ -11,7 +11,7 @@ import { z } from "zod";
 
 const inputSchema = z.object({
   collectionId: idSchema,
-  testsolverType: z.nativeEnum(TestsolverType),
+  testsolverType: z.enum(TestsolverType),
 });
 
 export async function setTestsolverType(

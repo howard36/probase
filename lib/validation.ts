@@ -10,7 +10,7 @@ export const idSchema = z.number().int().positive();
  * failure to the caller as an ordinary ActionResponse error.
  */
 export function parseInput<T>(
-  schema: z.ZodType<T, z.ZodTypeDef, unknown>,
+  schema: z.ZodType<T, unknown>,
   value: unknown,
 ): ActionResponse<T> {
   const result = schema.safeParse(value);
