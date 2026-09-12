@@ -11,7 +11,7 @@ export const inviteInclude = {
     select: { name: true },
   },
 };
-const inviteProps = Prisma.validator<Prisma.InviteArgs>()({
+const inviteProps = Prisma.validator<Prisma.InviteDefaultArgs>()({
   include: inviteInclude,
 });
 export type InviteProps = Prisma.InviteGetPayload<typeof inviteProps>;

@@ -1,20 +1,20 @@
 import { Prisma, type TestsolverType } from "@prisma/client";
 
-const authorPerm = Prisma.validator<Prisma.AuthorArgs>()({
+const authorPerm = Prisma.validator<Prisma.AuthorDefaultArgs>()({
   select: {
     id: true,
   },
 });
 type AuthorPerm = Prisma.AuthorGetPayload<typeof authorPerm>;
 
-const permissionPerm = Prisma.validator<Prisma.PermissionArgs>()({
+const permissionPerm = Prisma.validator<Prisma.PermissionDefaultArgs>()({
   select: {
     accessLevel: true,
   },
 });
 type PermissionPerm = Prisma.PermissionGetPayload<typeof permissionPerm>;
 
-const problemPerm = Prisma.validator<Prisma.ProblemArgs>()({
+const problemPerm = Prisma.validator<Prisma.ProblemDefaultArgs>()({
   select: {
     authors: {
       select: { id: true },
@@ -23,7 +23,7 @@ const problemPerm = Prisma.validator<Prisma.ProblemArgs>()({
 });
 type ProblemPerm = Prisma.ProblemGetPayload<typeof problemPerm>;
 
-const solutionPerm = Prisma.validator<Prisma.SolutionArgs>()({
+const solutionPerm = Prisma.validator<Prisma.SolutionDefaultArgs>()({
   select: {
     authors: {
       select: { id: true },
