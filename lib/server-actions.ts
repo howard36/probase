@@ -5,8 +5,7 @@ export type ActionResponseOk<T = undefined> = T extends undefined
   : { ok: true; data: T };
 export type ActionResponseError = { ok: false; error: { message: string } };
 export type ActionResponse<T = undefined> =
-  | ActionResponseOk<T>
-  | ActionResponseError;
+  ActionResponseOk<T> | ActionResponseError;
 
 export function error(message: string): ActionResponseError {
   return {

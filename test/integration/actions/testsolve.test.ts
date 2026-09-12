@@ -28,13 +28,17 @@ function timeLimitMillis(difficulty: number): number {
 
 async function setup({
   accessLevel = "TeamMember",
-  difficulty = 1 as number | null,
+  difficulty = 1,
   answer = "42",
+}: {
+  accessLevel?: AccessLevel;
+  difficulty?: number | null;
+  answer?: string;
 } = {}) {
   const collection = await createCollection({ requireTestsolve: true });
   const problem = await createProblem(collection, { difficulty, answer });
   const user = await createUser();
-  await createPermission(user, collection, accessLevel as AccessLevel);
+  await createPermission(user, collection, accessLevel);
   signInAs(user);
   return { collection, problem, user };
 }
