@@ -29,10 +29,14 @@ async function getInvite(code: string): Promise<InviteProps> {
   return invite;
 }
 
-export default async function InvitePage({ params }: { params: Params }) {
+export default async function InvitePage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
   const user = await getCurrentUser();
 
-  const { code } = params;
+  const { code } = await params;
   const invite = await getInvite(code);
 
   if (user === null) {

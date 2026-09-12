@@ -11,7 +11,7 @@ import { expectNotFound, expectRedirect } from "../navigation";
 import { signInAs, signOut } from "../session";
 
 function render(cid: string) {
-  return AddProblemPage({ params: { cid } });
+  return AddProblemPage({ params: Promise.resolve({ cid }) });
 }
 
 describe("add-problem page", () => {

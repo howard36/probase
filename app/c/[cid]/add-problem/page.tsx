@@ -54,8 +54,12 @@ async function getCollection(cid: string) {
   return collection;
 }
 
-export default async function AddProblemPage({ params }: { params: Params }) {
-  const { cid } = params;
+export default async function AddProblemPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { cid } = await params;
   const user = await requireCurrentUser(`/c/${cid}/add-problem`);
 
   // TODO: select only needed fields of collection

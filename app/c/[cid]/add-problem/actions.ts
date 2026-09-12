@@ -8,7 +8,7 @@ import { Subject } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
 import { getAuthorIds, getPermission } from "@/lib/collection-access";
 import { revalidatePath } from "next/cache";
-import { isRedirectError } from "next/dist/client/components/redirect";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 

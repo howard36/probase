@@ -86,7 +86,10 @@ async function setup() {
 }
 
 async function payloadFor(cid: string, pid: string): Promise<string> {
-  const page = await Page({ params: { cid, pid }, searchParams: {} });
+  const page = await Page({
+    params: Promise.resolve({ cid, pid }),
+    searchParams: Promise.resolve({}),
+  });
   return JSON.stringify(await clientPayload(page, clientComponents));
 }
 

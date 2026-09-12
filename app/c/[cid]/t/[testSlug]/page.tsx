@@ -10,8 +10,8 @@ interface Params {
   testSlug: string;
 }
 
-export default async function Page({ params }: { params: Params }) {
-  const { cid, testSlug } = params;
+export default async function Page({ params }: { params: Promise<Params> }) {
+  const { cid, testSlug } = await params;
   const testIdStr = testSlug.split("-").pop();
   if (testIdStr === undefined) {
     return;

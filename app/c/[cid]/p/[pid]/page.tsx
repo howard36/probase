@@ -40,11 +40,11 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: Params;
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<Params>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const filter = parseFilter(searchParams);
-  const props: Props = await getProps(params);
+  const filter = parseFilter(await searchParams);
+  const props: Props = await getProps(await params);
 
   return <ProblemPage {...props} filter={filter} />;
 }

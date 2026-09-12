@@ -1,4 +1,4 @@
-import { isRedirectError } from "next/dist/client/components/redirect";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { describe, expect, it } from "vitest";
 import { acceptInvite } from "@/app/invite/[code]/actions";
 import prisma from "@/lib/prisma";
