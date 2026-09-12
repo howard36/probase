@@ -30,7 +30,10 @@ async function payloadFor(
   cid: string,
   searchParams: Record<string, string> = {},
 ): Promise<string> {
-  const page = await Page({ params: { cid }, searchParams });
+  const page = await Page({
+    params: Promise.resolve({ cid }),
+    searchParams: Promise.resolve(searchParams),
+  });
   return JSON.stringify(await clientPayload(page, clientComponents));
 }
 
@@ -111,7 +114,10 @@ describe("collection page", () => {
     signInAs(member);
 
     await expectRedirect(
-      Page({ params: { cid: collection.cid }, searchParams: { page: "9" } }),
+      Page({
+        params: Promise.resolve({ cid: collection.cid }),
+        searchParams: Promise.resolve({ page: "9" }),
+      }),
       `/c/${collection.cid}`,
     );
     expect(await prisma.problem.count()).toBe(1);

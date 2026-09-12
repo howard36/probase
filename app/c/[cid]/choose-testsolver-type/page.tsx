@@ -7,8 +7,8 @@ interface Params {
   cid: string;
 }
 
-export default async function Page({ params }: { params: Params }) {
-  const { cid } = params;
+export default async function Page({ params }: { params: Promise<Params> }) {
+  const { cid } = await params;
   const { collection } = await requireCollectionAccess(cid, `/c/${cid}`, {
     skipTestsolverTypeCheck: true,
   });

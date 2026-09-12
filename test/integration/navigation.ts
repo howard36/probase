@@ -1,8 +1,9 @@
-import { isNotFoundError } from "next/dist/client/components/not-found";
 import {
-  getURLFromRedirectError,
-  isRedirectError,
-} from "next/dist/client/components/redirect";
+  getAccessFallbackHTTPStatus,
+  isHTTPAccessFallbackError,
+} from "next/dist/client/components/http-access-fallback/http-access-fallback";
+import { getURLFromRedirectError } from "next/dist/client/components/redirect";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { expect } from "vitest";
 
 // `redirect()` and `notFound()` work by throwing. These helpers assert on that throw.
@@ -31,7 +32,10 @@ export async function expectRedirect(
 
 export async function expectNotFound(promise: Promise<unknown>): Promise<void> {
   const err = await rejection(promise);
-  if (!isNotFoundError(err)) {
+  // Next 15 folds notFound(), forbidden() and unauthorized() into one error
+  // type distinguished by HTTP status.
+  if (!isHTTPAccessFallbackError(err)) {
     throw err;
   }
+  expect(getAccessFallbackHTTPStatus(err)).toBe(404);
 }

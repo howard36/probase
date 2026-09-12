@@ -48,11 +48,11 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: Params;
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<Params>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { cid } = params;
-  const filter = parseFilter(searchParams);
+  const { cid } = await params;
+  const filter = parseFilter(await searchParams);
   const { userId, collection, permission, authors } =
     await requireCollectionAccess(cid, `/c/${cid}`);
   const problems = await getProblems(collection);
