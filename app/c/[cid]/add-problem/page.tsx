@@ -1,6 +1,5 @@
 import ProblemForm from "./problem-form";
 import prisma from "@/lib/prisma";
-import { Session } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import { requireCurrentUser, type CurrentUser } from "@/lib/current-user";
 import { getAuthorIds, getPermission } from "@/lib/collection-access";
@@ -10,16 +9,8 @@ interface Params {
   cid: string;
 }
 
-function getFullName(session: Session): string {
-  if (session.fullName) {
-    return session.fullName;
-  } else {
-    return `${session.givenName} ${session.familyName}`;
-  }
-}
-
 async function getOrCreateAuthor(
-  { userId, session }: CurrentUser,
+  { userId, name }: CurrentUser,
   collectionId: number,
 ): Promise<number> {
   // Check if user already has author
@@ -28,11 +19,10 @@ async function getOrCreateAuthor(
     return authors[0].id;
   }
 
-  // No existing author found, so create new author and update token and session
-  const fullName = getFullName(session);
+  // No existing author found, so create one named after the signed-in user
   const newAuthor = await prisma.author.create({
     data: {
-      displayName: fullName,
+      displayName: name,
       userId,
       collectionId,
     },

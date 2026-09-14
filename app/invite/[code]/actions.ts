@@ -31,8 +31,8 @@ export async function acceptInvite(
   }
   const { userId } = user;
 
-  const email = user.session.currentEmail;
-  if (email === null || email === undefined) {
+  const email = user.email;
+  if (email === null) {
     return error("session.email is null or undefined");
   }
 

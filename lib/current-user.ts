@@ -1,10 +1,16 @@
-import type { Session } from "next-auth";
 import { redirect } from "next/navigation";
 import { auth } from "auth";
 
+/**
+ * What the app knows about the signed-in user. Deliberately narrow: this is
+ * the whole surface the rest of the code has on the auth library's session.
+ */
 export interface CurrentUser {
   userId: string;
-  session: Session;
+  /** The email of the account used to sign in, as reported by the provider at sign-in. */
+  email: string | null;
+  /** Display name from the sign-in profile, used when creating an author. */
+  name: string;
 }
 
 /**
@@ -23,7 +29,11 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (userId === undefined) {
     throw new Error("userId is undefined despite being logged in");
   }
-  return { userId, session };
+  return {
+    userId,
+    email: session.currentEmail ?? null,
+    name: session.fullName || `${session.givenName} ${session.familyName}`,
+  };
 }
 
 /**
@@ -35,9 +45,7 @@ export async function requireCurrentUser(
 ): Promise<CurrentUser> {
   const user = await getCurrentUser();
   if (user === null) {
-    redirect(
-      `/api/auth/signin?callbackUrl=${encodeURIComponent(callbackPath)}`,
-    );
+    redirect(`/login?callbackUrl=${encodeURIComponent(callbackPath)}`);
   }
   return user;
 }

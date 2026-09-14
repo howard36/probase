@@ -29,7 +29,7 @@ export default function InvalidEmail({
           Currently logged in as{" "}
           <span className="font-bold text-slate-900">{email}</span>
         </p>
-        <GoogleLoginButton />
+        <GoogleLoginButton callbackUrl={`/invite/${invite.code}`} />
       </div>
     </div>
   );

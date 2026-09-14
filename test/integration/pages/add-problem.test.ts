@@ -21,7 +21,7 @@ describe("add-problem page", () => {
 
     await expectRedirect(
       render(collection.cid),
-      `/api/auth/signin?callbackUrl=%2Fc%2F${collection.cid}%2Fadd-problem`,
+      `/login?callbackUrl=%2Fc%2F${collection.cid}%2Fadd-problem`,
     );
   });
 
@@ -63,6 +63,7 @@ describe("add-problem page", () => {
         where: { userId: user.id, collectionId: collection.id },
       });
       expect(authors).toHaveLength(1);
+      expect(authors[0].displayName).toBe("Ada Lovelace");
     },
   );
 
