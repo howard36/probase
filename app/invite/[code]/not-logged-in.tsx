@@ -15,7 +15,7 @@ export default function NotLoggedIn({ invite }: { invite: InviteProps }) {
           Log in to Probase to join{" "}
           <span className="font-bold text-slate-900">{collectionName}</span>
         </p>
-        <GoogleLoginButton />
+        <GoogleLoginButton callbackUrl={`/invite/${invite.code}`} />
       </div>
     </div>
   );

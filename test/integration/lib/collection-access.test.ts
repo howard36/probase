@@ -50,7 +50,7 @@ describe("requireCollectionAccess", () => {
     signOut();
     await expectRedirect(
       requireCollectionAccess(collection.cid, `/c/${collection.cid}`),
-      `/api/auth/signin?callbackUrl=%2Fc%2F${collection.cid}`,
+      `/login?callbackUrl=%2Fc%2F${collection.cid}`,
     );
   });
 

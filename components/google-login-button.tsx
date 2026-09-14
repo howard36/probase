@@ -5,11 +5,11 @@ import { signIn } from "next-auth/react";
 export default function GoogleLoginButton({
   callbackUrl,
 }: {
-  callbackUrl?: string;
+  /** Same-site path to return to after signing in. */
+  callbackUrl: string;
 }) {
-  const signInOptions = callbackUrl ? { callbackUrl } : undefined;
   const handleClick = () => {
-    signIn("google", signInOptions).catch((err) => console.log(err));
+    signIn("google", { callbackUrl }).catch((err) => console.log(err));
   };
 
   return (

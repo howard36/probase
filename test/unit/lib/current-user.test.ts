@@ -11,8 +11,17 @@ const session = {
   expires: "2030-01-01T00:00:00.000Z",
   userId: "user-1",
   currentEmail: "user@example.com",
+  fullName: "Ada Lovelace",
+  givenName: "Ada",
+  familyName: "Lovelace",
   emailVerified: true,
 } as Session;
+
+const currentUser = {
+  userId: "user-1",
+  email: "user@example.com",
+  name: "Ada Lovelace",
+};
 
 beforeEach(() => {
   mockedAuth.mockReset();
@@ -24,9 +33,19 @@ describe("getCurrentUser", () => {
     expect(await getCurrentUser()).toBeNull();
   });
 
-  it("returns the user id and the session when signed in", async () => {
+  it("returns the user id, email and name when signed in", async () => {
     mockedAuth.mockResolvedValue(session);
-    expect(await getCurrentUser()).toEqual({ userId: "user-1", session });
+    expect(await getCurrentUser()).toEqual(currentUser);
+  });
+
+  it("falls back to the given and family names when the profile has no full name", async () => {
+    mockedAuth.mockResolvedValue({ ...session, fullName: null });
+    expect(await getCurrentUser()).toEqual(currentUser);
+  });
+
+  it("reports a missing email as null", async () => {
+    mockedAuth.mockResolvedValue({ ...session, currentEmail: undefined });
+    expect(await getCurrentUser()).toEqual({ ...currentUser, email: null });
   });
 
   it("throws when a session has no user id, which is a misconfiguration", async () => {
@@ -40,17 +59,14 @@ describe("getCurrentUser", () => {
 describe("requireCurrentUser", () => {
   it("returns the user when signed in", async () => {
     mockedAuth.mockResolvedValue(session);
-    expect(await requireCurrentUser("/c/x")).toEqual({
-      userId: "user-1",
-      session,
-    });
+    expect(await requireCurrentUser("/c/x")).toEqual(currentUser);
   });
 
-  it("redirects to sign-in with the encoded callback path when signed out", async () => {
+  it("redirects to the login page with the encoded callback path when signed out", async () => {
     mockedAuth.mockResolvedValue(null);
     await expectRedirect(
       requireCurrentUser("/c/x/p/A1"),
-      "/api/auth/signin?callbackUrl=%2Fc%2Fx%2Fp%2FA1",
+      "/login?callbackUrl=%2Fc%2Fx%2Fp%2FA1",
     );
   });
 });

@@ -7,10 +7,10 @@ const mockedAuth = auth as unknown as Mock<() => Promise<Session | null>>;
 
 /**
  * Make `auth()` resolve to a session for the given user, or to `null` when signed out.
- * Only the fields the app reads (`userId`, `currentEmail`) are populated.
+ * Only the fields the app reads (`userId`, `currentEmail`, `fullName`) are populated.
  */
 export function signInAs(
-  user: { id: string; email?: string | null } | null,
+  user: { id: string; email?: string | null; name?: string | null } | null,
 ): void {
   if (user === null) {
     mockedAuth.mockResolvedValue(null);
@@ -20,6 +20,7 @@ export function signInAs(
     expires: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
     userId: user.id,
     currentEmail: user.email ?? null,
+    fullName: user.name ?? null,
     emailVerified: true,
   } as Session;
   mockedAuth.mockResolvedValue(session);

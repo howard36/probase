@@ -43,8 +43,8 @@ export default async function InvitePage({
     return <NotLoggedIn invite={invite} />;
   }
 
-  const email = user.session.currentEmail;
-  if (email === null || email === undefined) {
+  const email = user.email;
+  if (email === null) {
     throw new Error("session.email is null or undefined");
   }
 
