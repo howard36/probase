@@ -31,7 +31,7 @@ The page is built on the server from its address. The search box shows the `sear
 
 On a window at least 1280 px wide the controls sit in a column to the right of the list and stay in view as the list scrolls. On narrower windows they come first, above the list. From top to bottom:
 
-1. **"Add Problem"**, for Admins and TeamMembers (see [adding a problem](adding-a-problem.md)). Between 640 and 1280 px wide it shares a row with the search box.
+1. **"Add Problem"**, for Admins and TeamMembers (see [adding a problem](adding-a-problem.md)). Between 640 and 1279 px wide it shares a row with the search box.
 2. **The search box**: a tall white box with rounded corners, the placeholder "Search", and a magnifier icon at its right end. The icon is decoration, not a button.
 3. **Four checkboxes**, stacked: "Algebra", "Combinatorics", "Geometry", "Number Theory". A checked box is violet with a white tick.
 4. **"Archived"**, a switch: violet when on, gray when off.

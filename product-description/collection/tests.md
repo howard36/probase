@@ -138,9 +138,9 @@ The test page has nothing to edit, so every "While editing" cell is not applicab
 
 ## Open questions and verification
 
-- Ignoring the name part was confirmed on a first local pass (`/c/ts/t/anything-1` opened test 1). Not checking the collection in the address against the test's own was read from code. Whether it should be checked is a product call; nothing leaks, since the viewer's permission is checked on the test's own collection.
+- Ignoring the name part and the collection in the address were both confirmed on a first local pass: `/c/anything/t/whatever-1`, under a collection that does not exist, opened test 1 of `ts`. Whether the collection should be checked is a product question.
 - The missing testsolver-type check was confirmed on a first local pass: a member of a collection that requires testsolving, sent to the chooser from the collection page, saw every statement of a test with no padlocks. This looks like a bug: a member can read problems before choosing Serious and then testsolve them with the statements already seen.
-- An address whose last part does not start with a digit (`/t/mock`, `/t/mock-`) turns into a lookup with no valid number, which is expected to fail and show "Something went wrong" rather than "Page not found"; a number too large for the database likewise. Read from code, not tried. If confirmed, this is a bug: it should be "Page not found".
+- An address whose last part is not a number fails with "Something went wrong" (HTTP 500) rather than "Page not found"; confirmed on a first local pass for `/c/ts/t/abc` ([B-28](../bug-triage.md#b-28-a-non-numeric-test-address-shows-something-went-wrong-instead-of-page-not-found)). A number too large for an ID was read from code, not tried.
 - Checking whether the test exists before checking sign-in lets signed-out visitors tell which test numbers exist, as with collections.
 - No automated test covers the test page; everything else here was read from code.
 - Whether the cards should carry the test back to the problem page (a back link to the test, or Previous and Next in the test's order) is a product call.

@@ -83,7 +83,7 @@ The server checks, in this order: the user is signed in; the values are well for
 | The browser is now signed in as a different user who may add problems in the collection         | "Invalid input (authorId): not one of your authors" |
 | Another problem took the same ID at the same moment, the network failed, or anything unexpected | "Something went wrong. Please try again."           |
 
-After an error the "SUBJECT" and "DIFFICULTY" menus may no longer show what was chosen; see [open questions](#open-questions-and-verification).
+After an error the "SUBJECT" and "DIFFICULTY" menus no longer show what was chosen: they show the blank entry if the page was loaded directly, or "Algebra" and the easiest difficulty if it was opened from "Add Problem". Submitting again sends what the menus now show, so the problem is stored with the wrong subject (and so the wrong problem ID) and the wrong difficulty, or the browser refuses the blank menus ([B-33](../bug-triage.md#b-33-after-a-failed-submit-the-add-problem-form-silently-changes-the-subject-and-difficulty)).
 
 > Technical note: React resets a form once its action has run. Text boxes survive the reset, but the two menus are controlled by React and fall back to the browser's default choice (the blank entry, or the first real entry when the page was opened by an in-app link) until the form next re-renders.
 
@@ -143,7 +143,7 @@ After any interrupt that leaves the page, nothing typed survives; a submission t
 
 **Offline.** Filling in the form works offline. Submitting fails with the generic toast and keeps the form; nothing is queued.
 
-**Keyboard and accessibility.** The labels are plain text not tied to their fields, so a screen reader announces the boxes and menus without names (the placeholders, where there are any, stand in). A closed field cannot be reached or reopened with the keyboard, only by clicking. Enter in a single-line box submits the whole form, which a keyboard user may not expect. While pending, "Submit" is disabled and marked busy. The browser's bubbles are its own and are announced by it. See [keyboard and accessibility](../cross-cutting/keyboard-and-accessibility.md).
+**Keyboard and accessibility.** The labels are plain text not tied to their fields, so a screen reader announces the boxes and menus without names (the placeholders, where there are any, stand in). A closed field cannot be reached or reopened with the keyboard, only by clicking. Enter in the integer or AIME box submits the whole form, which a keyboard user may not expect; Enter in the title or a ShortAnswer answer only closes that box. While pending, "Submit" is disabled and marked busy. The browser's bubbles are its own and are announced by it. See [keyboard and accessibility](../cross-cutting/keyboard-and-accessibility.md).
 
 **Narrow screens.** The column is 28 rem wide (32 and 36 rem on wider windows) and shrinks to fit a narrow window, with smaller text; the boxes and menus take its full width and nothing is hidden. See [narrow screens](../cross-cutting/narrow-screens.md).
 
@@ -170,7 +170,7 @@ After any interrupt that leaves the page, nothing typed survives; a submission t
 
 - A first local pass in headless Chromium, on a production build, found: Enter in "TITLE" closes the box and submits nothing, even with every other field filled; Enter in the integer box of an Integer collection submits the whole form; and the first click on "Submit" while the solution box is open sends nothing, the second submits. The lost first click looks like a bug. An earlier reading, that Enter in the title also submits, was wrong.
 - Arrival focus: the first local pass confirmed focus in "SOLUTION" with no scroll at 1280 × 720. Whether a shorter window scrolls down to the solution box on arrival was not checked.
-- The menus after a failed submit were read from React's code, not tried: the form reset is expected to show the blank entry (page loaded directly) or "Algebra" and the easiest difficulty (page opened from "Add Problem") while the form still holds the user's choice. Submitting again straight away would then be refused by the browser, silently drop an optional difficulty, or silently submit the wrong subject and difficulty. Confirm by forcing a failure (for example two simultaneous submissions in one subject). If confirmed, this is a bug.
+- The menus after a failed submit were confirmed in a first local pass: with Number Theory and Hard chosen and the first submit refused (the member's role lowered in the database), the menus showed "Algebra" and "Very easy" (page opened from "Add Problem") or two blank entries (page loaded directly), and a second submit stored the problem as `A25`, Algebra, difficulty 1. This is a bug ([B-33](../bug-triage.md#b-33-after-a-failed-submit-the-add-problem-form-silently-changes-the-subject-and-difficulty)).
 - "Submit" disabling with its spinner until the server answers is taken from a probe of "Post comment" in the running app, which uses the same button and the same kind of form; confirm on this form with a slow connection.
 - Whether the browser still goes to the new problem when the user has left the form while the submission was pending was not confirmed.
 - The server does not enforce the collection's required settings; only the browser does. Whether it should is a product call.

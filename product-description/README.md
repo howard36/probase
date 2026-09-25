@@ -177,41 +177,41 @@ cross-cutting/
 
 Status is one of `not started`, `drafted`, or `verified`.
 
-| Document                                    | Status      |
-| ------------------------------------------- | ----------- |
-| glossary.md                                 | drafted     |
-| bug-triage.md                               | drafted     |
-| verification/ (5 checklists)                | not started |
-| foundations/data-model.md                   | drafted     |
-| foundations/accounts-and-roles.md           | drafted     |
-| foundations/navigation.md                   | drafted     |
-| foundations/saving-and-feedback.md          | drafted     |
-| foundations/click-to-edit.md                | drafted     |
-| entry/home-page.md                          | drafted     |
-| entry/sign-in.md                            | drafted     |
-| entry/invites.md                            | drafted     |
-| entry/error-pages.md                        | drafted     |
-| collection/problem-list.md                  | drafted     |
-| collection/search-and-filters.md            | drafted     |
-| collection/pagination.md                    | drafted     |
-| collection/adding-a-problem.md              | drafted     |
-| collection/tests.md                         | drafted     |
-| problem-page/problem-page.md                | drafted     |
-| problem-page/editing-the-problem.md         | drafted     |
-| problem-page/spoilers.md                    | drafted     |
-| problem-page/solutions.md                   | drafted     |
-| problem-page/discussion.md                  | drafted     |
-| problem-page/likes.md                       | drafted     |
-| problem-page/archiving.md                   | drafted     |
-| testsolving/choosing-a-testsolver-type.md   | drafted     |
-| testsolving/locked-problem.md               | drafted     |
-| testsolving/timed-attempt.md                | drafted     |
-| testsolving/leaderboard.md                  | drafted     |
-| cross-cutting/math-rendering.md             | drafted     |
-| cross-cutting/freshness.md                  | drafted     |
-| cross-cutting/per-collection-settings.md    | drafted     |
-| cross-cutting/keyboard-and-accessibility.md | drafted     |
-| cross-cutting/narrow-screens.md             | drafted     |
+| Document                                    | Status  |
+| ------------------------------------------- | ------- |
+| glossary.md                                 | drafted |
+| bug-triage.md                               | drafted |
+| verification/ (5 checklists)                | drafted |
+| foundations/data-model.md                   | drafted |
+| foundations/accounts-and-roles.md           | drafted |
+| foundations/navigation.md                   | drafted |
+| foundations/saving-and-feedback.md          | drafted |
+| foundations/click-to-edit.md                | drafted |
+| entry/home-page.md                          | drafted |
+| entry/sign-in.md                            | drafted |
+| entry/invites.md                            | drafted |
+| entry/error-pages.md                        | drafted |
+| collection/problem-list.md                  | drafted |
+| collection/search-and-filters.md            | drafted |
+| collection/pagination.md                    | drafted |
+| collection/adding-a-problem.md              | drafted |
+| collection/tests.md                         | drafted |
+| problem-page/problem-page.md                | drafted |
+| problem-page/editing-the-problem.md         | drafted |
+| problem-page/spoilers.md                    | drafted |
+| problem-page/solutions.md                   | drafted |
+| problem-page/discussion.md                  | drafted |
+| problem-page/likes.md                       | drafted |
+| problem-page/archiving.md                   | drafted |
+| testsolving/choosing-a-testsolver-type.md   | drafted |
+| testsolving/locked-problem.md               | drafted |
+| testsolving/timed-attempt.md                | drafted |
+| testsolving/leaderboard.md                  | drafted |
+| cross-cutting/math-rendering.md             | drafted |
+| cross-cutting/freshness.md                  | drafted |
+| cross-cutting/per-collection-settings.md    | drafted |
+| cross-cutting/keyboard-and-accessibility.md | drafted |
+| cross-cutting/narrow-screens.md             | drafted |
 
 ## Reference
 
