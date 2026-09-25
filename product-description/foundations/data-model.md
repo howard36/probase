@@ -114,6 +114,14 @@ Across collections, nothing is shared. A problem, an author or a test belongs to
 
 Nothing, through the interface. Problems can be archived; comments, solutions, likes (other than by unliking), attempts, tests, invites, authors, permissions and users can only be removed in the database. Deleting a collection in the database deletes everything in it.
 
+## Edge cases
+
+- A problem created in the database with an ID that does not start with a subject letter (or with letters after the first) breaks the arithmetic of Previous and Next, which then lead to "Page not found".
+- Two problems created at the same instant are ordered on the collection page by which was stored last.
+- A comment, like, attempt or solution by a user who is later removed from the collection stays, and still shows their name.
+- A test can list problems at positions with gaps (1, 2, 5); the test page shows the positions as stored.
+- Every problem submitted through the form starts with one like, its submitter's, so a count of 1 usually means nobody else has liked it.
+
 ## Open questions and verification
 
 - The rule that a new problem ID follows the most recently created problem in the subject, not the highest number, was read from code and the add-problem tests. It matters only when IDs were created by hand.

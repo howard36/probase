@@ -109,6 +109,13 @@ Navigation is the interrupt in most other documents; this table covers a navigat
 | The window loses focus              | No effect.                                                      | No effect.                                                                                                                               |
 | The testsolve time limit passes     | No effect on navigation.                                        | No effect on navigation; the problem page's own view reflects it when it arrives.                                                        |
 
+## Edge cases
+
+- A problem card links with the collection page's query string attached, so a bookmarked problem address can carry a stale search that only matters to its back link.
+- The subject chip on a problem page reached from a filtered list resets the list to that one subject, dropping the search, the Archived switch and the page number.
+- The sidebar highlights a collection when the address starts with its slug, which in practice happens only on a "Page not found" under that collection's address.
+- A test page's address accepts any text before the final number, so two different-looking addresses can show the same test.
+
 ## Open questions and verification
 
 - The five-minute reuse of eagerly prefetched pages follows from the framework's defaults for prefetched links and was not observed. Confirm on a production build by changing a problem in a second browser and opening it from a card that was already on screen.
