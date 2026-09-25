@@ -34,7 +34,7 @@ Do not describe code. Describe what the user sees and does. Technical detail goe
 Saving and feedback ([foundations/saving-and-feedback.md](foundations/saving-and-feedback.md)):
 
 - Every change is an action that answers ok or an error. Errors are shown as toasts in the bottom-right corner, 8 seconds each, stacked, with a close button; there are no success toasts. Unexpected failures (server, network, database collisions) show "Something went wrong. Please try again."
-- No submit button ever shows its spinner or disables itself: every form hands its action off and finishes at once. A second click sends a second request. Say what that does in each feature document.
+- Form submit buttons ("Post comment", "Start testsolving", the timed attempt's "Submit" and "Give Up", the add-problem "Submit") disable themselves and show a spinner while their action is pending; a second click does nothing. Plain buttons ("Accept Invite", "Confirm", Add Solution's "Submit", "Give Up" with an empty answer box) have no pending state, and a second click sends a second request: say what that does in each feature document. (Confirmed for "Post comment" in the running app.)
 - Optimistic controls: the heart, the Archive switch, and problem-page click-to-edit fields. They roll back on error. Everything else waits for the server.
 - A successful action refreshes the page in place (scroll and typed text in components that stay are kept) and clears the browser's cache of other pages. A refresh does not update the heart, the Archive switch, or click-to-edit fields, which keep the value they were first given; lists and read-only text do update.
 - Nothing is saved in the browser. No drafts, no "leave this page?" warning.

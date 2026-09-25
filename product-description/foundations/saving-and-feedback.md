@@ -14,21 +14,21 @@ A member edits something (posts a comment, likes a problem, saves a title). Depe
 
 Every action Probase has, where it is triggered, and what the user sees on each outcome. "Refresh" means the page reloads its data from the server in place, without a full browser reload.
 
-| Action                   | Triggered from                          | While pending                   | On success                                                                                     | On error                                         |
-| ------------------------ | --------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Like or unlike           | The heart on a card or the problem page | Heart and count already changed | Refresh                                                                                        | Toast; heart and count put back                  |
-| Save the title or answer | Click-to-edit field on the problem page | New text already shown          | Refresh                                                                                        | Toast; old text shown, editor reopens with draft |
-| Save the statement       | Click-to-edit field on the problem page | New text already shown          | Refresh                                                                                        | Toast; old text shown, editor reopens with draft |
-| Archive or unarchive     | The Archive switch                      | Switch already moved            | Refresh                                                                                        | Toast; switch put back                           |
-| Post a comment           | "Post comment"                          | Nothing changes                 | Refresh; comment box empties                                                                   | Toast; text kept                                 |
-| Add a solution           | "Submit" under the Add Solution box     | Nothing changes                 | Refresh; the box is replaced by the solution                                                   | Toast; text kept                                 |
-| Edit a solution          | Click-to-edit field in the spoilers     | New text already shown          | Refresh                                                                                        | Toast; old text shown, editor reopens with draft |
-| Start testsolving        | "Start testsolving"                     | Nothing changes                 | Refresh into the testsolving view                                                              | Toast; still locked                              |
-| Submit an answer         | "Submit" in the timed attempt           | Nothing changes                 | Correct: refresh into the unlocked view. Wrong: "{answer} is incorrect! ({n}/5)", box empties. | Toast; answer kept                               |
-| Give up                  | "Give Up" in the timed attempt          | Nothing changes                 | Refresh into the unlocked view                                                                 | Toast; attempt continues                         |
-| Add a problem            | "Submit" on the add-problem form        | Nothing changes                 | The new problem's page opens                                                                   | Toast; form kept as filled                       |
-| Accept an invite         | "Accept Invite"                         | Nothing changes                 | The collection page opens                                                                      | Toast; invite page stays                         |
-| Choose a testsolver type | "Confirm" on the chooser                | Nothing changes                 | The collection page opens                                                                      | Toast; chooser stays                             |
+| Action                   | Triggered from                          | While pending                              | On success                                                                                     | On error                                         |
+| ------------------------ | --------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Like or unlike           | The heart on a card or the problem page | Heart and count already changed            | Refresh                                                                                        | Toast; heart and count put back                  |
+| Save the title or answer | Click-to-edit field on the problem page | New text already shown                     | Refresh                                                                                        | Toast; old text shown, editor reopens with draft |
+| Save the statement       | Click-to-edit field on the problem page | New text already shown                     | Refresh                                                                                        | Toast; old text shown, editor reopens with draft |
+| Archive or unarchive     | The Archive switch                      | Switch already moved                       | Refresh                                                                                        | Toast; switch put back                           |
+| Post a comment           | "Post comment"                          | Button disabled, with a spinner            | Refresh; comment box empties                                                                   | Toast; text kept                                 |
+| Add a solution           | "Submit" under the Add Solution box     | Nothing changes                            | Refresh; the box is replaced by the solution                                                   | Toast; text kept                                 |
+| Edit a solution          | Click-to-edit field in the spoilers     | New text already shown                     | Refresh                                                                                        | Toast; old text shown, editor reopens with draft |
+| Start testsolving        | "Start testsolving"                     | Button disabled, with a spinner            | Refresh into the testsolving view                                                              | Toast; still locked                              |
+| Submit an answer         | "Submit" in the timed attempt           | Submit and Give Up disabled, with spinners | Correct: refresh into the unlocked view. Wrong: "{answer} is incorrect! ({n}/5)", box empties. | Toast; answer kept                               |
+| Give up                  | "Give Up" in the timed attempt          | Nothing changes                            | Refresh into the unlocked view                                                                 | Toast; attempt continues                         |
+| Add a problem            | "Submit" on the add-problem form        | Button disabled, with a spinner            | The new problem's page opens                                                                   | Toast; form kept as filled                       |
+| Accept an invite         | "Accept Invite"                         | Nothing changes                            | The collection page opens                                                                      | Toast; invite page stays                         |
+| Choose a testsolver type | "Confirm" on the chooser                | Nothing changes                            | The collection page opens                                                                      | Toast; chooser stays                             |
 
 The details of each belong to the feature documents: [likes](../problem-page/likes.md), [editing the problem](../problem-page/editing-the-problem.md), [archiving](../problem-page/archiving.md), [the discussion](../problem-page/discussion.md), [solutions](../problem-page/solutions.md), [the locked problem](../testsolving/locked-problem.md), [the timed attempt](../testsolving/timed-attempt.md), [adding a problem](../collection/adding-a-problem.md), [invites](../entry/invites.md), [choosing a testsolver type](../testsolving/choosing-a-testsolver-type.md).
 
@@ -63,13 +63,13 @@ What the first change does depends on the kind of control:
 
 ### While editing
 
-While an action is pending, nothing on the page tells the user so. The buttons that submit forms ("Post comment", "Start testsolving", the timed attempt's "Submit" and "Give Up", the add-problem "Submit") are built to show a spinner and disable themselves while their form is pending, but their forms hand the request off and finish immediately, so in practice the button never shows a spinner and never disables. The other waiting buttons ("Accept Invite", "Confirm", Add Solution's "Submit") have no pending state at all.
+Only buttons that submit a form show that an action is pending. "Post comment", "Start testsolving", the timed attempt's "Submit" and "Give Up", and the add-problem "Submit" turn pale, show a small spinning ring to the left of their label, and ignore clicks until the server answers. Every submit button in the same form does this together, so while an answer is being judged both "Submit" and "Give Up" are disabled. The pending state ends when the action's answer arrives, which can be slightly before the page finishes refreshing.
 
-So during a pending action the user can click the same button again, and a second request is sent. What a second request does depends on the action: a second comment or solution is posted, a second answer submission uses up another of the five tries, a second problem is added (or fails with the generic error if both tried to take the same [problem ID](../glossary.md#records)), and a second "Start testsolving", "Accept Invite" or "Confirm" fails or does nothing harmful. The feature documents list the consequences.
+The other waiting buttons ("Accept Invite", the chooser's "Confirm", Add Solution's "Submit", and "Give Up" when it is pressed with an empty answer box) are plain buttons with no pending state: they stay enabled, and a second click sends a second request. What that does depends on the action and is described in each feature document; none of them does lasting harm. Optimistic controls have no pending state either, since the page has already changed.
 
 The rest of the page stays usable while an action is pending. Several actions can be in flight at once; each settles on its own.
 
-> Technical note: the forms' action functions call the server action without returning its promise, so React considers the form's transition finished as soon as it starts, and `useFormStatus()` never reports it as pending for long enough to render.
+> Technical note: the forms' action functions call the server action without returning its promise, but React ties the server action's own pending request to the form's transition, so `useFormStatus()` reports the form as pending until the server answers.
 
 ### Submit
 
@@ -185,7 +185,7 @@ Two quick clicks on an optimistic control send two requests in order; each rolls
 
 ## Open questions and verification
 
-- That no submit button ever shows its spinner or disables itself was read from code. Confirm on a throttled connection, and confirm the consequences listed under [While editing](#while-editing). This may be worth treating as a bug rather than documenting.
+- A first local pass confirmed that "Post comment" disables itself and shows its spinner while pending, and that a second click during that time sends nothing. The other form buttons use the same mechanism and were not all checked.
 - That a refresh does not update the heart, the Archive switch or click-to-edit fields was read from code (each keeps the value it was first given). Confirm by changing a problem in a second tab and then triggering a refresh in the first.
 - The eager prefetch of the add-problem page and the author it creates were read from code and Next.js's behavior; confirm on a production build.
 - Several deliberate messages are worded for developers. Whether to rewrite them is a product call.

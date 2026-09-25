@@ -54,7 +54,7 @@ Typing in the answer box is the first change. The box refuses anything that is n
 
 ### While editing
 
-The countdown ticks every second whatever the user is doing. Submit and Give Up are always enabled; there is no spinner while a request is pending ([saving and feedback](../foundations/saving-and-feedback.md)).
+The countdown ticks every second whatever the user is doing. While an answer is being judged, "Submit" and "Give Up" both turn pale, show spinners and ignore presses ([saving and feedback](../foundations/saving-and-feedback.md)); the box stays editable.
 
 **Keys.** Enter in the answer box submits the answer, exactly as "Submit" does. Tab moves from the box to "Submit" and then to "Give Up". Escape does nothing.
 
@@ -82,7 +82,7 @@ There are three ways to finish, and each is sent to the server, which uses its o
 
 After the fifth wrong answer ("... is incorrect! (0/5)") the attempt does **not** end. The view stays as it is, every further Submit is refused with "Reached maximum number of submissions (5)", and the user must either press Give Up or wait for the clock to run out before the problem unlocks.
 
-**Give Up.** Pressing "Give Up" sends a give-up at once, with no confirmation. The server checks the same things as for an answer, except the submission count, and allows no grace buffer: at or after the deadline it refuses with "Tried to submit after testsolve finished". On success the attempt is marked given up and the page refreshes into the unlocked view.
+**Give Up.** Pressing "Give Up" sends a give-up at once, with no confirmation. When the answer box is empty, the button has no pending state, so a second press sends a second give-up, which is refused with "Tried to submit after testsolve finished" if the first has already been recorded. The server checks the same things as for an answer, except the submission count, and allows no grace buffer: at or after the deadline it refuses with "Tried to submit after testsolve finished". On success the attempt is marked given up and the page refreshes into the unlocked view.
 
 Give Up is also a submit button of the answer form, so pressing it submits the form too:
 
@@ -155,7 +155,7 @@ After any of the three, the attempt is finished for good. The problem is unlocke
 
 - The countdown is computed with the browser's clock. If it is ahead of the server's, the countdown reaches zero early and the page keeps showing "Finished!" (and asking for a fresh page every second) until the server's deadline passes. If it is behind, the countdown shows time left after the server has already refused further answers.
 - The time a correct answer takes to reach the server counts against the solve time; the grace buffer protects only against the deadline, not against the leaderboard.
-- Two quick presses of Submit send the same answer twice. Both count: a wrong answer uses two of the five tries, and a correct one records a solve with one wrong answer and a later time.
+- A second press of Submit while an answer is being judged is ignored. After a correct answer, though, the answer stays in the box until the refreshed page replaces it, and pressing Enter in that moment submits it again: the attempt, already solved, records a second submission (shown on the leaderboard as a wrong answer) and a later solve time.
 - "({n}/5)" shows answers remaining, not answers used: the first wrong answer shows "(4/5)".
 - Clearing the box after a wrong answer means a typo cannot be corrected by editing; the answer must be retyped.
 - A problem whose answer is empty or absent can be testsolved but never solved; every answer is wrong.
@@ -164,9 +164,9 @@ After any of the three, the attempt is finished for good. The problem is unlocke
 
 ## Open questions and verification
 
-- Give Up submitting the answer form as well as giving up was read from code (it is a submit button inside the form with its own click handler). Confirm both cases by hand. This looks like a bug.
+- Give Up submitting the answer form as well as giving up was read from code (it is a submit button inside the form with its own click handler). A first local pass confirmed that with an answer typed, one press of Give Up sends two requests; in that run the give-up was recorded first and the answer was not counted. The empty-box case (the browser's bubble) was not checked. This looks like a bug.
 - The attempt not ending after the fifth wrong answer was read from code. Whether it should end (as a give-up) is a product call.
-- Submissions after the attempt is solved still counting (from a second tab or a double press), including moving the solve time, was read from code: nothing refuses a submission to a solved attempt. This looks like a bug.
+- Submissions after the attempt is solved still counting (from a second tab, or Enter pressed again as the page refreshes), including moving the solve time, was read from code: nothing refuses a submission to a solved attempt. This looks like a bug.
 - The integer box being used for ShortAnswer and Proof collections was read from code. In a ShortAnswer collection that requires testsolving, many answers cannot be entered; this may be worth treating as a bug.
 - The countdown's behavior with a skewed browser clock, and the once-a-second refresh after "Finished!", were read from code and not observed.
 - Whether the browser offers earlier answers for the answer box depends on the browser's form history; the box does not opt out.

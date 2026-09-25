@@ -46,7 +46,7 @@ Pressing "Start testsolving" (by click, or Enter or Space when it has focus) is 
 
 ### While editing
 
-While the request is pending, the page does not change and the button does not disable or show its spinner ([saving and feedback](../foundations/saving-and-feedback.md)). A second press sends a second request, which fails because the attempt already exists: the user sees "Something went wrong. Please try again." even though the first request succeeded and the page is about to show the attempt.
+While the request is pending, the page does not change; "Start testsolving" turns pale, shows a spinner and ignores further presses ([saving and feedback](../foundations/saving-and-feedback.md)). The button comes back to life when the server answers, a moment before the refreshed page replaces it; a press in that moment sends a second start, which fails because the attempt already exists, and shows "Something went wrong. Please try again." even though the attempt has started.
 
 The heart and the links remain usable meanwhile.
 
@@ -57,13 +57,13 @@ The server checks that the user is signed in, that the problem exists, and that 
 - **Ok.** The page refreshes and, since the user now has a running attempt, shows the [testsolving view](timed-attempt.md). The time limit counts from the moment the server recorded the start, so the time the refresh takes is already spent.
 - **Error.** A toast, and the page stays locked:
 
-| Situation                                               | Toast                                                |
-| ------------------------------------------------------- | ---------------------------------------------------- |
-| The session has ended                                   | "Not signed in"                                      |
-| The problem no longer exists                            | "Problem not found"                                  |
-| The user can no longer view the collection              | "You do not have permission to edit this collection" |
-| An attempt already exists (a second press, another tab) | "Something went wrong. Please try again."            |
-| The network, or anything unexpected                     | "Something went wrong. Please try again."            |
+| Situation                                                                   | Toast                                                |
+| --------------------------------------------------------------------------- | ---------------------------------------------------- |
+| The session has ended                                                       | "Not signed in"                                      |
+| The problem no longer exists                                                | "Problem not found"                                  |
+| The user can no longer view the collection                                  | "You do not have permission to edit this collection" |
+| An attempt already exists (another tab, or a press just before the refresh) | "Something went wrong. Please try again."            |
+| The network, or anything unexpected                                         | "Something went wrong. Please try again."            |
 
 An attempt, once started, can never be undone or restarted.
 
@@ -134,12 +134,12 @@ On the [collection page](../collection/problem-list.md) and the [test page](../c
 - The heart works on a locked problem: a testsolver can like a problem they cannot read.
 - The lightbulbs and test chips are visible while locked, so a testsolver knows the difficulty (and the time limit) before starting.
 - "A correct first submission can earn you a spot on the leaderboard" understates the rule: a solve after wrong answers also ranks, below solves with fewer wrong answers.
-- Two quick presses start the attempt and also show a generic error toast.
+- A press in the instant between the server's answer and the refreshed page starts nothing new but shows a generic error toast.
 - The "unsolved" line counts solves by anyone, including users who solved it long ago.
 
 ## Open questions and verification
 
-- That the start does not check the user's testsolver type, and that a second press produces a generic error toast alongside a successful start, were read from code and tests ("cannot be started twice"). Confirm the toast by hand.
+- That the start does not check the user's testsolver type, and that a start on an existing attempt produces the generic error toast, were read from code and tests ("cannot be started twice"). A first local pass confirmed that one press sends one request and the countdown starts at the full time limit ("14m 59s" for 15 minutes).
 - The locked view's promise about "a correct first submission" is worded more narrowly than the leaderboard's ranking; whether to reword it is a product call.
 - The time spent between the server recording the start and the page showing the countdown was not measured.
 
