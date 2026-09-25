@@ -137,7 +137,7 @@ After any interrupt the user is on whatever page the address bar shows; nothing 
 
 **Keyboard and accessibility.** The row is a navigation region named "pagination". Page numbers are announced as "Page {n}", the arrows as "Previous page" and "Next page", and the current page is marked as the current page. Links show a focus ring. See [keyboard and accessibility](../cross-cutting/keyboard-and-accessibility.md).
 
-**Narrow screens.** The row never wraps. With both arrows and five numbers it is about 385 px wide, more than the 343 px a 375 px phone leaves for it, so it may spill past both edges of the window. See [narrow screens](../cross-cutting/narrow-screens.md).
+**Narrow screens.** The row never wraps. With both arrows and five numbers it is about 390 px wide, more than the 343 px a 375 px phone leaves for it, so it may spill past both edges of the window. See [narrow screens](../cross-cutting/narrow-screens.md).
 
 **Side effects.** None. Loading pages in the background runs the collection page on the server without storing anything.
 
