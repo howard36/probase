@@ -120,6 +120,8 @@ The vocabulary used across these documents. When a document uses one of these wo
 
 **Optimistic update.** Changing what the page shows the moment the user acts, before the server answers, and changing it back (_rolling back_) if the server answers with an error. The heart, the Archive switch and the click-to-edit fields do this. Other forms wait for the server.
 
+**Rebuild.** The collection page being built again on the server with the current URL's search, filters and page, after one of them changes or after a successful like on a card. A rebuild is the collection page's form of a [refresh](#interaction): cards are redrawn from the server's current data, while hearts that stay on screen keep their own state.
+
 **Refresh.** The page asking the server for a fresh copy of itself without a full browser reload, keeping scroll position and any typed text in components that stay on screen. It happens after most successful actions (the server marks the page stale as part of the action) and, on the problem page, when an attempt starts, finishes, or runs out of time.
 
 **Inline editing.** Changing a field in place on the page it is shown on, rather than on a separate form. See [click-to-edit](#interface).
@@ -170,11 +172,15 @@ These are the rows of every document's "Cancel and interrupt" table, in this ord
 
 **Sidebar.** The fixed column on the left of the home page and the two error pages that have one ("Page not found", "You need permission"), headed "Probase" and linking to the collections listed in the code-level configuration. It does not appear on collection, problem, test, add-problem, invite or login pages. It is not filtered by permission: it lists the same collections to everyone.
 
+**Answer box.** The field a numeric answer is typed into: the **integer box** ("Enter an integer"; an optional leading minus sign and digits, leading zeros removed) or the **three-digit box** ("Enter a number (0-999)"; up to three digits). The collection's answer format picks it: AIME collections get the three-digit box, every other format the integer box in a timed attempt. The add-problem form uses the same boxes for Integer and AIME collections.
+
 **Back link.** The underlined "‹ Back to {collection name}" link at the top left of the problem page, the add-problem page and the test page. On the problem page it keeps the collection page's search and filters.
 
 **Card.** A problem's white rounded box on the collection page (problem ID, title, statement or padlock, heart, lightbulbs), or a problem's box on the test page ("PROBLEM {n}" and the statement or padlock). The whole card is a link to the problem page.
 
 **Chip.** A rounded pill under a problem's title on the problem page: one colored subject chip (a link to the collection page filtered to that subject) and one gray chip per test the problem belongs to.
+
+**Filters.** The collection page's search box, subject checkboxes, "Archived" switch and "Unsolved only" switch. They narrow the problem list, live only in the URL, and are applied by the server on every change; nothing is saved and there is no Apply button. [Search and filters](collection/search-and-filters.md) owns them.
 
 **Heart.** The like control: a heart icon and a like count, rose-colored when the user has liked the problem and gray otherwise.
 

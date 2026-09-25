@@ -188,11 +188,11 @@ Status is one of `not started`, `drafted`, or `verified`.
 | foundations/click-to-edit.md                | drafted     |
 | entry/home-page.md                          | not started |
 | entry/sign-in.md                            | not started |
-| entry/invites.md                            | not started |
+| entry/invites.md                            | drafted     |
 | entry/error-pages.md                        | not started |
-| collection/problem-list.md                  | not started |
-| collection/search-and-filters.md            | not started |
-| collection/pagination.md                    | not started |
+| collection/problem-list.md                  | drafted     |
+| collection/search-and-filters.md            | drafted     |
+| collection/pagination.md                    | drafted     |
 | collection/adding-a-problem.md              | not started |
 | collection/tests.md                         | not started |
 | problem-page/problem-page.md                | drafted     |
@@ -200,7 +200,7 @@ Status is one of `not started`, `drafted`, or `verified`.
 | problem-page/spoilers.md                    | drafted     |
 | problem-page/solutions.md                   | drafted     |
 | problem-page/discussion.md                  | drafted     |
-| problem-page/likes.md                       | not started |
+| problem-page/likes.md                       | drafted     |
 | problem-page/archiving.md                   | drafted     |
 | testsolving/choosing-a-testsolver-type.md   | drafted     |
 | testsolving/locked-problem.md               | drafted     |
@@ -208,7 +208,7 @@ Status is one of `not started`, `drafted`, or `verified`.
 | testsolving/leaderboard.md                  | drafted     |
 | cross-cutting/math-rendering.md             | not started |
 | cross-cutting/freshness.md                  | not started |
-| cross-cutting/per-collection-settings.md    | not started |
+| cross-cutting/per-collection-settings.md    | drafted     |
 | cross-cutting/keyboard-and-accessibility.md | not started |
 | cross-cutting/narrow-screens.md             | not started |
 
