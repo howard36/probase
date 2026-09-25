@@ -153,6 +153,7 @@ After an interrupt that reopens the editor, the user is still in the editor with
 - Clicking a field that is already open does nothing; clicking a second field while one is open saves (or leaves open) the first by blur and opens the second.
 - Two single-line fields cannot be open at once, because opening the second blurs the first. Two problem-page multi-line fields (the statement and the solution) can be open at once.
 - An answer that was given and then needs to be withdrawn cannot be emptied here; there is no way in the interface to go back to an empty answer.
+- Clicking a button below an open box ("Submit" on the add-problem form, for example) first closes the box, which usually makes it shorter, so the button moves up under the pointer and the click can be lost. On the add-problem form a first local pass confirmed it: the first click on "Submit" with the solution box open sent nothing.
 
 ## Open questions and verification
 

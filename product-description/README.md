@@ -186,10 +186,10 @@ Status is one of `not started`, `drafted`, or `verified`.
 | foundations/navigation.md                   | drafted     |
 | foundations/saving-and-feedback.md          | drafted     |
 | foundations/click-to-edit.md                | drafted     |
-| entry/home-page.md                          | not started |
-| entry/sign-in.md                            | not started |
+| entry/home-page.md                          | drafted     |
+| entry/sign-in.md                            | drafted     |
 | entry/invites.md                            | drafted     |
-| entry/error-pages.md                        | not started |
+| entry/error-pages.md                        | drafted     |
 | collection/problem-list.md                  | drafted     |
 | collection/search-and-filters.md            | drafted     |
 | collection/pagination.md                    | drafted     |
@@ -206,7 +206,7 @@ Status is one of `not started`, `drafted`, or `verified`.
 | testsolving/locked-problem.md               | drafted     |
 | testsolving/timed-attempt.md                | drafted     |
 | testsolving/leaderboard.md                  | drafted     |
-| cross-cutting/math-rendering.md             | not started |
+| cross-cutting/math-rendering.md             | drafted     |
 | cross-cutting/freshness.md                  | not started |
 | cross-cutting/per-collection-settings.md    | drafted     |
 | cross-cutting/keyboard-and-accessibility.md | not started |
