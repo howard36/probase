@@ -197,8 +197,8 @@ Status is one of `not started`, `drafted`, or `verified`.
 | collection/tests.md                         | not started |
 | problem-page/problem-page.md                | drafted     |
 | problem-page/editing-the-problem.md         | not started |
-| problem-page/spoilers.md                    | not started |
-| problem-page/solutions.md                   | not started |
+| problem-page/spoilers.md                    | drafted     |
+| problem-page/solutions.md                   | drafted     |
 | problem-page/discussion.md                  | drafted     |
 | problem-page/likes.md                       | not started |
 | problem-page/archiving.md                   | not started |

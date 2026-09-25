@@ -57,7 +57,7 @@ Once an answer has text, the interface cannot empty it again; [click-to-edit](cl
 
 ### Solution
 
-A written solution, attributed to authors. The form creates one when its solution field is filled; the problem page's "Add Solution" creates one when the problem has none. A problem can have several in the database, but every page shows only the first, and "Add Solution" is offered only while there are none, so the interface creates at most one per problem.
+A written solution, attributed to authors. The form creates one when its solution field is filled; the problem page's "Add Solution" creates one when the problem has none. A problem can have several in the database, and every page shows only the first. "Add Solution" is offered only while there are none, but the server does not check that, so a double submit, two members adding at once, or a submit from a page loaded before someone else added one each create an extra solution that is never shown and cannot be removed through the interface (see [solutions](../problem-page/solutions.md#edge-cases)).
 
 ### Author
 
