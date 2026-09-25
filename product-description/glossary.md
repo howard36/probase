@@ -184,6 +184,8 @@ These are the rows of every document's "Cancel and interrupt" table, in this ord
 
 **Spoilers.** The answer and solution on an unlocked problem page, hidden behind a "Show spoilers" button until clicked. Hiding them is a courtesy to readers, not access control.
 
+**Add Solution.** The prompt "No solutions yet. You could be the first!" with an "Add Solution" button, shown inside the spoilers of an unlocked problem that has no solution, to any user with an [author](#people-and-access) in the collection. The button opens a multi-line box ("Write your solution here!") with "Submit" and "Discard"; Shift/Ctrl/Cmd+Enter submits, Escape clears and closes it, and blur does nothing. See [solutions](problem-page/solutions.md).
+
 **Discussion.** The "Discussion" section at the bottom of an unlocked problem page: a comment box, a "Post comment" button, and the comments posted so far.
 
 **Toast.** A red notice in the bottom-right corner of the window that shows an action's error message. Toasts stack, each has a close button, and each disappears on its own after 8 seconds. Probase has no success toasts.

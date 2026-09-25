@@ -34,7 +34,7 @@ A user has at most one permission per collection, so at most one role. The role 
 | Open the collection page, problem pages and test pages    | Yes            | Yes                     | Yes      | No                                             | No            |
 | See the "Add Problem" button and use the add-problem form | Yes            | Yes                     | No       | Yes, by typing the form's URL                  | No            |
 | Edit a problem's title, statement and answer; archive it  | Every problem  | Problems they authored  | No       | Problems they authored (but cannot open them)  | No            |
-| Add the first solution to a problem                       | Yes¹           | Yes¹                    | No       | No                                             | No            |
+| Add the first solution to a problem                       | Yes¹           | Yes¹                    | No²      | No                                             | No            |
 | Edit a solution                                           | Every solution | Solutions they authored | No       | Solutions they authored (but cannot open them) | No            |
 | Comment                                                   | Yes            | Yes                     | Yes      | Allowed, but cannot open a problem page        | No            |
 | Like a problem                                            | Yes            | Yes                     | Yes      | No                                             | No            |
@@ -44,6 +44,8 @@ A user has at most one permission per collection, so at most one role. The role 
 | Skip an invite to the collection ("Already Joined")       | Yes            | Yes                     | No       | No                                             | No            |
 
 ¹ Only once they have an author in the collection; see [authorship](#authorship).
+
+² The page still offers "Add Solution" to a ViewOnly member who has an author (kept from an earlier role), but every submit is refused; see [solutions](../problem-page/solutions.md).
 
 The same rules in words:
 
