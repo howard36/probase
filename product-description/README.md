@@ -193,8 +193,8 @@ Status is one of `not started`, `drafted`, or `verified`.
 | collection/problem-list.md                  | drafted     |
 | collection/search-and-filters.md            | drafted     |
 | collection/pagination.md                    | drafted     |
-| collection/adding-a-problem.md              | not started |
-| collection/tests.md                         | not started |
+| collection/adding-a-problem.md              | drafted     |
+| collection/tests.md                         | drafted     |
 | problem-page/problem-page.md                | drafted     |
 | problem-page/editing-the-problem.md         | drafted     |
 | problem-page/spoilers.md                    | drafted     |
