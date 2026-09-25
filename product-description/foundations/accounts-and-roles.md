@@ -109,7 +109,7 @@ A page shows what the user's access allowed when it was built. If the role is ch
 - A user row created ahead of time with someone's email (as the demo seed does) is taken over by whoever first signs in to Google with that address, with whatever permissions it already has.
 - A member whose role is SubmitOnly and who also has an author can edit their own problems by rule, but cannot open any page where editing happens.
 - A ViewOnly member who kept an author from an earlier role is shown "Add Solution" and refused on every submit.
-- Two browser tabs signed in as different Google accounts are not possible: the session is per browser, and signing in again replaces it.
+- Two browser tabs signed in as different Google accounts are not possible: the session is per browser, and signing in again keeps the same Probase user (see [the session](#the-session)).
 - Deleting a user's permission in the database does not end their session; they simply see "You need permission" on their next collection page load.
 
 ## Open questions and verification

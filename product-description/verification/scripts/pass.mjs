@@ -553,7 +553,10 @@ await check("test.bad-number", async () => {
   const r = await p.goto(BASE + "/c/ts/t/abc");
   const h = await p.locator("h1").allInnerTexts();
   await p._ctx.close();
-  return [true, `status ${r.status()}, h1 ${JSON.stringify(h)}`];
+  return [
+    r.status() === 500 && h[0] === "Something went wrong",
+    `status ${r.status()}, h1 ${JSON.stringify(h)}`,
+  ];
 });
 
 // ---------- problem page ----------
