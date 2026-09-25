@@ -23,7 +23,7 @@ Changing one's Google name or email later has no effect until the next sign-in, 
 
 A successful sign-in gives the browser a session valid for 30 days. Nothing in Probase's pages renews it: the pages read the session but never ask for a fresh one, so it ends 30 days after sign-in however often the user visits. When it ends, the user is signed out without warning. A page already open keeps working until the user acts or navigates: every [action](../glossary.md#interaction) then answers "Not signed in", and every collection page redirects to the login page, which returns them to where they were once they sign in again.
 
-There is no way to sign out from the interface. The authentication library's own sign-out page exists at `/api/auth/signout`, but nothing links to it. Signing in with a different Google account means signing out there (or clearing the site's cookies) first; the one place Probase offers a different account is the invite page's wrong-domain state, whose button starts a fresh Google sign-in.
+There is no way to sign out from the interface. The authentication library's own sign-out page exists at `/api/auth/signout`, but nothing links to it. Signing in again while signed in does not switch users: a Google account Probase has never seen is attached to the Probase user already signed in (who then carries that account's email, and whom that Google account will sign in as from then on), and a Google account that belongs to another Probase user is refused on the library's own page. The only way to become a different user is to sign out at that address, or clear the site's cookies, first. The invite page's wrong-domain state offers a "Log in with Google" button, which works exactly this way.
 
 ## Roles
 

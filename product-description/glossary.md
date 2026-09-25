@@ -6,7 +6,7 @@ The vocabulary used across these documents. When a document uses one of these wo
 
 **Probase.** The web site this description covers: a private problem database where members of a contest team write, review and testsolve math problems. Every page shares one root layout with the error [toast](#interface) area in the bottom-right corner.
 
-**Home page.** The page at `/`. A short welcome and the [sidebar](#interface). It is the only page that links to collections, and it shows the same sidebar links to everyone, signed in or not.
+**Home page.** The page at `/`. A short welcome and the [sidebar](#interface), which shows the same collection links to everyone, signed in or not.
 
 **Collection page.** The page at `/c/{cid}` listing a collection's problems as [cards](#interface), with the search box and filters beside them. Also called "the problem list" when the list itself is meant.
 
@@ -23,6 +23,8 @@ The vocabulary used across these documents. When a document uses one of these wo
 **Login page.** The page at `/login`, titled "Log in to Probase", with one "Log in with Google" button.
 
 **Error pages.** The three pages a user lands on when they cannot go on: "Page not found" (unknown collection, problem, test or invite), "You need permission" (at `/need-permission`), and "Something went wrong" (an unexpected failure while loading a page, with a "Try again" button).
+
+**Library pages.** The authentication library's own sign-in, sign-out and error pages under `/api/auth/`. They are plain cards, not styled like Probase and not linked from it. Users reach them only when a Google sign-in is cancelled or fails, when signing in again with a Google account that belongs to another user, or by typing their address (`/api/auth/signout` is the only way to sign out).
 
 ## Records
 
@@ -136,7 +138,7 @@ The vocabulary used across these documents. When a document uses one of these wo
 
 **Blur.** A field losing keyboard focus, by Tab, by a click elsewhere, or by the window losing focus. A single-line click-to-edit field saves on blur; so does a multi-line one that autosaves (on the add-problem form).
 
-**Implicit submission.** The browser's own behavior of submitting a form when Enter is pressed in a single-line field inside it. Probase does not prevent it anywhere: Enter in the add-problem form's title, ShortAnswer answer, integer or AIME box submits the whole form (or shows the browser's required-field bubble on the first empty required field), Enter in a timed attempt's answer box submits the answer, and Enter in the collection page's search box submits its empty form as a full page load that drops the search and every filter. It never happens in multi-line boxes.
+**Implicit submission.** The browser's own behavior of submitting a form when Enter is pressed in a single-line field inside it. Probase does not prevent it anywhere: Enter in the add-problem form's integer or AIME box submits the whole form (or shows the browser's required-field bubble on the first empty required field), Enter in a timed attempt's answer box submits the answer, and Enter in the collection page's search box submits its empty form as a full page load that drops the search and every filter. It never happens in multi-line boxes, nor in a single-line click-to-edit box, which closes on Enter and is gone before the browser would submit.
 
 ## Events that end or interrupt
 
