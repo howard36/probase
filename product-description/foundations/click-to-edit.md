@@ -147,8 +147,8 @@ After an interrupt that reopens the editor, the user is still in the editor with
 
 ## Edge cases
 
-- Saving a single-line field with Enter also removes the box from the page. Whether the browser then reports a blur, sending a second, identical save, was not confirmed; if it does, the page refreshes twice.
-- Escape on a single-line field removes the box from the page in the same way. If the browser reports a blur as the box disappears, the text the user meant to abandon would be saved. Not confirmed; see [open questions](#open-questions-and-verification).
+- Saving a single-line field with Enter also removes the box from the page. In Chromium this sends exactly one save; the box's disappearance does not count as a blur.
+- Escape on a single-line field removes the box from the page in the same way, and in Chromium sends nothing: the abandoned text is not saved.
 - A title of only spaces is saved as typed.
 - Clicking a field that is already open does nothing; clicking a second field while one is open saves (or leaves open) the first by blur and opens the second.
 - Two single-line fields cannot be open at once, because opening the second blurs the first. Two problem-page multi-line fields (the statement and the solution) can be open at once.
@@ -156,8 +156,8 @@ After an interrupt that reopens the editor, the user is still in the editor with
 
 ## Open questions and verification
 
-- Whether Enter and Escape in a single-line box cause an extra blur as the box is removed, and therefore an extra save (Enter) or an unwanted save (Escape), depends on the browser. This is the most important thing to check by hand; if Escape saves, it is a bug.
-- That a click-to-edit field keeps its own text through a refresh, instead of showing the server's current text, was read from code. Confirm with two tabs.
+- A first local pass in headless Chromium found that Enter sends one save and Escape sends none. Other browsers were not checked; if any reports a blur as the box is removed, Escape would save the text the user meant to abandon, which would be a bug.
+- A first local pass confirmed that a click-to-edit field keeps its own text through a refresh: with the title changed from a second browser, a refresh in the first (after a like) still showed the old title, while a comment posted from the second browser appeared. Only a reload showed the new title.
 - The lack of any visual cue that a field is editable, and the lack of keyboard access to open it, were read from code and styles.
 - On the add-problem form, which of several empty fields ends up with focus, and whether the page scrolls to it, depends on the order they appear; confirm by hand.
 
