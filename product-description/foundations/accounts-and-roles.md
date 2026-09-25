@@ -104,7 +104,7 @@ A page shows what the user's access allowed when it was built. If the role is ch
 
 ## Open questions and verification
 
-- That the session is never renewed while the user browses was read from the configuration (session tokens, no middleware, no client session provider). Confirm by inspecting the session cookie's expiry before and after using the site a day later. If it is renewed, the glossary's [session](../glossary.md#people-and-access) entry must change.
+- A first local pass confirmed that loading collection, problem and home pages never sends a renewed session cookie; only the authentication library's own session endpoint does, and no Probase page calls it. So the session ends 30 days after sign-in. (Checked with a locally minted session, not a real Google sign-in.)
 - The Google consent screen appearing on every sign-in follows from the sign-in request Probase sends; not confirmed by hand (Google's screens are out of scope for the local pass).
 - Checking the collection's existence before sign-in reveals which collection addresses exist to anyone. Whether that matters is a product call.
 - A ViewOnly or SubmitOnly member who accepts an invite with a lower role is lowered to it (only Admins and TeamMembers are protected). A ViewOnly member accepting a SubmitOnly invite loses the ability to view the collection. This may be worth treating as a bug.
