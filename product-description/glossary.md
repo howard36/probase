@@ -140,6 +140,8 @@ The vocabulary used across these documents. When a document uses one of these wo
 
 **Implicit submission.** The browser's own behavior of submitting a form when Enter is pressed in a single-line field inside it. Probase does not prevent it anywhere: Enter in the add-problem form's integer or AIME box submits the whole form (or shows the browser's required-field bubble on the first empty required field), Enter in a timed attempt's answer box submits the answer, and Enter in the collection page's search box submits its empty form as a full page load that drops the search and every filter. It never happens in multi-line boxes, nor in a single-line click-to-edit box, which closes on Enter and is gone before the browser would submit.
 
+**Focus.** The one control that receives keystrokes, moved by Tab and Shift+Tab or by clicking. A control that "cannot take focus" cannot be reached or used from the keyboard; "focus is lost" means the focused control disappeared and nothing took its place. See [keyboard and accessibility](cross-cutting/keyboard-and-accessibility.md).
+
 ## Events that end or interrupt
 
 These are the rows of every document's "Cancel and interrupt" table, in this order.
@@ -185,6 +187,8 @@ These are the rows of every document's "Cancel and interrupt" table, in this ord
 **Chip.** A rounded pill under a problem's title on the problem page: one colored subject chip (a link to the collection page filtered to that subject) and one gray chip per test the problem belongs to.
 
 **Filters.** The collection page's search box, subject checkboxes, "Archived" switch and "Unsolved only" switch. They narrow the problem list, live only in the URL, and are applied by the server on every change; nothing is saved and there is no Apply button. [Search and filters](collection/search-and-filters.md) owns them.
+
+**Breakpoint.** One of the window widths at which a page's layout changes: 640, 768, 1024 and 1280 CSS pixels. Browser zoom lowers the effective width, so 200% zoom on a 1280-pixel window lays out like 640 pixels. See [narrow screens](cross-cutting/narrow-screens.md).
 
 **Heart.** The like control: a heart icon and a like count, rose-colored when the user has liked the problem and gray otherwise.
 
