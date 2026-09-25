@@ -4,13 +4,14 @@ A consolidated list of the defects and inconsistencies that the feature document
 
 ## Summary
 
-The documents raised about seventy suspected defects; merged by root cause they come to the 32 entries below, 6 of them high. The high ones:
+The documents raised about seventy suspected defects; merged by root cause they come to the 33 entries below, 7 of them high. The high ones:
 
 - a security hole (an open redirect on the login page);
 - two paths that lock people out entirely (a one-time invite with an expiry can never be accepted; the testsolver-type chooser cannot be used from the keyboard);
 - a crash (a problem without a difficulty returns a 500 page to Serious testsolvers);
 - a button that does two things at once (Give Up also submits the typed answer);
-- the collection search box, which drops typed characters.
+- the collection search box, which drops typed characters;
+- the add-problem form, which after a failed submit silently switches the subject and difficulty that a second submit stores.
 
 The largest clusters are:
 
@@ -21,40 +22,41 @@ The largest clusters are:
 
 Every high and medium entry except B-10, B-16 and B-19 was confirmed in the running app.
 
-| ID   | Title                                                                               | Severity | Area             | Decision needed |
-| ---- | ----------------------------------------------------------------------------------- | -------- | ---------------- | --------------- |
-| B-01 | The login page redirects signed-in visitors to another site                         | high     | Sign-in          | fix             |
-| B-02 | A one-time invite that also has an expiry can never be accepted                     | high     | Invites          | fix             |
-| B-03 | A problem without a difficulty crashes the problem page for Serious testsolvers     | high     | Testsolving      | fix             |
-| B-04 | The testsolver-type chooser cannot be used from the keyboard                        | high     | Testsolving      | fix             |
-| B-05 | Give Up also submits the answer in the box                                          | high     | Testsolving      | fix             |
-| B-06 | The search box drops typed characters                                               | high     | Collection page  | fix             |
-| B-07 | Enter in the search box clears the search and every filter                          | medium   | Collection page  | fix             |
-| B-08 | Search matches the statements of locked problems                                    | medium   | Collection page  | fix             |
-| B-09 | ShortAnswer and Proof collections get a digits-only box in timed attempts           | medium   | Testsolving      | product call    |
-| B-10 | Submissions to an already-solved attempt still count                                | medium   | Testsolving      | fix             |
-| B-11 | The test page skips the testsolver-type check                                       | medium   | Tests            | fix             |
-| B-12 | Inline editors, the heart and the Archive switch never update from the server       | medium   | Problem page     | fix             |
-| B-13 | Prefetched pages are shown up to five minutes stale                                 | medium   | Navigation       | product call    |
-| B-14 | Viewing the collection page creates an author                                       | medium   | Collection page  | fix             |
-| B-15 | Invites can lower a ViewOnly or SubmitOnly member's role                            | medium   | Invites          | product call    |
-| B-16 | Signing in again attaches the new Google account instead of switching users         | medium   | Sign-in          | product call    |
-| B-17 | "Add Solution" can create invisible duplicate solutions                             | medium   | Solutions        | fix             |
-| B-18 | The first click on the add-problem "Submit" is lost while a box above it is open    | medium   | Add-problem form | fix             |
-| B-19 | Hiding the spoilers throws away drafts inside them                                  | medium   | Spoilers         | fix             |
-| B-20 | Keyboard and screen-reader gaps across the site                                     | medium   | Accessibility    | fix             |
-| B-21 | A SubmitOnly member lands on "You need permission" after submitting                 | medium   | Add-problem form | fix             |
-| B-22 | "Add Solution" is offered to ViewOnly members who will always be refused            | low      | Solutions        | fix             |
-| B-23 | "Try again" on the error page cannot recover from a server failure                  | low      | Error pages      | fix             |
-| B-24 | "You need permission" overflows on narrow screens                                   | low      | Error pages      | fix             |
-| B-25 | Titles show math source to readers and on cards                                     | low      | Math rendering   | fix             |
-| B-26 | Hand-typed page numbers of 0, negative or non-numeric are not corrected             | low      | Pagination       | fix             |
-| B-27 | A filter change keeps the page number                                               | low      | Collection page  | fix             |
-| B-28 | A non-numeric test address shows "Something went wrong" instead of "Page not found" | low      | Tests            | fix             |
-| B-29 | Quick repeated clicks with failures leave the heart or switch out of step           | low      | Problem page     | fix             |
-| B-30 | Two submissions in one subject at once collide on the problem ID                    | low      | Add-problem form | fix             |
-| B-31 | Small copy and rendering slips                                                      | low      | Several          | fix             |
-| B-32 | Product decisions the documents could not settle                                    | low      | Several          | product call    |
+| ID   | Title                                                                                  | Severity | Area             | Decision needed |
+| ---- | -------------------------------------------------------------------------------------- | -------- | ---------------- | --------------- |
+| B-01 | The login page redirects signed-in visitors to another site                            | high     | Sign-in          | fix             |
+| B-02 | A one-time invite that also has an expiry can never be accepted                        | high     | Invites          | fix             |
+| B-03 | A problem without a difficulty crashes the problem page for Serious testsolvers        | high     | Testsolving      | fix             |
+| B-04 | The testsolver-type chooser cannot be used from the keyboard                           | high     | Testsolving      | fix             |
+| B-05 | Give Up also submits the answer in the box                                             | high     | Testsolving      | fix             |
+| B-06 | The search box drops typed characters                                                  | high     | Collection page  | fix             |
+| B-07 | Enter in the search box clears the search and every filter                             | medium   | Collection page  | fix             |
+| B-08 | Search matches the statements of locked problems                                       | medium   | Collection page  | fix             |
+| B-09 | ShortAnswer and Proof collections get a digits-only box in timed attempts              | medium   | Testsolving      | product call    |
+| B-10 | Submissions to an already-solved attempt still count                                   | medium   | Testsolving      | fix             |
+| B-11 | The test page skips the testsolver-type check                                          | medium   | Tests            | fix             |
+| B-12 | Inline editors, the heart and the Archive switch never update from the server          | medium   | Problem page     | fix             |
+| B-13 | Prefetched pages are shown up to five minutes stale                                    | medium   | Navigation       | product call    |
+| B-14 | Viewing the collection page creates an author                                          | medium   | Collection page  | fix             |
+| B-15 | Invites can lower a ViewOnly or SubmitOnly member's role                               | medium   | Invites          | product call    |
+| B-16 | Signing in again attaches the new Google account instead of switching users            | medium   | Sign-in          | product call    |
+| B-17 | "Add Solution" can create invisible duplicate solutions                                | medium   | Solutions        | fix             |
+| B-18 | The first click on the add-problem "Submit" is lost while a box above it is open       | medium   | Add-problem form | fix             |
+| B-19 | Hiding the spoilers throws away drafts inside them                                     | medium   | Spoilers         | fix             |
+| B-20 | Keyboard and screen-reader gaps across the site                                        | medium   | Accessibility    | fix             |
+| B-21 | A SubmitOnly member lands on "You need permission" after submitting                    | medium   | Add-problem form | fix             |
+| B-22 | "Add Solution" is offered to ViewOnly members who will always be refused               | low      | Solutions        | fix             |
+| B-23 | "Try again" on the error page cannot recover from a server failure                     | low      | Error pages      | fix             |
+| B-24 | "You need permission" overflows on narrow screens                                      | low      | Error pages      | fix             |
+| B-25 | Titles show math source to readers and on cards                                        | low      | Math rendering   | fix             |
+| B-26 | Hand-typed page numbers of 0, negative or non-numeric are not corrected                | low      | Pagination       | fix             |
+| B-27 | A filter change keeps the page number                                                  | low      | Collection page  | fix             |
+| B-28 | A non-numeric test address shows "Something went wrong" instead of "Page not found"    | low      | Tests            | fix             |
+| B-29 | Quick repeated clicks with failures leave the heart or switch out of step              | low      | Problem page     | fix             |
+| B-30 | Two submissions in one subject at once collide on the problem ID                       | low      | Add-problem form | fix             |
+| B-31 | Small copy and rendering slips                                                         | low      | Several          | fix             |
+| B-32 | Product decisions the documents could not settle                                       | low      | Several          | product call    |
+| B-33 | After a failed submit the add-problem form silently changes the subject and difficulty | high     | Add-problem form | fix             |
 
 ## High
 
@@ -123,6 +125,17 @@ Every high and medium entry except B-10, B-16 and B-19 was confirmed in the runn
 - **Decision needed:** `fix`. Keep the box's own text in local state and push it to the URL (debounced); do the same for the filters.
 - **Raised by:** [search and filters](collection/search-and-filters.md#open-questions-and-verification)
 - **Status:** Confirmed in the first local pass.
+
+### B-33: After a failed submit the add-problem form silently changes the subject and difficulty
+
+- **Where the user meets it:** The add-problem form, after a "Submit" that the server refused (the member's role changed, the session ended, a problem ID collision, any unexpected error), when the user presses "Submit" again.
+- **What happens / what was expected:** The error toast appears and the text fields keep what was typed, but the "SUBJECT" and "DIFFICULTY" menus no longer show what was chosen: they show "Algebra" and the easiest difficulty if the form was opened from "Add Problem", or blank entries if it was loaded directly. Nothing draws attention to the change. A second "Submit" sends what the menus now show, so the problem is stored under the wrong subject (and so the wrong problem ID) and the wrong difficulty; with blank menus the browser refuses the form instead. Expected: the menus keep the user's choice after a failed submit, as the text fields do.
+- **Reproduce:** As Wes Writer, open `/c/demo`, click "Add Problem", fill the form with "Number Theory" and "Hard". Make the submit fail (for example lower Wes to ViewOnly in the database), press "Submit" and note the menus. Restore the role and press "Submit" again.
+- **Why (from the code):** `app/c/[cid]/add-problem/problem-form.tsx:117-170`: the form uses a function as its `action`, so React 19 resets the form's fields when the action finishes, whatever its result. The two `<select>`s are controlled (`value={subject}`, `value={difficulty}`), but the reset changes what the browser shows and submits without calling `onChange`, so the state still holds the old choice and React does not redraw it.
+- **Severity:** `high`. It stores wrong data without telling anyone, the app offers no way to change a problem's subject, difficulty or ID afterwards, and the path to it is an ordinary error.
+- **Decision needed:** `fix`. Keep the choice after a failed submit: submit through `onSubmit` with `preventDefault` instead of the form `action`, or key the selects so they are redrawn from state after each attempt.
+- **Raised by:** [adding a problem](collection/adding-a-problem.md#open-questions-and-verification), [the collection checklist, ADD-56](verification/collection.md)
+- **Status:** Confirmed by a probe during the first local pass: with Number Theory and Hard chosen and the first submit refused, the menus showed "Algebra" and "Very easy", and the second submit stored `A25`, Algebra, difficulty 1.
 
 ## Medium
 

@@ -1071,12 +1071,8 @@ await check("math.error-red-unclosed-literal", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo/p/A3");
   const err = await p.locator(".katex-error").count();
-  const t = await p.locator("body").innerText();
   await p._ctx.close();
-  return [
-    true,
-    `katex-error elements ${err}; literal "$" shown: ${t.includes("Unclosed $")}`,
-  ];
+  return [err >= 1, `katex-error elements ${err}`];
 });
 await check("fresh.editor-keeps-text", async () => {
   const a = await page("admin");

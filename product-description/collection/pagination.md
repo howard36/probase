@@ -151,7 +151,7 @@ After any interrupt the user is on whatever page the address bar shows; nothing 
 
 ## Open questions and verification
 
-- The handling of `page=0`, negative and non-numeric values was read from code, not tried. It looks like a bug: such values should probably be treated as page 1, as a number past the end is treated as the last page.
+- A first local pass confirmed that `page=0` shows an empty list and is not corrected; negative and non-numeric values were read from code, not tried. It looks like a bug: such values should probably be treated as page 1, as a number past the end is treated as the last page.
 - The lack of first and last page links is a product question; an unused "…" element exists alongside the page links.
 - The width of the row on a phone is an estimate from the sizes in the styles, not a measurement. Confirm on a 375 px window with at least five pages and a middle page selected.
 - That page numbers show pages up to five minutes old while the arrows show current ones follows from the framework's prefetch defaults and was not observed; confirm on a production build.
