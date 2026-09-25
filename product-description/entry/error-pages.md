@@ -148,8 +148,8 @@ Nothing is recorded on any of the three. The ways out:
 - "Try again" does not retry a failure on the server; confirmed by a first local pass on a production build. This looks like a bug: the button should ask the server for a fresh page, or be replaced by a reload.
 - The box on "You need permission" lacks the width limit and side margin the other two pages have, which should make it overflow on windows narrower than about 768px. Read from the page's layout; not confirmed on a phone. This looks like a bug.
 - "You need permission" gives advice the interface cannot carry out (switching accounts) and names neither the collection nor the account. Whether it should offer sign-out, a link home, or the collection's name is a product call.
-- The status codes were read from the framework's code; the 500 for "Something went wrong" was confirmed in the first local pass, the others were not checked.
-- A test page address whose trailing part is not a number, or is too large for an ID, may fail with "Something went wrong" rather than "Page not found"; read from code, not tried ([tests](../collection/tests.md)).
+- The status codes were read from the framework's code; the 404 for "Page not found" and the 500 for "Something went wrong" were confirmed in the first local pass; the redirect to "You need permission" was not checked.
+- A test page address whose trailing part is not a number, or is too large for an ID, fails with "Something went wrong" (HTTP 500) rather than "Page not found"; confirmed in the first local pass for `/c/ts/t/abc` ([tests](../collection/tests.md), [B-28](../bug-triage.md#b-28-a-non-numeric-test-address-shows-something-went-wrong-instead-of-page-not-found)).
 - That a failure during the refresh after an action, or at a countdown's zero, shows "Something went wrong" was read from the framework's behavior, not tried.
 - Whether "Page not found" and "Something went wrong" are drawn in the page's HTML or only once the page's scripts run, on a full page load, was not checked.
 
