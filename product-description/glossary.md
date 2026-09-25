@@ -176,7 +176,7 @@ These are the rows of every document's "Cancel and interrupt" table, in this ord
 
 ## Interface
 
-**Sidebar.** The fixed column on the left of the home page and the two error pages that have one ("Page not found", "You need permission"), headed "Probase" and linking to the collections listed in the code-level configuration. It does not appear on collection, problem, test, add-problem, invite or login pages. It is not filtered by permission: it lists the same collections to everyone.
+**Sidebar.** The fixed column on the left of the home page and the two error pages that have one ("Page not found", "You need permission"), headed "Probase" and linking to the collections listed in the code-level configuration. It does not appear on collection, problem, test, add-problem, chooser, invite or login pages, nor on "Something went wrong". It is not filtered by permission: it lists the same collections to everyone.
 
 **Answer box.** The field a numeric answer is typed into: the **integer box** ("Enter an integer"; an optional leading minus sign and digits, leading zeros removed) or the **three-digit box** ("Enter a number (0-999)"; up to three digits). The collection's answer format picks it: AIME collections get the three-digit box, every other format the integer box in a timed attempt. The add-problem form uses the same boxes for Integer and AIME collections.
 

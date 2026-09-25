@@ -64,6 +64,15 @@ Navigation ([foundations/navigation.md](foundations/navigation.md)):
 - The sidebar appears only on the home page, "Page not found" and "You need permission". The collection page has no link to anywhere else.
 - On a production build most links prefetch their destination as soon as they are visible and reuse it for up to five minutes unless an action or refresh clears the cache. Previous, Next and the pagination arrows do not. The development server never prefetches.
 
+Established later, by the drafts and the first local pass:
+
+- A page's actions go out one at a time through the framework's router queue; following a link does not cancel a pending action, and its error toast appears on the new page.
+- Enter in a single-line click-to-edit box closes it and never submits a surrounding form; Enter in a plain box (integer, AIME, the timed attempt's answer, the search box) triggers the browser's implicit submission.
+- Clicking a button below an open click-to-edit box can be lost, because closing the box moves the button (confirmed on the add-problem form's "Submit").
+- Signing in again while signed in attaches the new Google account to the current user; it never switches users. Sign-out exists only at `/api/auth/signout`.
+- The search box and the filter controls show the URL's values, not their own, so fast typing drops characters and quick clicks cancel each other; Enter in the search box reloads the bare collection page.
+- A one-time invite that also has an expiry can never be accepted.
+
 Testsolving numbers (`lib/testsolve.ts`):
 
 - Time limit: 5 + 5 × difficulty minutes (10 to 30). Grace buffer: 10 seconds, for Submit only, not Give Up, not shown. Submission limit: 5.

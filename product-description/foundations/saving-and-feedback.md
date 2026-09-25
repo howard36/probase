@@ -67,7 +67,9 @@ Only buttons that submit a form show that an action is pending. "Post comment", 
 
 The other waiting buttons ("Accept Invite", the chooser's "Confirm", Add Solution's "Submit", and "Give Up" when it is pressed with an empty answer box) are plain buttons with no pending state: they stay enabled, and a second click sends a second request. What that does depends on the action and is described in each feature document; none of them does lasting harm. Optimistic controls have no pending state either, since the page has already changed.
 
-The rest of the page stays usable while an action is pending. Several actions can be in flight at once; each settles on its own.
+The rest of the page stays usable while an action is pending, but a page's actions are sent one at a time: an action started while another is pending waits until that one has been answered, so a slow save delays the like clicked after it. Each still settles on its own, with its own toast or refresh. Following a link while an action is pending does not stop it; its result still arrives, and an error still shows as a toast on the new page.
+
+> Technical note: the framework queues a page's server actions, refreshes and navigations in one router queue. A navigation jumps the queue and discards the pending action's page update, but not its result, which is still handed to the code that called it.
 
 > Technical note: the forms' action functions call the server action without returning its promise, but React ties the server action's own pending request to the form's transition, so `useFormStatus()` reports the form as pending until the server answers.
 
