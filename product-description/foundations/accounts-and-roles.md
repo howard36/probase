@@ -104,6 +104,14 @@ Actions check again on the server, in their own order: signed in, the record exi
 
 A page shows what the user's access allowed when it was built. If the role is changed or removed, or the testsolver type changes, in the database or by accepting an invite in another tab, the open page keeps showing the old controls. The next action is checked against the new access and may be refused with a permission [toast](../glossary.md#interface); the next page load shows the new access. The same holds when the session ends: the page stays, actions answer "Not signed in", and the next load goes to the login page.
 
+## Edge cases
+
+- A user row created ahead of time with someone's email (as the demo seed does) is taken over by whoever first signs in to Google with that address, with whatever permissions it already has.
+- A member whose role is SubmitOnly and who also has an author can edit their own problems by rule, but cannot open any page where editing happens.
+- A ViewOnly member who kept an author from an earlier role is shown "Add Solution" and refused on every submit.
+- Two browser tabs signed in as different Google accounts are not possible: the session is per browser, and signing in again replaces it.
+- Deleting a user's permission in the database does not end their session; they simply see "You need permission" on their next collection page load.
+
 ## Open questions and verification
 
 - A first local pass confirmed that loading collection, problem and home pages never sends a renewed session cookie; only the authentication library's own session endpoint does, and no Probase page calls it. So the session ends 30 days after sign-in. (Checked with a locally minted session, not a real Google sign-in.)
