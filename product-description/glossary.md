@@ -136,6 +136,8 @@ The vocabulary used across these documents. When a document uses one of these wo
 
 **Blur.** A field losing keyboard focus, by Tab, by a click elsewhere, or by the window losing focus. A single-line click-to-edit field saves on blur; so does a multi-line one that autosaves (on the add-problem form).
 
+**Implicit submission.** The browser's own behavior of submitting a form when Enter is pressed in a single-line field inside it. Probase does not prevent it anywhere: Enter in the add-problem form's title, ShortAnswer answer, integer or AIME box submits the whole form (or shows the browser's required-field bubble on the first empty required field), Enter in a timed attempt's answer box submits the answer, and Enter in the collection page's search box submits its empty form as a full page load that drops the search and every filter. It never happens in multi-line boxes.
+
 ## Events that end or interrupt
 
 These are the rows of every document's "Cancel and interrupt" table, in this order.
