@@ -52,7 +52,7 @@ The rest of the page stays usable while typing: the user can open spoilers, like
 
 Clicking "Post comment", or pressing Enter or Space on it, first runs the browser's own check: an empty box is refused with the browser's "Please fill out this field" bubble and nothing is sent. A box holding only spaces or blank lines passes that check and is sent.
 
-The comment text is then sent to the server. The page does not change while the request is [pending](../glossary.md#interaction): the text stays in the box, the button stays enabled, and no spinner is shown (see [saving and feedback](../foundations/saving-and-feedback.md)). Clicking "Post comment" again posts the same text a second time.
+The comment text is then sent to the server. While the request is [pending](../glossary.md#interaction) the text stays in the box and "Post comment" turns pale, shows a spinner and ignores further clicks (see [saving and feedback](../foundations/saving-and-feedback.md)). The box itself stays editable.
 
 The server checks, in this order, that the user is signed in, that the problem still exists, and that the user's role in the collection may comment. It then stores the comment with the user and the current time. On success the problem page refreshes with every comment now stored, and the box empties. The comment is not shown [optimistically](../glossary.md#interaction); it appears only with the refresh.
 
@@ -129,7 +129,7 @@ After any interrupt the user is wherever the interrupt took them; the discussion
 
 ## Edge cases
 
-- Clicking "Post comment" twice before the first post comes back posts the comment twice. Both are stored and both appear.
+- "Post comment" ignores clicks while a post is pending, so a double click posts once.
 - Text typed after clicking "Post comment" and before the server answers is erased when the post succeeds, because success clears the whole box, including the added text, which was never sent.
 - A comment of only spaces or blank lines is accepted and appears as a name and date with nothing under them.
 - Very long comments are accepted in full; the list shows them in full, with no "show more".
@@ -140,7 +140,7 @@ After any interrupt the user is wherever the interrupt took them; the discussion
 
 ## Open questions and verification
 
-- The spinner and disabled state of "Post comment" were read from code as never appearing, because the button's form hands the post off and finishes at once. Confirm on a throttled connection that the button stays clickable and that a double click posts twice. This may be worth treating as a bug rather than documenting.
+- A first local pass (with the server's answer delayed by 2.5 seconds) confirmed that "Post comment" is disabled with a spinner while pending and that a second click sends nothing.
 - Clearing the box on success, including text typed while the post was pending, was read from code, not tried. It may be worth treating as a bug.
 - The order of comments is whatever the database returns; nothing sorts them. In practice this is oldest first, but it is not guaranteed.
 - The date is formatted once when the page is built on the server and again in the browser. Where the server's and the browser's time zone or language differ, the two can disagree; what the user ends up seeing (and whether the development build reports a hydration error) was not confirmed.
