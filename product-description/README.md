@@ -123,6 +123,7 @@ verification/
   problem-page.md                checklists for problem-page/
   testsolving.md                 checklists for testsolving/
   cross-cutting.md               checklists for cross-cutting/
+  scripts/                       fixtures and the scripted pass (Playwright) used for verification
 
 foundations/
   data-model.md                  collections, problems and their IDs, authors, solutions, comments,

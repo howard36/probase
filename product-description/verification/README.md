@@ -59,7 +59,7 @@ A verification pass needs users in every role and collections in every configura
 
 Invites, all created by Ada: `demo` (Admin), `join-demo`, `view-demo`, `submit-demo` (by role), `once-demo` (one-time), `once-expiring` (one-time with an expiry a week out), `expired-demo` (expired yesterday), `edu-demo` (limited to `example.edu`), `join-ts`, `join-topsoj`.
 
-The fixture script is not part of the repository; it is a straightforward Prisma script that truncates every table and creates the rows above.
+[`scripts/fixtures.cjs`](scripts/fixtures.cjs) creates them. It **truncates every table** of the database in `DATABASE_URL` first, so run it only against a throwaway database: `npx dotenv -e {env file} -- node product-description/verification/scripts/fixtures.cjs` from the repository root.
 
 ## Devices and conditions
 
@@ -74,6 +74,8 @@ The fixture script is not part of the repository; it is a straightforward Prisma
 - **Hand**: needs a person to watch something a script cannot judge (a browser's validation bubble, a visual cue, a focus ring, timing that feels off).
 
 ## Driving the app from a script
+
+[`scripts/pass.mjs`](scripts/pass.mjs) is the scripted pass used so far, with its helpers in [`scripts/harness.mjs`](scripts/harness.mjs). It needs Playwright, which is not a Probase dependency: install it globally (`npm i -g playwright`, whose Chromium must be available) and run, after loading the fixtures, `NODE_PATH="$(npm root -g)" npx dotenv -e {env file} -- node product-description/verification/scripts/pass.mjs`. It writes one result per check to `verification-results.json` (or the file named by `VERIFY_RESULTS`); [Results so far](#results-so-far) maps its checks to checklist items.
 
 A Playwright script can do most P1 and P2 items: sign in by cookie, click, type, wait, and read back the page, the URL, the toasts (`role="alert"`), the server actions sent (POST requests with a `next-action` header), and the database. It should use real input for items about input and use the database only to set up and observe.
 
