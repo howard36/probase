@@ -195,17 +195,17 @@ Status is one of `not started`, `drafted`, or `verified`.
 | collection/pagination.md                    | not started |
 | collection/adding-a-problem.md              | not started |
 | collection/tests.md                         | not started |
-| problem-page/problem-page.md                | not started |
+| problem-page/problem-page.md                | drafted     |
 | problem-page/editing-the-problem.md         | not started |
 | problem-page/spoilers.md                    | not started |
 | problem-page/solutions.md                   | not started |
 | problem-page/discussion.md                  | drafted     |
 | problem-page/likes.md                       | not started |
 | problem-page/archiving.md                   | not started |
-| testsolving/choosing-a-testsolver-type.md   | not started |
-| testsolving/locked-problem.md               | not started |
-| testsolving/timed-attempt.md                | not started |
-| testsolving/leaderboard.md                  | not started |
+| testsolving/choosing-a-testsolver-type.md   | drafted     |
+| testsolving/locked-problem.md               | drafted     |
+| testsolving/timed-attempt.md                | drafted     |
+| testsolving/leaderboard.md                  | drafted     |
 | cross-cutting/math-rendering.md             | not started |
 | cross-cutting/freshness.md                  | not started |
 | cross-cutting/per-collection-settings.md    | not started |
