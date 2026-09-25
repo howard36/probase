@@ -209,8 +209,8 @@ Status is one of `not started`, `drafted`, or `verified`.
 | cross-cutting/math-rendering.md             | drafted     |
 | cross-cutting/freshness.md                  | drafted     |
 | cross-cutting/per-collection-settings.md    | drafted     |
-| cross-cutting/keyboard-and-accessibility.md | not started |
-| cross-cutting/narrow-screens.md             | not started |
+| cross-cutting/keyboard-and-accessibility.md | drafted     |
+| cross-cutting/narrow-screens.md             | drafted     |
 
 ## Reference
 
