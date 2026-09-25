@@ -196,12 +196,12 @@ Status is one of `not started`, `drafted`, or `verified`.
 | collection/adding-a-problem.md              | not started |
 | collection/tests.md                         | not started |
 | problem-page/problem-page.md                | drafted     |
-| problem-page/editing-the-problem.md         | not started |
+| problem-page/editing-the-problem.md         | drafted     |
 | problem-page/spoilers.md                    | drafted     |
 | problem-page/solutions.md                   | drafted     |
 | problem-page/discussion.md                  | drafted     |
 | problem-page/likes.md                       | not started |
-| problem-page/archiving.md                   | not started |
+| problem-page/archiving.md                   | drafted     |
 | testsolving/choosing-a-testsolver-type.md   | drafted     |
 | testsolving/locked-problem.md               | drafted     |
 | testsolving/timed-attempt.md                | drafted     |

@@ -116,7 +116,7 @@ The heart, the Archive switch and the problem page's click-to-edit fields show t
 - The Archive switch moves back.
 - A click-to-edit field shows the text from before the edit again and reopens its editor holding the user's new text, so nothing typed is lost ([click-to-edit](click-to-edit.md)).
 
-Two quick clicks on an optimistic control send two requests in order; each rolls back to the state before its own click, so an error on the first and success on the second can leave the control showing a state the server does not hold until the next load.
+Quick clicks on an optimistic control send one request each, and each failure rolls the control back to its state before that click, whenever the failure arrives. Two clicks of which one fails end in step with the server; two clicks that both fail, or three or more with a failure among them, can leave the heart or the switch showing a state the server does not hold until the next load (see [archiving](../problem-page/archiving.md#edge-cases)). A click-to-edit field saved twice in quick succession, the first save failing and the second succeeding, reopens its editor holding the first text although the second was stored.
 
 ## Modifiers
 
