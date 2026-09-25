@@ -152,7 +152,7 @@ There is no way back: an attempt is never undone, so a problem, once unlocked fo
 
 ## Open questions and verification
 
-- The failure for a problem without a difficulty was read from code and is covered by a unit test that expects the view to throw. This looks like a bug rather than a design: the page should probably show the problem locked with no time limit, or refuse to lock it.
+- The failure for a problem without a difficulty is covered by a unit test that expects the view to throw, and a first local pass confirmed it: a Serious testsolver opening such a problem got an HTTP 500 "Something went wrong" page, and "Try again" showed the same page. This looks like a bug rather than a design: the page should probably show the problem locked with no time limit, or refuse to lock it.
 - That any refresh re-decides the view (so a like can end an expired attempt before the countdown does) was read from code.
 - That opening a problem from a prefetched card can show it up to five minutes out of date follows from the framework's prefetch defaults; confirm on a production build.
 - The browser tab title never naming the problem was read from the site's single, static page title.
