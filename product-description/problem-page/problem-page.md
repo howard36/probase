@@ -145,7 +145,7 @@ There is no way back: an attempt is never undone, so a problem, once unlocked fo
 - A problem that belongs to no test shows only its subject chip.
 - A test chip's address is built from the test's name (lower case, spaces to hyphens, other punctuation removed) and its number; renaming a test in the database changes its chips' addresses, but old addresses keep working because only the number is used.
 - The subject chip's link drops the search and other filters the user came with.
-- Casual testsolvers see the leaderboard but can never appear on it, since they have no way to start an attempt.
+- Casual testsolvers see the leaderboard but cannot start an attempt as Casual; they appear on it only with attempts made while they were Serious.
 - A Serious testsolver whose time ran out sees the unlocked view, with their own row on the leaderboard as unsolved.
 - A title containing math shows the math source to readers and the rendered math to its editors.
 - An author sees their own problem's leaderboard in full and never sees a locked view of it, even as a Serious testsolver.
