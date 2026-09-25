@@ -181,11 +181,11 @@ Status is one of `not started`, `drafted`, or `verified`.
 | glossary.md                                 | drafted     |
 | bug-triage.md                               | not started |
 | verification/ (5 checklists)                | not started |
-| foundations/data-model.md                   | not started |
-| foundations/accounts-and-roles.md           | not started |
-| foundations/navigation.md                   | not started |
-| foundations/saving-and-feedback.md          | not started |
-| foundations/click-to-edit.md                | not started |
+| foundations/data-model.md                   | drafted     |
+| foundations/accounts-and-roles.md           | drafted     |
+| foundations/navigation.md                   | drafted     |
+| foundations/saving-and-feedback.md          | drafted     |
+| foundations/click-to-edit.md                | drafted     |
 | entry/home-page.md                          | not started |
 | entry/sign-in.md                            | not started |
 | entry/invites.md                            | not started |
@@ -199,7 +199,7 @@ Status is one of `not started`, `drafted`, or `verified`.
 | problem-page/editing-the-problem.md         | not started |
 | problem-page/spoilers.md                    | not started |
 | problem-page/solutions.md                   | not started |
-| problem-page/discussion.md                  | not started |
+| problem-page/discussion.md                  | drafted     |
 | problem-page/likes.md                       | not started |
 | problem-page/archiving.md                   | not started |
 | testsolving/choosing-a-testsolver-type.md   | not started |

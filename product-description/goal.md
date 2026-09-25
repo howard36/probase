@@ -31,7 +31,49 @@ Do not describe code. Describe what the user sees and does. Technical detail goe
 
 ## Things already established (do not re-derive, do not contradict)
 
-_Filled in as the foundations are written._
+Saving and feedback ([foundations/saving-and-feedback.md](foundations/saving-and-feedback.md)):
+
+- Every change is an action that answers ok or an error. Errors are shown as toasts in the bottom-right corner, 8 seconds each, stacked, with a close button; there are no success toasts. Unexpected failures (server, network, database collisions) show "Something went wrong. Please try again."
+- No submit button ever shows its spinner or disables itself: every form hands its action off and finishes at once. A second click sends a second request. Say what that does in each feature document.
+- Optimistic controls: the heart, the Archive switch, and problem-page click-to-edit fields. They roll back on error. Everything else waits for the server.
+- A successful action refreshes the page in place (scroll and typed text in components that stay are kept) and clears the browser's cache of other pages. A refresh does not update the heart, the Archive switch, or click-to-edit fields, which keep the value they were first given; lists and read-only text do update.
+- Nothing is saved in the browser. No drafts, no "leave this page?" warning.
+
+Click-to-edit ([foundations/click-to-edit.md](foundations/click-to-edit.md)):
+
+- Three variants: single-line (Enter or blur saves), multi-line (Shift/Ctrl/Cmd+Enter or "Save changes"; "Discard"; blur does nothing), multi-line autosaving (add-problem form only; blur saves). Escape abandons. An empty box is never saved, so a field with text can never be emptied. A field whose text is empty starts open and focused. Every save sends a request even if unchanged. On error the old text is restored underneath and the editor reopens with the typed text.
+
+Accounts and roles ([foundations/accounts-and-roles.md](foundations/accounts-and-roles.md)):
+
+- Google is the only sign-in. The session lasts 30 days from sign-in and is not renewed by browsing. There is no sign-out control.
+- Roles: Admin (everything, edits all), TeamMember (reads, adds, edits own), ViewOnly (reads, likes, comments, testsolves), SubmitOnly (adds problems only; cannot open the collection). "Can view" = Admin, TeamMember, ViewOnly. "Can edit" a problem = Admin, or TeamMember/SubmitOnly with authorship.
+- A user gets an author in a collection the first time the add-problem page loads for them (on a production build, when the collection page's "Add Problem" link is prefetched). "Add Solution" is offered only to users with an author.
+- Collection pages check, in order: collection exists (404), signed in (login), can view (need-permission), testsolver type chosen if the collection requires testsolving (chooser). The add-problem page and the test page have their own orders; see [navigation](foundations/navigation.md#what-each-page-checks-in-order).
+- In a collection that requires testsolving every member who can view, Admins included, must choose Serious or Casual. `topsoj` and `mgci` make new members Serious on joining. The chooser can be reopened only by typing its address.
+
+Data model ([foundations/data-model.md](foundations/data-model.md)):
+
+- Problem IDs: subject letter (A, C, G, N) + one more than the most recently created problem with that letter. Two simultaneous submissions in one subject can collide; the second gets the generic error.
+- The answer is absent, empty (`""`, "add one later"), or text. A timed attempt compares character for character.
+- At most one attempt per user per problem; never retried, never deleted. At most one like per user per problem; submitting a problem likes it. Nothing can be deleted through the interface. Only the first solution is ever shown.
+
+Navigation ([foundations/navigation.md](foundations/navigation.md)):
+
+- The collection page's search, subjects, Archived, Unsolved only and page live in the query string. Search and filter changes replace the history entry without scrolling; page numbers add one. Problem cards carry the query string to the problem page, whose back link, Previous and Next carry it on.
+- Previous and Next do arithmetic on the problem ID: same subject, archived included, Previous disabled at 1, Next always enabled (404 past the end).
+- The sidebar appears only on the home page, "Page not found" and "You need permission". The collection page has no link to anywhere else.
+- On a production build most links prefetch their destination as soon as they are visible and reuse it for up to five minutes unless an action or refresh clears the cache. Previous, Next and the pagination arrows do not. The development server never prefetches.
+
+Testsolving numbers (`lib/testsolve.ts`):
+
+- Time limit: 5 + 5 × difficulty minutes (10 to 30). Grace buffer: 10 seconds, for Submit only, not Give Up, not shown. Submission limit: 5.
+
+Ownership of the problem page's states:
+
+- [problem-page/problem-page.md](problem-page/problem-page.md) owns the page's layout, header, the choice between the three views, Previous and Next placement, and the Archive switch's placement.
+- [testsolving/locked-problem.md](testsolving/locked-problem.md) owns the locked view and "Start testsolving", up to the moment the attempt exists.
+- [testsolving/timed-attempt.md](testsolving/timed-attempt.md) owns the testsolving view from the moment the attempt exists to the moment it is solved, given up or out of time, including the countdown's refresh into the unlocked view.
+- [testsolving/leaderboard.md](testsolving/leaderboard.md) owns the leaderboard; [problem-page/spoilers.md](problem-page/spoilers.md) owns Show spoilers and the read-only answer and solution; [problem-page/editing-the-problem.md](problem-page/editing-the-problem.md) owns the title, statement and answer editors; [problem-page/solutions.md](problem-page/solutions.md) owns Add Solution and the solution editor.
 
 ## Order of work
 
@@ -47,7 +89,7 @@ _Filled in as the foundations are written._
 - Do not modify anything outside `product-description/`. The rest of the repository is read-only reference material.
 - Do not add files outside the README's structure without updating the structure and coverage table to match.
 - When a behavior cannot be determined from code and tests, write down what you could determine, put the rest in "Open questions", and move on. Do not guess and do not block.
-- Depth bar: `problem-page/discussion.md` is roughly 170 lines for a small feature. The problem page and the timed attempt will be longer; the error pages and the home page will be shorter. Completeness matters more than length. Every state, every variant row, every cancel/interrupt row must be accounted for, even if the answer is "no effect".
+- Depth bar: `problem-page/discussion.md` is roughly 150 lines for a small feature. The problem page and the timed attempt will be longer; the error pages and the home page will be shorter. Completeness matters more than length. Every state, every variant row, every cancel/interrupt row must be accounted for, even if the answer is "no effect".
 - If you find that the README's structure is wrong for something you discover (a document that should be split, two that should merge), make the change, update the structure and coverage table, and note why in the commit message.
 
 You are done when the coverage table has no `not started` rows, the consistency pass is complete, and everything is committed.
