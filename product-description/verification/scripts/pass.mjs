@@ -30,7 +30,12 @@ const delay = (p, ms) =>
       await new Promise((res) => setTimeout(res, ms));
     await route.continue();
   });
-const toasts = (p) => p.getByRole("alert").allInnerTexts();
+// Toasts only: Next.js's route announcer is also role="alert" (it reads out
+// each new page title), but it sits in a shadow root that this query skips.
+const toasts = (p) =>
+  p.evaluate(() =>
+    [...document.querySelectorAll('[role="alert"]')].map((e) => e.innerText),
+  );
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- entry ----------
@@ -233,22 +238,22 @@ await check("invite.one-time-used-up", async () => {
     "second visitor sees: " + t.slice(0, 60).replace(/\n/g, " "),
   ];
 });
-await check("invite.lowers-viewonly", async () => {
+await check("invite.keeps-viewonly", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/invite/submit-demo");
-  await p.getByRole("button", { name: "Accept Invite" }).click();
-  await wait(3000);
+  const t = await p.locator("body").innerText();
+  const accept = await p.getByRole("button", { name: "Accept Invite" }).count();
+  const home = await p.getByRole("link", { name: /Probase Demo/ }).count();
   const role = sql(
     `select "accessLevel" from "Permission" where "userId"='u-viewer' and "collectionId"=(select id from "Collection" where cid='demo')`,
   );
-  const u = p.url();
   await p._ctx.close();
-  sql(
-    `update "Permission" set "accessLevel"='ViewOnly' where "userId"='u-viewer'`,
-  );
   return [
-    role === "SubmitOnly" && u.endsWith("/need-permission"),
-    `role ${role}, landed ${u}`,
+    t.includes("Already Joined") &&
+      accept === 0 &&
+      home >= 1 &&
+      role === "ViewOnly",
+    `already joined ${t.includes("Already Joined")}, accept buttons ${accept}, role ${role}`,
   ];
 });
 await check("invite.topsoj-forced-serious", async () => {
@@ -265,14 +270,14 @@ await check("invite.topsoj-forced-serious", async () => {
 });
 
 // ---------- collection ----------
-await check("list.prefetch-creates-author", async () => {
+await check("list.viewing-creates-no-author", async () => {
   const before = sql(`select count(*) from "Author" where "userId"='u-member'`);
   const p = await page("member");
   await p.goto(BASE + "/c/demo");
   await wait(3500);
   const after = sql(`select count(*) from "Author" where "userId"='u-member'`);
   await p._ctx.close();
-  return [before === "0" && after === "1", `${before} -> ${after}`];
+  return [before === "0" && after === "0", `${before} -> ${after}`];
 });
 await check("list.newest-first-20", async () => {
   const p = await page("viewer");
@@ -291,18 +296,22 @@ await check("list.archived-hidden", async () => {
   await p._ctx.close();
   return [!t.includes("Archived algebra"), ""];
 });
-await check("list.no-heading", async () => {
+await check("list.heading", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo");
-  const h1 = await p.locator("h1").count();
-  const t = await p.locator("body").innerText();
+  const h1 = await p.locator("h1").allTextContents();
   await p._ctx.close();
-  return [h1 === 0 && !t.includes("Probase Demo"), `h1 ${h1}`];
+  return [JSON.stringify(h1) === '["Probase Demo"]', JSON.stringify(h1)];
 });
 await check("list.card-heart-no-nav", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo");
-  await p.locator("ul > li").first().locator("div.group").first().click();
+  await p
+    .locator("ul > li")
+    .first()
+    .getByLabel(/^\d+ likes?$/)
+    .first()
+    .click();
   await wait(2000);
   const u = p.url();
   await p._ctx.close();
@@ -474,7 +483,7 @@ await check("add.enter-title-no-submit", async () => {
     `actions ${actions.length}, still on ${u}`,
   ];
 });
-await check("add.first-click-lost", async () => {
+await check("add.first-click-lands", async () => {
   const p = await page("member");
   const a = trackActions(p);
   await p.goto(BASE + "/c/demo/add-problem");
@@ -484,17 +493,16 @@ await check("add.first-click-lost", async () => {
   await p.locator('textarea[name="statement"]').fill("A statement");
   await p.locator('input[name="answer"]').fill("5");
   await p.locator('textarea[name="solution"]').fill("Solution text");
-  const b = await p.getByRole("button", { name: "Submit" }).boundingBox();
+  const button = p.getByRole("button", { name: "Submit" });
+  await button.scrollIntoViewIfNeeded();
+  const b = await button.boundingBox();
   await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
-  await wait(1500);
-  const first = a.length;
-  await p.getByRole("button", { name: "Submit" }).click();
   await p.waitForURL(/\/p\/G\d+/, { timeout: 8000 }).catch(() => {});
   const u = p.url();
   await p._ctx.close();
   return [
-    first === 0 && /\/c\/demo\/p\/G2$/.test(u),
-    `after first click ${first} requests; after second, landed ${u}`,
+    a.length === 1 && /\/c\/demo\/p\/G2$/.test(u),
+    `one click sent ${a.length} requests and landed ${u}`,
   ];
 });
 await check("add.enter-integer-submits", async () => {
@@ -516,7 +524,7 @@ await check("add.enter-integer-submits", async () => {
     `requests ${a.length}, landed ${u}`,
   ];
 });
-await check("add.submitonly-lands-need-permission", async () => {
+await check("add.submitonly-confirmed", async () => {
   const p = await page("submitter");
   await p.goto(BASE + "/c/demo/add-problem");
   await p.locator('input[name="title"]').fill("From Sid");
@@ -528,13 +536,23 @@ await check("add.submitonly-lands-need-permission", async () => {
   await p.locator('select[name="subject"]').focus();
   await wait(300);
   await p.getByRole("button", { name: "Submit" }).click();
-  await p.waitForURL(/need-permission/, { timeout: 10000 }).catch(() => {});
+  await p.waitForURL(/submitted=/, { timeout: 10000 }).catch(() => {});
   const u = p.url();
+  const msg = await p.getByRole("status").allInnerTexts();
+  // The form starts over, empty, for the next problem.
+  const title = await p.locator('input[name="title"]').inputValue();
+  const back = await p.getByText("Back to Probase Demo").count();
   const stored = sql(`select pid from "Problem" where title='From Sid'`);
   await p._ctx.close();
   return [
-    u.endsWith("/need-permission") && stored === "C2",
-    `landed ${u}, stored ${stored}`,
+    u.endsWith("/c/demo/add-problem?submitted=C2") &&
+      msg.includes(
+        'Thanks! Your problem "From Sid" was submitted to Probase Demo as C2. You can submit another below.',
+      ) &&
+      title === "" &&
+      back === 0 &&
+      stored === "C2",
+    `landed ${u}, stored ${stored}, message ${JSON.stringify(msg)}, back link ${back}`,
   ];
 });
 await check("add.new-problem-liked", async () => {
@@ -543,18 +561,20 @@ await check("add.new-problem-liked", async () => {
   );
   return [n === "1", n];
 });
-await check("test.slug-ignored-unchosen-sees-all", async () => {
+await check("test.address-checked", async () => {
   const p = await page("unchosen");
-  const r = await p.goto(BASE + "/c/anything/t/whatever-1");
-  const locks = await p.getByText("Testsolve to view").count();
-  const t = await p.locator("body").innerText();
+  const unknown = (await p.goto(BASE + "/c/anything/t/whatever-1")).status();
+  await p.goto(BASE + "/c/ts/t/mock-contest-1-1");
+  const chooser = p.url();
   await p._ctx.close();
+  const a = await page("admin");
+  const other = (await a.goto(BASE + "/c/demo/t/mock-contest-1-1")).status();
+  await a._ctx.close();
   return [
-    r.status() === 200 &&
-      locks === 0 &&
-      t.includes("PROBLEM 1") &&
-      t.includes("Mock Contest #1"),
-    `status ${r.status()}, locks ${locks}`,
+    unknown === 404 &&
+      chooser.endsWith("/c/ts/choose-testsolver-type") &&
+      other === 404,
+    `unknown collection ${unknown}, unchosen member landed ${chooser}, another collection's test ${other}`,
   ];
 });
 await check("test.serious-locks", async () => {
@@ -564,13 +584,13 @@ await check("test.serious-locks", async () => {
   await p._ctx.close();
   return [locks === 3, `locks ${locks}`];
 });
-await check("test.bad-number", async () => {
+await check("test.bad-number-not-found", async () => {
   const p = await page("serious");
   const r = await p.goto(BASE + "/c/ts/t/abc");
   const h = await p.locator("h1").allInnerTexts();
   await p._ctx.close();
   return [
-    r.status() === 500 && h[0] === "Something went wrong",
+    r.status() === 404 && h[0] === "Page not found",
     `status ${r.status()}, h1 ${JSON.stringify(h)}`,
   ];
 });
@@ -603,12 +623,12 @@ await check("page.written-by-hidden-demo", async () => {
   await a._ctx.close();
   return [n === 0 && na === 1, `viewer ${n}, admin ${na}`];
 });
-await check("page.title-static", async () => {
+await check("page.title-names-problem", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo/p/C1");
   const t = await p.title();
   await p._ctx.close();
-  return [t === "Probase", t];
+  return [t === "C1. Wes's counting problem · Probase Demo | Probase", t];
 });
 await check("spoil.hidden-by-default", async () => {
   const p = await page("viewer");
@@ -635,7 +655,7 @@ await check("edit.escape-no-save", async () => {
   const p = await page("admin");
   const a = trackActions(p);
   await p.goto(BASE + "/c/demo/p/C1");
-  await p.locator("h2").first().getByText("Wes's counting problem").click();
+  await p.locator("h1").first().getByText("Wes's counting problem").click();
   await p.locator('input[name="title"]').fill("Escaped");
   await p.locator('input[name="title"]').press("Escape");
   await wait(1200);
@@ -652,7 +672,7 @@ await check("edit.enter-one-save", async () => {
   const p = await page("admin");
   const a = trackActions(p);
   await p.goto(BASE + "/c/demo/p/C1");
-  await p.locator("h2").first().getByText("Wes's counting problem").click();
+  await p.locator("h1").first().getByText("Wes's counting problem").click();
   await p.locator('input[name="title"]').fill("Wes's counting problem!");
   await p.locator('input[name="title"]').press("Enter");
   await wait(1500);
@@ -665,15 +685,18 @@ await check("edit.enter-one-save", async () => {
     `actions ${a.length}, stored "${t}"`,
   ];
 });
-await check("edit.blur-saves-unchanged", async () => {
+await check("edit.blur-unchanged-no-save", async () => {
   const p = await page("admin");
   const a = trackActions(p);
   await p.goto(BASE + "/c/demo/p/C1");
-  await p.locator("h2").first().getByText("Wes's counting problem!").click();
+  await p.locator("h1").first().getByText("Wes's counting problem!").click();
   await p.locator("body").click({ position: { x: 5, y: 400 } });
   await wait(1500);
+  const closed = await p
+    .locator('input[name="title"]:not([type="hidden"])')
+    .count();
   await p._ctx.close();
-  return [a.length === 1, `actions ${a.length}`];
+  return [a.length === 0 && closed === 0, `actions ${a.length}`];
 });
 await check("edit.statement-discard", async () => {
   const p = await page("admin");
@@ -690,7 +713,7 @@ await check("edit.statement-discard", async () => {
 await check("edit.viewer-no-editor", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo/p/C1");
-  await p.locator("h2").first().click();
+  await p.locator("h1").first().click();
   const n = await p.locator('input[name="title"]').count();
   await p._ctx.close();
   return [n === 0, ""];
@@ -710,7 +733,7 @@ await check("sol.add-solution-flow", async () => {
   await p._ctx.close();
   return [n === 1 && open === 1, `solution label ${n}, spoilers open ${open}`];
 });
-await check("sol.double-submit", async () => {
+await check("sol.double-submit-one", async () => {
   const p = await page("writer");
   await delay(p, 2000);
   await p.goto(BASE + "/c/demo/p/G1");
@@ -726,25 +749,18 @@ await check("sol.double-submit", async () => {
     `select count(*) from "Solution" s join "Problem" p on p.id=s."problemId" join "Collection" c on c.id=p."collectionId" where c.cid='demo' and p.pid='G1'`,
   );
   await p._ctx.close();
-  return [n === "2", `solutions stored: ${n}`];
+  return [n === "1", `solutions stored: ${n}`];
 });
-await check("sol.viewonly-with-author-refused", async () => {
+await check("sol.viewonly-not-offered", async () => {
   sql(
     `insert into "Author" ("displayName","userId","collectionId") values ('Vic Viewer','u-viewer',(select id from "Collection" where cid='demo'))`,
   );
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo/p/A3");
   await p.getByRole("button", { name: "Show spoilers" }).click();
-  await p.getByRole("button", { name: "Add Solution" }).click();
-  await p.getByPlaceholder("Write your solution here!").fill("Vic's attempt");
-  await p.getByRole("button", { name: "Submit" }).click();
-  await wait(2500);
-  const t = await toasts(p);
+  const offered = await p.getByRole("button", { name: "Add Solution" }).count();
   await p._ctx.close();
-  return [
-    t.includes("You do not have permission to edit this collection"),
-    JSON.stringify(t),
-  ];
+  return [offered === 0, `Add Solution buttons ${offered}`];
 });
 await check("disc.pending-disabled-once", async () => {
   const p = await page("viewer");
@@ -795,7 +811,7 @@ await check("disc.hidden-while-locked", async () => {
 await check("like.optimistic-persists", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo/p/A1");
-  const h = p.locator("div.group").first();
+  const h = p.getByRole("button", { name: /^Like \(/ });
   const before = await h.innerText();
   await h.click();
   const now = await h.innerText();
@@ -809,13 +825,23 @@ await check("like.optimistic-persists", async () => {
     `${before} -> ${now}, stored ${n}`,
   ];
 });
-await check("like.not-focusable", async () => {
+await check("like.focusable", async () => {
   const p = await page("viewer");
-  await p.goto(BASE + "/c/demo/p/A1");
-  const tab = await p.locator("div.group").first().getAttribute("tabindex");
-  const role = await p.locator("div.group").first().getAttribute("role");
+  await p.goto(BASE + "/c/demo/p/A2");
+  const h = p.getByRole("button", { name: /^Like \(/ });
+  const before = await h.getAttribute("aria-pressed");
+  await h.focus();
+  await p.keyboard.press("Enter");
+  await wait(2000);
+  const after = await h.getAttribute("aria-pressed");
+  const n = sql(
+    `select count(*) from "ProblemLike" l join "Problem" p on p.id=l."problemId" join "Collection" c on c.id=p."collectionId" where c.cid='demo' and p.pid='A2' and l."userId"='u-viewer'`,
+  );
   await p._ctx.close();
-  return [tab === null && role === null, ""];
+  return [
+    before === "false" && after === "true" && n === "1",
+    `pressed ${before} -> ${after}, stored ${n}`,
+  ];
 });
 await check("arch.hides-from-list", async () => {
   const p = await page("admin");
@@ -1052,7 +1078,7 @@ await check("board.top5-nonauthor", async () => {
     `insert into "SolveAttempt" ("userId","problemId","startedAt","gaveUp","numSubmissions") values ('u-serious',(select p.id from "Problem" p join "Collection" c on c.id=p."collectionId" where c.cid='ts' and pid='N2'), now() - interval '1 hour', true, 0) on conflict do nothing`,
   );
   await p.goto(BASE + "/c/ts/p/N2");
-  const rows = await p.locator("table tr").count();
+  const rows = await p.locator("table tbody tr").count();
   const t = await p.locator("body").innerText();
   await p._ctx.close();
   return [
@@ -1064,7 +1090,7 @@ await check("board.top5-nonauthor", async () => {
 await check("board.author-sees-all", async () => {
   const p = await page("writer");
   await p.goto(BASE + "/c/ts/p/N2");
-  const rows = await p.locator("table tr").count();
+  const rows = await p.locator("table tbody tr").count();
   await p._ctx.close();
   return [rows === 9, `rows ${rows}`];
 });
@@ -1080,7 +1106,7 @@ await check("board.casual-sees", async () => {
 await check("math.title-raw-reader", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo/p/A3");
-  const t = await p.locator("h2").first().innerText();
+  const t = await p.locator("h1").first().innerText();
   await p._ctx.close();
   return [t.includes("$x^2$"), t];
 });
@@ -1091,48 +1117,52 @@ await check("math.error-red-unclosed-literal", async () => {
   await p._ctx.close();
   return [err >= 1, `katex-error elements ${err}`];
 });
-await check("fresh.editor-keeps-text", async () => {
+await check("fresh.title-follows-server", async () => {
   const a = await page("admin");
   const b = await page("writer");
   await a.goto(BASE + "/c/demo/p/C1");
   await b.goto(BASE + "/c/demo/p/C1");
   await b
-    .locator("h2")
+    .locator("h1")
     .first()
     .getByText(/counting problem/)
     .click();
   await b.locator('input[name="title"]').fill("Changed by B");
   await b.locator('input[name="title"]').press("Enter");
   await wait(1500);
-  await a.locator("div.group").first().click();
+  await a.getByRole("button", { name: /^Like \(/ }).click();
   await wait(2500);
-  const t = await a.locator("h2").first().innerText();
+  const t = await a.locator("h1").first().innerText();
   await a.reload();
-  const t2 = await a.locator("h2").first().innerText();
+  const t2 = await a.locator("h1").first().innerText();
   await a._ctx.close();
   await b._ctx.close();
   return [
-    !t.includes("Changed by B") && t2.includes("Changed by B"),
+    t.includes("Changed by B") && t2.includes("Changed by B"),
     `after refresh "${t.replace(/\n/g, " ")}", after reload "${t2.replace(/\n/g, " ")}"`,
   ];
 });
-await check("fresh.prefetch-stale", async () => {
+await check("fresh.prefetch-at-most-30s", async () => {
   const a = await page("viewer");
   const b = await page("admin");
   await a.goto(BASE + "/c/demo");
+  const loaded = Date.now();
   await wait(4000);
   await b.goto(BASE + "/c/demo/p/A23");
   await b.getByText("Filler statement number 23.").click();
   await b.locator('textarea[name="statement"]').fill("Fresh statement 23");
   await b.getByRole("button", { name: "Save changes" }).click();
   await wait(2000);
+  await wait(Math.max(0, loaded + 32000 - Date.now()));
+  await a.getByText("Filler problem 23").hover();
+  await wait(1500);
   await a.getByText("Filler problem 23").click();
   await a.waitForURL(/\/p\/A23/);
   await wait(1500);
-  const stale = (await a.getByText("Fresh statement 23").count()) === 0;
+  const fresh = (await a.getByText("Fresh statement 23").count()) === 1;
   await a._ctx.close();
   await b._ctx.close();
-  return [stale, stale ? "stale page shown" : "fresh page shown"];
+  return [fresh, fresh ? "fresh page shown" : "stale page shown"];
 });
 await check("fresh.session-not-renewed", async () => {
   const p = await page("viewer");
@@ -1141,23 +1171,31 @@ await check("fresh.session-not-renewed", async () => {
   await p._ctx.close();
   return [!(h["set-cookie"] || "").includes("authjs.session-token"), ""];
 });
-await check("a11y.static-titles", async () => {
+await check("a11y.page-titles", async () => {
   const p = await page("viewer");
   const titles = [];
-  for (const u of [
-    "/",
-    "/c/demo",
-    "/c/demo/p/A1",
-    "/need-permission",
-    "/login",
-  ]) {
+  for (const u of ["/", "/c/demo", "/c/demo/p/A1", "/need-permission"]) {
     await p.goto(BASE + u);
     titles.push(await p.title());
   }
   await p._ctx.close();
-  return [titles.every((t) => t === "Probase"), JSON.stringify(titles)];
+  const q = await page(null);
+  await q.goto(BASE + "/login");
+  titles.push(await q.title());
+  await q._ctx.close();
+  return [
+    JSON.stringify(titles) ===
+      JSON.stringify([
+        "Probase",
+        "Probase Demo | Probase",
+        "A1. Quadratic Equation · Probase Demo | Probase",
+        "You need permission | Probase",
+        "Log in | Probase",
+      ]),
+    JSON.stringify(titles),
+  ];
 });
-await check("a11y.click-to-edit-not-tabbable", async () => {
+await check("a11y.click-to-edit-tabbable", async () => {
   const p = await page("admin");
   await p.goto(BASE + "/c/demo/p/A1");
   const seen = [];
@@ -1167,15 +1205,15 @@ await check("a11y.click-to-edit-not-tabbable", async () => {
       await p.evaluate(
         () =>
           document.activeElement?.tagName +
-          (document.activeElement?.getAttribute("name")
-            ? ":" + document.activeElement.getAttribute("name")
+          (document.activeElement?.getAttribute("aria-label")
+            ? ":" + document.activeElement.getAttribute("aria-label")
             : ""),
       ),
     );
   }
   await p._ctx.close();
   return [
-    !seen.some((s) => s.includes("title") || s.includes("statement")),
+    seen.includes("DIV:Edit title") && seen.includes("DIV:Edit statement"),
     JSON.stringify(seen),
   ];
 });
@@ -1188,13 +1226,13 @@ await check("narrow.sidebar-width", async () => {
   await p._ctx.close();
   return [w === 160, `${w}px`];
 });
-await check("narrow.need-permission-overflow", async () => {
+await check("narrow.need-permission-fits", async () => {
   const p = await page("stranger", { viewport: { width: 375, height: 700 } });
   await p.goto(BASE + "/need-permission");
   await p.waitForLoadState("load");
   const sw = await p.evaluate(() => document.documentElement.scrollWidth);
   await p._ctx.close();
-  return [sw > 375, `page scrollWidth ${sw}px in a 375px window`];
+  return [sw <= 375, `page scrollWidth ${sw}px in a 375px window`];
 });
 await check("narrow.card-heart-bottom-row", async () => {
   const p = await page("viewer", { viewport: { width: 375, height: 700 } });
@@ -1202,7 +1240,7 @@ await check("narrow.card-heart-bottom-row", async () => {
   const visible = await p
     .locator("ul > li")
     .first()
-    .locator("div.group")
+    .getByLabel(/^\d+ likes?$/)
     .evaluateAll((els) => els.map((e) => e.offsetParent !== null));
   await p._ctx.close();
   return [JSON.stringify(visible) === "[false,true]", JSON.stringify(visible)];
@@ -1244,6 +1282,41 @@ await check("add.menus-kept-after-refusal", async () => {
     JSON.stringify(shown) === '["Number Theory","Hard"]' &&
       stored === "NumberTheory 4",
     `menus after the refusal ${JSON.stringify(shown)}, stored ${stored}`,
+  ];
+});
+
+await check("lock.shortanswer-never-locked", async () => {
+  sql(`update "Collection" set "answerFormat"='ShortAnswer' where cid='aime'`);
+  const p = await page("serious");
+  await p.goto(BASE + "/c/aime/p/A1");
+  const start = await p
+    .getByRole("button", { name: "Start testsolving" })
+    .count();
+  const shown = await p.getByText("Compute").count();
+  await p._ctx.close();
+  sql(`update "Collection" set "answerFormat"='AIME' where cid='aime'`);
+  return [
+    start === 0 && shown === 1,
+    `Start testsolving buttons ${start}, statement shown ${shown}`,
+  ];
+});
+await check("edit.aime-answer-checked", async () => {
+  const p = await page("admin");
+  await p.goto(BASE + "/c/aime/p/A1");
+  await p.getByRole("button", { name: "Show spoilers" }).click();
+  await p.getByRole("button", { name: "Edit answer" }).click();
+  await p.locator('input[name="answer"]:not([type="hidden"])').fill("$5$");
+  await p.locator('input[name="answer"]:not([type="hidden"])').press("Enter");
+  await wait(2000);
+  const t = await toasts(p);
+  const stored = sql(
+    `select answer from "Problem" p join "Collection" c on c.id=p."collectionId" where c.cid='aime' and pid='A1'`,
+  );
+  await p._ctx.close();
+  return [
+    stored === "42" &&
+      t.includes("The answer must be a whole number from 0 to 999."),
+    `stored ${stored}, toasts ${JSON.stringify(t)}`,
   ];
 });
 
