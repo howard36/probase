@@ -22,7 +22,10 @@ describe("setTestsolverType", () => {
   });
 
   it("rejects a user with no permission on the collection", async () => {
-    const collection = await createCollection({ requireTestsolve: true });
+    const collection = await createCollection({
+      requireTestsolve: true,
+      answerFormat: "Integer",
+    });
     signInAs(await createUser());
 
     expect(await setTestsolverType(collection.id, "Casual")).toEqual(
@@ -33,7 +36,10 @@ describe("setTestsolverType", () => {
   it.each(["Casual", "Serious"] as const)(
     "records the %s choice, dated from the collection's creation, and redirects",
     async (type) => {
-      const collection = await createCollection({ requireTestsolve: true });
+      const collection = await createCollection({
+        requireTestsolve: true,
+        answerFormat: "Integer",
+      });
       const user = await createUser();
       await createPermission(user, collection, "TeamMember");
       signInAs(user);
@@ -57,7 +63,10 @@ describe("setTestsolverType", () => {
   );
 
   it("only changes the calling user's permission", async () => {
-    const collection = await createCollection({ requireTestsolve: true });
+    const collection = await createCollection({
+      requireTestsolve: true,
+      answerFormat: "Integer",
+    });
     const user = await createUser();
     const other = await createUser();
     await createPermission(user, collection);

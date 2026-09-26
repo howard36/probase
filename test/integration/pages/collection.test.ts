@@ -41,7 +41,10 @@ async function payloadFor(
 
 describe("collection page", () => {
   it("sends a locked problem's title but not its statement to a serious testsolver", async () => {
-    const collection = await createCollection({ requireTestsolve: true });
+    const collection = await createCollection({
+      requireTestsolve: true,
+      answerFormat: "Integer",
+    });
     await createProblem(collection, {
       title: "Locked title",
       statement: "LOCKED-STATEMENT-SECRET",
@@ -61,7 +64,10 @@ describe("collection page", () => {
   });
 
   it("sends statements to a casual testsolver", async () => {
-    const collection = await createCollection({ requireTestsolve: true });
+    const collection = await createCollection({
+      requireTestsolve: true,
+      answerFormat: "Integer",
+    });
     await createProblem(collection, { statement: "VISIBLE-STATEMENT" });
     const solver = await createUser();
     await createPermission(solver, collection, "TeamMember", {

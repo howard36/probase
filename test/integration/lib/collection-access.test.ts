@@ -91,7 +91,10 @@ describe("requireCollectionAccess", () => {
 
   describe("collections that require testsolving", () => {
     it("sends a member who has not chosen a testsolver type to the chooser", async () => {
-      const collection = await createCollection({ requireTestsolve: true });
+      const collection = await createCollection({
+        requireTestsolve: true,
+        answerFormat: "Integer",
+      });
       const user = await createUser();
       await createPermission(user, collection, "TeamMember");
       signInAs(user);
@@ -103,7 +106,10 @@ describe("requireCollectionAccess", () => {
     });
 
     it("lets a member through once they have chosen a type", async () => {
-      const collection = await createCollection({ requireTestsolve: true });
+      const collection = await createCollection({
+        requireTestsolve: true,
+        answerFormat: "Integer",
+      });
       const user = await createUser();
       await createPermission(user, collection, "TeamMember", {
         testsolverType: "Casual",
@@ -115,7 +121,10 @@ describe("requireCollectionAccess", () => {
     });
 
     it("skips the chooser redirect when asked, for the chooser page itself", async () => {
-      const collection = await createCollection({ requireTestsolve: true });
+      const collection = await createCollection({
+        requireTestsolve: true,
+        answerFormat: "Integer",
+      });
       const user = await createUser();
       await createPermission(user, collection, "TeamMember");
       signInAs(user);
@@ -125,6 +134,22 @@ describe("requireCollectionAccess", () => {
       });
       expect(access.permission.testsolverType).toBeNull();
     });
+
+    it.each(["ShortAnswer", "Proof"] as const)(
+      "does not send members of a %s collection to the chooser, since it never locks",
+      async (answerFormat) => {
+        const collection = await createCollection({
+          requireTestsolve: true,
+          answerFormat,
+        });
+        const user = await createUser();
+        await createPermission(user, collection, "TeamMember");
+        signInAs(user);
+
+        const access = await requireCollectionAccess(collection.cid, "/x");
+        expect(access.permission.testsolverType).toBeNull();
+      },
+    );
 
     it("does not redirect members of collections without testsolving", async () => {
       const collection = await createCollection({ requireTestsolve: false });

@@ -11,6 +11,7 @@ import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { answerFormatError } from "@/lib/testsolve";
 
 const subjectPrefix = {
   Algebra: "A",
@@ -61,6 +62,10 @@ export async function addProblem(
     });
     if (collection === null) {
       return error("Collection not found");
+    }
+    const answerError = answerFormatError(answer, collection.answerFormat);
+    if (answerError !== null) {
+      return error(answerError);
     }
 
     const permission = await getPermission(userId, collectionId);

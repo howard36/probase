@@ -54,7 +54,10 @@ const SECRETS = {
 
 /** A testsolving collection with one problem written by someone else, and a serious testsolver signed in. */
 async function setup() {
-  const collection = await createCollection({ requireTestsolve: true });
+  const collection = await createCollection({
+    requireTestsolve: true,
+    answerFormat: "Integer",
+  });
   const author = await createUser({ name: SECRETS.otherUser });
   const problem = await createProblem(collection, {
     title: "Visible title",
@@ -112,6 +115,23 @@ describe("problem page client payload", () => {
       expect(payload).not.toContain(secret);
     }
   });
+
+  it.each(["ShortAnswer", "Proof"] as const)(
+    "does not lock a %s problem, whose answer a timed attempt cannot check",
+    async (answerFormat) => {
+      const { collection, problem } = await setup();
+      await prisma.collection.update({
+        where: { id: collection.id },
+        data: { answerFormat },
+      });
+
+      const payload = await payloadFor(collection.cid, problem.pid);
+
+      expect(payload).toContain(SECRETS.statement);
+      expect(payload).not.toContain('"$":"LockedPage"');
+      expect(payload).not.toContain('"$":"Testsolve"');
+    },
+  );
 
   it("locks a problem with no difficulty with the longest time limit", async () => {
     const { collection, problem } = await setup();

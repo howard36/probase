@@ -19,7 +19,10 @@ function props(overrides: {
   } = overrides;
   return {
     userId: "me",
-    collection: { requireTestsolve } as Props["collection"],
+    collection: {
+      requireTestsolve,
+      answerFormat: "Integer",
+    } as Props["collection"],
     permission: {
       accessLevel: "TeamMember",
       testsolverType,

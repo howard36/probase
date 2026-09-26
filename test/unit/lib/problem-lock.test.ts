@@ -6,8 +6,14 @@ const collectionStart = new Date("2024-01-01T00:00:00Z");
 const beforeStart = new Date("2023-12-01T00:00:00Z");
 const afterStart = new Date("2024-06-01T00:00:00Z");
 
-const testsolving = { requireTestsolve: true };
-const noTestsolving = { requireTestsolve: false };
+const testsolving = {
+  requireTestsolve: true,
+  answerFormat: "Integer" as const,
+};
+const noTestsolving = {
+  requireTestsolve: false,
+  answerFormat: "Integer" as const,
+};
 
 function problem(createdAt: Date, authorIds: number[] = [1]) {
   return { createdAt, authors: authorIds.map((id) => ({ id })) };
@@ -153,4 +159,34 @@ describe("isProblemLocked", () => {
       ),
     ).toBe(false);
   });
+});
+
+describe("which answer formats lock problems", () => {
+  it.each(["Integer", "AIME"] as const)(
+    "locks in a testsolving %s collection",
+    (answerFormat) => {
+      expect(
+        needsTestsolveToView(
+          { requireTestsolve: true, answerFormat },
+          notMyProblem,
+          seriousMember,
+          otherAuthors,
+        ),
+      ).toBe(true);
+    },
+  );
+
+  it.each(["ShortAnswer", "Proof"] as const)(
+    "never locks in a %s collection, whose answers a timed attempt cannot check",
+    (answerFormat) => {
+      expect(
+        needsTestsolveToView(
+          { requireTestsolve: true, answerFormat },
+          notMyProblem,
+          seriousMember,
+          otherAuthors,
+        ),
+      ).toBe(false);
+    },
+  );
 });
