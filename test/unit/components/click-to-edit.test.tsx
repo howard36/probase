@@ -135,4 +135,89 @@ describe("ClickToEdit", () => {
     expect(screen.getByText("After")).toBeInTheDocument();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });
+
+  describe("when the server's text changes (another user's edit)", () => {
+    function editor(initialText: string, onSave = vi.fn()) {
+      return (
+        <ClickToEdit
+          type="input"
+          name="title"
+          initialText={initialText}
+          autosave={true}
+          onSave={onSave}
+          required={false}
+        />
+      );
+    }
+
+    it("shows the new text while closed", () => {
+      const { rerender } = render(editor("Mine"));
+
+      rerender(editor("Theirs"));
+
+      expect(screen.getByText("Theirs")).toBeInTheDocument();
+    });
+
+    it("leaves an open editor alone, then shows theirs if closed without a change", async () => {
+      const user = userEvent.setup();
+      const onSave = vi.fn();
+      const { rerender } = render(editor("Mine", onSave));
+      await user.click(screen.getByText("Mine"));
+
+      rerender(editor("Theirs", onSave));
+      expect(screen.getByRole("textbox")).toHaveValue("Mine");
+      await user.type(screen.getByRole("textbox"), "{Enter}");
+
+      expect(onSave).not.toHaveBeenCalled();
+      expect(screen.getByText("Theirs")).toBeInTheDocument();
+    });
+
+    it("shows theirs after Escape", async () => {
+      const user = userEvent.setup();
+      const { rerender } = render(editor("Mine"));
+      await user.click(screen.getByText("Mine"));
+
+      rerender(editor("Theirs"));
+      await user.type(screen.getByRole("textbox"), "{Escape}");
+
+      expect(screen.getByText("Theirs")).toBeInTheDocument();
+    });
+
+    it("still saves what the user changed", async () => {
+      const user = userEvent.setup();
+      const onSave = vi.fn();
+      const { rerender } = render(editor("Mine", onSave));
+      await user.click(screen.getByText("Mine"));
+
+      rerender(editor("Theirs", onSave));
+      await user.type(screen.getByRole("textbox"), " edited{Enter}");
+
+      expect(onSave).toHaveBeenCalledWith("Mine edited");
+      expect(screen.getByText("Mine edited")).toBeInTheDocument();
+    });
+  });
+
+  it("does not save when the editor is closed without a change", async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn();
+    render(
+      <>
+        <ClickToEdit
+          type="input"
+          name="title"
+          initialText="Same"
+          autosave={true}
+          onSave={onSave}
+          required={false}
+        />
+        <button type="button">Elsewhere</button>
+      </>,
+    );
+
+    await user.click(screen.getByText("Same"));
+    await user.click(screen.getByRole("button", { name: "Elsewhere" }));
+
+    expect(onSave).not.toHaveBeenCalled();
+    expect(screen.getByText("Same")).toBeInTheDocument();
+  });
 });
