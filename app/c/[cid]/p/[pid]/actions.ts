@@ -545,7 +545,13 @@ export async function addSolution(
       return error("You do not have permission to edit this collection");
     }
 
-    await prisma.$transaction(async (tx) => {
+    const added = await prisma.$transaction(async (tx) => {
+      // Lock the problem so that two adds at once cannot both find it
+      // without a solution; the page shows only one.
+      await tx.$queryRaw`SELECT 1 FROM "Problem" WHERE "id" = ${problemId} FOR UPDATE`;
+      if ((await tx.solution.count({ where: { problemId } })) > 0) {
+        return false;
+      }
       const authorId = await getOrCreateAuthorId(
         tx,
         user,
@@ -562,7 +568,13 @@ export async function addSolution(
           },
         },
       });
+      return true;
     });
+    if (!added) {
+      return error(
+        "This problem already has a solution. Reload the page to see it.",
+      );
+    }
 
     revalidatePath(`/c/${problem.collection.cid}/p/${problem.pid}`);
     return { ok: true };

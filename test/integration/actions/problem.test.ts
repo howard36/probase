@@ -377,6 +377,39 @@ describe("addSolution", () => {
     );
   });
 
+  it("refuses a second solution, which the page could not show", async () => {
+    const collection = await createCollection();
+    const problem = await createProblem(collection);
+    await createSolution(problem, { text: "First" });
+    const user = await createUser();
+    await createPermission(user, collection, "TeamMember");
+    signInAs(user);
+
+    expect(await addSolution(problem.id, "Second")).toEqual(
+      error("This problem already has a solution. Reload the page to see it."),
+    );
+    expect(await prisma.solution.count()).toBe(1);
+    expect(await prisma.author.count()).toBe(0);
+  });
+
+  it("adds exactly one of two solutions sent at the same time", async () => {
+    const collection = await createCollection();
+    const problem = await createProblem(collection);
+    const first = await createUser();
+    const second = await createUser();
+    await createPermission(first, collection, "TeamMember");
+    await createPermission(second, collection, "TeamMember");
+
+    signInAs(first);
+    const firstAdd = addSolution(problem.id, "One");
+    signInAs(second);
+    const secondAdd = addSolution(problem.id, "Two");
+    const results = await Promise.all([firstAdd, secondAdd]);
+
+    expect(results.filter((r) => r.ok)).toHaveLength(1);
+    expect(await prisma.solution.count()).toBe(1);
+  });
+
   it("creates the member's author, named after them, with their first solution", async () => {
     const collection = await createCollection();
     const problem = await createProblem(collection);
