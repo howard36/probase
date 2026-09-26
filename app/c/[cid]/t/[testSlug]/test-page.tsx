@@ -38,9 +38,9 @@ export default function TestPage(props: Props) {
         />
       </div>
       <div className="mx-auto w-128 max-w-full text-base sm:w-144 sm:text-lg md:w-160 md:text-xl">
-        <div className="mb-12 px-8 text-3xl font-bold text-slate-900 sm:text-4xl">
+        <h1 className="mb-12 px-8 text-3xl font-bold text-slate-900 sm:text-4xl">
           {name}
-        </div>
+        </h1>
         <ol>
           {testProblems.map((testProblem: TestProblemWithProblem) => (
             <li key={testProblem.position}>

@@ -2,6 +2,8 @@ import Link from "next/link";
 import Sidebar from "@/components/sidebar";
 import { getCurrentUser } from "@/lib/current-user";
 
+export const metadata = { title: "Page not found" };
+
 export default async function NotFoundPage() {
   const user = await getCurrentUser();
   return (

@@ -1,4 +1,5 @@
 import type { Collection, Permission, Prisma } from "@prisma/client";
+import { cache } from "react";
 import { notFound, redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { canViewCollection } from "@/lib/permissions";
@@ -75,8 +76,10 @@ export interface CollectionAccess extends CurrentUser {
  *  - redirect to the testsolver-type chooser if the collection has timed
  *    testsolving and the user has not picked a type yet (unless
  *    `skipTestsolverTypeCheck`, which the chooser page itself needs)
+ *
+ * Cached per request, so a page and its title share one check.
  */
-export async function requireCollectionAccess(
+export const requireCollectionAccess = cache(async function (
   cid: string,
   callbackPath: string,
   options: { skipTestsolverTypeCheck?: boolean } = {},
@@ -106,4 +109,4 @@ export async function requireCollectionAccess(
   const authors = await getAuthorIds(user.userId, collection.id);
 
   return { ...user, collection, permission, authors };
-}
+});

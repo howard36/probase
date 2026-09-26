@@ -25,6 +25,7 @@ export default function ProblemList({
 }) {
   return (
     <div className="p-4 sm:p-8 xl:px-12 xl:py-24">
+      <h1 className="sr-only">{collection.name}</h1>
       <div className="flex flex-col xl:flex-row xl:justify-center xl:gap-x-12">
         <div className="xl:max-w-72 xl:flex-grow"></div>
         <div className="w-full xl:order-3 xl:max-w-72">

@@ -3,6 +3,8 @@ import GoogleLoginButton from "@/components/google-login-button";
 import { getCurrentUser } from "@/lib/current-user";
 import { safeCallbackPath } from "@/lib/callback-path";
 
+export const metadata = { title: "Log in" };
+
 interface SearchParams {
   callbackUrl?: string | string[];
 }

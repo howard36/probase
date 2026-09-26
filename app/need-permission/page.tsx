@@ -2,6 +2,8 @@ import Sidebar from "@/components/sidebar";
 import { SwitchAccountButton } from "@/components/account-buttons";
 import { getCurrentUser } from "@/lib/current-user";
 
+export const metadata = { title: "You need permission" };
+
 export default async function NeedPermissionPage() {
   const user = await getCurrentUser();
   return (
