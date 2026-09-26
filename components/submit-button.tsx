@@ -22,15 +22,19 @@ const Spinner: FC<SpinnerProps> = ({ visible, size = "md" }) => (
 
 interface SubmitButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md";
+  /** For a form submitted from `onSubmit` rather than a form action, which `useFormStatus` does not see. */
+  pending?: boolean;
 }
 
 export default function SubmitButton({
   size = "md",
+  pending: pendingProp,
   className,
   children,
   ...props
 }: SubmitButtonProps) {
-  const { pending } = useFormStatus();
+  const formStatus = useFormStatus();
+  const pending = pendingProp ?? formStatus.pending;
   return (
     <button
       disabled={pending}
