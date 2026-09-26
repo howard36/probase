@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import Page from "@/app/c/[cid]/page";
 import BackButton from "@/components/back-button";
+import PrefetchLink from "@/components/prefetch-link";
 import Latex from "@/components/latex";
 import Likes from "@/components/likes";
 import { ProblemListFilter } from "@/components/problem-list-filter";
@@ -19,6 +20,7 @@ import { signInAs } from "../session";
 import { clientPayload } from "./client-payload";
 
 const clientComponents = new Set<unknown>([
+  PrefetchLink,
   BackButton,
   Latex,
   Likes,

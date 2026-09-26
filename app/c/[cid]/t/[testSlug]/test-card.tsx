@@ -4,7 +4,7 @@ import Latex from "@/components/latex";
 import { isProblemLocked } from "@/lib/permissions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
+import PrefetchLink from "@/components/prefetch-link";
 
 interface ProblemWithAuthors extends Problem {
   authors: { id: number }[];
@@ -33,7 +33,7 @@ export default function TestCard({
     solveAttempts.some((attempt) => attempt.problemId === problem.id),
   );
   return (
-    <Link href={`/c/${collection.cid}/p/${problem.pid}`} prefetch={true}>
+    <PrefetchLink href={`/c/${collection.cid}/p/${problem.pid}`}>
       <div className="my-8 rounded-2xl bg-slate-50 p-8 transition duration-300 hover:bg-white hover:shadow-lg">
         <Label text={"PROBLEM " + position} />
         {locked ? (
@@ -49,6 +49,6 @@ export default function TestCard({
           </div>
         )}
       </div>
-    </Link>
+    </PrefetchLink>
   );
 }

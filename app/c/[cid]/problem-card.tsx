@@ -1,4 +1,4 @@
-import Link from "next/link";
+import PrefetchLink from "@/components/prefetch-link";
 import Latex from "@/components/latex";
 import type { ProblemProps } from "./types";
 import Lightbulbs from "@/components/lightbulbs";
@@ -44,10 +44,7 @@ export default function ProblemCard({
   const searchParams = filterToString(filter);
 
   return (
-    <Link
-      href={`/c/${collection.cid}/p/${problem.pid}${searchParams}`}
-      prefetch={true}
-    >
+    <PrefetchLink href={`/c/${collection.cid}/p/${problem.pid}${searchParams}`}>
       <div className="soft-shadow-xl mb-4 flex flex-col gap-y-2.5 rounded-2xl bg-white p-6 pb-5 pr-[22px] sm:mb-6 sm:gap-y-4 md:p-8 md:pb-7">
         <div className="flex items-start">
           <h2 className="grow truncate text-xl font-bold leading-6 md:text-2xl md:leading-7">
@@ -88,6 +85,6 @@ export default function ProblemCard({
           )}
         </div>
       </div>
-    </Link>
+    </PrefetchLink>
   );
 }

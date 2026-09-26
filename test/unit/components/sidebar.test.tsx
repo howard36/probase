@@ -5,7 +5,10 @@ import Sidebar from "@/components/sidebar";
 import { SwitchAccountButton } from "@/components/account-buttons";
 import { signOutOfProbase, switchAccount } from "@/lib/account-actions";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ prefetch: vi.fn() }),
+}));
 vi.mock("@/lib/account-actions", () => ({
   signOutOfProbase: vi.fn().mockResolvedValue({ ok: true }),
   switchAccount: vi.fn().mockResolvedValue({ ok: true }),

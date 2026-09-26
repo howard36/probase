@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import Page from "@/app/c/[cid]/t/[testSlug]/page";
 import BackButton from "@/components/back-button";
+import PrefetchLink from "@/components/prefetch-link";
 import Latex from "@/components/latex";
 import prisma from "@/lib/prisma";
 import {
@@ -13,7 +14,7 @@ import { expectNotFound, expectRedirect } from "../navigation";
 import { signInAs } from "../session";
 import { clientPayload } from "./client-payload";
 
-const clientComponents = new Set<unknown>([BackButton, Latex]);
+const clientComponents = new Set<unknown>([BackButton, Latex, PrefetchLink]);
 
 /** A testsolving collection with a one-problem test written by someone else. */
 async function setup() {
