@@ -7,7 +7,7 @@ import type { InviteProps } from "./types";
 import { inviteInclude } from "./types";
 import { getCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
-import { hasJoinedCollection } from "@/lib/permissions";
+import { collectionHomePath, inviteRaisesAccess } from "@/lib/permissions";
 import { isInviteExpired } from "./expiry";
 import InviteJoinPage from "./invite-join-page";
 import AlreadyJoined from "./already-joined";
@@ -50,12 +50,23 @@ export default async function InvitePage({
 
   const permission = await getPermission(user.userId, invite.collectionId);
 
-  if (hasJoinedCollection(permission)) {
-    // User has already joined the collection
-    return <AlreadyJoined invite={invite} />;
+  if (
+    permission !== null &&
+    !inviteRaisesAccess(permission, invite.accessLevel)
+  ) {
+    // The invite would not add to what they can already do.
+    return (
+      <AlreadyJoined
+        invite={invite}
+        homePath={collectionHomePath(
+          invite.collection.cid,
+          permission.accessLevel,
+        )}
+      />
+    );
   }
 
-  // User has not joined the collection, so they need to use the invite
+  // Not a member yet, or the invite raises their access
 
   if (isInviteExpired(invite)) {
     return <Expired invite={invite} />;

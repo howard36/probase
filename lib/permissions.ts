@@ -1,4 +1,9 @@
-import { Prisma, type AnswerFormat, type TestsolverType } from "@prisma/client";
+import {
+  Prisma,
+  type AccessLevel,
+  type AnswerFormat,
+  type TestsolverType,
+} from "@prisma/client";
 import { hasTimedTestsolving } from "@/lib/testsolve";
 
 const authorPerm = Prisma.validator<Prisma.AuthorDefaultArgs>()({
@@ -72,18 +77,38 @@ export function canAddComment(permission: PermissionPerm | null): boolean {
   );
 }
 
+// How much each role can do. ViewOnly (reading) and SubmitOnly (submitting)
+// cannot be compared, so neither counts as raising the other.
+const ACCESS_RANK: Record<AccessLevel, number> = {
+  Admin: 3,
+  TeamMember: 2,
+  ViewOnly: 1,
+  SubmitOnly: 1,
+};
+
 /**
- * Whether the user is a full member. Used by the invite flow: members do not
- * need an invite, and accepting one must never lower their access.
+ * Whether accepting an invite for `invited` would raise the user's access.
+ * Used by the invite flow: accepting never lowers or sideways-changes
+ * access, so an invite that would not raise it counts as already joined.
  */
-export function hasJoinedCollection(
+export function inviteRaisesAccess(
   permission: PermissionPerm | null,
+  invited: AccessLevel,
 ): boolean {
-  if (permission === null) {
-    return false;
-  }
-  const role = permission.accessLevel;
-  return role === "Admin" || role === "TeamMember";
+  return (
+    permission === null ||
+    ACCESS_RANK[invited] > ACCESS_RANK[permission.accessLevel]
+  );
+}
+
+/**
+ * Where a member of a collection starts: its problem list, or the
+ * add-problem form for a SubmitOnly member, who cannot view the list.
+ */
+export function collectionHomePath(cid: string, accessLevel: AccessLevel) {
+  return canViewCollection({ accessLevel })
+    ? `/c/${cid}`
+    : `/c/${cid}/add-problem`;
 }
 
 export function canViewCollection(permission: PermissionPerm | null): boolean {

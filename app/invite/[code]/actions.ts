@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { ActionResponse, error } from "@/lib/server-actions";
 import { getCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
-import { canViewCollection, hasJoinedCollection } from "@/lib/permissions";
+import { collectionHomePath, inviteRaisesAccess } from "@/lib/permissions";
 import { isInviteExpired } from "./expiry";
 import { forcedTestsolverType } from "@/lib/collection-config";
 import { parseInput } from "@/lib/validation";
@@ -45,10 +45,11 @@ export async function acceptInvite(
     return error("Invalid invite code");
   }
 
-  // Members already have access; accepting must not lower it or use up the invite.
+  // Accepting never lowers a member's access: an invite that would not raise
+  // it is not used, and the member goes where they usually start.
   const existing = await getPermission(userId, invite.collectionId);
-  if (hasJoinedCollection(existing)) {
-    redirect(`/c/${invite.collection.cid}`);
+  if (existing !== null && !inviteRaisesAccess(existing, invite.accessLevel)) {
+    redirect(collectionHomePath(invite.collection.cid, existing.accessLevel));
   }
 
   if (isInviteExpired(invite)) {
@@ -107,10 +108,5 @@ export async function acceptInvite(
     throw err;
   }
 
-  // A SubmitOnly member cannot view the collection; the form is their page.
-  redirect(
-    canViewCollection({ accessLevel: invite.accessLevel })
-      ? `/c/${invite.collection.cid}`
-      : `/c/${invite.collection.cid}/add-problem`,
-  );
+  redirect(collectionHomePath(invite.collection.cid, invite.accessLevel));
 }
