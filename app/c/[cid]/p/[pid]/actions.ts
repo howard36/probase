@@ -354,10 +354,6 @@ export async function submitTestsolve(
     }
 
     const difficulty = problem.difficulty;
-    if (difficulty === null) {
-      return error("Problem difficulty should not be null");
-    }
-
     const solveAttempt = await prisma.solveAttempt.findUnique({
       where: {
         userId_problemId: {
@@ -459,10 +455,6 @@ export async function giveUpTestsolve(
     }
 
     const difficulty = problem.difficulty;
-    if (difficulty === null) {
-      return error("Problem difficulty should not be null");
-    }
-
     const solveAttempt = await prisma.solveAttempt.findUnique({
       where: {
         userId_problemId: {

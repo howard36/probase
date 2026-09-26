@@ -108,9 +108,21 @@ describe("problemView", () => {
     ).toEqual({ kind: "unlocked" });
   });
 
-  it("throws for a locked problem with no difficulty, which has no time limit", () => {
-    expect(() => problemView(props({ difficulty: null }))).toThrow(
-      "Difficulty is null or zero",
-    );
-  });
+  it.each([null, 0])(
+    "locks a problem with difficulty %j with the longest time limit",
+    (difficulty) => {
+      expect(problemView(props({ difficulty }))).toEqual({
+        kind: "locked",
+        timeMinutes: 30,
+        unsolved: true,
+      });
+      const startedAt = new Date(now - 29 * MINUTE);
+      expect(
+        problemView(props({ difficulty, attempts: [attempt({ startedAt })] })),
+      ).toEqual({
+        kind: "testsolving",
+        deadline: new Date(startedAt.getTime() + 30 * MINUTE),
+      });
+    },
+  );
 });
