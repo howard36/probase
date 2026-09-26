@@ -83,6 +83,14 @@ export default function Testsolve({
         Leaderboard
       </h2>
       <table className="min-w-full">
+        <thead className="sr-only">
+          <tr>
+            <th scope="col">Rank</th>
+            <th scope="col">Testsolver</th>
+            <th scope="col">Wrong answers</th>
+            <th scope="col">Solve time</th>
+          </tr>
+        </thead>
         <tbody className="">
           {shownEntries.map((entry, idx) => (
             <tr key={idx} className={entry.highlight ? "bg-yellow-100" : ""}>
@@ -92,6 +100,7 @@ export default function Testsolve({
               </td>
               <td className="whitespace-nowrap py-3 font-semibold">
                 {entry.name}
+                {entry.highlight && <span className="sr-only"> (you)</span>}
               </td>
               <td className="whitespace-nowrap py-3 text-red-500">
                 {(entry.numFailed > 0 || entry.solveTimeMillis === null) && (
