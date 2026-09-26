@@ -7,7 +7,6 @@ import {
   useEffect,
   useRef,
   useState,
-  useTransition,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Filter, filterToString } from "@/lib/filter";
@@ -26,7 +25,9 @@ const FilterStateContext = createContext<FilterState | null>(null);
  * controls. Each change is shown at once and builds on the previous one, even
  * while the list for it is still loading; reading the filter back from the
  * server instead would undo the changes made in the meantime, dropping typed
- * characters and cancelling quick clicks.
+ * characters and cancelling quick clicks. Whenever the page is shown with a
+ * different filter (the user's change has loaded, or a page link or Back won
+ * over it), that filter is taken up.
  */
 export function ProblemListFilterState({
   filter: serverFilter,
@@ -37,19 +38,17 @@ export function ProblemListFilterState({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
   const [filter, setFilter] = useState(serverFilter);
   const latest = useRef(filter);
 
-  // Follow the server when it shows a different filter (a page link, the
-  // back button), except while a change of the user's is still loading.
+  // Navigations commit one at a time and a newer one replaces an older one
+  // still loading, so a new filter from the server is never an out-of-date
+  // copy of the user's own changes.
   const serverKey = filterToString(serverFilter);
   const [seenServerKey, setSeenServerKey] = useState(serverKey);
   if (serverKey !== seenServerKey) {
     setSeenServerKey(serverKey);
-    if (!isPending) {
-      setFilter(serverFilter);
-    }
+    setFilter(serverFilter);
   }
   useEffect(() => {
     latest.current = filter;
@@ -60,11 +59,7 @@ export function ProblemListFilterState({
       const next = { ...latest.current, ...change };
       latest.current = next;
       setFilter(next);
-      startTransition(() => {
-        router.replace(`${pathname}${filterToString(next)}`, {
-          scroll: false,
-        });
-      });
+      router.replace(`${pathname}${filterToString(next)}`, { scroll: false });
     },
     [router, pathname],
   );
