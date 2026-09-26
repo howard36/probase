@@ -64,8 +64,11 @@ export default function Testsolve({
         </div>
         <div className="my-4 flex items-center gap-x-6">
           <SubmitButton className="flex-grow-0">Submit</SubmitButton>
+          {/* Its own form action replaces the answer submission, so Give Up
+              only gives up; formNoValidate lets it through an empty box. */}
           <SubmitButton
-            onClick={() => tryGiveUpTestsolve(problemId)}
+            formAction={() => tryGiveUpTestsolve(problemId)}
+            formNoValidate
             className="flex-grow-0 bg-red-500 shadow-red-500/20 hover:bg-red-600 hover:shadow-red-500/20 focus-visible:ring-red-300 active:bg-red-700 active:shadow-red-500/20 disabled:bg-red-300"
           >
             Give Up
