@@ -75,4 +75,20 @@ describe("Testsolve", () => {
 
     expect(screen.getByRole("textbox", { name: "ANSWER" })).toBeInTheDocument();
   });
+
+  it("announces a wrong answer", async () => {
+    const user = userEvent.setup();
+    renderTestsolve();
+
+    await user.type(screen.getByRole("textbox"), "12");
+    await user.click(screen.getByRole("button", { name: "Submit" }));
+
+    await waitFor(() =>
+      expect(
+        screen
+          .getAllByRole("status")
+          .some((el) => el.textContent?.includes("12 is incorrect!")),
+      ).toBe(true),
+    );
+  });
 });

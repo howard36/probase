@@ -5,7 +5,11 @@ import { cn } from "@/lib/utils";
 export default function Lightbulbs({ difficulty }: { difficulty: number }) {
   return (
     <>
-      <div className="flex items-center gap-x-0.5">
+      <div
+        className="flex items-center gap-x-0.5"
+        role="img"
+        aria-label={`Difficulty ${difficulty} of 5`}
+      >
         {[1, 2, 3, 4, 5].map((value) => (
           <FontAwesomeIcon
             key={value}

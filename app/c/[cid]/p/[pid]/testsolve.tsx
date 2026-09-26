@@ -77,7 +77,7 @@ export default function Testsolve({
             Give Up
           </SubmitButton>
         </div>
-        <div className="mb-3">
+        <div className="mb-3" role="status">
           {wrongAnswer && (
             <span>
               <strong>{wrongAnswer}</strong> is incorrect!{" "}
