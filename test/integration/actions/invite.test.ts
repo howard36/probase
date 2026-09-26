@@ -200,37 +200,71 @@ describe("acceptInvite", () => {
       expect(await permissionFor(second, collection)).toBeNull();
     });
 
-    it("admits exactly one of two users who accept at the same time", async () => {
+    it("with an expiry, admits the first user and expires for the next", async () => {
       const collection = await createCollection();
       const inviter = await createUser();
       const invite = await createInvite(collection, inviter, {
         oneTimeUse: true,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
       const first = await createUser();
       const second = await createUser();
 
-      // A redirect is a throw; a refusal is a resolved error response.
-      const outcome = (promise: Promise<unknown>) =>
-        promise.then(
-          (resp) => `response:${JSON.stringify(resp)}`,
-          (err: unknown) =>
-            isRedirectError(err) ? "redirect" : `threw:${String(err)}`,
-        );
-
-      // auth() is read synchronously at the start of each call, so the
-      // sign-in can be switched between starting the two accepts.
       signInAs(first);
-      const firstAccept = outcome(acceptInvite(invite.code));
-      signInAs(second);
-      const secondAccept = outcome(acceptInvite(invite.code));
-      const outcomes = await Promise.all([firstAccept, secondAccept]);
+      await expectRedirect(acceptInvite(invite.code), `/c/${collection.cid}`);
+      expect((await permissionFor(first, collection))?.accessLevel).toBe(
+        "TeamMember",
+      );
+      const used = await prisma.invite.findUniqueOrThrow({
+        where: { code: invite.code },
+      });
+      expect(used.expiresAt!.getTime()).toBeLessThanOrEqual(Date.now());
 
-      expect(outcomes.sort()).toEqual([
-        "redirect",
-        `response:${JSON.stringify(error("Invite has expired"))}`,
-      ]);
-      expect(await prisma.permission.count()).toBe(1);
+      signInAs(second);
+      expect(await acceptInvite(invite.code)).toEqual(
+        error("Invite has expired"),
+      );
+      expect(await permissionFor(second, collection)).toBeNull();
     });
+
+    it.each([
+      ["no expiry", null],
+      ["an expiry", new Date(Date.now() + 60 * 60 * 1000)],
+    ])(
+      "with %s, admits exactly one of two users who accept at the same time",
+      async (_label, expiresAt) => {
+        const collection = await createCollection();
+        const inviter = await createUser();
+        const invite = await createInvite(collection, inviter, {
+          oneTimeUse: true,
+          expiresAt,
+        });
+        const first = await createUser();
+        const second = await createUser();
+
+        // A redirect is a throw; a refusal is a resolved error response.
+        const outcome = (promise: Promise<unknown>) =>
+          promise.then(
+            (resp) => `response:${JSON.stringify(resp)}`,
+            (err: unknown) =>
+              isRedirectError(err) ? "redirect" : `threw:${String(err)}`,
+          );
+
+        // auth() is read synchronously at the start of each call, so the
+        // sign-in can be switched between starting the two accepts.
+        signInAs(first);
+        const firstAccept = outcome(acceptInvite(invite.code));
+        signInAs(second);
+        const secondAccept = outcome(acceptInvite(invite.code));
+        const outcomes = await Promise.all([firstAccept, secondAccept]);
+
+        expect(outcomes.sort()).toEqual([
+          "redirect",
+          `response:${JSON.stringify(error("Invite has expired"))}`,
+        ]);
+        expect(await prisma.permission.count()).toBe(1);
+      },
+    );
 
     it("a reusable invite keeps working", async () => {
       const collection = await createCollection();

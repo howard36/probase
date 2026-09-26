@@ -65,10 +65,13 @@ export async function acceptInvite(
   try {
     await prisma.$transaction(async (tx) => {
       if (invite.oneTimeUse) {
-        // Consume the invite first, and only if nobody else has. The row
-        // lock makes a concurrent accept wait and then see the used invite.
+        // Consume the invite first, and only if nobody else has: using it
+        // moves `expiresAt` to now, so the update matches only while
+        // `expiresAt` still holds the unexpired value checked above (null or
+        // a future date). The row lock makes a concurrent accept wait and
+        // then see the used invite.
         const consumed = await tx.invite.updateMany({
-          where: { code: inviteCode, expiresAt: null },
+          where: { code: inviteCode, expiresAt: invite.expiresAt },
           data: { expiresAt: new Date() },
         });
         if (consumed.count === 0) {
