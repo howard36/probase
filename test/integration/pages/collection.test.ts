@@ -4,6 +4,7 @@ import BackButton from "@/components/back-button";
 import Latex from "@/components/latex";
 import Likes from "@/components/likes";
 import { ProblemListFilter } from "@/components/problem-list-filter";
+import { ProblemListFilterState } from "@/components/problem-list-filter-state";
 import { ProblemListPagination } from "@/components/problem-list-pagination";
 import { ProblemListSearch } from "@/components/problem-list-search";
 import prisma from "@/lib/prisma";
@@ -22,6 +23,7 @@ const clientComponents = new Set<unknown>([
   Latex,
   Likes,
   ProblemListFilter,
+  ProblemListFilterState,
   ProblemListPagination,
   ProblemListSearch,
 ]);

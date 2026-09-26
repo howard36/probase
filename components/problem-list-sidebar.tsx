@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ProblemListSearch } from "./problem-list-search";
 import { ProblemListFilter } from "./problem-list-filter";
+import { ProblemListFilterState } from "./problem-list-filter-state";
 import { Filter } from "@/lib/filter";
 import { Permission, Collection } from "@prisma/client";
 import { canAddProblem } from "@/lib/permissions";
@@ -17,7 +18,7 @@ export function ProblemListSidebar({
   filter,
 }: ProblemListSidebarProps) {
   return (
-    <>
+    <ProblemListFilterState filter={filter}>
       <div className="mb-2 flex flex-col gap-x-8 gap-y-6 sm:flex-row xl:flex-col">
         {canAddProblem(permission) && (
           <Link
@@ -28,13 +29,9 @@ export function ProblemListSidebar({
             Add Problem
           </Link>
         )}
-        <ProblemListSearch filter={filter} />
+        <ProblemListSearch />
       </div>
-      <ProblemListFilter
-        collection={collection}
-        permission={permission}
-        filter={filter}
-      />
-    </>
+      <ProblemListFilter collection={collection} permission={permission} />
+    </ProblemListFilterState>
   );
 }

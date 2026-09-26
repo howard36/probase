@@ -1,27 +1,59 @@
 "use client";
 
-import React from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { Filter, filterToString } from "@/lib/filter";
+import React, { useEffect, useRef, useState } from "react";
+import { useProblemListFilter } from "./problem-list-filter-state";
 
-export function ProblemListSearch({ filter }: { filter: Filter }) {
-  const router = useRouter();
-  const pathname = usePathname();
+/** How long typing must pause before the list is searched. */
+const SEARCH_DELAY_MILLIS = 300;
+
+export function ProblemListSearch() {
+  const { filter, update } = useProblemListFilter();
+  // The box keeps its own text, so typing never waits on the server.
+  const [text, setText] = useState(filter.search);
+  const pendingSearch = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelPendingSearch = () => {
+    if (pendingSearch.current !== null) {
+      clearTimeout(pendingSearch.current);
+      pendingSearch.current = null;
+    }
+  };
+
+  // Show a search set from elsewhere (a page link, the back button), but
+  // never overwrite what the user is in the middle of typing.
+  useEffect(() => {
+    if (pendingSearch.current === null) {
+      setText(filter.search);
+    }
+  }, [filter.search]);
+
+  useEffect(() => cancelPendingSearch, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFilter = { ...filter, search: e.target.value };
-    const newParams = filterToString(newFilter);
-    router.replace(`${pathname}${newParams}`, { scroll: false });
+    const search = e.target.value;
+    setText(search);
+    cancelPendingSearch();
+    pendingSearch.current = setTimeout(() => {
+      pendingSearch.current = null;
+      update({ search });
+    }, SEARCH_DELAY_MILLIS);
+  };
+
+  // Enter searches at once instead of reloading the page.
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    cancelPendingSearch();
+    update({ search: text });
   };
 
   return (
     <div className="w-full">
       <div className="relative text-slate-600">
-        <form>
+        <form onSubmit={handleSubmit}>
           <input
             type="search"
             placeholder="Search"
-            value={filter.search}
+            value={text}
             onChange={handleSearchChange}
             className="h-12 w-full rounded-xl border-2 border-slate-300 bg-white pl-4 pr-12 text-base focus:outline-none"
           />
