@@ -267,7 +267,7 @@ Every high and medium entry except B-10, B-16 and B-19 was confirmed in the runn
 - **Severity:** `medium`. The main form's main button appears not to work.
 - **Decision needed:** `fix`. Keep the field's height stable when it closes, or submit the form's current values without closing editors on blur of the submit button.
 - **Raised by:** [the add-problem form](collection/adding-a-problem.md#open-questions-and-verification), [click-to-edit](foundations/click-to-edit.md#edge-cases)
-- **Status:** Confirmed in the first local pass.
+- **Status:** Confirmed by a probe during the third local pass: with the button scrolled into view and the fix's mouse-down handler bypassed, SOLUTION closed on mouse-down, the button moved up 35 px and the click landed on the form's container, so nothing was sent. The first pass's scripted check had clicked below the 720-pixel window and never reached the button, so it did not confirm this.
 
 ### B-19: Hiding the spoilers throws away drafts inside them
 
