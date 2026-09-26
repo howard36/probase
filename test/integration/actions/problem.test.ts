@@ -159,6 +159,43 @@ describe("editProblem", () => {
     );
   });
 
+  it.each([
+    ["Integer", "$42$", "The answer must be a whole number, like 42 or -7."],
+    ["AIME", "1000", "The answer must be a whole number from 0 to 999."],
+  ] as const)(
+    "refuses an answer a %s collection's answer box could not type",
+    async (answerFormat, answer, message) => {
+      const collection = await createCollection({ answerFormat });
+      const problem = await createProblem(collection, { answer: "42" });
+      const admin = await createUser();
+      await createPermission(admin, collection, "Admin");
+      signInAs(admin);
+
+      expect(await editProblem(problem.id, { answer })).toEqual(error(message));
+      const after = await prisma.problem.findUniqueOrThrow({
+        where: { id: problem.id },
+      });
+      expect(after.answer).toBe("42");
+    },
+  );
+
+  it("takes any answer in a ShortAnswer collection, and an empty one anywhere", async () => {
+    const shortAnswer = await createCollection({ answerFormat: "ShortAnswer" });
+    const integer = await createCollection({ answerFormat: "Integer" });
+    const free = await createProblem(shortAnswer);
+    const whole = await createProblem(integer);
+    const admin = await createUser();
+    await createPermission(admin, shortAnswer, "Admin");
+    await createPermission(admin, integer, "Admin");
+    signInAs(admin);
+
+    expect(await editProblem(free.id, { answer: "$\\sqrt{2}$" })).toEqual({
+      ok: true,
+    });
+    expect(await editProblem(whole.id, { answer: "" })).toEqual({ ok: true });
+    expect(await editProblem(whole.id, { answer: "-7" })).toEqual({ ok: true });
+  });
+
   it("lets a TeamMember edit only problems they authored", async () => {
     const collection = await createCollection();
     const member = await createUser();

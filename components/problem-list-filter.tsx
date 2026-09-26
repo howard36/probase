@@ -11,6 +11,7 @@ import { useProblemListFilter } from "./problem-list-filter-state";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { hasTimedTestsolving } from "@/lib/testsolve";
 
 const allSubjects: Subject[] = [
   "Algebra",
@@ -67,7 +68,7 @@ export function ProblemListFilter({
         />
         <Label htmlFor="filter-archived">Archived</Label>
       </div>
-      {collection.requireTestsolve &&
+      {hasTimedTestsolving(collection) &&
         permission.testsolverType === TestsolverType.Serious && (
           <div className="flex items-center">
             <Switch

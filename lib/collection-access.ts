@@ -2,6 +2,7 @@ import type { Collection, Permission } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { canViewCollection } from "@/lib/permissions";
+import { hasTimedTestsolving } from "@/lib/testsolve";
 import { requireCurrentUser, type CurrentUser } from "@/lib/current-user";
 
 export function getPermission(
@@ -43,7 +44,7 @@ export interface CollectionAccess extends CurrentUser {
  *  - 404 if the collection does not exist
  *  - redirect to sign-in (returning to `callbackPath`) if signed out
  *  - redirect to /need-permission if the user cannot view the collection
- *  - redirect to the testsolver-type chooser if the collection requires
+ *  - redirect to the testsolver-type chooser if the collection has timed
  *    testsolving and the user has not picked a type yet (unless
  *    `skipTestsolverTypeCheck`, which the chooser page itself needs)
  */
@@ -68,7 +69,7 @@ export async function requireCollectionAccess(
 
   if (
     !options.skipTestsolverTypeCheck &&
-    collection.requireTestsolve &&
+    hasTimedTestsolving(collection) &&
     permission.testsolverType === null
   ) {
     redirect(`/c/${cid}/choose-testsolver-type`);

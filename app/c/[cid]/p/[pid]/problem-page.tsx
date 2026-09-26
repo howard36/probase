@@ -19,6 +19,7 @@ import BackButton from "@/components/back-button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { Filter, filterToString } from "@/lib/filter";
+import { hasTimedTestsolving } from "@/lib/testsolve";
 
 // darker color first, for more contrast
 const subjectToGradient = {
@@ -137,7 +138,7 @@ export default function ProblemPage(props: PropsWithFilter) {
             {solution}
           </Spoilers>
         )}
-        {collection.requireTestsolve && (
+        {hasTimedTestsolving(collection) && (
           <Leaderboard
             solveAttempts={problem.solveAttempts}
             userId={userId}

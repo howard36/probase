@@ -23,6 +23,7 @@ import {
   BUFFER_TIME_MILLIS,
   SUBMISSION_LIMIT,
   testsolveDeadline,
+  answerFormatError,
 } from "@/lib/testsolve";
 
 const likeSchema = z.object({ problemId: idSchema, like: z.boolean() });
@@ -156,6 +157,7 @@ export async function editProblem(
           select: {
             id: true,
             cid: true,
+            answerFormat: true,
           },
         },
         authors: {
@@ -183,6 +185,13 @@ export async function editProblem(
     }
 
     const { title, statement, answer, isArchived } = input.data.data;
+    const answerError =
+      answer === undefined
+        ? null
+        : answerFormatError(answer, problem.collection.answerFormat);
+    if (answerError !== null) {
+      return error(answerError);
+    }
 
     await prisma.problem.update({
       where: { id: problemId },

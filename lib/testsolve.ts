@@ -1,5 +1,45 @@
 // Timed-testsolve rules shared by the problem page and the testsolve actions.
 
+import type { AnswerFormat } from "@prisma/client";
+
+/**
+ * Whether the collection locks problems until they are testsolved. A timed
+ * attempt checks a typed answer exactly, which works for integers and AIME
+ * answers only, so a ShortAnswer or Proof collection never locks its problems,
+ * even if it is set to require testsolving.
+ */
+export function hasTimedTestsolving(collection: {
+  requireTestsolve: boolean;
+  answerFormat: AnswerFormat;
+}): boolean {
+  return (
+    collection.requireTestsolve &&
+    (collection.answerFormat === "Integer" ||
+      collection.answerFormat === "AIME")
+  );
+}
+
+/**
+ * Why `answer` cannot be stored in a collection with this answer format, as a
+ * message for the user, or null if it can. An empty answer ("no answer yet")
+ * is always allowed. The timed attempt's answer box can only type what passes.
+ */
+export function answerFormatError(
+  answer: string,
+  answerFormat: AnswerFormat,
+): string | null {
+  if (answer === "") {
+    return null;
+  }
+  if (answerFormat === "Integer" && !/^-?(0|[1-9]\d*)$/.test(answer)) {
+    return "The answer must be a whole number, like 42 or -7.";
+  }
+  if (answerFormat === "AIME" && !/^\d{1,3}$/.test(answer)) {
+    return "The answer must be a whole number from 0 to 999.";
+  }
+  return null;
+}
+
 /** Extra time the server allows on a submission, to absorb network latency. */
 export const BUFFER_TIME_MILLIS = 10_000;
 export const SUBMISSION_LIMIT = 5;

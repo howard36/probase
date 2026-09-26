@@ -91,6 +91,19 @@ describe("addProblem", () => {
     },
   );
 
+  it("refuses an answer that does not fit the collection's answer format", async () => {
+    const { collection, fields } = await setup("TeamMember");
+    await prisma.collection.update({
+      where: { id: collection.id },
+      data: { answerFormat: "Integer" },
+    });
+
+    expect(
+      await addProblem(collection.id, problemForm({ ...fields, answer: "-" })),
+    ).toEqual(error("The answer must be a whole number, like 42 or -7."));
+    expect(await prisma.problem.count()).toBe(0);
+  });
+
   it("stores every field, attributes the author, and self-likes", async () => {
     const { collection, user, author, fields } = await setup("TeamMember");
 

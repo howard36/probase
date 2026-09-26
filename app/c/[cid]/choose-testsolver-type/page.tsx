@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { requireCollectionAccess } from "@/lib/collection-access";
 import ChooseTestsolverTypePage from "@/components/choose-testsolver-type-page";
 import { setTestsolverType } from "./actions";
+import { hasTimedTestsolving } from "@/lib/testsolve";
 
 interface Params {
   cid: string;
@@ -13,7 +14,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     skipTestsolverTypeCheck: true,
   });
 
-  if (collection.requireTestsolve === false) {
+  if (!hasTimedTestsolving(collection)) {
     redirect(`/c/${cid}`);
   }
 

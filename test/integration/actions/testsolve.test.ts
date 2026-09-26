@@ -35,7 +35,10 @@ async function setup({
   difficulty?: number | null;
   answer?: string;
 } = {}) {
-  const collection = await createCollection({ requireTestsolve: true });
+  const collection = await createCollection({
+    requireTestsolve: true,
+    answerFormat: "Integer",
+  });
   const problem = await createProblem(collection, { difficulty, answer });
   const user = await createUser();
   await createPermission(user, collection, accessLevel);

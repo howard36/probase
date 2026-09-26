@@ -1,4 +1,5 @@
-import { Prisma, type TestsolverType } from "@prisma/client";
+import { Prisma, type AnswerFormat, type TestsolverType } from "@prisma/client";
+import { hasTimedTestsolving } from "@/lib/testsolve";
 
 const authorPerm = Prisma.validator<Prisma.AuthorDefaultArgs>()({
   select: {
@@ -123,21 +124,26 @@ interface TestsolveProblem extends ProblemPerm {
   createdAt: Date;
 }
 
+interface TestsolveCollection {
+  requireTestsolve: boolean;
+  answerFormat: AnswerFormat;
+}
+
 /**
  * Whether this user must testsolve the problem before they can read it.
- * True only for serious testsolvers in collections that require testsolving,
- * for problems created after their serious period began, and never for
- * someone who can edit the problem (authors and admins do not testsolve
- * their own problems).
+ * True only for serious testsolvers in collections with timed testsolving
+ * (see `hasTimedTestsolving`), for problems created after their serious
+ * period began, and never for someone who can edit the problem (authors and
+ * admins do not testsolve their own problems).
  */
 export function needsTestsolveToView(
-  collection: { requireTestsolve: boolean },
+  collection: TestsolveCollection,
   problem: TestsolveProblem,
   permission: TestsolvePermission,
   authors: AuthorPerm[],
 ): boolean {
   return (
-    collection.requireTestsolve &&
+    hasTimedTestsolving(collection) &&
     permission.testsolverType !== "Casual" &&
     permission.seriousTestsolverStartedAt !== null &&
     permission.seriousTestsolverStartedAt < problem.createdAt &&
@@ -147,7 +153,7 @@ export function needsTestsolveToView(
 
 /** A problem is locked until a user who needs to testsolve it starts an attempt. */
 export function isProblemLocked(
-  collection: { requireTestsolve: boolean },
+  collection: TestsolveCollection,
   problem: TestsolveProblem,
   permission: TestsolvePermission,
   authors: AuthorPerm[],
