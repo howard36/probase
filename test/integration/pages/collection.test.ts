@@ -63,6 +63,32 @@ describe("collection page", () => {
     expect(payload).not.toContain("LOCKED-STATEMENT-SECRET");
   });
 
+  it("does not let a serious testsolver's search match a locked statement", async () => {
+    const collection = await createCollection({
+      requireTestsolve: true,
+      answerFormat: "Integer",
+    });
+    await createProblem(collection, {
+      title: "Locked title",
+      statement: "Hidden words about a hexagon",
+    });
+    await createProblem(collection, {
+      title: "A hexagon in the title",
+      statement: "Locked too",
+    });
+    const solver = await createUser();
+    await createPermission(solver, collection, "TeamMember", {
+      testsolverType: "Serious",
+      seriousTestsolverStartedAt: new Date(Date.now() - 60_000),
+    });
+    signInAs(solver);
+
+    const payload = await payloadFor(collection.cid, { search: "hexagon" });
+
+    expect(payload).toContain("A hexagon in the title");
+    expect(payload).not.toContain("Locked title");
+  });
+
   it("sends statements to a casual testsolver", async () => {
     const collection = await createCollection({
       requireTestsolve: true,

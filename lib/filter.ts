@@ -74,12 +74,15 @@ interface FilterableProblem {
 /**
  * Applies a Filter to a collection's problems and picks the requested page.
  * `attemptedProblemIds` are the problems the user has started testsolving;
- * "unsolved only" hides those.
+ * "unsolved only" hides those. `lockedProblemIds` are the problems locked for
+ * the user: search matches only their titles, since their statements are
+ * hidden until testsolved.
  */
 export function applyFilter<T extends FilterableProblem>(
   problems: T[],
   filter: Filter,
   attemptedProblemIds: number[],
+  lockedProblemIds: number[] = [],
 ): { page: T[]; numPages: number } {
   let matching = problems.filter(
     (problem) => problem.isArchived === filter.archived,
@@ -99,7 +102,8 @@ export function applyFilter<T extends FilterableProblem>(
     matching = matching.filter(
       (problem) =>
         problem.title.toLowerCase().includes(lowerQuery) ||
-        problem.statement.toLowerCase().includes(lowerQuery),
+        (!lockedProblemIds.includes(problem.id) &&
+          problem.statement.toLowerCase().includes(lowerQuery)),
     );
   }
 

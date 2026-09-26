@@ -5,6 +5,7 @@ import { Collection, Problem } from "@prisma/client";
 import { ProblemProps } from "./types";
 import { requireCollectionAccess } from "@/lib/collection-access";
 import { applyFilter, filterToString, parseFilter } from "@/lib/filter";
+import { isProblemLocked } from "@/lib/permissions";
 
 function sortByNew(p1: Problem, p2: Problem): number {
   const t1 = p1.createdAt.getTime();
@@ -69,8 +70,24 @@ export default async function Page({
     },
   });
   const attemptedProblemIds = attempts.map((attempt) => attempt.problemId);
+  const lockedProblemIds = problems
+    .filter((problem) =>
+      isProblemLocked(
+        collection,
+        problem,
+        permission,
+        authors,
+        attemptedProblemIds.includes(problem.id),
+      ),
+    )
+    .map((problem) => problem.id);
 
-  const { page, numPages } = applyFilter(problems, filter, attemptedProblemIds);
+  const { page, numPages } = applyFilter(
+    problems,
+    filter,
+    attemptedProblemIds,
+    lockedProblemIds,
+  );
   if (filter.page > numPages) {
     redirect(`/c/${cid}${filterToString({ ...filter, page: numPages })}`);
   }
