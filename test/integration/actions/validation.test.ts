@@ -71,7 +71,7 @@ describe("action input validation", () => {
     };
 
     it("rejects an unknown subject instead of generating pid 'undefined1'", async () => {
-      const { collection, author } = await member();
+      const { collection } = await member();
 
       const result = await addProblem(
         collection.id,
@@ -96,7 +96,7 @@ describe("action input validation", () => {
     });
 
     it("stores an empty difficulty as null and an empty answer as an empty string", async () => {
-      const { collection, author } = await member();
+      const { collection } = await member();
 
       await expectRedirect(
         addProblem(

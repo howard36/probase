@@ -5,7 +5,9 @@ import prisma from "@/lib/prisma";
 
 // `auth()` would boot NextAuth with the Google provider and the Prisma adapter.
 // Replace it with a mock the tests control through `signInAs()` (see ./session.ts).
-vi.mock("auth", () => ({ auth: vi.fn() }));
+// `signIn()` and `signOut()` redirect to Google or clear the session; the
+// account actions' tests check how they are called.
+vi.mock("auth", () => ({ auth: vi.fn(), signIn: vi.fn(), signOut: vi.fn() }));
 
 // Server actions call revalidateTag(), which needs a Next.js request context.
 vi.mock("next/cache", () => ({

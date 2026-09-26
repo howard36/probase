@@ -1,9 +1,11 @@
 import Sidebar from "@/components/sidebar";
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/current-user";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const user = await getCurrentUser();
   return (
-    <Sidebar>
+    <Sidebar signedInAs={user?.email ?? null}>
       <div className="p-4 pt-8 text-base sm:p-24 sm:text-lg">
         <h1 className="mb-4 text-3xl font-semibold">Welcome to Probase!</h1>
         <p className="mb-3">

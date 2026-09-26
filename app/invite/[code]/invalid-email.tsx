@@ -1,4 +1,4 @@
-import GoogleLoginButton from "@/components/google-login-button";
+import { SwitchAccountButton } from "@/components/account-buttons";
 import type { InviteProps } from "./types";
 
 // TODO: change to invite props
@@ -29,7 +29,7 @@ export default function InvalidEmail({
           Currently logged in as{" "}
           <span className="font-bold text-slate-900">{email}</span>
         </p>
-        <GoogleLoginButton callbackUrl={`/invite/${invite.code}`} />
+        <SwitchAccountButton callbackPath={`/invite/${invite.code}`} />
       </div>
     </div>
   );
