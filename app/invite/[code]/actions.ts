@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { ActionResponse, error } from "@/lib/server-actions";
 import { getCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
-import { hasJoinedCollection } from "@/lib/permissions";
+import { canViewCollection, hasJoinedCollection } from "@/lib/permissions";
 import { isInviteExpired } from "./expiry";
 import { forcedTestsolverType } from "@/lib/collection-config";
 import { parseInput } from "@/lib/validation";
@@ -107,5 +107,10 @@ export async function acceptInvite(
     throw err;
   }
 
-  redirect(`/c/${invite.collection.cid}`);
+  // A SubmitOnly member cannot view the collection; the form is their page.
+  redirect(
+    canViewCollection({ accessLevel: invite.accessLevel })
+      ? `/c/${invite.collection.cid}`
+      : `/c/${invite.collection.cid}/add-problem`,
+  );
 }

@@ -77,7 +77,7 @@ describe("addProblem", () => {
     );
   });
 
-  it.each(["Admin", "TeamMember", "SubmitOnly"] as const)(
+  it.each(["Admin", "TeamMember"] as const)(
     "lets a %s add a problem and redirects to it",
     async (level) => {
       const { collection, fields } = await setup(level);
@@ -89,6 +89,16 @@ describe("addProblem", () => {
       expect(await prisma.problem.count()).toBe(1);
     },
   );
+
+  it("sends a SubmitOnly member, who cannot view the problem, back to the form with a confirmation", async () => {
+    const { collection, fields } = await setup("SubmitOnly");
+
+    await expectRedirect(
+      addProblem(collection.id, problemForm(fields)),
+      `/c/${collection.cid}/add-problem?submitted=A1`,
+    );
+    expect(await prisma.problem.count()).toBe(1);
+  });
 
   it("refuses an answer that does not fit the collection's answer format", async () => {
     const { collection, fields } = await setup("TeamMember");
@@ -121,7 +131,7 @@ describe("addProblem", () => {
           difficulty: "",
         }),
       ),
-      `/c/${collection.cid}/p/G1`,
+      `/c/${collection.cid}/add-problem?submitted=G1`,
     );
 
     const authors = await prisma.author.findMany({
