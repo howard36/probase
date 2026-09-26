@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Sidebar from "@/components/sidebar";
+import { getCurrentUser } from "@/lib/current-user";
 
-export default function NotFoundPage() {
+export default async function NotFoundPage() {
+  const user = await getCurrentUser();
   return (
-    <Sidebar>
+    <Sidebar signedInAs={user?.email ?? null}>
       <div className="mx-auto my-24 w-128 max-w-full px-8">
         <h1 className="mb-8 text-3xl">Page not found</h1>
         <p className="mb-8 text-xl">

@@ -3,8 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SIDEBAR_COLLECTIONS } from "@/lib/collection-config";
+import { SignOutButton } from "./account-buttons";
 
-export default function Sidebar({ children }: { children: React.ReactNode }) {
+export default function Sidebar({
+  signedInAs,
+  children,
+}: {
+  /** The signed-in user's email, or null when signed out. */
+  signedInAs: string | null;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
 
   // TODO: automate links based on permissions
@@ -43,6 +51,12 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
           </nav>
+          {signedInAs !== null && (
+            <div className="mt-8 break-words px-3 text-sm text-slate-500">
+              <p className="mb-1">Signed in as {signedInAs}</p>
+              <SignOutButton />
+            </div>
+          )}
         </div>
       </div>
       <div className="ml-40 sm:ml-64">{children}</div>
