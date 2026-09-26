@@ -19,10 +19,22 @@ export default function Likes({
   problem: ProblemWithLikes;
   userId: string;
 }) {
-  const [numLikes, setNumLikes] = useState(problem.likes.length);
-  const [liked, setLiked] = useState(
-    problem.likes.some((like) => like.userId === userId),
-  );
+  const serverNumLikes = problem.likes.length;
+  const serverLiked = problem.likes.some((like) => like.userId === userId);
+  const [numLikes, setNumLikes] = useState(serverNumLikes);
+  const [liked, setLiked] = useState(serverLiked);
+
+  // Follow the server when a refresh brings new likes (someone else's, or
+  // this user's from another tab).
+  const [seen, setSeen] = useState({ serverNumLikes, serverLiked });
+  if (
+    seen.serverNumLikes !== serverNumLikes ||
+    seen.serverLiked !== serverLiked
+  ) {
+    setSeen({ serverNumLikes, serverLiked });
+    setNumLikes(serverNumLikes);
+    setLiked(serverLiked);
+  }
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();

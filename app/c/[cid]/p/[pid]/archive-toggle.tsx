@@ -13,6 +13,13 @@ export default function ArchiveToggle({
 }) {
   const [isArchived, setArchived] = useState(initialIsArchived);
 
+  // Follow the server when a refresh brings a change made elsewhere.
+  const [seenIsArchived, setSeenIsArchived] = useState(initialIsArchived);
+  if (initialIsArchived !== seenIsArchived) {
+    setSeenIsArchived(initialIsArchived);
+    setArchived(initialIsArchived);
+  }
+
   const handleChange = () => {
     const newIsArchived = !isArchived;
     setArchived(newIsArchived);
