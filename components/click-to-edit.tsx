@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Latex from "@/components/latex";
 import ClickToEditTextarea from "./click-to-edit-textarea";
 import ClickToEditInput from "./click-to-edit-input";
@@ -34,6 +34,21 @@ export default function ClickToEdit({
   const [savedText, setSavedText] = useState(initialText);
   // Text to put back into the editor after a failed save.
   const [draft, setDraft] = useState<string | null>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
+  const displayRef = useRef<HTMLDivElement>(null);
+  // Set when the editor closes while it has focus (Enter or Escape), so that
+  // focus goes back to the field instead of being dropped on the page.
+  const [returnFocus, setReturnFocus] = useState(false);
+
+  useEffect(() => {
+    if (returnFocus && !isEditing) {
+      displayRef.current?.focus();
+      setReturnFocus(false);
+    }
+  }, [returnFocus, isEditing]);
+
+  const editorHasFocus = () =>
+    editorRef.current?.contains(document.activeElement) ?? false;
 
   // Follow the server's text when it changes (someone else's edit, seen on
   // a refresh). While the editor is open, what the user is typing wins; the
@@ -50,6 +65,7 @@ export default function ClickToEdit({
   }
 
   const handleSave = (text: string) => {
+    setReturnFocus(editorHasFocus());
     if (text === savedText) {
       // Nothing changed: close without writing the old text back over
       // someone else's newer edit, and show theirs.
@@ -81,6 +97,7 @@ export default function ClickToEdit({
   };
 
   const handleReset = () => {
+    setReturnFocus(editorHasFocus());
     setDraft(null);
     // Show the newest text, which may have changed while the editor was open.
     const shown = newerText ?? savedText;
@@ -94,7 +111,7 @@ export default function ClickToEdit({
   if (isEditing) {
     const editorText = draft ?? savedText;
     return (
-      <div>
+      <div ref={editorRef}>
         {label}
         {type === "input" ? (
           <ClickToEditInput
@@ -120,7 +137,20 @@ export default function ClickToEdit({
     );
   } else {
     return (
-      <div onClick={() => setEditing(true)}>
+      <div
+        ref={displayRef}
+        role="button"
+        tabIndex={0}
+        aria-label={`Edit ${name}`}
+        onClick={() => setEditing(true)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setEditing(true);
+          }
+        }}
+        className="rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-300"
+      >
         {label}
         <Latex>{`${savedText}`}</Latex>
         <input type="hidden" name={name} value={savedText} />
