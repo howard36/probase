@@ -28,7 +28,7 @@ export default function Comments({
         Discussion
       </h2>
       <form className="mb-6" action={action}>
-        <div className="mb-4 rounded-lg rounded-t-lg border border-slate-200 bg-white px-4 py-2">
+        <div className="mb-4 rounded-lg rounded-t-lg border border-slate-200 bg-white px-4 py-2 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
           <label htmlFor="comment" className="sr-only">
             Your comment
           </label>

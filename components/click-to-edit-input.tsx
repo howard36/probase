@@ -5,6 +5,7 @@ import type { KeyboardEvent } from "react";
 
 export default function ClickToEditInput({
   name,
+  labelledBy,
   savedText,
   placeholder,
   onSave,
@@ -12,6 +13,8 @@ export default function ClickToEditInput({
   required,
 }: {
   name: string;
+  /** The id of the caption naming this field, if it has one. */
+  labelledBy?: string;
   savedText: string;
   placeholder?: string;
   onSave: (text: string) => void;
@@ -44,6 +47,8 @@ export default function ClickToEditInput({
   return (
     <input
       name={name}
+      aria-labelledby={labelledBy}
+      aria-label={labelledBy === undefined ? name : undefined}
       value={text}
       placeholder={placeholder}
       ref={inputRef}

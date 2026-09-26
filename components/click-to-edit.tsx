@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Latex from "@/components/latex";
 import ClickToEditTextarea from "./click-to-edit-textarea";
 import ClickToEditInput from "./click-to-edit-input";
@@ -35,6 +35,7 @@ export default function ClickToEdit({
   // Text to put back into the editor after a failed save.
   const [draft, setDraft] = useState<string | null>(null);
   const editorRef = useRef<HTMLDivElement>(null);
+  const labelId = useId();
   const displayRef = useRef<HTMLDivElement>(null);
   // Set when the editor closes while it has focus (Enter or Escape), so that
   // focus goes back to the field instead of being dropped on the page.
@@ -112,10 +113,11 @@ export default function ClickToEdit({
     const editorText = draft ?? savedText;
     return (
       <div ref={editorRef}>
-        {label}
+        {label !== undefined && <div id={labelId}>{label}</div>}
         {type === "input" ? (
           <ClickToEditInput
             name={name}
+            labelledBy={label !== undefined ? labelId : undefined}
             savedText={editorText}
             placeholder={placeholder}
             onSave={handleSave}
@@ -125,6 +127,7 @@ export default function ClickToEdit({
         ) : (
           <ClickToEditTextarea
             name={name}
+            labelledBy={label !== undefined ? labelId : undefined}
             savedText={editorText}
             placeholder={placeholder}
             autosave={autosave}

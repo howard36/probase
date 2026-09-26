@@ -69,4 +69,10 @@ describe("Testsolve", () => {
     await waitFor(() => expect(giveUp).toHaveBeenCalledWith(7));
     expect(submit).not.toHaveBeenCalled();
   });
+
+  it("labels the answer box", () => {
+    renderTestsolve();
+
+    expect(screen.getByRole("textbox", { name: "ANSWER" })).toBeInTheDocument();
+  });
 });
