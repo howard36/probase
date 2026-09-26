@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Collection } from "@prisma/client";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -38,48 +38,69 @@ function sentField(call: number, name: string) {
   return formData.get(name);
 }
 
+/** Fills in the required fields and the two menus, as a user would. */
+async function fillForm(user: ReturnType<typeof userEvent.setup>) {
+  await user.type(
+    screen.getByPlaceholderText("Short and catchy title"),
+    "A title",
+  );
+  await user.type(
+    screen.getByPlaceholderText(/^Given a triangle/),
+    "A statement",
+  );
+  const [subject, difficulty] = screen.getAllByRole("combobox");
+  await user.selectOptions(subject, "NumberTheory");
+  await user.selectOptions(difficulty, "4");
+  return { subject, difficulty };
+}
+
 describe("ProblemForm", () => {
   it("keeps the chosen subject and difficulty after a refused submit", async () => {
     mockedAddProblem.mockResolvedValue(
       error("You do not have permission to add a problem"),
     );
     const user = userEvent.setup();
-    const { container } = render(
-      <ProblemForm collection={collection} authorId={9} />,
-    );
-    const [subject, difficulty] = screen.getAllByRole("combobox");
-    await user.selectOptions(subject, "NumberTheory");
-    await user.selectOptions(difficulty, "4");
+    render(<ProblemForm collection={collection} authorId={9} />);
+    const { subject, difficulty } = await fillForm(user);
+    const submit = screen.getByRole("button", { name: "Submit" });
 
-    fireEvent.submit(container.querySelector("form")!);
+    await user.click(submit);
     await waitFor(() => expect(mockedAddProblem).toHaveBeenCalledTimes(1));
     expect(sentField(0, "subject")).toBe("NumberTheory");
     // Let the refusal come back and the form settle.
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Submit" })).toBeEnabled(),
-    );
+    await waitFor(() => expect(submit).toBeEnabled());
 
     expect(subject).toHaveValue("NumberTheory");
     expect(difficulty).toHaveValue("4");
 
-    fireEvent.submit(container.querySelector("form")!);
+    await user.click(submit);
     await waitFor(() => expect(mockedAddProblem).toHaveBeenCalledTimes(2));
     expect(sentField(1, "subject")).toBe("NumberTheory");
     expect(sentField(1, "difficulty")).toBe("4");
+    expect(sentField(1, "title")).toBe("A title");
+    expect(sentField(1, "statement")).toBe("A statement");
     expect(sentField(1, "authorId")).toBe("9");
+  });
+
+  it("does not submit without the required fields", async () => {
+    const user = userEvent.setup();
+    render(<ProblemForm collection={collection} authorId={9} />);
+
+    await user.click(screen.getByRole("button", { name: "Submit" }));
+
+    expect(mockedAddProblem).not.toHaveBeenCalled();
   });
 
   it("disables Submit while the problem is being sent", async () => {
     mockedAddProblem.mockReturnValue(new Promise(() => {}));
-    const { container } = render(
-      <ProblemForm collection={collection} authorId={9} />,
-    );
+    const user = userEvent.setup();
+    render(<ProblemForm collection={collection} authorId={9} />);
+    await fillForm(user);
+    const submit = screen.getByRole("button", { name: "Submit" });
 
-    fireEvent.submit(container.querySelector("form")!);
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Submit" })).toBeDisabled(),
-    );
-    fireEvent.submit(container.querySelector("form")!);
+    await user.click(submit);
+    await waitFor(() => expect(submit).toBeDisabled());
+    await user.click(submit);
 
     expect(mockedAddProblem).toHaveBeenCalledTimes(1);
   });

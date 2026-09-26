@@ -282,6 +282,26 @@ describe("giveUpTestsolve", () => {
     expect((await attempt(user, problem)).gaveUp).toBe(true);
   });
 
+  it("gives a problem with no difficulty the longest time limit", async () => {
+    const { problem, user } = await setup({ difficulty: null });
+    await startTestsolve(problem.id);
+    // 29 of its 30 minutes have gone; a 1-5 difficulty would be out of time.
+    await startedAgo(user, problem, 29 * MINUTE);
+
+    expect(await giveUpTestsolve(problem.id)).toEqual({ ok: true });
+    expect((await attempt(user, problem)).gaveUp).toBe(true);
+  });
+
+  it("refuses a problem with no difficulty after its 30 minutes", async () => {
+    const { problem, user } = await setup({ difficulty: null });
+    await startTestsolve(problem.id);
+    await startedAgo(user, problem, 30 * MINUTE + SECOND);
+
+    expect(await giveUpTestsolve(problem.id)).toEqual(
+      error("Tried to submit after testsolve finished"),
+    );
+  });
+
   it("lets only one of two overlapping give-ups through", async () => {
     const { problem } = await setup();
     await startTestsolve(problem.id);
