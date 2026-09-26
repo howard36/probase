@@ -1,3 +1,4 @@
+import { cache } from "react";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import TestPage from "./test-page";
@@ -16,19 +17,36 @@ function parseTestId(testSlug: string): number | null {
   return /^\d+$/.test(idStr) && id >= 1 && id <= 2147483647 ? id : null;
 }
 
-export default async function Page({ params }: { params: Promise<Params> }) {
-  const { cid, testSlug } = await params;
-  const { userId, collection, permission, authors } =
-    await requireCollectionAccess(cid, `/c/${cid}/t/${testSlug}`);
-
+// Cached per request, so the page and its title share one check.
+const getTest = cache(async function (cid: string, testSlug: string) {
+  const access = await requireCollectionAccess(cid, `/c/${cid}/t/${testSlug}`);
   const testId = parseTestId(testSlug);
   const test =
     testId === null
       ? null
       : await prisma.test.findUnique({ where: { id: testId } });
-  if (test === null || test.collectionId !== collection.id) {
+  if (test === null || test.collectionId !== access.collection.id) {
     notFound();
   }
+  return { ...access, test };
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { cid, testSlug } = await params;
+  const { test, collection } = await getTest(cid, testSlug);
+  return { title: `${test.name} · ${collection.name}` };
+}
+
+export default async function Page({ params }: { params: Promise<Params> }) {
+  const { cid, testSlug } = await params;
+  const { userId, collection, permission, authors, test } = await getTest(
+    cid,
+    testSlug,
+  );
 
   const solveAttempts = await prisma.solveAttempt.findMany({
     where: { userId },

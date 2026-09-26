@@ -136,6 +136,7 @@ export default function ProblemForm({
         </div>
       )}
       <div className="mx-auto w-112 max-w-full text-base sm:w-128 sm:text-lg md:w-144 md:text-xl">
+        <h1 className="sr-only">Add a problem to {collection.name}</h1>
         {submission !== null && (
           <div
             role="status"

@@ -14,7 +14,7 @@ export default function Title(props: Props) {
   const canEdit = canEditProblem(problem, permission, authors);
 
   return (
-    <h2 className="flex gap-x-1.5">
+    <h1 className="flex gap-x-1.5">
       <span className={subjectToTextColor[problem.subject]}>
         {problem.pid}.
       </span>
@@ -25,6 +25,6 @@ export default function Title(props: Props) {
           problem.title
         )}
       </div>
-    </h2>
+    </h1>
   );
 }

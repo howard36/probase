@@ -22,6 +22,20 @@ async function getCollection(cid: string) {
   return collection;
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { cid } = await params;
+  const user = await requireCurrentUser(`/c/${cid}/add-problem`);
+  const collection = await getCollection(cid);
+  if (!canAddProblem(await getPermission(user.userId, collection.id))) {
+    redirect("/need-permission");
+  }
+  return { title: `Add a problem · ${collection.name}` };
+}
+
 export default async function AddProblemPage({
   params,
   searchParams,

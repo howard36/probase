@@ -14,7 +14,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Probase",
+  // Each page names itself, so tabs can be told apart and a screen reader
+  // announces where a navigation went.
+  title: { default: "Probase", template: "%s | Probase" },
   description: "A math contest problem database",
 };
 

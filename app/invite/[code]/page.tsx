@@ -1,3 +1,4 @@
+import { cache } from "react";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import NotLoggedIn from "./not-logged-in";
@@ -16,7 +17,8 @@ interface Params {
   code: string;
 }
 
-async function getInvite(code: string): Promise<InviteProps> {
+// Cached per request, so the page and its title share one lookup.
+const getInvite = cache(async function (code: string): Promise<InviteProps> {
   const invite = await prisma.invite.findUnique({
     where: { code },
     include: inviteInclude,
@@ -27,6 +29,16 @@ async function getInvite(code: string): Promise<InviteProps> {
   }
 
   return invite;
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { code } = await params;
+  const invite = await getInvite(code);
+  return { title: `Join ${invite.collection.name}` };
 }
 
 export default async function InvitePage({

@@ -45,6 +45,16 @@ interface Params {
   cid: string;
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { cid } = await params;
+  const { collection } = await requireCollectionAccess(cid, `/c/${cid}`);
+  return { title: collection.name };
+}
+
 export default async function Page({
   params,
   searchParams,

@@ -4,6 +4,8 @@ import ChooseTestsolverTypePage from "@/components/choose-testsolver-type-page";
 import { setTestsolverType } from "./actions";
 import { hasTimedTestsolving } from "@/lib/testsolve";
 
+export const metadata = { title: "Choose your testsolving style" };
+
 interface Params {
   cid: string;
 }
