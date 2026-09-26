@@ -200,3 +200,20 @@ No document is marked `verified` on the strength of this pass; each still needs 
 | `narrow.sidebar-width`                    | [cross-cutting/narrow-screens.md](../cross-cutting/narrow-screens.md)                         | The sidebar is 160 px wide at 375 px                                                                                                        | pass   |
 | `narrow.need-permission-overflow`         | [cross-cutting/narrow-screens.md](../cross-cutting/narrow-screens.md)                         | "You need permission" overflows at 375 px (B-24)                                                                                            | pass   |
 | `narrow.card-heart-bottom-row`            | [cross-cutting/narrow-screens.md](../cross-cutting/narrow-screens.md)                         | Below 640 px the card's heart moves to the bottom row                                                                                       | pass   |
+
+**Second pass, 2026-09-26**, against the fixes for the seven high-severity triage entries ([#178](https://github.com/howard36/probase/pull/178)), set up as for the first pass.
+
+The first pass's checks for B-02 to B-07 had confirmed each defect, so they would now fail. They were turned around to check the fixed behavior and renamed; `invite.once-expiring-accepted` also removes the permission it grants so that `invite.one-time-used-up` still starts from a stranger. Two checks were added for fixes the first pass had no check for. The checklists keep their first-pass results, which describe commit `c38ff56`.
+
+- **Result:** all 99 checks passed.
+
+| Check                                    | Replaces                                  | What it checks                                                                                                                                 | Result |
+| ---------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| `signin.unsafe-callback-browser-parsing` | (new)                                     | Return addresses that a browser reads as another site (`/<tab>/host`, `/<newline>/host`, `/.//host`, `/c/..//host`) are replaced by `/` (B-01) | pass   |
+| `error.no-difficulty-locked`             | `error.500-no-difficulty`                 | A problem without a difficulty is locked for a Serious testsolver with a 30-minute limit, not a 500 page (B-03)                                | pass   |
+| `invite.once-expiring-accepted`          | `invite.once-expiring-bug`                | A one-time invite with an expiry admits the first person, with no error toast (B-02)                                                           | pass   |
+| `filter.search-keeps-chars`              | `filter.search-drops-chars`               | Fast typing in the search box keeps every character (B-06)                                                                                     | pass   |
+| `filter.search-enter-keeps-filters`      | `filter.search-enter-clears`              | Enter in the search box keeps the search and the filters (B-07)                                                                                | pass   |
+| `type.cards-focusable`                   | `type.cards-not-focusable`                | Tab reaches the Serious card, the arrow keys move to Casual, and Tab then reaches "Confirm" (B-04)                                             | pass   |
+| `attempt.giveup-with-answer-one-request` | `attempt.giveup-with-answer-two-requests` | Give Up with an answer typed sends one request and records no submission (B-05)                                                                | pass   |
+| `add.menus-kept-after-refusal`           | (new)                                     | After a refused submit the add-problem menus keep their choice, and the resubmit stores it (B-33)                                              | pass   |
