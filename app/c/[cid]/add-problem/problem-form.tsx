@@ -220,7 +220,16 @@ export default function ProblemForm({
               required={collection.requireSolution}
             />
           </div>
-          <SubmitButton pending={isSubmitting}>Submit</SubmitButton>
+          <SubmitButton
+            pending={isSubmitting}
+            // Pressing the button would take focus from an open field, which
+            // closes and gets shorter, moving the button out from under the
+            // pointer before the click lands. Keeping focus where it is keeps
+            // the button still; the form reads the open field as it is.
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            Submit
+          </SubmitButton>
         </form>
       </div>
     </div>
