@@ -37,6 +37,16 @@ const unsafeCallbacks = [
   "https://evil.example/",
   "//evil.example/",
   "/\\evil.example/",
+  // Browsers drop tabs and newlines, so these lead to "//evil.example".
+  "/\t/evil.example",
+  "/\n/evil.example",
+  "/\r\n\\evil.example",
+  // Dot segments that resolve to "//evil.example".
+  "/.//evil.example",
+  "/..//evil.example",
+  "/%2e//evil.example",
+  "/c/..//evil.example",
+  "//[",
   "c/x",
   "",
 ];
@@ -59,6 +69,12 @@ describe("login page", () => {
 
     it("falls back to the home page without a callback", async () => {
       expect(await buttonCallback({})).toBe("/");
+    });
+
+    it("keeps a query and fragment, encoded as the browser would", async () => {
+      expect(
+        await buttonCallback({ callbackUrl: "/c/x?search=two words#top" }),
+      ).toBe("/c/x?search=two%20words#top");
     });
 
     it("uses the first callback when the query repeats it", async () => {
