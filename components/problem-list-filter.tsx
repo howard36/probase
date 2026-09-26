@@ -7,8 +7,7 @@ import {
   Subject,
   TestsolverType,
 } from "@prisma/client";
-import { Filter, filterToString } from "@/lib/filter";
-import { usePathname, useRouter } from "next/navigation";
+import { useProblemListFilter } from "./problem-list-filter-state";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -23,34 +22,25 @@ const allSubjects: Subject[] = [
 export function ProblemListFilter({
   collection,
   permission,
-  filter,
 }: {
   collection: Collection;
   permission: Permission;
-  filter: Filter;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
+  const { filter, update } = useProblemListFilter();
 
   const toggleSubject = (subject: Subject) => {
-    const newSubjects = filter.subjects.includes(subject)
+    const subjects = filter.subjects.includes(subject)
       ? filter.subjects.filter((s) => s !== subject)
       : [...filter.subjects, subject].sort();
-    const newFilter = { ...filter, subjects: newSubjects };
-    const newParams = filterToString(newFilter);
-    router.replace(`${pathname}${newParams}`, { scroll: false });
+    update({ subjects });
   };
 
   const toggleArchived = () => {
-    const newFilter = { ...filter, archived: !filter.archived };
-    const newParams = filterToString(newFilter);
-    router.replace(`${pathname}${newParams}`, { scroll: false });
+    update({ archived: !filter.archived });
   };
 
   const toggleUnsolvedOnly = () => {
-    const newFilter = { ...filter, unsolvedOnly: !filter.unsolvedOnly };
-    const newParams = filterToString(newFilter);
-    router.replace(`${pathname}${newParams}`, { scroll: false });
+    update({ unsolvedOnly: !filter.unsolvedOnly });
   };
 
   return (
