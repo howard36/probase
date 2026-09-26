@@ -1,48 +1,42 @@
 import prisma from "@/lib/prisma";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import TestPage from "./test-page";
-import { requireCurrentUser } from "@/lib/current-user";
-import { getAuthorIds, getPermission } from "@/lib/collection-access";
-import { canViewCollection } from "@/lib/permissions";
+import { requireCollectionAccess } from "@/lib/collection-access";
 
 interface Params {
   cid: string;
   testSlug: string;
 }
 
+/** The test's id from the end of its address, as in "mock-aime-12". */
+function parseTestId(testSlug: string): number | null {
+  const idStr = testSlug.split("-").pop() ?? "";
+  const id = Number(idStr);
+  // Postgres integers stop at 2^31 - 1.
+  return /^\d+$/.test(idStr) && id >= 1 && id <= 2147483647 ? id : null;
+}
+
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { cid, testSlug } = await params;
-  const testIdStr = testSlug.split("-").pop();
-  if (testIdStr === undefined) {
-    return;
-  }
-  const testId = parseInt(testIdStr);
+  const { userId, collection, permission, authors } =
+    await requireCollectionAccess(cid, `/c/${cid}/t/${testSlug}`);
 
-  const test = await prisma.test.findUnique({
-    where: { id: testId },
-    include: {
-      collection: true,
-    },
-  });
-  if (test === null) {
+  const testId = parseTestId(testSlug);
+  const test =
+    testId === null
+      ? null
+      : await prisma.test.findUnique({ where: { id: testId } });
+  if (test === null || test.collectionId !== collection.id) {
     notFound();
-  }
-
-  const { userId } = await requireCurrentUser(`/c/${cid}/t/${testSlug}`);
-
-  const permission = await getPermission(userId, test.collectionId);
-  if (permission === null || !canViewCollection(permission)) {
-    redirect("/need-permission");
   }
 
   const solveAttempts = await prisma.solveAttempt.findMany({
     where: { userId },
   });
-  const authors = await getAuthorIds(userId, test.collectionId);
 
   const testProblems = await prisma.testProblem.findMany({
     where: {
-      testId,
+      testId: test.id,
     },
     include: {
       problem: {
@@ -64,7 +58,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     <TestPage
       name={test.name}
       testProblems={testProblems}
-      collection={test.collection}
+      collection={collection}
       solveAttempts={solveAttempts}
       permission={permission}
       authors={authors}
