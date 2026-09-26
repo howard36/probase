@@ -7,6 +7,11 @@ describe("testsolveTimeMinutes", () => {
       10, 15, 20, 25, 30,
     ]);
   });
+
+  it("gives the longest limit to a problem with no difficulty", () => {
+    expect(testsolveTimeMinutes(null)).toBe(30);
+    expect(testsolveTimeMinutes(0)).toBe(30);
+  });
 });
 
 describe("testsolveDeadline", () => {

@@ -113,6 +113,26 @@ describe("problem page client payload", () => {
     }
   });
 
+  it("locks a problem with no difficulty with the longest time limit", async () => {
+    const { collection, problem } = await setup();
+    await prisma.problem.update({
+      where: { id: problem.id },
+      data: { difficulty: null },
+    });
+
+    const payload = await payloadFor(collection.cid, problem.pid);
+
+    expect(payload).toContain(
+      JSON.stringify({
+        $: "LockedPage",
+        props: { problemId: problem.id, time: "30 minutes", unsolved: false },
+      }),
+    );
+    for (const secret of Object.values(SECRETS)) {
+      expect(payload).not.toContain(secret);
+    }
+  });
+
   it("sends the statement but no answer, solution, comments or names while testsolving", async () => {
     const { collection, problem, testsolver } = await setup();
     await prisma.solveAttempt.create({

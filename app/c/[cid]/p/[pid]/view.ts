@@ -19,12 +19,6 @@ export function problemView(props: Props): ProblemView {
   }
 
   const difficulty = problem.difficulty;
-  if (difficulty === null || difficulty === 0) {
-    throw new Error(
-      "Difficulty is null or zero, cannot determine testsolve time",
-    );
-  }
-
   const solveAttempt = problem.solveAttempts.find(
     (attempt) => attempt.userId === userId,
   );

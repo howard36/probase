@@ -131,13 +131,16 @@ describe("submitTestsolve", () => {
     );
   });
 
-  it("rejects a problem with no difficulty, which has no time limit", async () => {
-    const { problem } = await setup({ difficulty: null });
+  it("gives a problem with no difficulty the longest time limit", async () => {
+    const { problem, user } = await setup({ difficulty: null, answer: "42" });
     await startTestsolve(problem.id);
+    // 29 of its 30 minutes have gone; a 1-5 difficulty would be out of time.
+    await startedAgo(user, problem, 29 * MINUTE);
 
-    expect(await submitTestsolve(problem.id, "42")).toEqual(
-      error("Problem difficulty should not be null"),
-    );
+    expect(await submitTestsolve(problem.id, "42")).toEqual({
+      ok: true,
+      data: { correct: true, remaining: SUBMISSION_LIMIT - 1 },
+    });
   });
 
   it("marks a correct answer as solved and reports remaining tries", async () => {
