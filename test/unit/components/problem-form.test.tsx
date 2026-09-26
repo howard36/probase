@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { Collection } from "@prisma/client";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -135,5 +135,27 @@ describe("ProblemForm", () => {
       'Thanks! Your problem "My problem" was submitted to Demo as G4.',
     );
     expect(screen.queryByText("Back to Demo")).not.toBeInTheDocument();
+  });
+
+  it("does not close an open field when Submit is pressed, so the button stays under the pointer", async () => {
+    const user = userEvent.setup();
+    render(
+      <ProblemForm
+        collection={collection}
+        canViewCollection={true}
+        submission={null}
+      />,
+    );
+    const solution = screen.getByPlaceholderText(/^Since \$O\$/);
+    await user.type(solution, "A solution");
+
+    const pressed = fireEvent.mouseDown(
+      screen.getByRole("button", { name: "Submit" }),
+    );
+
+    // The press does not move focus, so the field neither blurs nor closes.
+    expect(pressed).toBe(false);
+    expect(solution).toHaveFocus();
+    expect(solution).toBeInTheDocument();
   });
 });
