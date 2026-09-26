@@ -70,6 +70,7 @@ export default function AddSolution({ problemId }: { problemId: number }) {
         <textarea
           value={text}
           placeholder="Write your solution here!"
+          aria-label="Your solution"
           ref={textAreaRef}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}

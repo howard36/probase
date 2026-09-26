@@ -161,4 +161,21 @@ describe("ProblemForm", () => {
     expect(solution).toHaveFocus();
     expect(solution).toBeInTheDocument();
   });
+
+  it("labels every field for assistive technology", () => {
+    render(
+      <ProblemForm
+        collection={collection}
+        canViewCollection={true}
+        submission={null}
+      />,
+    );
+
+    for (const name of ["TITLE", "PROBLEM STATEMENT", "ANSWER", "SOLUTION"]) {
+      expect(screen.getByRole("textbox", { name })).toBeInTheDocument();
+    }
+    for (const name of ["SUBJECT", "DIFFICULTY"]) {
+      expect(screen.getByRole("combobox", { name })).toBeInTheDocument();
+    }
+  });
 });

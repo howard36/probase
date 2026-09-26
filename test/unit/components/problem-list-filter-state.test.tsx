@@ -119,4 +119,12 @@ describe("collection search and filters", () => {
     expect(screen.getByRole("checkbox", { name: "Geometry" })).toBeChecked();
     expect(replace).not.toHaveBeenCalled();
   });
+
+  it("names the search box", () => {
+    renderSidebar();
+
+    expect(
+      screen.getByRole("searchbox", { name: "Search problems" }),
+    ).toBeInTheDocument();
+  });
 });

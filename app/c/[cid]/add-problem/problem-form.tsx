@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
 import type { Collection, Subject } from "@prisma/client";
 import ClickToEdit from "@/components/click-to-edit";
 import Label from "@/components/label";
@@ -62,6 +62,9 @@ export default function ProblemForm({
   const [difficulty, setDifficulty] = useState("");
   const [solution, setSolution] = useState("");
   const [isSubmitting, startSubmitting] = useTransition();
+  const subjectId = useId();
+  const difficultyId = useId();
+  const answerId = useId();
 
   // Submitted from onSubmit rather than as a form action: React resets a form
   // after its action, and the reset puts the two menus back to their first
@@ -102,8 +105,9 @@ export default function ProblemForm({
   } else if (collection.answerFormat === "Integer") {
     answerInput = (
       <div>
-        {answerLabel}
+        <Label text="ANSWER" htmlFor={answerId} />
         <IntegerInput
+          id={answerId}
           value={answer}
           onValueChange={setAnswer}
           required={collection.requireAnswer}
@@ -113,8 +117,9 @@ export default function ProblemForm({
   } else if (collection.answerFormat === "AIME") {
     answerInput = (
       <div>
-        {answerLabel}
+        <Label text="ANSWER" htmlFor={answerId} />
         <AimeInput
+          id={answerId}
           value={answer}
           onValueChange={setAnswer}
           required={collection.requireAnswer}
@@ -159,8 +164,9 @@ export default function ProblemForm({
             />
           </div>
           <div className="my-8">
-            <Label text="SUBJECT" />
+            <Label text="SUBJECT" htmlFor={subjectId} />
             <select
+              id={subjectId}
               name="subject"
               value={subject}
               required
@@ -178,8 +184,9 @@ export default function ProblemForm({
             </select>
           </div>
           <div className="my-8">
-            <Label text="DIFFICULTY" />
+            <Label text="DIFFICULTY" htmlFor={difficultyId} />
             <select
+              id={difficultyId}
               name="difficulty"
               value={difficulty}
               required={collection.requireDifficulty}

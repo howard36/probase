@@ -5,6 +5,7 @@ import type { KeyboardEvent } from "react";
 
 export default function ClickToEditTextarea({
   name,
+  labelledBy,
   savedText,
   placeholder,
   autosave,
@@ -13,6 +14,8 @@ export default function ClickToEditTextarea({
   required,
 }: {
   name: string;
+  /** The id of the caption naming this field, if it has one. */
+  labelledBy?: string;
   savedText: string;
   placeholder?: string;
   autosave: boolean;
@@ -66,6 +69,8 @@ export default function ClickToEditTextarea({
     <>
       <textarea
         name={name}
+        aria-labelledby={labelledBy}
+        aria-label={labelledBy === undefined ? name : undefined}
         value={text}
         placeholder={placeholder}
         ref={textAreaRef}

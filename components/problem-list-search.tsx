@@ -53,9 +53,10 @@ export function ProblemListSearch() {
           <input
             type="search"
             placeholder="Search"
+            aria-label="Search problems"
             value={text}
             onChange={handleSearchChange}
-            className="h-12 w-full rounded-xl border-2 border-slate-300 bg-white pl-4 pr-12 text-base focus:outline-none"
+            className="h-12 w-full rounded-xl border-2 border-slate-300 bg-white pl-4 pr-12 text-base focus:outline-none focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-200"
           />
           <div className="absolute right-0 top-0 mr-4 mt-4">
             <svg

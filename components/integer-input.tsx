@@ -4,12 +4,14 @@ interface IntegerInputProps {
   value: string;
   onValueChange: (newValue: string) => void;
   required: boolean;
+  id?: string;
 }
 
 const IntegerInput = ({
   value,
   onValueChange,
   required,
+  id,
 }: IntegerInputProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
@@ -27,6 +29,7 @@ const IntegerInput = ({
 
   return (
     <input
+      id={id}
       name="answer"
       type="text"
       value={value}

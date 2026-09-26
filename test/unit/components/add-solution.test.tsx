@@ -70,4 +70,12 @@ describe("AddSolution", () => {
 
     expect(mockedAddSolution).not.toHaveBeenCalled();
   });
+
+  it("labels the solution box", async () => {
+    await openAndType("");
+
+    expect(
+      screen.getByRole("textbox", { name: "Your solution" }),
+    ).toBeInTheDocument();
+  });
 });

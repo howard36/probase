@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import CountdownTimer from "./countdown-timer";
 import AimeInput from "@/components/aime-input";
-import { useState } from "react";
+import { useId, useState } from "react";
 import Label from "@/components/label";
 import { AnswerFormat } from "@prisma/client";
 import SubmitButton from "@/components/submit-button";
@@ -25,6 +25,7 @@ export default function Testsolve({
   const [answer, setAnswer] = useState("");
   const [wrongAnswer, setWrongAnswer] = useState("");
   const [remaining, setRemaining] = useState<number | null>(null);
+  const answerId = useId();
 
   const trySubmitTestsolve = wrapAction(submitTestsolve, (resp) => {
     if (resp.data.correct) {
@@ -46,16 +47,18 @@ export default function Testsolve({
         action={() => trySubmitTestsolve(problemId, answer)}
         className="mb-8"
       >
-        <Label text="ANSWER" />
+        <Label text="ANSWER" htmlFor={answerId} />
         <div className="mb-3">
           {answerFormat === "AIME" ? (
             <AimeInput
+              id={answerId}
               value={answer}
               onValueChange={(newValue: string) => setAnswer(newValue)}
               required={true}
             />
           ) : (
             <IntegerInput
+              id={answerId}
               value={answer}
               onValueChange={(newValue: string) => setAnswer(newValue)}
               required={true}
