@@ -6,7 +6,7 @@ import { ActionResponse, error, unexpectedError } from "@/lib/server-actions";
 import { formDataToObject, idSchema, parseInput } from "@/lib/validation";
 import { Subject } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
-import { getAuthorIds, getPermission } from "@/lib/collection-access";
+import { getOrCreateAuthorId, getPermission } from "@/lib/collection-access";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
@@ -27,7 +27,6 @@ const problemFormSchema = z.object({
   // Collections may make the answer optional; an empty answer is stored as "".
   answer: z.string().default(""),
   solution: z.string().default(""),
-  authorId: z.coerce.number().int().positive(),
   // Collections may make difficulty optional; an empty choice is stored as null.
   difficulty: z.preprocess(
     (value) => (value === "" || value === undefined ? null : Number(value)),
@@ -53,7 +52,7 @@ export async function addProblem(
   if (!input.ok) {
     return input;
   }
-  const { title, subject, statement, answer, solution, authorId, difficulty } =
+  const { title, subject, statement, answer, solution, difficulty } =
     input.data;
 
   try {
@@ -71,13 +70,6 @@ export async function addProblem(
     const permission = await getPermission(userId, collectionId);
     if (!canAddProblem(permission)) {
       return error("You do not have permission to add a problem");
-    }
-
-    // The form submits the user's own Author; do not let a crafted request
-    // attribute a problem to someone else.
-    const authors = await getAuthorIds(userId, collectionId);
-    if (!authors.some((author) => author.id === authorId)) {
-      return error("Invalid input (authorId): not one of your authors");
     }
 
     const prefix = subjectPrefix[subject];
@@ -109,47 +101,50 @@ export async function addProblem(
       pid = prefix + incrementedNum;
     }
 
-    const newProblem = await prisma.problem.create({
-      data: {
-        collection: {
-          connect: { id: collectionId },
-        },
-        pid,
-        title,
-        subject,
-        statement,
-        answer,
-        difficulty,
-        isAnonymous: false,
-        submitter: {
-          connect: { id: userId },
-        },
-        authors: {
-          connect: { id: authorId },
-        },
-        solutions:
-          solution === ""
-            ? undefined
-            : {
-                create: [
-                  {
-                    text: solution,
-                    authors: {
-                      connect: { id: authorId }, // TODO: solution might have different list of authors
+    const newProblem = await prisma.$transaction(async (tx) => {
+      const authorId = await getOrCreateAuthorId(tx, user, collectionId);
+      return tx.problem.create({
+        data: {
+          collection: {
+            connect: { id: collectionId },
+          },
+          pid,
+          title,
+          subject,
+          statement,
+          answer,
+          difficulty,
+          isAnonymous: false,
+          submitter: {
+            connect: { id: userId },
+          },
+          authors: {
+            connect: { id: authorId },
+          },
+          solutions:
+            solution === ""
+              ? undefined
+              : {
+                  create: [
+                    {
+                      text: solution,
+                      authors: {
+                        connect: { id: authorId }, // TODO: solution might have different list of authors
+                      },
                     },
-                  },
-                ],
-              },
-        likes: {
-          create: {
-            user: {
-              connect: {
-                id: userId,
+                  ],
+                },
+          likes: {
+            create: {
+              user: {
+                connect: {
+                  id: userId,
+                },
               },
             },
           },
         },
-      },
+      });
     });
 
     revalidatePath(`/c/${collection.cid}`);

@@ -60,7 +60,7 @@ describe("ProblemForm", () => {
       error("You do not have permission to add a problem"),
     );
     const user = userEvent.setup();
-    render(<ProblemForm collection={collection} authorId={9} />);
+    render(<ProblemForm collection={collection} />);
     const { subject, difficulty } = await fillForm(user);
     const submit = screen.getByRole("button", { name: "Submit" });
 
@@ -79,12 +79,11 @@ describe("ProblemForm", () => {
     expect(sentField(1, "difficulty")).toBe("4");
     expect(sentField(1, "title")).toBe("A title");
     expect(sentField(1, "statement")).toBe("A statement");
-    expect(sentField(1, "authorId")).toBe("9");
   });
 
   it("does not submit without the required fields", async () => {
     const user = userEvent.setup();
-    render(<ProblemForm collection={collection} authorId={9} />);
+    render(<ProblemForm collection={collection} />);
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
 
@@ -94,7 +93,7 @@ describe("ProblemForm", () => {
   it("disables Submit while the problem is being sent", async () => {
     mockedAddProblem.mockReturnValue(new Promise(() => {}));
     const user = userEvent.setup();
-    render(<ProblemForm collection={collection} authorId={9} />);
+    render(<ProblemForm collection={collection} />);
     await fillForm(user);
     const submit = screen.getByRole("button", { name: "Submit" });
 

@@ -48,7 +48,7 @@ describe("action input validation", () => {
       editProblem(problem.id, { title: "" }),
       editProblem(problem.id, { isArchived: "no" as unknown as boolean }),
       submitTestsolve(problem.id, 42 as unknown as string),
-      addSolution(problem.id, "", 1),
+      addSolution(problem.id, ""),
       setTestsolverType(collection.id, "Hardcore" as "Serious"),
       acceptInvite(""),
     ];
@@ -75,7 +75,7 @@ describe("action input validation", () => {
 
       const result = await addProblem(
         collection.id,
-        form({ ...valid, subject: "Chemistry", authorId: String(author.id) }),
+        form({ ...valid, subject: "Chemistry" }),
       );
 
       expect(result.ok).toBe(false);
@@ -83,24 +83,14 @@ describe("action input validation", () => {
     });
 
     it("rejects an empty title and a difficulty outside 1-5", async () => {
-      const { collection, author } = await member();
-      const authorId = String(author.id);
+      const { collection } = await member();
 
       expect(
-        (
-          await addProblem(
-            collection.id,
-            form({ ...valid, authorId, title: "" }),
-          )
-        ).ok,
+        (await addProblem(collection.id, form({ ...valid, title: "" }))).ok,
       ).toBe(false);
       expect(
-        (
-          await addProblem(
-            collection.id,
-            form({ ...valid, authorId, difficulty: "7" }),
-          )
-        ).ok,
+        (await addProblem(collection.id, form({ ...valid, difficulty: "7" })))
+          .ok,
       ).toBe(false);
       expect(await prisma.problem.count()).toBe(0);
     });
@@ -113,7 +103,6 @@ describe("action input validation", () => {
           collection.id,
           form({
             ...valid,
-            authorId: String(author.id),
             difficulty: "",
             answer: "",
           }),
@@ -126,33 +115,37 @@ describe("action input validation", () => {
       expect(problem.answer).toBe("");
     });
 
-    it("refuses to attribute the problem to someone else's author", async () => {
-      const { collection } = await member();
+    it("attributes the problem to the submitter's own author, whatever the form says", async () => {
+      const { collection, author } = await member();
       const other = await createAuthor(collection);
 
-      const result = await addProblem(
-        collection.id,
-        form({ ...valid, authorId: String(other.id) }),
+      await expectRedirect(
+        addProblem(
+          collection.id,
+          form({ ...valid, authorId: String(other.id) }),
+        ),
+        `/c/${collection.cid}/p/A1`,
       );
 
-      expect(result).toEqual({
-        ok: false,
-        error: { message: "Invalid input (authorId): not one of your authors" },
+      const problem = await prisma.problem.findFirstOrThrow({
+        include: { authors: true },
       });
-      expect(await prisma.problem.count()).toBe(0);
+      expect(problem.authors.map((a) => a.id)).toEqual([author.id]);
     });
   });
 
   describe("addSolution", () => {
-    it("refuses to attribute the solution to someone else's author", async () => {
-      const { collection } = await member();
+    it("attributes the solution to the member's own author", async () => {
+      const { collection, author } = await member();
       const problem = await createProblem(collection);
-      const other = await createAuthor(collection);
+      await createAuthor(collection);
 
-      const result = await addSolution(problem.id, "Proof", other.id);
+      expect(await addSolution(problem.id, "Proof")).toEqual({ ok: true });
 
-      expect(result.ok).toBe(false);
-      expect(await prisma.solution.count()).toBe(0);
+      const solution = await prisma.solution.findFirstOrThrow({
+        include: { authors: true },
+      });
+      expect(solution.authors.map((a) => a.id)).toEqual([author.id]);
     });
   });
 });

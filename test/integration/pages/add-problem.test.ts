@@ -1,12 +1,7 @@
 import { describe, expect, it } from "vitest";
 import AddProblemPage from "@/app/c/[cid]/add-problem/page";
 import prisma from "@/lib/prisma";
-import {
-  createAuthor,
-  createCollection,
-  createPermission,
-  createUser,
-} from "../factories";
+import { createCollection, createPermission, createUser } from "../factories";
 import { expectNotFound, expectRedirect } from "../navigation";
 import { signInAs, signOut } from "../session";
 
@@ -49,7 +44,7 @@ describe("add-problem page", () => {
   });
 
   it.each(["Admin", "TeamMember", "SubmitOnly"] as const)(
-    "renders the form for a %s member, creating their author on first visit",
+    "renders the form for a %s member without creating an author",
     async (level) => {
       const collection = await createCollection();
       const user = await createUser({ name: "Ada Lovelace" });
@@ -59,26 +54,9 @@ describe("add-problem page", () => {
       const page = await render(collection.cid);
 
       expect(page).toBeTruthy();
-      const authors = await prisma.author.findMany({
-        where: { userId: user.id, collectionId: collection.id },
-      });
-      expect(authors).toHaveLength(1);
-      expect(authors[0].displayName).toBe("Ada Lovelace");
+      // The page is prefetched from the collection page: viewing it must
+      // leave no trace. The author is created on the first submission.
+      expect(await prisma.author.count()).toBe(0);
     },
   );
-
-  it("reuses an existing author instead of creating another", async () => {
-    const collection = await createCollection();
-    const user = await createUser();
-    await createPermission(user, collection, "TeamMember");
-    const existing = await createAuthor(collection, { userId: user.id });
-    signInAs(user);
-
-    await render(collection.cid);
-
-    const authors = await prisma.author.findMany({
-      where: { userId: user.id },
-    });
-    expect(authors.map((a) => a.id)).toEqual([existing.id]);
-  });
 });

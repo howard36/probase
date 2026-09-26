@@ -325,15 +325,13 @@ describe("addSolution", () => {
   it("rejects a signed-out user", async () => {
     signOut();
 
-    expect(await addSolution(1, "text", 1)).toEqual(error("Not signed in"));
+    expect(await addSolution(1, "text")).toEqual(error("Not signed in"));
   });
 
   it("rejects an unknown problem", async () => {
     signInAs(await createUser());
 
-    expect(await addSolution(999, "text", 1)).toEqual(
-      error("Problem not found"),
-    );
+    expect(await addSolution(999, "text")).toEqual(error("Problem not found"));
   });
 
   it.each(["ViewOnly", "SubmitOnly"] as const)(
@@ -343,17 +341,17 @@ describe("addSolution", () => {
       const problem = await createProblem(collection);
       const user = await createUser();
       await createPermission(user, collection, level);
-      const author = await createAuthor(collection, { userId: user.id });
+      await createAuthor(collection, { userId: user.id });
       signInAs(user);
 
-      expect(await addSolution(problem.id, "text", author.id)).toEqual(
+      expect(await addSolution(problem.id, "text")).toEqual(
         error("You do not have permission to edit this collection"),
       );
       expect(await prisma.solution.count()).toBe(0);
     },
   );
 
-  it("lets a TeamMember add a solution attributed to the given author", async () => {
+  it("lets a TeamMember add a solution attributed to their author", async () => {
     const collection = await createCollection();
     const problem = await createProblem(collection);
     const user = await createUser();
@@ -361,9 +359,9 @@ describe("addSolution", () => {
     const author = await createAuthor(collection, { userId: user.id });
     signInAs(user);
 
-    expect(
-      await addSolution(problem.id, "Proof by intimidation", author.id),
-    ).toEqual({ ok: true });
+    expect(await addSolution(problem.id, "Proof by intimidation")).toEqual({
+      ok: true,
+    });
 
     const solutions = await prisma.solution.findMany({
       include: { authors: true },
@@ -377,6 +375,24 @@ describe("addSolution", () => {
     expect(revalidatePath).toHaveBeenCalledWith(
       `/c/${collection.cid}/p/${problem.pid}`,
     );
+  });
+
+  it("creates the member's author, named after them, with their first solution", async () => {
+    const collection = await createCollection();
+    const problem = await createProblem(collection);
+    const user = await createUser({ name: "Ada Lovelace" });
+    await createPermission(user, collection, "TeamMember");
+    signInAs(user);
+
+    expect(await addSolution(problem.id, "Proof")).toEqual({ ok: true });
+
+    const authors = await prisma.author.findMany({
+      where: { userId: user.id },
+      include: { solutions: true },
+    });
+    expect(authors).toHaveLength(1);
+    expect(authors[0].displayName).toBe("Ada Lovelace");
+    expect(authors[0].solutions).toHaveLength(1);
   });
 });
 

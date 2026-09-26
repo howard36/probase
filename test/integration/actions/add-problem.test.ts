@@ -33,7 +33,6 @@ async function setup(accessLevel: "Admin" | "TeamMember" | "SubmitOnly") {
     statement: "Find $1^2 + 2^2$.",
     answer: "5",
     solution: "",
-    authorId: String(author.id),
     difficulty: "3",
   };
   return { collection, user, author, fields };
@@ -102,6 +101,37 @@ describe("addProblem", () => {
       await addProblem(collection.id, problemForm({ ...fields, answer: "-" })),
     ).toEqual(error("The answer must be a whole number, like 42 or -7."));
     expect(await prisma.problem.count()).toBe(0);
+  });
+
+  it("creates the member's author, named after them, with their first problem", async () => {
+    const collection = await createCollection();
+    const user = await createUser({ name: "Ada Lovelace" });
+    await createPermission(user, collection, "SubmitOnly");
+    signInAs(user);
+
+    await expectRedirect(
+      addProblem(
+        collection.id,
+        problemForm({
+          title: "First",
+          subject: "Geometry",
+          statement: "S",
+          answer: "",
+          solution: "Sol",
+          difficulty: "",
+        }),
+      ),
+      `/c/${collection.cid}/p/G1`,
+    );
+
+    const authors = await prisma.author.findMany({
+      where: { userId: user.id },
+      include: { problems: true, solutions: true },
+    });
+    expect(authors).toHaveLength(1);
+    expect(authors[0].displayName).toBe("Ada Lovelace");
+    expect(authors[0].problems.map((p) => p.pid)).toEqual(["G1"]);
+    expect(authors[0].solutions).toHaveLength(1);
   });
 
   it("stores every field, attributes the author, and self-likes", async () => {

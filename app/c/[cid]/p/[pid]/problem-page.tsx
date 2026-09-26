@@ -13,7 +13,7 @@ import Likes from "@/components/likes";
 import LockedPage from "./locked-page";
 import Testsolve from "./testsolve";
 import Leaderboard from "./leaderboard";
-import { canEditProblem } from "@/lib/permissions";
+import { canAddSolution, canEditProblem } from "@/lib/permissions";
 import { problemView } from "./view";
 import BackButton from "@/components/back-button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -118,10 +118,9 @@ export default function ProblemPage(props: PropsWithFilter) {
           />
         </div>
       );
-    } else if (authors.length > 0) {
-      solution = (
-        <AddSolution problemId={problem.id} authorId={authors[0].id} />
-      );
+    } else if (canAddSolution(permission)) {
+      // Their author is created when they submit, if they have none yet.
+      solution = <AddSolution problemId={problem.id} />;
     }
 
     testsolveOrAnswers = (
