@@ -386,7 +386,11 @@ export async function submitTestsolve(
       testsolveDeadline(solveAttempt.startedAt, difficulty).getTime() +
         BUFFER_TIME_MILLIS,
     );
-    if (submittedAt >= deadline || solveAttempt.gaveUp) {
+    if (
+      submittedAt >= deadline ||
+      solveAttempt.gaveUp ||
+      solveAttempt.solvedAt !== null
+    ) {
       return error("Tried to submit after testsolve finished");
     }
 
@@ -404,6 +408,7 @@ export async function submitTestsolve(
         problemId,
         numSubmissions: { lt: SUBMISSION_LIMIT },
         gaveUp: false,
+        solvedAt: null,
       },
       data: {
         numSubmissions: {
@@ -477,12 +482,16 @@ export async function giveUpTestsolve(
     }
 
     const deadline = testsolveDeadline(solveAttempt.startedAt, difficulty);
-    if (submittedAt >= deadline || solveAttempt.gaveUp) {
+    if (
+      submittedAt >= deadline ||
+      solveAttempt.gaveUp ||
+      solveAttempt.solvedAt !== null
+    ) {
       return error("Tried to submit after testsolve finished");
     }
 
     const { count } = await prisma.solveAttempt.updateMany({
-      where: { userId, problemId, gaveUp: false },
+      where: { userId, problemId, gaveUp: false, solvedAt: null },
       data: {
         gaveUp: true,
       },

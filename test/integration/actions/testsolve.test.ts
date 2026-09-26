@@ -160,6 +160,36 @@ describe("submitTestsolve", () => {
     expect(row.solvedAt).not.toBeNull();
   });
 
+  it.each(["41", "42"])(
+    "refuses a later submission (%s) once the attempt is solved",
+    async (later) => {
+      const { problem, user } = await setup({ answer: "42" });
+      await startTestsolve(problem.id);
+      await submitTestsolve(problem.id, "42");
+      const solved = await attempt(user, problem);
+
+      expect(await submitTestsolve(problem.id, later)).toEqual(
+        error("Tried to submit after testsolve finished"),
+      );
+      const row = await attempt(user, problem);
+      expect(row.numSubmissions).toBe(1);
+      expect(row.solvedAt).toEqual(solved.solvedAt);
+    },
+  );
+
+  it("counts only one of two overlapping correct answers", async () => {
+    const { problem, user } = await setup({ answer: "42" });
+    await startTestsolve(problem.id);
+
+    const results = await Promise.all([
+      submitTestsolve(problem.id, "42"),
+      submitTestsolve(problem.id, "42"),
+    ]);
+
+    expect(results.filter((r) => r.ok)).toHaveLength(1);
+    expect((await attempt(user, problem)).numSubmissions).toBe(1);
+  });
+
   it("counts a wrong answer without marking it solved", async () => {
     const { problem, user } = await setup({ answer: "42" });
     await startTestsolve(problem.id);
@@ -315,6 +345,17 @@ describe("giveUpTestsolve", () => {
     ]);
 
     expect(results.filter((r) => r.ok)).toHaveLength(1);
+  });
+
+  it("cannot give up a solved attempt", async () => {
+    const { problem, user } = await setup({ answer: "42" });
+    await startTestsolve(problem.id);
+    await submitTestsolve(problem.id, "42");
+
+    expect(await giveUpTestsolve(problem.id)).toEqual(
+      error("Tried to submit after testsolve finished"),
+    );
+    expect((await attempt(user, problem)).gaveUp).toBe(false);
   });
 
   it("cannot give up twice", async () => {
