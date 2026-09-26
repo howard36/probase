@@ -217,3 +217,43 @@ The first pass's checks for B-02 to B-07 had confirmed each defect, so they woul
 | `type.cards-focusable`                   | `type.cards-not-focusable`                | Tab reaches the Serious card, the arrow keys move to Casual, and Tab then reaches "Confirm" (B-04)                                             | pass   |
 | `attempt.giveup-with-answer-one-request` | `attempt.giveup-with-answer-two-requests` | Give Up with an answer typed sends one request and records no submission (B-05)                                                                | pass   |
 | `add.menus-kept-after-refusal`           | (new)                                     | After a refused submit the add-problem menus keep their choice, and the resubmit stores it (B-33)                                              | pass   |
+
+**Third pass, 2026-09-26**, against the fixes for the medium-severity triage entries (branch `fix-medium-severity-bugs`), set up as for the first pass.
+
+The checks that had confirmed B-11 to B-15, B-17, B-20 to B-22, B-24 and B-28 were turned around to check the fixed behavior and renamed, and two checks were added for the B-09 decision (only Integer and AIME collections lock problems). Other changes to the script:
+
+- **Selectors.** A problem's title is now the page's level-one heading rather than a level-two one; the heart is a button on the problem page and a labelled element inside a card's link; the leaderboard has a header row for screen readers, so its rows are counted in the table body. This touched `list.card-heart-no-nav`, `narrow.card-heart-bottom-row`, `like.optimistic-persists`, `edit.escape-no-save`, `edit.enter-one-save`, `edit.viewer-no-editor`, `math.title-raw-reader`, `board.top5-nonauthor` and `board.author-sees-all`, whose claims are unchanged.
+- **Toasts.** Next.js reads each new page's title aloud through an element that also has the alert role. Now that pages have their own titles, that text was being counted as a toast, so the helper reads only the toasts.
+- **The B-18 check.** The first pass's `add.first-click-lost` clicked where "Submit" sits without scrolling it into view. In a 720-pixel window that point is below the window, so the click never reached the page and the check could not have seen a request whatever the button did. The rewritten check scrolls the button into view first. The defect itself was confirmed by a probe against this build with the fix's mouse-down handler bypassed: SOLUTION closed on mouse-down, the button moved up 35 pixels, and the click landed on the form's container. The [triage entry](../bug-triage.md#b-18-the-first-click-on-the-add-problem-submit-is-lost-while-a-box-above-it-is-open) and checklist rows ADD-80 and CTE-29 now say so.
+- `attempt.shortanswer-math-unsolvable` is unchanged and still passes. `ts` is an Integer collection, where a digits-only box is intended under the B-09 decision.
+
+Separate probes, not in the script, checked:
+
+- **Sign out.** "Sign out" in the sidebar clears the session, and the next visit to a collection goes to the login page (B-16).
+- **Switch account.** "Switch account" on "You need permission" clears the session and asks Google to show its account chooser (`prompt=select_account consent`). Google's own screen was stubbed (B-16).
+- **Spoilers.** Hiding the spoilers keeps a half-written solution, and the toggle reports whether it is expanded (B-19).
+- **Keyboard editing.** Enter or Space opens the title field, and Escape closes it without saving and returns focus to it (B-20).
+
+- **Result:** all 101 checks passed.
+
+| Check                            | Replaces                               | What it checks                                                                                                                                    | Result |
+| -------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| `invite.keeps-viewonly`          | `invite.lowers-viewonly`               | A ViewOnly member opening a SubmitOnly invite sees "Already Joined" with no "Accept Invite" and stays ViewOnly (B-15)                             | pass   |
+| `list.viewing-creates-no-author` | `list.prefetch-creates-author`         | Viewing the collection page, and the pages it prefetches, creates no author (B-14)                                                                | pass   |
+| `list.heading`                   | `list.no-heading`                      | The collection page has one level-one heading, the collection's name (B-20)                                                                       | pass   |
+| `add.first-click-lands`          | `add.first-click-lost`                 | One click on "Submit" with SOLUTION open sends the problem (B-18)                                                                                 | pass   |
+| `add.submitonly-confirmed`       | `add.submitonly-lands-need-permission` | A SubmitOnly member's problem is stored; the form confirms it by name and number and starts over, with no link to the collection (B-21)           | pass   |
+| `test.address-checked`           | `test.slug-ignored-unchosen-sees-all`  | A test in an unknown collection, or another collection's test, is "Page not found"; a member without a type is sent to the chooser (B-11)         | pass   |
+| `test.bad-number-not-found`      | `test.bad-number`                      | A non-numeric test address is "Page not found" (404) (B-28)                                                                                       | pass   |
+| `page.title-names-problem`       | `page.title-static`                    | A problem page's title names the problem and the collection (B-20)                                                                                | pass   |
+| `edit.blur-unchanged-no-save`    | `edit.blur-saves-unchanged`            | Clicking the title and away closes it and sends nothing (B-12)                                                                                    | pass   |
+| `sol.double-submit-one`          | `sol.double-submit`                    | A double click on Add Solution's "Submit" stores one solution (B-17)                                                                              | pass   |
+| `sol.viewonly-not-offered`       | `sol.viewonly-with-author-refused`     | ViewOnly members are not offered "Add Solution", even with an author (B-22)                                                                       | pass   |
+| `like.focusable`                 | `like.not-focusable`                   | The heart is a toggle button that Enter presses, and the like is stored (B-20)                                                                    | pass   |
+| `fresh.title-follows-server`     | `fresh.editor-keeps-text`              | After a refresh a closed title field shows another user's change (B-12)                                                                           | pass   |
+| `fresh.prefetch-at-most-30s`     | `fresh.prefetch-stale`                 | Thirty seconds after the collection page loaded, pointing at a card fetches the problem again and the click shows a statement edited since (B-13) | pass   |
+| `a11y.page-titles`               | `a11y.static-titles`                   | The home, collection, problem, "You need permission" and login pages each have their own title (B-20)                                             | pass   |
+| `a11y.click-to-edit-tabbable`    | `a11y.click-to-edit-not-tabbable`      | Tab reaches the title and statement fields (B-20)                                                                                                 | pass   |
+| `narrow.need-permission-fits`    | `narrow.need-permission-overflow`      | "You need permission" fits a 375-pixel window (B-24)                                                                                              | pass   |
+| `lock.shortanswer-never-locked`  | (new)                                  | A problem in a ShortAnswer collection that requires testsolving is not locked (B-09)                                                              | pass   |
+| `edit.aime-answer-checked`       | (new)                                  | An AIME collection's answer editor refuses `$5$` with a toast and keeps the answer (B-09)                                                         | pass   |
