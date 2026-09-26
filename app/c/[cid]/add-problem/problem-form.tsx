@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import type { Collection, Subject } from "@prisma/client";
 import ClickToEdit from "@/components/click-to-edit";
 import Label from "@/components/label";
@@ -8,7 +8,7 @@ import AimeInput from "@/components/aime-input";
 import SubmitButton from "@/components/submit-button";
 import { addProblem } from "./actions";
 import BackButton from "@/components/back-button";
-import { wrapAction } from "@/lib/server-actions";
+import { runAction } from "@/lib/server-actions";
 import IntegerInput from "@/components/integer-input";
 import { difficultyLabels } from "@/lib/collection-config";
 
@@ -57,6 +57,22 @@ export default function ProblemForm({
   const [answer, setAnswer] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [solution, setSolution] = useState("");
+  const [isSubmitting, startSubmitting] = useTransition();
+
+  // Submitted from onSubmit rather than as a form action: React resets a form
+  // after its action, and the reset puts the two menus back to their first
+  // option without telling their state, so a second Submit after an error
+  // would send a subject and difficulty the user never chose.
+  const submitProblem = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isSubmitting) {
+      return;
+    }
+    const formData = new FormData(e.currentTarget);
+    startSubmitting(async () => {
+      await runAction(addProblem)(collection.id, formData);
+    });
+  };
 
   const titleLabel = <Label text="TITLE" />;
   const statementLabel = <Label text="PROBLEM STATEMENT" />;
@@ -114,11 +130,7 @@ export default function ProblemForm({
         />
       </div>
       <div className="mx-auto w-112 max-w-full text-base sm:w-128 sm:text-lg md:w-144 md:text-xl">
-        <form
-          action={(formData: FormData) =>
-            wrapAction(addProblem)(collection.id, formData)
-          }
-        >
+        <form onSubmit={submitProblem}>
           <div className="mb-4 text-2xl font-bold text-slate-900 sm:text-3xl">
             <ClickToEdit
               name="title"
@@ -195,7 +207,7 @@ export default function ProblemForm({
             />
           </div>
           <input name="authorId" value={authorId} type="hidden" />
-          <SubmitButton>Submit</SubmitButton>
+          <SubmitButton pending={isSubmitting}>Submit</SubmitButton>
         </form>
       </div>
     </div>
