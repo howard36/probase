@@ -60,6 +60,7 @@ export default function ProblemCard({
             <Likes
               problem={{ id: problem.id, likes: problem.likes }}
               userId={userId}
+              insideLink
             />
           </div>
         </div>
@@ -79,6 +80,7 @@ export default function ProblemCard({
           <Likes
             problem={{ id: problem.id, likes: problem.likes }}
             userId={userId}
+            insideLink
           />
           {problem.difficulty !== null && problem.difficulty > 0 && (
             <Lightbulbs difficulty={problem.difficulty} />

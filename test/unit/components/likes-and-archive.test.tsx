@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import Likes from "@/components/likes";
 import ArchiveToggle from "@/app/c/[cid]/p/[pid]/archive-toggle";
@@ -23,6 +24,33 @@ describe("Likes", () => {
     );
 
     expect(screen.getByText("2")).toBeInTheDocument();
+  });
+});
+
+describe("Likes from the keyboard", () => {
+  it("is a toggle button on the problem page", async () => {
+    const user = userEvent.setup();
+    render(<Likes problem={{ id: 1, likes: [] }} userId="me" />);
+    const heart = screen.getByRole("button", { name: "Like (0)" });
+    expect(heart).toHaveAttribute("aria-pressed", "false");
+
+    await user.tab();
+    expect(heart).toHaveFocus();
+    await user.keyboard(" ");
+
+    expect(screen.getByRole("button", { name: "Like (1)" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  it("is not a button inside a card link", () => {
+    render(
+      <Likes problem={{ id: 1, likes: [] }} userId="me" insideLink={true} />,
+    );
+
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("0 likes")).toBeInTheDocument();
   });
 });
 

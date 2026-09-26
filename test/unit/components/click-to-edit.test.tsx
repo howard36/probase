@@ -220,4 +220,33 @@ describe("ClickToEdit", () => {
     expect(onSave).not.toHaveBeenCalled();
     expect(screen.getByText("Same")).toBeInTheDocument();
   });
+
+  it("can be opened, saved and left from the keyboard, keeping focus", async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn();
+    render(
+      <ClickToEdit
+        type="input"
+        name="title"
+        initialText="Before"
+        autosave={true}
+        onSave={onSave}
+        required={false}
+      />,
+    );
+
+    await user.tab();
+    const field = screen.getByRole("button", { name: "Edit title" });
+    expect(field).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("textbox")).toHaveFocus();
+    await user.keyboard(" after{Enter}");
+
+    expect(onSave).toHaveBeenCalledWith("Before after");
+    expect(screen.getByRole("button", { name: "Edit title" })).toHaveFocus();
+
+    await user.keyboard(" ");
+    await user.keyboard("{Escape}");
+    expect(screen.getByRole("button", { name: "Edit title" })).toHaveFocus();
+  });
 });
