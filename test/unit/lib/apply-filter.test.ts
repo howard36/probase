@@ -70,6 +70,28 @@ describe("applyFilter", () => {
     ]);
   });
 
+  it("searches only the title of a problem locked for the user", () => {
+    const locked = problem({ title: "Triangles", statement: "Secret circle" });
+    const open = problem({ title: "Circles", statement: "Open circle" });
+
+    expect(
+      applyFilter(
+        [locked, open],
+        { ...noFilter, search: "circle" },
+        [],
+        [locked.id],
+      ).page,
+    ).toEqual([open]);
+    expect(
+      applyFilter(
+        [locked, open],
+        { ...noFilter, search: "triangle" },
+        [],
+        [locked.id],
+      ).page,
+    ).toEqual([locked]);
+  });
+
   it("searches title and statement case-insensitively", () => {
     const byTitle = problem({ title: "Circumcenter fun" });
     const byStatement = problem({ statement: "Let $O$ be the CIRCUMCENTER." });
