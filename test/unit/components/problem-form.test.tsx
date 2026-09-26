@@ -7,6 +7,9 @@ import { addProblem } from "@/app/c/[cid]/add-problem/actions";
 import { error } from "@/lib/server-actions";
 
 vi.mock("@/app/c/[cid]/add-problem/actions", () => ({ addProblem: vi.fn() }));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ prefetch: vi.fn() }),
+}));
 vi.mock("next/link", () => ({
   default: ({
     href,

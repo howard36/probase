@@ -75,7 +75,6 @@ export function ProblemListPagination({ totalPages, filter }: PaginationProps) {
               ) : (
                 <PaginationLink
                   href={getPageHref(pageNum)}
-                  prefetch={true}
                   className="hover:bg-slate-200/70"
                   aria-label={`Page ${pageNum}`}
                 >

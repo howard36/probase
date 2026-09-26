@@ -1,4 +1,4 @@
-import Link from "next/link";
+import PrefetchLink from "@/components/prefetch-link";
 import Title from "./title";
 import Statement from "./statement";
 import Spoilers from "./spoilers";
@@ -168,24 +168,22 @@ export default function ProblemPage(props: PropsWithFilter) {
               <Title {...props} />
             </div>
             <div className="mb-6 flex flex-wrap gap-x-3 gap-y-2 text-sm font-semibold">
-              <Link
+              <PrefetchLink
                 href={`/c/${collection.cid}?subject=${subject.charAt(0).toLowerCase()}`}
                 className={`whitespace-nowrap rounded-full bg-gradient-to-br px-6 py-2 text-center leading-none text-white ${gradient}`}
-                prefetch={true}
               >
                 {subject}
-              </Link>
+              </PrefetchLink>
               {problem.testProblems.map((testProblem) => (
-                <Link
+                <PrefetchLink
                   href={`/c/${collection.cid}/t/${convertToSlug(
                     testProblem.test.name,
                   )}-${testProblem.test.id}`}
-                  prefetch={true}
                   className="whitespace-nowrap rounded-full bg-slate-200 px-6 py-2 text-center leading-none text-slate-700 hover:bg-slate-300 hover:text-slate-800"
                   key={testProblem.test.id}
                 >
                   {testProblem.test.name}
-                </Link>
+                </PrefetchLink>
               ))}
             </div>
           </div>
@@ -220,21 +218,21 @@ export default function ProblemPage(props: PropsWithFilter) {
               Previous
             </button>
           ) : (
-            <Link
+            <PrefetchLink
               href={`/c/${collection.cid}/p/${prevPid}${filterStr}`}
               className="flex items-center rounded px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:text-slate-700"
             >
               <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
               Previous
-            </Link>
+            </PrefetchLink>
           )}
-          <Link
+          <PrefetchLink
             href={`/c/${collection.cid}/p/${nextPid}${filterStr}`}
             className="flex items-center rounded px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:text-slate-700"
           >
             Next
             <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-          </Link>
+          </PrefetchLink>
         </div>
       </div>
     </div>

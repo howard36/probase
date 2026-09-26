@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import PrefetchLink from "@/components/prefetch-link";
 import { usePathname } from "next/navigation";
 import { SIDEBAR_COLLECTIONS } from "@/lib/collection-config";
 import { SignOutButton } from "./account-buttons";
@@ -37,10 +37,9 @@ export default function Sidebar({
         <div className="flex flex-1 flex-col justify-between">
           <nav>
             {links.map(({ href, label, active }) => (
-              <Link
+              <PrefetchLink
                 key={href}
                 href={href}
-                prefetch={true}
                 className={`my-2 flex items-center rounded-lg px-3 py-3 sm:px-6 ${
                   active
                     ? "bg-slate-100 text-slate-700"
@@ -48,7 +47,7 @@ export default function Sidebar({
                 }`}
               >
                 <span className="font-medium">{label}</span>
-              </Link>
+              </PrefetchLink>
             ))}
           </nav>
           {signedInAs !== null && (

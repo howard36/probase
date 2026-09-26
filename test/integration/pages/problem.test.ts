@@ -12,6 +12,7 @@ import LockedPage from "@/app/c/[cid]/p/[pid]/locked-page";
 import Spoilers from "@/app/c/[cid]/p/[pid]/spoilers";
 import Testsolve from "@/app/c/[cid]/p/[pid]/testsolve";
 import BackButton from "@/components/back-button";
+import PrefetchLink from "@/components/prefetch-link";
 import Latex from "@/components/latex";
 import Likes from "@/components/likes";
 import prisma from "@/lib/prisma";
@@ -28,6 +29,7 @@ import { clientPayload } from "./client-payload";
 // Every component under the problem page with a "use client" directive.
 // Their props are what Next.js serializes into the RSC payload.
 const clientComponents = new Set<unknown>([
+  PrefetchLink,
   AddSolution,
   ArchiveToggle,
   Comments,

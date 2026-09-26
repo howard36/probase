@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import PrefetchLink from "@/components/prefetch-link";
 
 export default function BackButton({
   href,
@@ -10,9 +10,8 @@ export default function BackButton({
   label: string;
 }) {
   return (
-    <Link
+    <PrefetchLink
       href={href}
-      prefetch={true}
       className="flex items-center text-slate-600 underline hover:text-slate-800"
     >
       <svg
@@ -30,6 +29,6 @@ export default function BackButton({
         />
       </svg>
       <span className="ml-1">{label}</span>
-    </Link>
+    </PrefetchLink>
   );
 }
