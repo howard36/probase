@@ -73,6 +73,21 @@ await check("signin.unsafe-callback", async () => {
   await p._ctx.close();
   return [u === BASE + "/", u];
 });
+await check("signin.unsafe-callback-browser-parsing", async () => {
+  const landed = [];
+  for (const callback of [
+    "%2F%09%2Fevil.example",
+    "%2F%0A%2Fevil.example",
+    "%2F.%2F%2Fevil.example",
+    "%2Fc%2F..%2F%2Fevil.example",
+  ]) {
+    const p = await page("viewer");
+    await p.goto(BASE + "/login?callbackUrl=" + callback).catch(() => {});
+    landed.push(p.url());
+    await p._ctx.close();
+  }
+  return [landed.every((u) => u === BASE + "/"), JSON.stringify(landed)];
+});
 await check("signin.page-text", async () => {
   const p = await page(null);
   await p.goto(BASE + "/login");
@@ -113,19 +128,16 @@ await check("error.need-permission", async () => {
     `url ${p.url()}`,
   ];
 });
-await check("error.500-no-difficulty", async () => {
+await check("error.no-difficulty-locked", async () => {
   const p = await page("serious2");
   const r = await p.goto(BASE + "/c/ts/p/G1");
-  const t = await p.locator("h1").allInnerTexts();
-  await p.getByRole("button", { name: "Try again" }).click();
-  await wait(1500);
-  const t2 = await p.locator("h1").allInnerTexts();
+  const t = await p.locator("body").innerText();
   await p._ctx.close();
   return [
-    r.status() === 500 &&
-      t[0] === "Something went wrong" &&
-      t2[0] === "Something went wrong",
-    `status ${r.status()}, after Try again: ${t2}`,
+    r.status() === 200 &&
+      t.includes("30 minutes") &&
+      !t.includes("Something went wrong"),
+    `status ${r.status()}, shows 30 minutes: ${t.includes("30 minutes")}`,
   ];
 });
 await check("error.unknown-collection-before-signin", async () => {
@@ -188,19 +200,22 @@ await check("invite.right-domain-accept", async () => {
   await p._ctx.close();
   return [role === "TeamMember", role];
 });
-await check("invite.once-expiring-bug", async () => {
+await check("invite.once-expiring-accepted", async () => {
   const p = await page("stranger");
   await p.goto(BASE + "/invite/once-expiring");
   await p.getByRole("button", { name: "Accept Invite" }).click();
-  await wait(2500);
-  const t = await toasts(p);
-  const n = sql(
-    `select count(*) from "Permission" where "userId"='u-stranger'`,
+  await p.waitForURL(/\/c\/demo$/, { timeout: 10000 });
+  await wait(1500);
+  const t = (await toasts(p)).filter(Boolean);
+  const role = sql(
+    `select "accessLevel" from "Permission" where "userId"='u-stranger'`,
   );
   await p._ctx.close();
+  // Leave Stan a stranger for the checks that follow.
+  sql(`delete from "Permission" where "userId"='u-stranger'`);
   return [
-    t.includes("Invite has expired") && n === "0",
-    `toasts ${JSON.stringify(t)}, permissions ${n}`,
+    role === "TeamMember" && t.length === 0,
+    `role ${role}, toasts ${JSON.stringify(t)}`,
   ];
 });
 await check("invite.one-time-used-up", async () => {
@@ -318,25 +333,26 @@ await check("list.locked-cards-serious", async () => {
     `locks ${locks}`,
   ];
 });
-await check("filter.search-drops-chars", async () => {
+await check("filter.search-keeps-chars", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo");
   const s = p.getByPlaceholder("Search");
   await s.click();
   await p.keyboard.type("filler", { delay: 20 });
-  await wait(2500);
+  await p.waitForURL(/search=filler/, { timeout: 8000 });
+  await wait(1500);
   const v = await s.inputValue();
   await p._ctx.close();
-  return [v !== "filler", `box shows "${v}"`];
+  return [v === "filler", `box shows "${v}"`];
 });
-await check("filter.search-enter-clears", async () => {
+await check("filter.search-enter-keeps-filters", async () => {
   const p = await page("viewer");
   await p.goto(BASE + "/c/demo?subject=a&search=Filler");
   await p.getByPlaceholder("Search").press("Enter");
   await wait(2500);
   const u = p.url();
   await p._ctx.close();
-  return [u === BASE + "/c/demo" || u === BASE + "/c/demo?", u];
+  return [u === BASE + "/c/demo?subject=a&search=Filler", u];
 });
 await check("filter.subject-url", async () => {
   const p = await page("viewer");
@@ -831,25 +847,26 @@ await check("type.chooser-redirect", async () => {
   await p._ctx.close();
   return [u.endsWith("/c/ts/choose-testsolver-type") && dis, u];
 });
-await check("type.cards-not-focusable", async () => {
+await check("type.cards-focusable", async () => {
   const p = await page("unchosen");
   await p.goto(BASE + "/c/ts/choose-testsolver-type");
-  const tabs = [];
-  for (let i = 0; i < 6; i++) {
-    await p.keyboard.press("Tab");
-    tabs.push(
-      await p.evaluate(
-        () =>
-          document.activeElement?.tagName +
-          ":" +
-          (document.activeElement?.textContent || "").slice(0, 12),
-      ),
-    );
-  }
+  const focused = async () =>
+    p.evaluate(() => {
+      const e = document.activeElement;
+      return `${e?.tagName}:${e?.id || e?.textContent}:${e?.checked ?? ""}`;
+    });
+  await p.keyboard.press("Tab");
+  const first = await focused();
+  await p.keyboard.press("ArrowRight");
+  const second = await focused();
+  await p.keyboard.press("Tab");
+  const third = await focused();
   await p._ctx.close();
   return [
-    !tabs.some((t) => t.includes("Serious") || t.includes("Casual")),
-    JSON.stringify(tabs),
+    first === "INPUT:testsolver-type-Serious:false" &&
+      second === "INPUT:testsolver-type-Casual:true" &&
+      third === "BUTTON:Confirm:",
+    JSON.stringify([first, second, third]),
   ];
 });
 await check("type.choose-casual", async () => {
@@ -951,7 +968,7 @@ await check("attempt.five-wrong-no-end", async () => {
     `last "${msg}", toasts ${JSON.stringify(t)}`,
   ];
 });
-await check("attempt.giveup-with-answer-two-requests", async () => {
+await check("attempt.giveup-with-answer-one-request", async () => {
   sql(
     `delete from "SolveAttempt" where "userId"='u-serious' and "problemId"=(select p.id from "Problem" p join "Collection" c on c.id=p."collectionId" where c.cid='ts' and pid='N1')`,
   );
@@ -964,13 +981,13 @@ await check("attempt.giveup-with-answer-two-requests", async () => {
   await p.fill('input[name="answer"]', "2");
   await p.getByRole("button", { name: "Give Up" }).click();
   await wait(3000);
-  const t = await toasts(p);
+  const t = (await toasts(p)).filter(Boolean);
   const row = sql(
     `select "numSubmissions"||','||"gaveUp"||','||("solvedAt" is not null) from "SolveAttempt" where "userId"='u-serious' and "problemId"=(select p.id from "Problem" p join "Collection" c on c.id=p."collectionId" where c.cid='ts' and pid='N1')`,
   );
   await p._ctx.close();
   return [
-    a.length === 2,
+    a.length === 1 && row === "0,true,false" && t.length === 0,
     `requests ${a.length}, attempt (subs,gaveUp,solved) ${row}, toasts ${JSON.stringify(t)}`,
   ];
 });
@@ -1189,6 +1206,45 @@ await check("narrow.card-heart-bottom-row", async () => {
     .evaluateAll((els) => els.map((e) => e.offsetParent !== null));
   await p._ctx.close();
   return [JSON.stringify(visible) === "[false,true]", JSON.stringify(visible)];
+});
+
+await check("add.menus-kept-after-refusal", async () => {
+  const p = await page("member");
+  await p.goto(BASE + "/c/demo");
+  await p.getByText("Add Problem").click();
+  await p.waitForURL(/add-problem/);
+  await p.locator('input[name="title"]').fill("Refusal probe");
+  await p.locator('select[name="subject"]').selectOption("NumberTheory");
+  await p.locator('select[name="difficulty"]').selectOption("4");
+  await p.locator('textarea[name="statement"]').fill("S");
+  await p.locator('input[name="answer"]').fill("1");
+  await p.locator('textarea[name="solution"]').fill("Sol");
+  await p.locator('select[name="subject"]').focus();
+  sql(
+    `update "Permission" set "accessLevel"='ViewOnly' where "userId"='u-member'`,
+  );
+  await p.getByRole("button", { name: "Submit" }).click();
+  await wait(2500);
+  const shown = await p.evaluate(() =>
+    [...document.querySelectorAll("select")].map(
+      (s) => s.options[s.selectedIndex]?.text,
+    ),
+  );
+  sql(
+    `update "Permission" set "accessLevel"='TeamMember' where "userId"='u-member'`,
+  );
+  await p.getByRole("button", { name: "Submit" }).click();
+  await p.waitForURL(/\/p\//, { timeout: 8000 }).catch(() => {});
+  await p._ctx.close();
+  const stored = sql(
+    `select subject||' '||coalesce(difficulty::text,'none') from "Problem" where title='Refusal probe'`,
+  );
+  sql(`delete from "Problem" where title='Refusal probe'`);
+  return [
+    JSON.stringify(shown) === '["Number Theory","Hard"]' &&
+      stored === "NumberTheory 4",
+    `menus after the refusal ${JSON.stringify(shown)}, stored ${stored}`,
+  ];
 });
 
 await browser.close();
