@@ -1,6 +1,6 @@
 "use server";
 
-import { canAddProblem } from "@/lib/permissions";
+import { canAddProblem, canViewCollection } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { ActionResponse, error, unexpectedError } from "@/lib/server-actions";
 import { formDataToObject, idSchema, parseInput } from "@/lib/validation";
@@ -148,7 +148,13 @@ export async function addProblem(
     });
 
     revalidatePath(`/c/${collection.cid}`);
-    redirect(`/c/${collection.cid}/p/${newProblem.pid}`);
+    // A SubmitOnly member cannot view the new problem, so they get the form
+    // back with a confirmation instead.
+    redirect(
+      canViewCollection(permission)
+        ? `/c/${collection.cid}/p/${newProblem.pid}`
+        : `/c/${collection.cid}/add-problem?submitted=${newProblem.pid}`,
+    );
   } catch (err) {
     if (isRedirectError(err)) {
       throw err;

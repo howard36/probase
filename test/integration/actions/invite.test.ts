@@ -117,6 +117,24 @@ describe("acceptInvite", () => {
     });
   });
 
+  it("sends a new SubmitOnly member to the add-problem form, their only page", async () => {
+    const collection = await createCollection();
+    const inviter = await createUser();
+    const invite = await createInvite(collection, inviter, {
+      accessLevel: "SubmitOnly",
+    });
+    const user = await createUser();
+    signInAs(user);
+
+    await expectRedirect(
+      acceptInvite(invite.code),
+      `/c/${collection.cid}/add-problem`,
+    );
+    expect((await permissionFor(user, collection))?.accessLevel).toBe(
+      "SubmitOnly",
+    );
+  });
+
   it("upgrades an existing permission to the invite's access level", async () => {
     const collection = await createCollection();
     const inviter = await createUser();

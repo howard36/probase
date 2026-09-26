@@ -60,7 +60,13 @@ describe("ProblemForm", () => {
       error("You do not have permission to add a problem"),
     );
     const user = userEvent.setup();
-    render(<ProblemForm collection={collection} />);
+    render(
+      <ProblemForm
+        collection={collection}
+        canViewCollection={true}
+        submission={null}
+      />,
+    );
     const { subject, difficulty } = await fillForm(user);
     const submit = screen.getByRole("button", { name: "Submit" });
 
@@ -83,7 +89,13 @@ describe("ProblemForm", () => {
 
   it("does not submit without the required fields", async () => {
     const user = userEvent.setup();
-    render(<ProblemForm collection={collection} />);
+    render(
+      <ProblemForm
+        collection={collection}
+        canViewCollection={true}
+        submission={null}
+      />,
+    );
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
 
@@ -93,7 +105,13 @@ describe("ProblemForm", () => {
   it("disables Submit while the problem is being sent", async () => {
     mockedAddProblem.mockReturnValue(new Promise(() => {}));
     const user = userEvent.setup();
-    render(<ProblemForm collection={collection} />);
+    render(
+      <ProblemForm
+        collection={collection}
+        canViewCollection={true}
+        submission={null}
+      />,
+    );
     await fillForm(user);
     const submit = screen.getByRole("button", { name: "Submit" });
 
@@ -102,5 +120,20 @@ describe("ProblemForm", () => {
     await user.click(submit);
 
     expect(mockedAddProblem).toHaveBeenCalledTimes(1);
+  });
+
+  it("confirms a submission, and offers no link back to a collection the member cannot view", () => {
+    render(
+      <ProblemForm
+        collection={collection}
+        canViewCollection={false}
+        submission={{ pid: "G4", title: "My problem" }}
+      />,
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent(
+      'Thanks! Your problem "My problem" was submitted to Demo as G4.',
+    );
+    expect(screen.queryByText("Back to Demo")).not.toBeInTheDocument();
   });
 });

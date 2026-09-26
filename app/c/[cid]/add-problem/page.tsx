@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { requireCurrentUser } from "@/lib/current-user";
 import { getPermission } from "@/lib/collection-access";
-import { canAddProblem } from "@/lib/permissions";
+import { canAddProblem, canViewCollection } from "@/lib/permissions";
 
 interface Params {
   cid: string;
@@ -24,10 +24,13 @@ async function getCollection(cid: string) {
 
 export default async function AddProblemPage({
   params,
+  searchParams,
 }: {
   params: Promise<Params>;
+  searchParams: Promise<{ submitted?: string | string[] }>;
 }) {
   const { cid } = await params;
+  const { submitted } = await searchParams;
   const user = await requireCurrentUser(`/c/${cid}/add-problem`);
 
   // TODO: select only needed fields of collection
@@ -42,5 +45,27 @@ export default async function AddProblemPage({
     redirect("/need-permission");
   }
 
-  return <ProblemForm collection={collection} />;
+  // After a submission by a member who cannot view the collection (and so
+  // cannot be sent to the new problem), the form says it was received.
+  const submission =
+    typeof submitted === "string"
+      ? await prisma.problem.findFirst({
+          where: {
+            collectionId: collection.id,
+            pid: submitted,
+            submitterId: user.userId,
+          },
+          select: { pid: true, title: true },
+        })
+      : null;
+
+  return (
+    <ProblemForm
+      // A fresh, empty form after each submission.
+      key={submission?.pid ?? "new"}
+      collection={collection}
+      canViewCollection={canViewCollection(permission)}
+      submission={submission}
+    />
+  );
 }

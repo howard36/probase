@@ -1,12 +1,31 @@
 import { describe, expect, it } from "vitest";
 import AddProblemPage from "@/app/c/[cid]/add-problem/page";
+import ProblemForm from "@/app/c/[cid]/add-problem/problem-form";
 import prisma from "@/lib/prisma";
-import { createCollection, createPermission, createUser } from "../factories";
+import {
+  createCollection,
+  createPermission,
+  createProblem,
+  createUser,
+} from "../factories";
 import { expectNotFound, expectRedirect } from "../navigation";
 import { signInAs, signOut } from "../session";
+import { clientPayload } from "./client-payload";
 
-function render(cid: string) {
-  return AddProblemPage({ params: Promise.resolve({ cid }) });
+function render(cid: string, searchParams: { submitted?: string } = {}) {
+  return AddProblemPage({
+    params: Promise.resolve({ cid }),
+    searchParams: Promise.resolve(searchParams),
+  });
+}
+
+/** The props the page hands the form. */
+async function formProps(cid: string, searchParams: { submitted?: string }) {
+  const payload = (await clientPayload(
+    await render(cid, searchParams),
+    new Set<unknown>([ProblemForm]),
+  )) as { props: Record<string, unknown> };
+  return payload.props;
 }
 
 describe("add-problem page", () => {
@@ -59,4 +78,35 @@ describe("add-problem page", () => {
       expect(await prisma.author.count()).toBe(0);
     },
   );
+
+  it("confirms a SubmitOnly member's own submission, with no link to the collection", async () => {
+    const collection = await createCollection();
+    const user = await createUser();
+    await createPermission(user, collection, "SubmitOnly");
+    await createProblem(collection, {
+      pid: "G4",
+      title: "My problem",
+      submitterId: user.id,
+    });
+    signInAs(user);
+
+    expect(await formProps(collection.cid, { submitted: "G4" })).toMatchObject({
+      canViewCollection: false,
+      submission: { pid: "G4", title: "My problem" },
+    });
+  });
+
+  it("confirms nothing for a problem someone else submitted", async () => {
+    const collection = await createCollection();
+    const other = await createUser();
+    await createProblem(collection, { pid: "G4", submitterId: other.id });
+    const user = await createUser();
+    await createPermission(user, collection, "TeamMember");
+    signInAs(user);
+
+    expect(await formProps(collection.cid, { submitted: "G4" })).toMatchObject({
+      canViewCollection: true,
+      submission: null,
+    });
+  });
 });

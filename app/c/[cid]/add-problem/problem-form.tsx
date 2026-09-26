@@ -46,8 +46,14 @@ const subjects = [
 // TODO: types?
 export default function ProblemForm({
   collection,
+  canViewCollection,
+  submission,
 }: {
   collection: Collection;
+  /** SubmitOnly members cannot view the collection, so get no link back to it. */
+  canViewCollection: boolean;
+  /** The problem this member just submitted, if they cannot be shown it. */
+  submission: { pid: string; title: string } | null;
 }) {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
@@ -121,13 +127,23 @@ export default function ProblemForm({
 
   return (
     <div className="whitespace-pre-wrap break-words p-8 text-slate-800">
-      <div className="mb-8 inline-block sm:mb-16">
-        <BackButton
-          href={`/c/${collection.cid}`}
-          label={`Back to ${collection.name}`}
-        />
-      </div>
+      {canViewCollection && (
+        <div className="mb-8 inline-block sm:mb-16">
+          <BackButton
+            href={`/c/${collection.cid}`}
+            label={`Back to ${collection.name}`}
+          />
+        </div>
+      )}
       <div className="mx-auto w-112 max-w-full text-base sm:w-128 sm:text-lg md:w-144 md:text-xl">
+        {submission !== null && (
+          <div
+            role="status"
+            className="mb-12 rounded-xl bg-green-50 p-6 text-green-900"
+          >
+            {`Thanks! Your problem "${submission.title}" was submitted to ${collection.name} as ${submission.pid}. You can submit another below.`}
+          </div>
+        )}
         <form onSubmit={submitProblem}>
           <div className="mb-4 text-2xl font-bold text-slate-900 sm:text-3xl">
             <ClickToEdit
