@@ -1,3 +1,4 @@
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { notifyError } from "@/lib/toast";
 
 export type ActionResponseOk<T = undefined> = T extends undefined
@@ -35,10 +36,10 @@ export function unexpectedError(
 /**
  * Calls a server action from the client and shows its error, if any, as a
  * toast. Resolves with the response so the caller can react to failure (for
- * example by reopening an editor). Resolves with `undefined` after a redirect:
- * Next.js resolves redirecting actions with no value on the client
- * (https://github.com/vercel/next.js/issues/50659), and the redirect still
- * happens.
+ * example by reopening an editor). Resolves with `undefined` after a redirect,
+ * which still happens: Next.js either resolves a redirecting action with no
+ * value (https://github.com/vercel/next.js/issues/50659) or, as Next.js 15
+ * does, rejects it with its redirect signal, which is not a failure.
  */
 export function runAction<T extends unknown[], U>(
   asyncAction: (...args: T) => Promise<ActionResponse<U>>,
@@ -48,6 +49,9 @@ export function runAction<T extends unknown[], U>(
     try {
       resp = await asyncAction(...args);
     } catch (err) {
+      if (isRedirectError(err)) {
+        return undefined;
+      }
       console.error(err);
       notifyError(UNEXPECTED_ERROR_MESSAGE);
       return error(UNEXPECTED_ERROR_MESSAGE);
