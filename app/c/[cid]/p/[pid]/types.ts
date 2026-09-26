@@ -73,6 +73,9 @@ export const problemInclude = {
   },
   solutions: {
     include: solutionInclude,
+    // The page shows the first; a problem added before duplicates were
+    // refused may have more.
+    orderBy: { id: "asc" as const },
   },
   comments: {
     select: commentSelect,

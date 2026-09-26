@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import type { KeyboardEvent } from "react";
 import { addSolution } from "./actions";
-import { wrapAction } from "@/lib/server-actions";
+import { runAction } from "@/lib/server-actions";
 
 export default function AddSolution({ problemId }: { problemId: number }) {
   const [isEditing, setEditing] = useState(false);
   const [text, setText] = useState("");
+  const [isSubmitting, startSubmitting] = useTransition();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const updateHeight = (textArea: HTMLTextAreaElement) => {
@@ -34,8 +35,16 @@ export default function AddSolution({ problemId }: { problemId: number }) {
     }
   }, [text]);
 
+  // One submission at a time: a double click must not add two solutions.
+  // On success the page shows the new solution in place of this box; on
+  // failure the text stays for another try.
   const handleSubmit = () => {
-    wrapAction(addSolution)(problemId, text);
+    if (text === "" || isSubmitting) {
+      return;
+    }
+    startSubmitting(async () => {
+      await runAction(addSolution)(problemId, text);
+    });
   };
 
   const handleDiscard = () => {
@@ -51,9 +60,7 @@ export default function AddSolution({ problemId }: { problemId: number }) {
       (event.shiftKey || event.ctrlKey || event.metaKey)
     ) {
       // Equivalent to clicking the "Submit" button
-      if (text !== "") {
-        handleSubmit();
-      }
+      handleSubmit();
     }
   };
 
@@ -72,8 +79,10 @@ export default function AddSolution({ problemId }: { problemId: number }) {
         />
         <div className="mt-4">
           <button
-            onClick={() => text !== "" && handleSubmit()}
-            className="w-40 rounded-md bg-green-200 py-3 text-base font-semibold leading-none text-green-800"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+            className="w-40 rounded-md bg-green-200 py-3 text-base font-semibold leading-none text-green-800 disabled:cursor-wait disabled:opacity-60"
           >
             Submit
           </button>
