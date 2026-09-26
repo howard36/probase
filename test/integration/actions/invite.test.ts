@@ -99,6 +99,52 @@ describe("acceptInvite", () => {
     },
   );
 
+  it.each([
+    ["ViewOnly", "SubmitOnly", "/c/{cid}"],
+    ["SubmitOnly", "ViewOnly", "/c/{cid}/add-problem"],
+  ] as const)(
+    "keeps a %s member's role when a %s invite would not raise it, and does not use it up",
+    async (current, invited, landing) => {
+      const collection = await createCollection();
+      const inviter = await createUser();
+      const invite = await createInvite(collection, inviter, {
+        accessLevel: invited,
+        oneTimeUse: true,
+      });
+      const member = await createUser();
+      await createPermission(member, collection, current);
+      signInAs(member);
+
+      await expectRedirect(
+        acceptInvite(invite.code),
+        landing.replace("{cid}", collection.cid),
+      );
+      expect((await permissionFor(member, collection))?.accessLevel).toBe(
+        current,
+      );
+      const untouched = await prisma.invite.findUniqueOrThrow({
+        where: { code: invite.code },
+      });
+      expect(untouched.expiresAt).toBeNull();
+    },
+  );
+
+  it("raises a ViewOnly member to the invite's TeamMember", async () => {
+    const collection = await createCollection();
+    const inviter = await createUser();
+    const invite = await createInvite(collection, inviter, {
+      accessLevel: "TeamMember",
+    });
+    const member = await createUser();
+    await createPermission(member, collection, "ViewOnly");
+    signInAs(member);
+
+    await expectRedirect(acceptInvite(invite.code), `/c/${collection.cid}`);
+    expect((await permissionFor(member, collection))?.accessLevel).toBe(
+      "TeamMember",
+    );
+  });
+
   it("grants the invite's access level and redirects to the collection", async () => {
     const collection = await createCollection();
     const inviter = await createUser();

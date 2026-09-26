@@ -1,7 +1,14 @@
 import { InviteProps } from "./types";
 import Link from "next/link";
 
-export default function AlreadyJoined({ invite }: { invite: InviteProps }) {
+export default function AlreadyJoined({
+  invite,
+  homePath,
+}: {
+  invite: InviteProps;
+  /** Where the member starts: the problem list, or the form if SubmitOnly. */
+  homePath: string;
+}) {
   const collectionName = invite.collection.name;
 
   return (
@@ -15,7 +22,7 @@ export default function AlreadyJoined({ invite }: { invite: InviteProps }) {
           <span className="font-bold text-slate-900">{collectionName}</span>.
         </p>
         <Link
-          href={`/c/${invite.collection.cid}`}
+          href={homePath}
           className="rounded bg-violet-500 px-4 py-2 font-bold text-white hover:bg-violet-600"
           prefetch={true}
         >

@@ -7,7 +7,8 @@ import {
   canEditProblem,
   canEditSolution,
   canViewCollection,
-  hasJoinedCollection,
+  collectionHomePath,
+  inviteRaisesAccess,
   isAdmin,
 } from "@/lib/permissions";
 
@@ -50,11 +51,6 @@ describe("role-only checks", () => {
       fn: canViewCollection,
       allowed: ["Admin", "TeamMember", "ViewOnly"],
     },
-    {
-      name: "hasJoinedCollection",
-      fn: hasJoinedCollection,
-      allowed: ["Admin", "TeamMember"],
-    },
   ];
 
   describe.each(table)("$name", ({ fn, allowed }) => {
@@ -65,6 +61,41 @@ describe("role-only checks", () => {
     it.each(allLevels)("%s", (level) => {
       expect(fn(perm(level))).toBe(allowed.includes(level));
     });
+  });
+});
+
+describe("inviteRaisesAccess", () => {
+  it("raises the access of someone with no permission", () => {
+    expect(inviteRaisesAccess(null, "ViewOnly")).toBe(true);
+    expect(inviteRaisesAccess(null, "SubmitOnly")).toBe(true);
+  });
+
+  it.each([
+    ["ViewOnly", "TeamMember", true],
+    ["SubmitOnly", "TeamMember", true],
+    ["ViewOnly", "Admin", true],
+    ["TeamMember", "Admin", true],
+    ["TeamMember", "TeamMember", false],
+    ["Admin", "TeamMember", false],
+    ["TeamMember", "ViewOnly", false],
+    // Neither of these can do what the other can, so neither raises.
+    ["ViewOnly", "SubmitOnly", false],
+    ["SubmitOnly", "ViewOnly", false],
+  ] as const)("%s invited as %s: %s", (current, invited, raises) => {
+    expect(inviteRaisesAccess(perm(current), invited)).toBe(raises);
+  });
+});
+
+describe("collectionHomePath", () => {
+  it("is the problem list for members who can view it", () => {
+    expect(collectionHomePath("demo", "ViewOnly")).toBe("/c/demo");
+    expect(collectionHomePath("demo", "Admin")).toBe("/c/demo");
+  });
+
+  it("is the add-problem form for a SubmitOnly member", () => {
+    expect(collectionHomePath("demo", "SubmitOnly")).toBe(
+      "/c/demo/add-problem",
+    );
   });
 });
 
