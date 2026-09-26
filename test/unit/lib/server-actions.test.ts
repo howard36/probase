@@ -9,6 +9,7 @@ import {
   wrapAction,
 } from "@/lib/server-actions";
 import { subscribeToErrors } from "@/lib/toast";
+import { redirect } from "next/navigation";
 
 function captureToasts() {
   const toasts: string[] = [];
@@ -61,6 +62,21 @@ describe("runAction", () => {
 
     expect(await runAction(action)()).toBeUndefined();
     expect(toasts).toEqual([]);
+    unsubscribe();
+  });
+
+  it("resolves with undefined without toasting when the action rejects with a redirect", async () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const { toasts, unsubscribe } = captureToasts();
+    // What the browser gets from a server action that calls redirect().
+    const action = (): Promise<ActionResponse> =>
+      new Promise(() => redirect("/c/demo"));
+
+    expect(await runAction(action)()).toBeUndefined();
+    expect(toasts).toEqual([]);
+    expect(consoleError).not.toHaveBeenCalled();
     unsubscribe();
   });
 });
