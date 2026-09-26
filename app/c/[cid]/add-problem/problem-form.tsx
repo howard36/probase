@@ -46,10 +46,8 @@ const subjects = [
 // TODO: types?
 export default function ProblemForm({
   collection,
-  authorId,
 }: {
   collection: Collection;
-  authorId: number;
 }) {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
@@ -206,7 +204,6 @@ export default function ProblemForm({
               required={collection.requireSolution}
             />
           </div>
-          <input name="authorId" value={authorId} type="hidden" />
           <SubmitButton pending={isSubmitting}>Submit</SubmitButton>
         </form>
       </div>

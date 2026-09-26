@@ -15,7 +15,11 @@ import {
 } from "@/lib/server-actions";
 import { Prisma } from "@prisma/client";
 import { getCurrentUser } from "@/lib/current-user";
-import { getAuthorIds, getPermission } from "@/lib/collection-access";
+import {
+  getAuthorIds,
+  getOrCreateAuthorId,
+  getPermission,
+} from "@/lib/collection-access";
 import { idSchema, parseInput } from "@/lib/validation";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
@@ -42,7 +46,6 @@ const submitSchema = z.object({ problemId: idSchema, answer: z.string() });
 const addSolutionSchema = z.object({
   problemId: idSchema,
   text: z.string().min(1),
-  authorId: idSchema,
 });
 const editSolutionSchema = z.object({
   solutionId: idSchema,
@@ -509,9 +512,8 @@ export async function giveUpTestsolve(
 export async function addSolution(
   problemId: number,
   text: string,
-  authorId: number,
 ): Promise<ActionResponse> {
-  const input = parseInput(addSolutionSchema, { problemId, text, authorId });
+  const input = parseInput(addSolutionSchema, { problemId, text });
   if (!input.ok) {
     return input;
   }
@@ -543,23 +545,23 @@ export async function addSolution(
       return error("You do not have permission to edit this collection");
     }
 
-    // The page submits the user's own Author; do not let a crafted request
-    // attribute a solution to someone else.
-    const authors = await getAuthorIds(userId, problem.collection.id);
-    if (!authors.some((author) => author.id === authorId)) {
-      return error("Invalid input (authorId): not one of your authors");
-    }
-
-    await prisma.solution.create({
-      data: {
-        problem: {
-          connect: { id: problemId },
+    await prisma.$transaction(async (tx) => {
+      const authorId = await getOrCreateAuthorId(
+        tx,
+        user,
+        problem.collection.id,
+      );
+      await tx.solution.create({
+        data: {
+          problem: {
+            connect: { id: problemId },
+          },
+          text,
+          authors: {
+            connect: { id: authorId },
+          },
         },
-        text,
-        authors: {
-          connect: { id: authorId },
-        },
-      },
+      });
     });
 
     revalidatePath(`/c/${problem.collection.cid}/p/${problem.pid}`);

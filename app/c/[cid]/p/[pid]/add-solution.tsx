@@ -5,13 +5,7 @@ import type { KeyboardEvent } from "react";
 import { addSolution } from "./actions";
 import { wrapAction } from "@/lib/server-actions";
 
-export default function AddSolution({
-  problemId,
-  authorId,
-}: {
-  problemId: number;
-  authorId: number;
-}) {
+export default function AddSolution({ problemId }: { problemId: number }) {
   const [isEditing, setEditing] = useState(false);
   const [text, setText] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -41,7 +35,7 @@ export default function AddSolution({
   }, [text]);
 
   const handleSubmit = () => {
-    wrapAction(addSolution)(problemId, text, authorId);
+    wrapAction(addSolution)(problemId, text);
   };
 
   const handleDiscard = () => {

@@ -205,3 +205,44 @@ describe("problem page client payload", () => {
     }
   });
 });
+
+describe("Add Solution", () => {
+  it.each([
+    ["Admin", true],
+    ["TeamMember", true],
+    ["ViewOnly", false],
+  ] as const)(
+    "is offered to a %s without an author: %s",
+    async (level, offered) => {
+      const collection = await createCollection();
+      const problem = await createProblem(collection);
+      const user = await createUser();
+      await createPermission(user, collection, level);
+      signInAs(user);
+
+      const payload = await payloadFor(collection.cid, problem.pid);
+
+      expect(payload.includes('"$":"AddSolution"')).toBe(offered);
+      expect(await prisma.author.count()).toBe(0);
+    },
+  );
+
+  it("is not offered to a ViewOnly member who has an author", async () => {
+    const collection = await createCollection();
+    const problem = await createProblem(collection);
+    const viewer = await createUser();
+    await createPermission(viewer, collection, "ViewOnly");
+    await prisma.author.create({
+      data: {
+        displayName: "Vic",
+        userId: viewer.id,
+        collectionId: collection.id,
+      },
+    });
+    signInAs(viewer);
+
+    const payload = await payloadFor(collection.cid, problem.pid);
+
+    expect(payload).not.toContain('"$":"AddSolution"');
+  });
+});
